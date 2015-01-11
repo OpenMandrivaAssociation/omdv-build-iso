@@ -1,0 +1,87 @@
+%include .///omdv_iso_minimal.lst
+
+
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash #iso
+bootloader-utils # min-iso
+btrfs-progs
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver #iso
+dosfstools
+draklive-install #min-iso
+dynamic
+eject
+#freetype-tools #iso
+firewalld
+firewall-config
+gvfs
+hfsutils #iso
+indexhtml
+info #iso
+info-install #iso
+inxi
+isomd5sum #iso
+iso-codes #iso
+irqbalance
+jfsutils #iso
+ldetect #iso
+libxdg-basedir #iso
+lsof #iso
+lm_sensors #iso
+mailcap #iso
+man
+mc
+mdadm #iso
+mdv-rpm-summary #iso
+monitor-edid #iso
+memtest86+
+mktemp #iso
+mkxauth #iso
+mlocate #iso
+mtools #iso
+ntfsprogs
+pcmciautils
+plymouth-system-theme
+pm-fallback-policy #iso
+pm-utils #iso
+python-curl
+quota #iso
+reiserfsprogs
+rpmdrake #iso
+rpmstats #iso
+rtkit #iso
+shared-desktop-ontologies #iso
+sharutils #iso
+sound-scripts #iso
+sound-theme-freedesktop #iso
+soundwrapper #iso
+sudo
+task-x11
+testdisk
+tmpwatch #iso
+unionfs-utils #iso
+upower #iso
+usbmuxd #iso
+urw-fonts
+uuidd
+vbetool #iso
+wget
+whois #iso
+x11-driver-input-vmmouse #iso
+x11-driver-video-vboxvideo #iso
+x11-driver-video-modesetting #iso
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance #iso
+xdg-user-dirs #iso
+xdg-user-dirs-gtk #iso
+xdg-utils #iso
+xfsprogs
+xrandr
+xterm
+zip
+unzip

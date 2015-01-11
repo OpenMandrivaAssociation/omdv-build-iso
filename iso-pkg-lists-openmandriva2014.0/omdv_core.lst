@@ -1,0 +1,7 @@
+basesystem-minimal
+distro-release-common
+locales
+locales-en
+meta-task
+ncurses
+urpmi

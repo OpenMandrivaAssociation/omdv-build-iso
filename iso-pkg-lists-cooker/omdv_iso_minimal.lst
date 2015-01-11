@@ -1,0 +1,29 @@
+%include .///omdv_core.lst
+
+acpi
+acpid
+at
+basesystem
+busybox-static #min-iso
+cronie-anacron
+#dash-static #min-iso what is that for ???????
+distro-release-OpenMandriva
+dhcp-client
+gpm
+grub2
+grub2-efi
+gnu-efi
+efibootmgr
+kernel-nrjQL-desktop-latest
+kernel-nrjQL-desktop
+syslinux
+nscd
+openssh-clients
+omv-bug-report
+pciutils
+syslinux
+timezone
+usbutils
+usb_modeswitch
+vim-minimal #min-iso
+wireless-tools

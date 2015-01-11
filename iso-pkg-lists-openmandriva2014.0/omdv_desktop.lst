@@ -1,0 +1,23 @@
+%include .///omdv_iso.lst
+
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_locales.lst
+%include .///omdv_ppp.lst
+gksu
+gnome-keyring
+gnome-themes
+lxappearance
+lxpanel
+midori
+obconf
+pcmanfm
+polkit
+s2u
+sakura
+scite
+#smart-gui
+#smart-update
+#unity-theme
+xarchiver
+

@@ -1,0 +1,1808 @@
+2015-01-09 15:41:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* Show TYPE in boot menu (HEAD, origin/test, test)
+
+2015-01-09 14:41:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add pci.ids and modules.alias to syslinux's hdt
+
+2015-01-09 14:06:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* enable additional services
+
+2015-01-09 13:58:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move syslinux setup from /isolinux to /boot/syslinux
+
+2015-01-09 13:53:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* build iso with syslinux
+
+2015-01-08 16:56:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add prefix to grub2-mkimage
+
+2015-01-08 16:45:51 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix grub2-mkimage call
+
+2015-01-08 16:31:50 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix install
+
+2015-01-08 16:22:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move repopath to better place
+
+2015-01-08 15:26:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install grub2 from chroot
+
+2015-01-08 15:06:02 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* small changes to get efiemu files on iso
+
+2015-01-08 15:02:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* make sure grub2 is installed
+
+2015-01-08 14:45:17 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix grub2 calls
+
+2015-01-08 14:40:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix comparision
+
+2015-01-08 14:10:39 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix bad merge :|
+
+2015-01-08 13:34:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix removing pkg lists
+
+2015-01-08 13:23:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* clean out after itchka
+
+2015-01-08 13:09:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove useless check for amout of arguments passed to the script
+
+2015-01-08 12:57:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* experimental grub2 support
+
+2015-01-08 09:24:31 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add generic fuction setupBootloader
+
+2015-01-08 09:20:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* disable audit
+
+2015-01-07 12:22:23 +0000 Colin Close 
+
+	* Fix number of args test
+
+2015-01-07 11:35:02 +0000 Colin Close 
+
+	* Revert my bad change
+
+2015-01-07 11:28:36 +0000 Colin Close 
+
+	* Merge branch 'test' of abf.io:openmandriva/iso-build-tools into test
+
+2015-01-07 11:05:37 +0000 Colin Close 
+
+	* Add support for building released isos Add start of debug and local build speed up. If DEBUG do not delete package list this allows users to build custom isos using a local list. Fix doubling of EFI sub-directory entries
+
+2015-01-07 11:35:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* minor cleaning
+
+2015-01-07 11:31:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix TREE and RELEASE_ID matching, also fix symlink creatin for /etc/resolf.conv for other releases than 2015.0
+
+2015-01-06 01:14:29 +0000 Colin Close 
+
+	* Merge branch 'test' of abf.io:openmandriva/iso-build-tools into test
+
+2015-01-06 01:11:35 +0000 Colin Close 
+
+	* Add support for building released distros
+
+2015-01-02 23:41:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add missing fi
+
+2015-01-02 15:15:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add missing separator
+
+2015-01-02 15:05:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add support to enable/disable services on live iso
+
+2014-12-31 10:20:42 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove system_id
+
+2014-12-31 02:04:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix grub.cfg label and version
+
+2014-12-31 01:41:30 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add grub.cfg for EFI
+
+2014-12-31 01:13:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add system_id
+
+2014-12-31 00:04:29 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix isohybrid
+
+2014-12-30 22:04:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add few xorriso specific options
+
+2014-12-30 22:01:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add isohybrid option
+
+2014-12-30 21:54:48 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* append grub.efi as a parition
+
+2014-12-30 21:41:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add preparer info to iso
+
+2014-12-30 17:12:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* copy themes and locales for grub2 EFI
+
+2014-12-30 16:35:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix bug #1029
+
+2014-12-30 09:37:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix iso build when no UEFI support
+
+2014-12-30 00:47:11 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use xorriso to build ISO
+
+2014-12-29 23:29:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add AUTOBOOT message
+
+2014-12-29 22:19:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* run systemd-nspawn when local systemd version is greater than 215
+
+2014-12-29 21:57:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* share existing systemd instance
+
+2014-12-29 21:37:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix symlinks creation
+
+2014-12-29 21:27:30 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix symlink to /etc/resolv.conf
+
+2014-12-29 20:38:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add Main, Contrig and Non-free medias for cooker
+
+2014-12-29 20:17:18 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* minor changes
+
+2014-12-29 20:10:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not add Main32Updates media on cooker
+
+2014-12-29 20:04:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* set default locale to en_US.UTF-8
+
+2014-12-29 19:57:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* set default timezone to UTC
+
+2014-12-29 19:45:37 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix syntax
+
+2014-12-29 19:15:40 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* create /etc/minsysreqs
+
+2014-12-29 14:51:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update list of modules to be included on liveinitrd
+
+2014-12-29 14:40:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use --download-all
+
+2014-12-29 11:20:07 +0400 Tomasz Paweł Gajc 
+
+	* fix last commit
+
+2014-12-24 12:00:11 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install pci.ids
+
+2014-12-24 00:12:25 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix 90liveiso module install
+
+2014-12-23 23:51:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* finally get bootable iso on vbox and real hardware by adding a modified Mageia's dracut module
+
+2014-12-23 00:53:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* mount tmpfs with mode=755
+
+2014-12-22 19:30:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add couple of sleeps
+
+2014-12-22 18:28:50 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix udev rules for iso
+
+2014-12-22 14:56:06 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* try to fix by-label
+
+2014-12-22 12:46:19 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not mount /dev/sr0 as a fallback, just drop to shell
+
+2014-12-22 12:39:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* omit dm dracut module
+
+2014-12-22 11:59:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* make sure syslinux bits are on chroot
+
+2014-12-22 11:51:08 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rename isolinux to syslinux
+
+2014-12-22 11:22:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* +x
+
+2014-12-22 13:14:21 +0400 Tomasz Paweł Gajc 
+
+	* fix symlink for initrd0.img
+
+2014-12-22 13:12:13 +0400 Tomasz Paweł Gajc 
+
+	* remove KDE4 stuff for other types than KDE
+
+2014-12-21 20:01:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use root=live:LABEL=
+
+2014-12-21 19:19:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* run dracut with LC_ALL=C for liveinitrd, fix logic for initrd hacks
+
+2014-12-21 03:39:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove iso-pkg-lists when exiting
+
+2014-12-21 02:39:39 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix MIRRORLIST for i586 when cooker
+
+2014-12-21 02:26:01 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix path for adding 32bit media
+
+2014-12-21 02:04:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix checks for liveinitrd.img
+
+2014-12-21 01:07:48 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix adding 32bit media (urpmi syntax), add checks for liveinitrd.img
+
+2014-12-21 00:49:46 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix path to dracut config for liveinitrd, more fixes for liveinitrd
+
+2014-12-21 00:12:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix adding 32-bit media on x86_64
+
+2014-12-20 23:38:07 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add couple of sleeps just to cool things down, add check for lib/dracut/hooks/mount/00-live.sh existence
+
+2014-12-20 23:30:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix indentation
+
+2014-12-20 23:26:08 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add TODO list
+
+2014-12-20 23:21:14 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* clear root password on iso
+
+2014-12-19 14:55:39 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* skip suggested packages when installing in chroot
+
+2014-12-19 14:02:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2014-12-19 13:54:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* silent systemctl output
+
+2014-12-19 13:48:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* build Free ISO - no Resticted stoftware add updates media only for non-cooker tree
+
+2014-12-19 01:00:25 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install background.png
+
+2014-12-19 00:23:40 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* introduce LISTDIR
+
+2014-12-19 00:08:43 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix parePkgLst after iso-pkg-lists directory move
+
+2014-12-18 22:18:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* show pwd for debuging ABF
+
+2014-12-18 22:08:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* pass correct path to iso-pkg-lists
+
+2014-12-18 21:59:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install cdrtools for 2015.0 and newer
+
+2014-12-18 21:45:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fixes for iso-pkg-lists
+
+2014-12-18 21:30:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add missing echo
+
+2014-12-18 20:57:02 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix check for ABF
+
+2014-12-18 20:55:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix showInfo
+
+2014-12-18 20:35:37 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use lazy umount
+
+2014-12-18 20:19:16 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add check whether script is executed in ABF (www.abf.io)
+
+2014-12-18 20:12:17 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move to new functions
+
+2014-12-18 19:57:47 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use create-liveinitrd.sh
+
+2014-12-18 19:56:44 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rename create-liveramfs.sh to create-liveinitrd.sh
+
+2014-12-18 19:56:08 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix sed patch in create-liveramfs.sh
+
+2014-12-18 19:47:53 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* bump boot timeout to 30 seconds
+
+2014-12-18 19:47:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* drop getPackages
+
+2014-12-18 19:42:50 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move total_sum_counter.pl to tools
+
+2014-12-18 19:42:01 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rename root to data
+
+2014-12-18 19:41:39 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move legacy scripts to tools subdiredtory
+
+2014-12-18 19:40:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add info about authors and license
+
+2014-12-18 19:31:40 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move syslinux background file to better place, also convert it to png
+
+2014-12-18 19:28:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* -x on create-liveramfs.sh
+
+2014-12-18 19:28:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove not needed file
+
+2014-12-18 15:58:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not call urpmi from chroot use --urpmi-root
+
+2014-12-18 15:31:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* enable and start resolvconf inside chroot
+
+2014-12-18 15:14:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* let's see what is inside /etc/resolv.conf in chroot
+
+2014-12-18 15:09:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* set up default timezone
+
+2014-12-18 14:57:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* ping two different adresses
+
+2014-12-18 14:56:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add some network support inside chroot
+
+2014-12-18 14:43:29 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* hopefully this will fix support for MIRRORLIST
+
+2014-12-18 14:08:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* pass $MIRRORLIST
+
+2014-12-18 13:23:51 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2014-12-18 13:07:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add urpmi medias inside chroot
+
+2014-12-18 12:57:01 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add support for DISPLAYMANAGER add /home/live modifications
+
+2014-12-18 11:10:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* export UEFI
+
+2014-12-18 11:08:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* EFI is only on x86_64 ?
+
+2014-12-18 10:58:47 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix showinfo
+
+2014-12-18 10:27:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix logic
+
+2014-12-18 10:08:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix rows in syslinux menu
+
+2014-12-18 10:06:49 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* try to fix mount aufs inside liveinitrd
+
+2014-12-18 09:49:02 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* show to user with which parameters ISO will be created
+
+2014-12-18 09:41:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add space
+
+2014-12-17 23:20:16 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add newline
+
+2014-12-17 23:19:14 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move all hack to create-liveramfs.sh
+
+2014-12-17 16:18:41 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix missing space
+
+2014-12-17 16:13:37 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* when creating mksquashfs drop  -keep-as-director option
+
+2014-12-17 16:11:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* when mounting ISO check if by-label symlink exists, if not use hardcoded /dev/sr0
+
+2014-12-17 16:06:31 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add AuFS mount point in /etc/fstab
+
+2014-12-17 16:00:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* aufs, first mount rw over ro filesystems
+
+2014-12-17 15:50:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix file
+
+2014-12-17 15:20:39 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix sed syntax
+
+2014-12-17 15:10:31 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* redefine BRANCH if TREE is not cooker
+
+2014-12-16 22:46:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use iso9660
+
+2014-12-16 22:43:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add -b 512k -keep-as-directory to mksquashfs
+
+2014-12-16 22:16:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* check for /dev/disk/by-label before tryting to do anything
+
+2014-12-16 21:50:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix path
+
+2014-12-16 21:47:25 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix sed syntax
+
+2014-12-16 21:36:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove already existing squashfs while it exists
+
+2014-12-16 21:24:46 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* bump timeout to 10 secs on isolinux menu
+
+2014-12-16 21:20:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix symbolic link creation
+
+2014-12-16 21:18:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add aufs to dracut config
+
+2014-12-16 21:08:55 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove dracut config after liveintrd is done
+
+2014-12-16 21:01:48 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix fugly hack on 60-persistent-storage.rules
+
+2014-12-16 21:00:40 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix indentations in script
+
+2014-12-16 16:42:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* squash-00-live.sh fix mount options
+
+2014-12-16 16:37:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* start to support EFI - just very basic commits
+
+2014-12-16 15:33:43 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2014-12-16 15:20:30 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rewrite squash-00-live.sh
+
+2014-12-16 12:52:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* omit dmsquash-live dracut module for liveinitrd
+
+2014-12-16 12:17:42 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* seems like iso is mounted in /run/initramfs
+
+2014-12-16 12:14:25 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix mountpoints in /run
+
+2014-12-16 12:08:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* create-liveramfs.sh do not inject *-00-live.sh for a test
+
+2014-12-16 11:54:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix last commit
+
+2014-12-16 11:30:37 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* copy squash-00-live.sh into chroot
+
+2014-12-16 11:21:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add for a test squash-00-live.sh to mount squashfs.img from liveinitrd
+
+2014-12-16 10:16:43 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* mount /var/tmp as tmpfs, pass some more optiopns to create-liveramfs.sh
+
+2014-12-15 17:12:40 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* change initrd naming
+
+2014-12-15 17:02:07 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* wtf?
+
+2014-12-15 16:52:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add couple of modules for dracut options
+
+2014-12-15 16:51:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add extra fs for dracut options
+
+2014-12-15 16:48:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* try to run e2fsck and resize2fs on suqshfs image
+
+2014-12-15 16:17:07 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* start to set up ISO environment
+
+2014-12-15 15:08:11 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add pollcdrom to dracut modules and add squashfs to dracut filesystems
+
+2014-12-15 14:22:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* adjust isolinux menu
+
+2014-12-15 14:10:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* adjust isolinux menu
+
+2014-12-15 14:07:48 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix REPOPATH getting right arguments
+
+2014-12-15 13:52:18 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix hack
+
+2014-12-15 13:44:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* run with SUDO
+
+2014-12-15 13:42:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix path to udev rules dir
+
+2014-12-15 13:35:01 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* check if dir exists before create it in dracut-00-live.sh
+
+2014-12-15 13:09:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fugly hack to get /dev/disk/by-label working
+
+2014-12-15 12:47:44 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not hardcode script name
+
+2014-12-15 12:43:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* umount stuff in chroot before running mksquashfs
+
+2014-12-15 12:39:31 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix umountAll
+
+2014-12-15 12:38:02 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* clean code
+
+2014-12-15 12:30:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove missing modules from 60-dracut-isobuild.conf
+
+2014-12-15 12:26:05 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add some messages on script progress
+
+2014-12-15 12:19:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typos
+
+2014-12-15 12:14:14 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* compress liveramfs with xz
+
+2014-12-15 12:08:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* export KERNEL_ISO for create-liveramfs.sh
+
+2014-12-15 12:02:48 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use error instead of error()
+
+2014-12-15 11:57:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* get back to cdrkit-genisoimage
+
+2014-12-15 11:53:05 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* second attemp to create separate initrd files
+
+2014-12-15 10:43:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add simple support for splited initrds, one for isolinux second one for squashfs
+
+2014-12-15 10:23:29 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add dracut config file for isolinux
+
+2014-12-15 02:31:22 +0100 Bernhard Rosenkränzer 
+
+	* Fix mkisofs parameters for current (3.01) versions
+
+2014-12-15 01:27:13 +0100 Bernhard Rosenkränzer 
+
+	* Use mkisofs from cdrtools rather than cdrkit, the latter is essentially unmaintained
+
+2014-12-15 01:06:26 +0100 Bernhard Rosenkränzer 
+
+	* Use the same label everywhere
+
+2014-12-15 01:02:26 +0100 Bernhard Rosenkränzer 
+
+	* Make sure the label is 32 characters or less even with a long $VERSION
+
+2014-12-15 00:56:16 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* Merge branch 'test' of abf.io:/openmandriva/iso-build-tools into test
+
+2014-12-15 00:55:19 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* pass -no-recovery option to mksquashfs
+
+2014-12-15 00:52:37 +0100 Bernhard Rosenkränzer 
+
+	* Merge branch 'test' of https://abf.io/openmandriva/iso-build-tools into test
+
+2014-12-15 00:52:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not show mksquashfs progress
+
+2014-12-15 00:52:10 +0100 Bernhard Rosenkränzer 
+
+	* Fix argument order, fix typo, use $0 in usage message
+
+2014-12-15 00:35:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix mkisofs args
+
+2014-12-15 00:23:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix chroot clean
+
+2014-12-15 00:19:55 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not copy not existing files
+
+2014-12-15 00:02:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* create squashfs image
+
+2014-12-14 22:31:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* adjust mkisofs settings
+
+2014-12-14 22:19:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use umount_all
+
+2014-12-14 22:09:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix config files
+
+2014-12-14 21:59:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix script name inside script
+
+2014-12-14 21:56:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rename script
+
+2014-12-14 21:54:37 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* exit when no arguments are passed
+
+2014-12-14 21:48:43 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* get rid of useless files
+
+2014-12-14 21:40:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2014-12-14 21:31:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* various improvements
+
+2014-12-14 21:20:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* try to fix build inside ABF
+
+2014-12-14 21:07:37 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* siolinux does not have pci.ids and memtest
+
+2014-12-14 20:25:14 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* set locales on boot
+
+2014-12-14 20:22:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* enable Joilet, add Publisher and Data preparer id
+
+2014-12-14 19:59:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* enable SuperGrub2 feature
+
+2014-12-14 19:47:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix menu background and finally make a working memtest option
+
+2014-12-14 18:46:25 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update failsafe install options
+
+2014-12-14 18:35:42 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix boot from local hdd
+
+2014-12-14 17:21:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix it
+
+2014-12-14 16:52:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* +x
+
+2014-12-14 19:43:35 +0400 Tomasz Paweł Gajc 
+
+	* set up DIST
+
+2014-12-14 16:15:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* import syntax anbd many things from livecd-tools scripts
+
+2014-12-14 15:28:53 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install syslinux
+
+2014-12-14 15:24:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install cdrkit-genisoimage
+
+2014-12-14 15:07:31 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix cpio args
+
+2014-12-14 14:38:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix download path
+
+2014-12-14 14:15:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2014-12-13 16:35:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add workaround for git timeout
+
+2014-12-13 16:21:17 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* force update of critical packages inside chroot
+
+2014-12-13 16:17:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* force update of critical packages
+
+2014-12-13 16:13:14 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add +x on few files
+
+2014-12-13 13:42:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add +x on create chroot
+
+2014-11-12 18:48:00 +0400 Tomasz Paweł Gajc 
+
+	* remove last commit
+
+2014-11-12 18:42:57 +0400 Tomasz Paweł Gajc 
+
+	* add testing iso for glibc
+
+2014-11-07 13:35:30 +0400 Tomasz Paweł Gajc 
+
+	* disable ldconfig.service on iso
+
+2014-10-27 19:23:02 +0400 Tomasz Paweł Gajc 
+
+	* disable i586 media on cooker
+
+2014-10-27 15:05:50 +0400 Tomasz Paweł Gajc 
+
+	* try with curl
+
+2014-10-27 12:21:04 +0400 Tomasz Paweł Gajc 
+
+	* disable updates media on cooker
+
+2014-10-24 16:08:28 +0000 mdawkins (Matthew Dawkins) 
+
+	* cannot place if statement before %packages
+
+2014-10-24 16:00:24 +0000 mdawkins (Matthew Dawkins) 
+
+	* disabled updates for cooker -- not needed removed hardcoded openmandriva.2014.0 for Main32 and updates btw the name for the mirros list should be aligned with the release name, ie openmandriva2014.0 is the release but the file name is openmandriva.2014.0 .... TREE could be used here
+
+2014-10-24 18:06:59 +0400 Tomasz Paweł Gajc 
+
+	* enable accounts-daemon service
+
+2014-09-26 14:26:22 +0400 Tomasz Paweł Gajc 
+
+	* add contrib and non-free updates repos
+
+2014-09-23 19:13:44 +0400 Tomasz Paweł Gajc 
+
+	* enable cups,sshd,chronyd
+
+2014-09-23 12:45:11 +0400 Tomasz Paweł Gajc 
+
+	* disable main testing
+
+2014-09-21 19:35:12 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* do not use old perl-URPM container
+
+2014-09-17 11:39:11 +0400 Tomasz Paweł Gajc 
+
+	* enable testing repo
+
+2014-09-04 18:43:08 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* revert some changes, update perl-URPM from container earlier in process
+
+2014-09-04 17:59:36 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* remove media in chroot
+
+2014-09-04 17:56:08 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* so not verify rpm from container
+
+2014-09-04 17:51:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* try to update perl-URPM before adding any updates repository
+
+2014-09-04 17:16:38 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* do in in chroot
+
+2014-09-04 17:11:27 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* update perl-URPM from container
+
+2014-09-04 16:27:54 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* revert last testing stuff
+
+2014-09-04 16:22:04 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* try to update only perl-URPM
+
+2014-09-04 16:15:59 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* prope rpmfiles rather than use hdlists
+
+2014-09-04 15:49:14 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* try force udating hdlists run update on update medias inside chroot
+
+2014-09-04 15:08:45 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* comment wrong line
+
+2014-09-04 15:03:01 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix last commit
+
+2014-09-04 16:12:53 +0400 Tomasz Paweł Gajc 
+
+	* add possible i586 iso build fix from Denis Silakov
+
+2014-09-03 14:40:01 +0400 Tomasz Paweł Gajc 
+
+	* drop systemd temporaily repo
+
+2014-09-03 14:38:46 +0400 Tomasz Paweł Gajc 
+
+	* rebuild initrd, not initramfs, also move options to liveramfs
+
+2014-08-30 04:03:57 +0400 Tomasz Paweł Gajc 
+
+	* add systemd testing
+
+2014-08-26 22:46:10 +0400 Tomasz Paweł Gajc 
+
+	* when there are more than one kernel installed then script failse because of wrong syntax for dracut, anyways we need only one kernel here
+
+2014-08-08 03:06:30 +0400 Tomasz Paweł Gajc 
+
+	* looks like this is still needed
+
+2014-08-08 00:29:47 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* remove all-media switch from urpmi call in MATRIX, generate full initrd image
+
+2014-08-06 15:33:36 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix removing live user
+
+2014-08-03 12:17:12 +0400 Tomasz Paweł Gajc 
+
+	* add Main32Updates media
+
+2014-07-27 02:06:38 +0400 Tomasz Paweł Gajc 
+
+	* use simplified version of timezone
+
+2014-07-19 23:07:25 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable network services
+
+2014-07-17 13:22:57 +0400 Tomasz Paweł Gajc 
+
+	* remove not needed files after installation
+
+2014-07-14 13:30:49 +0400 Tomasz Paweł Gajc 
+
+	* forece rebuild initrd with no-host-only mode
+
+2014-07-13 13:57:25 +0400 Tomasz Paweł Gajc 
+
+	* use same settings for dracut as in liveramfs for initrd ceation, compress with LZO
+
+2014-07-13 02:52:41 +0400 Tomasz Paweł Gajc 
+
+	* rebuild liveramfs
+
+2014-07-13 02:24:55 +0400 Tomasz Paweł Gajc 
+
+	* enable rebuild initramfs
+
+2014-07-12 21:19:43 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* use blue'ish background for boot menu, disable rebuild initrd inside ks.template file
+
+2014-07-12 20:28:02 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* compress initrd with LZO to speed up things on live mode
+
+2014-07-12 17:49:21 +0400 Tomasz Paweł Gajc 
+
+	* add dmsquash-live
+
+2014-07-12 17:47:57 +0400 Tomasz Paweł Gajc 
+
+	* add ext3
+
+2014-07-12 17:45:51 +0400 Tomasz Paweł Gajc 
+
+	* add few more filesystems
+
+2014-07-12 17:43:56 +0400 Tomasz Paweł Gajc 
+
+	* add few i18n options
+
+2014-07-12 17:43:13 +0400 Tomasz Paweł Gajc 
+
+	* add few more modules
+
+2014-07-12 17:36:26 +0400 Tomasz Paweł Gajc 
+
+	* uncomment
+
+2014-07-12 17:36:10 +0400 Tomasz Paweł Gajc 
+
+	* do not install any fsck programs
+
+2014-07-12 17:34:22 +0400 Tomasz Paweł Gajc 
+
+	* omit more dracut modules
+
+2014-07-12 16:47:05 +0400 Tomasz Paweł Gajc 
+
+	* fix white box in left corner when booting from ISO
+
+2014-07-11 12:48:03 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable testing repo
+
+2014-07-02 01:06:58 +0400 Tomasz Paweł Gajc 
+
+	* fix path to akonadiserverrc to disable it in live mode
+
+2014-07-01 10:50:27 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add Main updates and testing repo
+
+2014-05-20 13:36:33 +0400 Alex Burmashev 
+
+	* minor change of mtab symlink creation
+
+2014-05-20 09:15:47 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* try to workaround iso build
+
+2014-05-16 22:55:50 +0400 Tomasz Paweł Gajc 
+
+	* adde debug to livecd-creator command
+
+2014-05-16 18:44:23 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add --no-verify-rpm --fastunsafe --ignoresize
+
+2014-05-16 18:26:52 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix name
+
+2014-05-16 10:56:33 +0400 Tomasz Paweł Gajc 
+
+	* call it OpenMandrivaLx
+
+2014-04-30 20:54:17 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add --erroronfail for post, also use wget and do not check md5sums on 32 bit repos
+
+2014-04-30 20:35:25 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* Revert "let's get back to git cloning"
+
+2014-04-30 20:29:27 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* let's get back to git cloning
+
+2014-04-30 19:57:57 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* put iso-pkg-list into good place, silent urpmi in chroot
+
+2014-04-30 15:43:34 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix syntax
+
+2014-04-30 15:38:16 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* do not git pull form inside chroot
+
+2014-04-30 15:18:54 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* set tries to 10 for wget
+
+2014-04-30 15:05:42 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add double comments
+
+2014-04-30 14:51:23 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* +x on MATRIX
+
+2014-04-30 16:39:41 +0400 Tomasz Paweł Gajc 
+
+	* enable possible git clone timeouts
+
+2014-04-30 16:00:13 +0400 Tomasz Paweł Gajc 
+
+	* bail out ISO building when adding i586 repository fails
+
+2014-04-27 20:45:13 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* pass title option to fix bug #719
+
+2014-04-27 16:06:23 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* do not use wget in one place
+
+2014-04-27 15:48:53 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* added different memory check for different arches from Rosa
+
+2014-04-27 15:46:26 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* remove rpm db files as last one command
+
+2014-04-27 13:46:24 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* silet systemd operations on few serives
+
+2014-04-27 13:44:06 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable checksession and checkflashboot
+
+2014-04-27 15:37:41 +0400 Tomasz Paweł Gajc 
+
+	* try to remove rpm db files to save some space
+
+2014-04-25 22:32:47 +0400 Tomasz Paweł Gajc 
+
+	* fix syntax
+
+2014-04-25 21:50:08 +0400 Tomasz Paweł Gajc 
+
+	* fix adding 32bit media
+
+2014-04-25 14:59:23 +0400 Tomasz Paweł Gajc 
+
+	* fix my last commit
+
+2014-04-25 12:17:25 +0400 Tomasz Paweł Gajc 
+
+	* echoi #ARCH# for test
+
+2014-04-24 23:16:54 +0100 Crispin Boylan 
+
+	* Bug 683 - put the live-install icon on the desktop
+
+2014-04-22 23:22:50 +0100 Crispin Boylan 
+
+	* Fix now in place for 654, we can remove unused now
+
+2014-04-22 18:51:35 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add i586 main repo for x86_64 ISO, fixes bug #685
+
+2014-04-18 10:43:13 +0400 Tomasz Paweł Gajc 
+
+	* remove_unused_packages=no
+
+2014-04-17 21:54:40 +0400 Tomasz Paweł Gajc 
+
+	* fix option
+
+2014-04-17 15:42:59 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* make it executable
+
+2014-04-17 14:07:36 +0400 Tomasz Paweł Gajc 
+
+	* use wget for urpmi
+
+2014-04-17 14:03:02 +0400 Tomasz Paweł Gajc 
+
+	* use wget for urpmi, do not check md5sum when running urpmi.addmedia, force update key and synthesis while upgrading urpmi media
+
+2014-04-17 10:50:00 +0400 Tomasz Paweł Gajc 
+
+	* user mirrorlist for a while
+
+2014-04-16 22:58:46 +0200 Bernhard Rosenkraenzer 
+
+	* Pull stuff from master for now, let's see if that fixes our index.lzma mess
+
+2014-04-16 01:23:12 +0200 Bernhard Rosenkraenzer 
+
+	* Restore non-free repository for firmware
+
+2014-04-16 02:35:53 +0400 Tomasz Paweł Gajc 
+
+	* disable non-free and restricted repos
+
+2014-04-11 16:34:44 +0000 mdawkins (Matthew Dawkins) 
+
+	* fixed default RELEASE_ID in MATRIX removed defaults for VARIABLES in build there is no need to have them when they are always passed by MATRIX
+
+2014-04-11 16:22:41 +0000 mdawkins (Matthew Dawkins) 
+
+	* aligned variables VERSION and RELEASE_ID between MATRIX and build
+
+2014-04-11 16:11:09 +0000 mdawkins (Matthew Dawkins) 
+
+	* added possible fix for timed out git pulls, currently commented out
+
+2014-04-11 15:50:46 +0000 mdawkins (Matthew Dawkins) 
+
+	* rework of naming for alpha iso builds, it is problematic because the varibles due to placement can not be left empty
+
+2014-04-11 14:55:42 +0000 mdawkins (Matthew Dawkins) 
+
+	* fixed string comparison for iso naming
+
+2014-04-11 14:36:34 +0000 mdawkins (Matthew Dawkins) 
+
+	* fixed variable numbering mistake
+
+2014-04-11 12:11:16 +0100 Crispin Boylan 
+
+	* Bug 55, 654 Ensure remove_unused_packages only runs once we've installed and rebooted
+
+2014-04-10 20:44:59 +0000 mdawkins (Matthew Dawkins) 
+
+	* added displaymanager variable to matrix and build
+
+2014-04-10 12:02:08 +0400 Tomasz Paweł Gajc 
+
+	* revert my change and do not remove unused packages by default
+
+2014-04-08 12:51:31 +0400 Tomasz Paweł Gajc 
+
+	* set font to latarcyrheb-sun16
+
+2014-04-05 15:52:03 +0000 mdawkins (Matthew Dawkins) 
+
+	* added DE variable to MATRIX
+
+2014-04-04 18:27:42 +0400 Matthew Dawkins 
+
+	* added DE variable
+
+2014-04-04 09:42:31 +0200 Bernhard Rosenkraenzer 
+
+	* Use abf.io hostnames
+
+2014-04-03 23:26:23 +0200 Bernhard Rosenkraenzer 
+
+	* Build KDE iso
+
+2014-04-03 15:26:12 +0000 mdawkins (Matthew Dawkins) 
+
+	* build mate iso
+
+2014-04-03 14:50:28 +0400 Tomasz Paweł Gajc 
+
+	* fix initrd creation and linking
+
+2014-04-03 13:50:33 +0400 Tomasz Paweł Gajc 
+
+	* create dir early
+
+2014-04-03 12:57:25 +0400 Tomasz Paweł Gajc 
+
+	* build minimal iso
+
+2014-04-03 12:38:47 +0400 Tomasz Paweł Gajc 
+
+	* rebuild initrd
+
+2014-04-03 12:37:08 +0400 Tomasz Paweł Gajc 
+
+	* do not copy non existin files
+
+2014-04-03 12:03:49 +0400 Tomasz Paweł Gajc 
+
+	* try to fix installation for memdisk and sgb.iso and GPL
+
+2014-04-02 14:44:04 +0000 mdawkins (Matthew Dawkins) 
+
+	* build basic iso
+
+2014-04-02 13:47:47 +0400 Tomasz Paweł Gajc 
+
+	* build full kde4 iso
+
+2014-04-01 23:46:05 +0000 mdawkins (Matthew Dawkins) 
+
+	* creating a minimal iso for test
+
+2014-03-29 15:38:41 +0400 Tomasz Paweł Gajc 
+
+	* build full distro
+
+2014-03-29 08:47:41 +0400 Tomasz Paweł Gajc 
+
+	* try this way
+
+2014-03-29 07:11:01 +0400 Tomasz Paweł Gajc 
+
+	* reduce log
+
+2014-03-29 05:01:55 +0400 Tomasz Paweł Gajc 
+
+	* build minimal
+
+2014-03-29 01:56:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rework ks.template file
+
+2014-03-29 01:27:11 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* be less verbose, also use some user friendly output
+
+2014-03-29 01:18:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* MATRIX: use --ignoresize and --fastunsafe for urpmi
+
+2014-03-29 01:34:08 +0400 Tomasz Paweł Gajc 
+
+	* build omdv_iso.lst
+
+2014-03-29 00:17:20 +0400 Tomasz Paweł Gajc 
+
+	* no minimal
+
+2014-03-28 23:08:14 +0400 Tomasz Paweł Gajc 
+
+	* once again build only minimal iso
+
+2014-03-28 20:05:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rebuild liveramfs without ifcfg cifs dracut modules
+
+2014-03-28 20:01:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rebuild liveramfs without resume network lvm nfs dracut modules
+
+2014-03-28 19:59:19 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rebuild liveramfs with qemu module
+
+2014-03-28 19:58:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* rebuild liveramfs with --no-early-microcode --nofscks --noprelink options for dracut
+
+2014-03-28 19:40:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* small cleans
+
+2014-03-28 19:36:46 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add some info
+
+2014-03-28 19:34:46 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* install sgb and memtest on iso
+
+2014-03-28 01:56:03 +0400 Tomasz Paweł Gajc 
+
+	* Let's try to remove unused packages
+
+2014-03-16 23:02:02 +0400 Tomasz Paweł Gajc 
+
+	* looks like issues with tmpfs are sorted out, lets build KDE iso :)
+
+2014-03-16 20:53:03 +0400 Tomasz Paweł Gajc 
+
+	* build minimal iso to speed up things with debuging non booting iso
+
+2014-03-16 19:14:10 +0400 Tomasz Paweł Gajc 
+
+	* fix tmp mount as tmpfs
+
+2014-03-15 02:24:43 +0400 Tomasz Paweł Gajc 
+
+	* add some config options
+
+2014-02-27 14:33:24 +0400 Vokhmin Alexey V 
+
+	* chmod +x MATRIX
+
+2014-02-27 03:01:46 +0400 Tomasz Paweł Gajc 
+
+	* revert my commit  6f021abfb7
+
+2014-02-26 23:12:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix permission ?
+
+2014-02-26 19:58:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add 02livecd.conf config file and extend it for ccis and hspa modules
+
+2014-02-26 22:21:43 +0400 Tomasz Paweł Gajc 
+
+	* change args order
+
+2014-02-24 23:14:18 +0400 Tomasz Paweł Gajc 
+
+	* oops revert my last change
+
+2014-02-23 16:49:09 +0400 Tomasz Paweł Gajc 
+
+	* update pci and usb ids
+
+2014-02-21 19:26:03 +0400 Tomasz Paweł Gajc 
+
+	* allow x11 terminate with ctrl+alt+backspace
+
+2014-02-17 14:49:35 +0400 Tomasz Paweł Gajc 
+
+	* do not add repos twice use mirrorlist to hande dynamically our mirrors
+
+2014-01-27 12:46:04 +0400 Tomasz Paweł Gajc 
+
+	* get back DURING_INSTALL
+
+2014-01-24 13:35:21 +0400 Tomasz Paweł Gajc 
+
+	* sync with rosa
+
+2014-01-24 13:20:11 +0400 Tomasz Paweł Gajc 
+
+	* do not enable services that does not exist
+
+2014-01-24 13:14:30 +0400 Tomasz Paweł Gajc 
+
+	* Updated 00-keyboard.conf
+
+2014-01-21 17:02:37 +0100 Bernhard Rosenkränzer 
+
+	* Fix permissions, MATRIX and build need to be executable
+
+2014-01-20 18:56:28 +0400 Tomasz Paweł Gajc 
+
+	* revert change  b8481ce4d0 (rosa util-linux is quite old and does not handle -R)
+
+2014-01-20 12:16:05 +0400 Tomasz Paweł Gajc 
+
+	* fix typo
+
+2014-01-20 02:08:01 +0400 Tomasz Paweł Gajc 
+
+	* silent dracut output
+
+2014-01-17 14:34:32 +0400 Tomasz Paweł Gajc 
+
+	* enable kdm.service add some verbose infromation
+
+2014-01-17 14:29:29 +0400 Tomasz Paweł Gajc 
+
+	* run update-pciids
+
+2014-01-17 14:28:03 +0400 Tomasz Paweł Gajc 
+
+	* configure repositories
+
+2013-12-30 12:04:31 +0400 Tomasz Paweł Gajc 
+
+	* it's 2014.0 time unset DURING_INSTALL
+
+2013-12-30 08:52:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add kmscon/kmscon.conf
+
+2013-11-23 16:29:12 +0000 Crispin Boylan 
+
+	* Add hostname default file (bug #321)
+
+2013-11-21 14:19:32 +0100 Bernhard Rosenkränzer 
+
+	* Create ~/.cache for live user
+
+2013-11-19 02:08:01 +0100 Bernhard Rosenkränzer 
+
+	* Don't start akonadi, handle "final" release identifier
+
+2013-11-14 00:05:59 +0100 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' of https://abf.rosalinux.ru/openmandriva/iso-build-tools
+
+2013-11-14 00:05:27 +0100 Bernhard Rosenkränzer 
+
+	* Add tools needed for EFI support in livecd-tools
+
+2013-11-06 21:16:53 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add extraconfig/etc/X11/xorg.conf.d/00-keyboard.conf needed for localectl
+
+2013-11-02 18:20:08 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add /etc/vconsole.conf
+
+2013-11-01 21:19:14 +0000 Crispin Boylan 
+
+	* Avoid using /var/tmp as the temporary kde storage space to preserve cow space
+
+2013-11-01 16:26:27 +0000 Crispin Boylan 
+
+	* Create a live initrd here
+
+2013-11-01 11:26:59 +0000 Crispin Boylan 
+
+	* Build the system kernel in the kickstart, let livecd-tools handle the live kernel
+
+2013-10-31 17:38:21 +0000 Crispin Boylan 
+
+	* Mount /var/tmp as tmpfs to avoid using cow space
+
+2013-10-31 16:02:21 +0400 Tomasz Paweł Gajc 
+
+	* omit these dracut modules bash rescue quemu multipath mdraid dmraid
+
+2013-10-31 11:38:42 +0000 Crispin Boylan 
+
+	* Remove all icon caches to preserve cow space
+
+2013-10-30 17:07:57 +0400 Tomasz Paweł Gajc 
+
+	* disable atd, crond,lm_sensors, microcode_ctl, mdmonitor and saslauthd services on ISO boot (partialy fixes bug #239)
+
+2013-10-29 18:20:05 -0400 Robert Xu 
+
+	* umount recursively
+
+2013-10-29 13:55:08 +0000 Crispin Boylan 
+
+	* Dont enable the generic getty service, causes errors (bug#245)
+
+2013-10-28 16:06:30 +0000 Crispin Boylan 
+
+	* Add locale.conf so that we use UTF-8 by default
+
+2013-10-23 20:27:58 +0200 Bernhard Rosenkränzer 
+
+	* Allow specifying version numbers and release identifiers
+
+2013-09-28 12:25:51 +0200 Bernhard Rosenkränzer 
+
+	* Add show-suggests script
+
+2013-09-27 01:39:48 +0200 Bernhard Rosenkränzer 
+
+	* Allow specifying a tree other than cooker
+
+2013-09-26 01:42:03 +0200 Bernhard Rosenkränzer 
+
+	* Don't remove_unused_packages
+
+2013-09-10 13:39:43 +0200 Bernhard Rosenkränzer 
+
+	* Set DURING_INSTALL
+
+2013-09-09 15:07:24 +0200 Bernhard Rosenkränzer 
+
+	* Better password encryption
+
+2013-09-09 14:53:51 +0200 Bernhard Rosenkränzer 
+
+	* Create /etc/sysconfig/desktop
+
+2013-09-09 14:50:56 +0200 Bernhard Rosenkränzer 
+
+	* Remove background symlinking that shouldn't be necessary with current desktop-theme packages
+
+2013-09-08 13:08:22 +0200 Bernhard Rosenkränzer 
+
+	* Try to unbreak running inside ABF
+
+2013-09-08 10:59:28 +0200 Bernhard Rosenkränzer 
+
+	* When running in ABF, copy files to its output directories
+
+2013-09-03 21:21:44 +0200 Bernhard Rosenkränzer 
+
+	* Accept a 2nd parameter indicating the release tree
+
+2013-09-03 21:17:36 +0200 Bernhard Rosenkränzer 
+
+	* Prefer distro-theme-OpenMandriva over distro-theme-Moondrake
+
+2013-06-24 02:13:27 +0200 Bernhard Rosenkränzer 
+
+	* Include repositories for the correct arch
+
+2013-06-05 15:35:39 +0200 Bernhard Rosenkränzer 
+
+	* Use OpenMandriva default background
+
+2013-06-05 15:35:25 +0200 Bernhard Rosenkränzer 
+
+	* Allow specifying target arch on command line
+
+2013-06-04 18:13:48 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' of https://abf.rosalinux.ru/openmandriva/iso-build-tools
+
+2013-06-04 18:08:19 +0200 Bernhard Rosenkränzer 
+
+	* New locations
+
+2013-05-18 14:05:29 +0200 arisel 
+
+	* changed chroot-repo to cooker
+
+2013-05-13 04:05:42 +0200 Bernhard Rosenkränzer 
+
+	* Assorted tweaks
+
+2013-05-13 03:25:18 +0200 Bernhard Rosenkränzer 
+
+	* Fix syntax error in sed command
+
+2013-05-13 03:20:42 +0200 Bernhard Rosenkränzer 
+
+	* Add some more components of the new experimental iso builder
+
+2013-05-13 03:19:03 +0200 Bernhard Rosenkränzer 
+
+	* Assorted fixes: - Fix b&w display (caused by changes in *.jpg files, TBI) - Deal with labels exceeding livecd-tools' limitations - Try to work around mdkapplet bugs
+
+2013-05-11 02:07:25 +0200 Bernhard Rosenkränzer 
+
+	* Add get-rpms script (downloads all rpms from the file lists and their deps)
+
+2013-05-07 23:36:12 +0200 Bernhard Rosenkränzer 
+
+	* Fix output redirection
+
+2013-05-07 18:04:04 +0200 Bernhard Rosenkränzer 
+
+	* Don't fail on unsigned packages (rosa2012.1 yum seems to be unsigned)
+
+2013-05-07 02:15:28 +0200 Bernhard Rosenkränzer 
+
+	* Assorted fixes
+
+2013-05-06 18:49:48 +0200 Bernhard Rosenkränzer 
+
+	* Assorted fixes
+
+2013-05-06 17:58:13 +0200 Bernhard Rosenkränzer 
+
+	* Add extraconfig files
+
+2013-05-06 17:45:44 +0200 Bernhard Rosenkränzer 
+
+	* Initial import of iso build scripts
+
