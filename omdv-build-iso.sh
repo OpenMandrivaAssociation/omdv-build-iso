@@ -31,7 +31,7 @@ usage_help() {
     echo " general options:"
     echo " --arch= Architecture of packages: i586, x86_64"
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
-    echo " --versio=n Version for software repository: 2015.0, 2014.1, 2014.0"
+    echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
     echo " --type= User environment type on ISO: kde4, mate, lxqt, minimal, icewm, hawaii, xfce4"
     echo " --displaymanager= Display Manager used in desktop environemt: kdm, gdm, lightdm, sddm, xdm"
