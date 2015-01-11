@@ -227,7 +227,6 @@ showInfo() {
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
 	echo $'###\n'
-	exit
 }
 
 # Usage: parsePkgList xyz.lst
