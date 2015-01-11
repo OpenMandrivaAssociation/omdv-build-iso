@@ -1,5 +1,9 @@
 Summary:	Tool to build OopenMandriva ISO
 Name:		omdv-build-iso
+# (tpg) befor you release please make sure you updated sources
+# make dist
+# abf store omdv-build-iso*.tar.xz
+# update .abf.yml
 Version:	0.0.1
 Release:	1
 License:	GPL
