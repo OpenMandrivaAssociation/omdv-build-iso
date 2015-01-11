@@ -29,12 +29,12 @@ usage_help() {
     echo "usage $0 [options]"
     echo ""
     echo " general options:"
-    echo " --arch= Architecture of packages: x86_64"
-    echo " --tree= Branch of software repository: cooker"
-    echo " --versio=n Version for software repository: 2015.0"
-    echo " --release_id= Release identifer: alpha"
-    echo " --type= User environment type on ISO: KDE4"
-    echo " --displaymanager= Display Manager used in desktop environemt: KDM"
+    echo " --arch= Architecture of packages: i586, x86_64"
+    echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
+    echo " --versio=n Version for software repository: 2015.0, 2014.1, 2014.0"
+    echo " --release_id= Release identifer: alpha, beta, rc, final"
+    echo " --type= User environment type on ISO: kde4, mate, lxqt, minimal, icewm, hawaii, xfce4"
+    echo " --displaymanager= Display Manager used in desktop environemt: kdm, gdm, lightdm, sddm, xdm"
     echo " --debug Enable debug output"
     echo ""
     echo "Exiting."
@@ -109,7 +109,7 @@ fi
 # default definitions
 DIST=omdv
 [ -z "$EXTARCH" ] && EXTARCH=`uname -m`
-[ -z "${TYPE}" ] && TREE=cooker
+[ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
 [ -z "${TYPE}" ] && TYPE=kde4
@@ -223,7 +223,11 @@ showInfo() {
 	echo "Version is $VERSION"
 	echo "Release ID is $RELEASE_ID"
 	echo "Type is $TYPE"
+    if [ "${TYPE,,}" = "minimal" ]; then
+	echo "No display manager for minimal ISO."
+    else
 	echo "Display Manager is $DISPLAYMANAGER"
+    fi
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
 	echo $'###\n'
@@ -510,7 +514,7 @@ setupISOenv() {
 	# create /etc/minsysreqs
 	echo "Creating /etc/minsysreqs"
 
-	if [ "$TYPE" = "minimal" ]; then
+	if [ "${TYPE,,}" = "minimal" ]; then
 	    echo "ram = 512" >> "$CHROOTNAME"/etc/minsysreqs
 	    echo "hdd = 5" >> "$CHROOTNAME"/etc/minsysreqs
 	elif [ "$EXTARCH" = "x86_64" ]; then
@@ -525,7 +529,7 @@ setupISOenv() {
 	$SUDO echo "imagesize = $(du -a -x -b -P "$1" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# set up displaymanager
-	if [ "$TYPE" != "minimal" ]; then
+	if [ "${TYPE,,}" != "minimal" ]; then
 		$SUDO chroot "$CHROOTNAME" systemctl enable $DISPLAYMANAGER.service 2> /dev/null || :
 
 		# Set reasonable defaults
@@ -557,7 +561,7 @@ fi
 	$SUDO chroot "$CHROOTNAME" chown 500:500 /home/live/.cache
 
 	# KDE4 related settings
-	if [ "$TYPE" = "kde4" ]; then
+	if [ "${TYPE,,}" = "kde4" ]; then
 		$SUDO mkdir -p "$CHROOTNAME"/home/live/.kde4/env
 		echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/live/.kde4/env/00-live.sh
 		echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/live/.kde4/env/00-live.sh
