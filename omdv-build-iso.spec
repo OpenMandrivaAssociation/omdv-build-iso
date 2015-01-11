@@ -5,7 +5,7 @@ Release:	1
 License:	GPL
 Group:		System/Libraries
 URL:		https://abf.io/openmandriva/omdv-build-iso
-#Source0:	%{name}-%{version}.tar.xz
+Source0:	Makefile
 Requires:	bash
 Requires:	urpmi
 Requires:	squashfs-tools
@@ -15,6 +15,7 @@ Requires:	tar
 Requires:	util-linux
 Requires:	coreutils
 Requires:	timezone
+BuildArch:	noarch
 
 %description
 Tool to build OopenMandriva ISO.
