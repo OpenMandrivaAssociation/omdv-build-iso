@@ -319,8 +319,6 @@ createChroot() {
 	if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 		echo "Broken chroot installation. Exiting"
 		error
-	else
-	    echo "1" >$OURDIR/CHRT_LOCK
 	fi
 
 	# this will be needed in future
