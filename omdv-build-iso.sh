@@ -305,7 +305,7 @@ createChroot() {
 	echo "Start installing packages in $CHROOTNAME"
 	parsePkgList "$FILELISTS" | xargs $SUDO urpmi --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
 
-	if [[ $? != 0 ]]; then
+	if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
 	    echo "Can not install packages from $FILELISTS";
 	    error
 	fi
