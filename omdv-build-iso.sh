@@ -448,7 +448,7 @@ setupSyslinux() {
         $SUDO chmod +x "$2"/boot/syslinux/memtest
         # copy SuperGrub iso
         $SUDO cp -rfT $OURDIR/extraconfig/memdisk "$2"/boot/syslinux/memdisk
-        $SUDO cp -rfT $OURDIR/extraconfig/sgb.iso "$2"/boot/syslinux/sgb.iso
+        $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$2"/boot/syslinux/sgb.iso
 
 	# UEFI support
 	if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
