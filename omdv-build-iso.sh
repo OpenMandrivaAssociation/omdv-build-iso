@@ -524,7 +524,7 @@ setupISOenv() {
 	fi
 
 	# count imagesize and put in in /etc/minsysreqs
-	$SUDO echo "imagesize = $(du -a -x -b -P "$1" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
+	$SUDO echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# set up displaymanager
 	if [ "${TYPE,,}" != "minimal" ]; then
