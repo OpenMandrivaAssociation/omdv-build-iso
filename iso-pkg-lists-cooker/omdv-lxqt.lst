@@ -7,6 +7,7 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
+%include .///omdv_calligra.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_locales.lst
@@ -19,7 +20,6 @@ task-lxqt
 qterminal
 trojita
 qupzilla
-calligra
 clementine
 sddm
 
