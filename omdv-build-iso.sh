@@ -461,7 +461,6 @@ setupSyslinux() {
 		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 		$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
 		$SUDO sed -i -e "s,@LABEL@,$LABEL,g" "$2"/EFI/BOOT/*.cfg
-		$SUDO cp -f "$1"/boot/grub2/splash.xpm.gz "$2"/EFI/BOOT/splash.xpm.gz
 		$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/themes
 		$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/locale
 		for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
