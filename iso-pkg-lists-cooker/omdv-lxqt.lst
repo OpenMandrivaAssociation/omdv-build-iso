@@ -7,10 +7,8 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -19,6 +17,10 @@
 # Desktop Specifics
 task-lxqt
 qterminal
+trojita
+qupzilla
+calligra
+clementine
 sddm
 
 # Needed Task/Meta Packages
@@ -47,7 +49,6 @@ edidbins
 avahi #service
 cagibi #service
 firewall-applet #service
-jackit #service
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
