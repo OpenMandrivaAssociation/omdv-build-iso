@@ -1,5 +1,3 @@
 # basic includes file lists
 %include .///omdv_iso_minimal.lst
 
-grub2
-grub2-efi
