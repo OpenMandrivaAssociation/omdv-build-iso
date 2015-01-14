@@ -466,7 +466,7 @@ setupSyslinux() {
 		for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
 			$SUDO cp -f "$1"/boot/grub2/fonts/$i "$2"/EFI/BOOT/fonts/$i
 		done
-		XORRISO_OPTIONS="${XORRISO_OPTIONS} -eltorito-alt-boot -e EFI/BOOT/grub.efi -no-emul-boot -append_partition 2 0x01 "$ISOROOTNAME"/EFI/BOOT/grub.efi"
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr  "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16 -isohybrid-gpt-basdat -eltorito-alt-boot -e EFI/BOOT/grub.efi -no-emul-boot -append_partition 2 0x01 "$ISOROOTNAME"/EFI/BOOT/grub.efi"
 	fi
 
 	echo "Create syslinux menu"
@@ -478,7 +478,7 @@ setupSyslinux() {
 	sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE} ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
 
 	$SUDO chmod 0755 "$2"/boot/syslinux
-	XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/syslinux/isolinux.bin -c boot/syslinux/boot.cat -isohybrid-mbr -isohybrid-gpt-basdat "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16 "
+	XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/syslinux/isolinux.bin -c boot/syslinux/boot.cat"
 	echo "syslinux setup completed"
 }
 
