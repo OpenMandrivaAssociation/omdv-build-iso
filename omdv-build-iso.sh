@@ -726,10 +726,10 @@ buildIso() {
 
 	echo "Building ISO with options ${XORRISO_OPTIONS}"
 
-	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -l -cache-inodes \
+	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -cache-inodes \
+		-graft-points -iso-level 3 -full-iso9660-filenames \
 	    --modification-date=${ISO_DATE} \
 	    -omit-version-number -disable-deep-relocation \
-		-graft-points \
 	    ${XORRISO_OPTIONS} \
 	    -publisher "OpenMandriva Association" \
 	    -preparer "OpenMandriva Association" \
