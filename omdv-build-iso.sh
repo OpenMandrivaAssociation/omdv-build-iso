@@ -729,6 +729,7 @@ buildIso() {
 	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -l -cache-inodes \
 	    --modification-date=${ISO_DATE} \
 	    -omit-version-number -disable-deep-relocation \
+		-graft-points \
 	    ${XORRISO_OPTIONS} \
 	    -publisher "OpenMandriva Association" \
 	    -preparer "OpenMandriva Association" \
