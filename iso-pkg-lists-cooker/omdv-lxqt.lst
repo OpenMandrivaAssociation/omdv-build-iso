@@ -17,11 +17,12 @@
 
 # Desktop Specifics
 task-lxqt
-qterminal
-trojita
-qupzilla
 clementine
+qterminal
+quassel
+qupzilla
 sddm
+trojita
 
 # Needed Task/Meta Packages
 task-pulseaudio
