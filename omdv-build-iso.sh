@@ -478,7 +478,7 @@ setupSyslinux() {
 	sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE} ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
 
 	$SUDO chmod 0755 "$2"/boot/syslinux
-	XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/syslinux/isolinux.bin -c boot/syslinux/boot.cat -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16 "
+	XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/syslinux/isolinux.bin -c boot/syslinux/boot.cat -isohybrid-mbr -isohybrid-gpt-basdat "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16 "
 	echo "syslinux setup completed"
 }
 
