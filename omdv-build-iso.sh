@@ -420,7 +420,7 @@ setupSyslinux() {
 	$SUDO chmod 1777 "$2"/boot/syslinux
 	# install syslinux programs
 	echo "Installing syslinux programs."
-        for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin; do
+        for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk; do
     	    if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
 		echo "$i does not exists. Exiting."
 		error
@@ -451,7 +451,6 @@ setupSyslinux() {
         $SUDO cp -rfT $OURDIR/extraconfig/memtest "$2"/boot/syslinux/memtest
         $SUDO chmod +x "$2"/boot/syslinux/memtest
         # copy SuperGrub iso
-        $SUDO cp -rfT $OURDIR/extraconfig/memdisk "$2"/boot/syslinux/memdisk
         $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$2"/boot/syslinux/sgb.iso
 
 	# UEFI support
