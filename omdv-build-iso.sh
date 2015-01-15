@@ -465,11 +465,13 @@ setupSyslinux() {
 		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 		$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
 		$SUDO sed -i -e "s,@LABEL@,$LABEL,g" "$2"/EFI/BOOT/*.cfg
-		$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/themes
-		$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/locale
-		for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
-			$SUDO cp -f "$1"/boot/grub2/fonts/$i "$2"/EFI/BOOT/fonts/$i
-		done
+		$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
+		$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
+		# (tpg) looks like fonts are in themes dir for 2015.0
+		# need to adapt this for n < 2015.0
+		#for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
+		#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
+		#done
 		# EFI options for xorriso
 		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/grub.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME"/EFI/BOOT/grub.efi"
 	fi
