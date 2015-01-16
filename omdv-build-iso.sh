@@ -586,7 +586,7 @@ EOF
 
 	echo "Starting services setup."
 	#enable services
-	SERVICES_ENABLE=(systemd-networkd systemd-networkd-wait-online systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon)
+	SERVICES_ENABLE=(systemd-networkd systemd-networkd-wait-online systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned)
 	# disable services
 	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix)
 
@@ -730,7 +730,7 @@ buildIso() {
 	echo "Building ISO with options ${XORRISO_OPTIONS}"
 
 	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -cache-inodes \
-		-graft-points -iso-level 3 -full-iso9660-filenames \
+	    -graft-points -iso-level 3 -full-iso9660-filenames \
 	    --modification-date=${ISO_DATE} \
 	    -omit-version-number -disable-deep-relocation \
 	    ${XORRISO_OPTIONS} \
