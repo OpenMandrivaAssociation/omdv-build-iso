@@ -546,7 +546,6 @@ setupISOenv() {
 DISPLAYMANAGER="${DISPLAYMANAGER,,}"
 DESKTOP="${TYPE^^}"
 EOF
-fi
 
 	fi
 
