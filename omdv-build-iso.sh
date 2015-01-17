@@ -224,11 +224,11 @@ showInfo() {
 	echo "Tree is $TREE"
 	echo "Version is $VERSION"
 	echo "Release ID is $RELEASE_ID"
-	echo "Type is $TYPE"
+	echo "Type is ${TYPE^^}"
     if [ "${TYPE,,}" = "minimal" ]; then
 	echo "No display manager for minimal ISO."
     else
-	echo "Display Manager is $DISPLAYMANAGER"
+	echo "Display Manager is ${DISPLAYMANAGER,,}"
     fi
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
@@ -543,8 +543,8 @@ setupISOenv() {
 
 	    # create very important desktop file
 	    cat >"$CHROOTNAME"/etc/sysconfig/desktop <<'EOF'
-DISPLAYMANAGER="$DISPLAYMANAGER"
-DESKTOP="$TYPE"
+DISPLAYMANAGER="${DISPLAYMANAGER,,}"
+DESKTOP="${TYPE^^}"
 EOF
 fi
 
