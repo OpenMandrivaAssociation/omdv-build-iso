@@ -594,14 +594,14 @@ EOF
 	    if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
 		    echo "Enabling $i"
-		    ln -sf "$CHROOTNAME"/lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
+		    ln -sf /lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 		else
 		    echo "Special service $i does not exist. Skipping."
 		fi
 	    elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
 		    echo "Enabling $i.service"
-		    ln -sf "$CHROOTNAME"/lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
+		    ln -sf /lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
 		else
 		    echo "Service $i does not exist. Skipping."
 		fi
