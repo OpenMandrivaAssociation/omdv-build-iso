@@ -536,9 +536,13 @@ setupISOenv() {
 	if [ "${TYPE,,}" != "minimal" ]; then
 		$SUDO chroot "$CHROOTNAME" systemctl enable $DISPLAYMANAGER.service 2> /dev/null || :
 
-		# Set reasonable defaults
-		if ! [ -f "$CHROOTNAME"/etc/sysconfig/desktop ]; then
-		cat >"$CHROOTNAME"/etc/sysconfig/desktop <<'EOF'
+	    # Set reasonable defaults
+	    if  [ -e "$CHROOTNAME"/etc/sysconfig/desktop ]; then
+		rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
+	    fi
+
+	    # create very important desktop file
+	    cat >"$CHROOTNAME"/etc/sysconfig/desktop <<'EOF'
 DISPLAYMANAGER="$DISPLAYMANAGER"
 DESKTOP="$TYPE"
 EOF
