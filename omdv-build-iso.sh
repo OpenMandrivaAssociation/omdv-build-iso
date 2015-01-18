@@ -480,7 +480,7 @@ setupSyslinux() {
 	$SUDO cp -rfT $OURDIR/extraconfig/syslinux/syslinux.cfg "$2"/boot/syslinux/syslinux.cfg
 
 	# adjust syslinux config
-	sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE}/g" -e "s/%BUILD_ID%/BUILD ID:${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
+	sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE}/g" -e "s/%BUILD_ID%/BUILD ID: ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
 
 	$SUDO chmod 0755 "$2"/boot/syslinux
 
