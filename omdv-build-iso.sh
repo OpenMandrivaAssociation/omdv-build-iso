@@ -104,6 +104,8 @@ if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
     OURDIR=$(realpath $(dirname $0))
 else
     OURDIR="/usr/share/omdv-build-iso"
+	# generate build id if runningoutside ABF
+	BUILD_ID=$(($RANDOM%9999+1000))
 fi
 
 # default definitions
@@ -161,7 +163,6 @@ error() {
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
-    $SUDO rm -rf $(dirname "$FILELISTS")
     umountAll "$CHROOTNAME"
     $SUDO rm -rf "$ROOTNAME"
     exit 1
@@ -178,10 +179,10 @@ updateSystem() {
 	    urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	    urpmi --no-verify-rpm perl-URPM grub2 xorriso syslinux squashfs-tools 
+	    urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools 
 	else
 	    echo "Building in user custom environment"
-	    urpmi --no-verify-rpm perl-URPM grub2 xorriso syslinux grub2 squashfs-tools
+	    urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools
 	fi
 }
 
@@ -222,11 +223,11 @@ showInfo() {
 	echo "Tree is $TREE"
 	echo "Version is $VERSION"
 	echo "Release ID is $RELEASE_ID"
-	echo "Type is $TYPE"
+	echo "Type is ${TYPE^^}"
     if [ "${TYPE,,}" = "minimal" ]; then
 	echo "No display manager for minimal ISO."
     else
-	echo "Display Manager is $DISPLAYMANAGER"
+	echo "Display Manager is ${DISPLAYMANAGER,,}"
     fi
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
@@ -305,7 +306,7 @@ createChroot() {
 	echo "Start installing packages in $CHROOTNAME"
 	parsePkgList "$FILELISTS" | xargs $SUDO urpmi --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
 
-	if [[ $? != 0 ]]; then
+	if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
 	    echo "Can not install packages from $FILELISTS";
 	    error
 	fi
@@ -401,7 +402,7 @@ setupGrub2() {
 	for i in "$1"$grub2_lib/*.mod "$1"$grub2_lib/*.lst "$1"$grub2_lib/efiemu*.o "$1"/usr/share/grub/*.pf2; do
 	    $SUDO cp -f $i "$2"/boot/grub2 ;
 	done
-	$SUDO "$1"/usr/bin/grub2-mkimage -p /boot/grub2 -d "$1"$grub2_lib -o ${core_img} -O i386-pc biosdisk iso9660
+	$SUDO chroot "$1" /usr/bin/grub2-mkimage -p /boot/grub2 -d "$1"$grub2_lib -o ${core_img} -O i386-pc biosdisk iso9660
 	$SUDO cat "$1"/usr/lib/grub/i386-pc/boot.img ${core_img} > "$2"/boot/grub2/grub_eltorito
 	XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub2/grub_eltorito -J"
 	echo "End grub2."
@@ -411,12 +412,14 @@ setupGrub2() {
 # Sets up syslinux to boot /target/dir
 setupSyslinux() {
 	echo "Starting syslinux setup."
+	# default options for xorriso
+	XORRISO_OPTIONS=" -b boot/syslinux/isolinux.bin -no-emul-boot -boot-info-table -boot-load-size 4 -boot-info-table -c boot/syslinux/boot.cat"
 
 	$SUDO mkdir -p "$2"/boot/syslinux "$2"/boot/syslinux/hdt
 	$SUDO chmod 1777 "$2"/boot/syslinux
 	# install syslinux programs
 	echo "Installing syslinux programs."
-        for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin; do
+        for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk; do
     	    if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
 		echo "$i does not exists. Exiting."
 		error
@@ -447,27 +450,30 @@ setupSyslinux() {
         $SUDO cp -rfT $OURDIR/extraconfig/memtest "$2"/boot/syslinux/memtest
         $SUDO chmod +x "$2"/boot/syslinux/memtest
         # copy SuperGrub iso
-        $SUDO cp -rfT $OURDIR/extraconfig/memdisk "$2"/boot/syslinux/memdisk
-        $SUDO cp -rfT $OURDIR/extraconfig/sgb.iso "$2"/boot/syslinux/sgb.iso
+        $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$2"/boot/syslinux/sgb.iso
 
 	# UEFI support
 	if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
 		export UEFI=1
 		$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale
-		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
+#		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
 		#For bootable iso's we may need grub.efi as BOOTX64.efi
 		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
+#		$SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output="$1"/EFI/BOOT/BOOTX64.efi /EFI/BOOT/grub.cfg
+#		$SUDO mv -f "$1"/EFI/BOOT/BOOTX64.efi "$2"/EFI/BOOT/BOOTX64.efi
 		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
-		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
+#		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 		$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
 		$SUDO sed -i -e "s,@LABEL@,$LABEL,g" "$2"/EFI/BOOT/*.cfg
-		$SUDO cp -f "$1"/boot/grub2/splash.xpm.gz "$2"/EFI/BOOT/splash.xpm.gz
-		$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/themes
-		$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/locale
-		for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
-			$SUDO cp -f "$1"/boot/grub2/fonts/$i "$2"/EFI/BOOT/fonts/$i
-		done
-		XORRISO_OPTIONS="${XORRISO_OPTIONS} -eltorito-alt-boot -e EFI/BOOT/grub.efi -no-emul-boot -append_partition 2 0x01 "$ISOROOTNAME"/EFI/BOOT/grub.efi"
+		$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
+		$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
+		# (tpg) looks like fonts are in themes dir for 2015.0
+		# need to adapt this for n < 2015.0
+		#for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
+		#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
+		#done
+		# EFI options for xorriso
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME"/EFI/BOOT/BOOTX64.efi"
 	fi
 
 	echo "Create syslinux menu"
@@ -476,10 +482,10 @@ setupSyslinux() {
 	$SUDO cp -rfT $OURDIR/extraconfig/syslinux/syslinux.cfg "$2"/boot/syslinux/syslinux.cfg
 
 	# adjust syslinux config
-	sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE} ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
+	sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE}/g" -e "s/%BUILD_ID%/BUILD ID: ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
 
 	$SUDO chmod 0755 "$2"/boot/syslinux
-	XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/syslinux/isolinux.bin -c boot/syslinux/boot.cat -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16 "
+
 	echo "syslinux setup completed"
 }
 
@@ -487,6 +493,7 @@ setupSyslinux() {
 # Sets up grub2/syslinux to boot /target/dir
 setupBootloader() {
 	setupSyslinux "$CHROOTNAME" "$ISOROOTNAME"
+
 }
 
 setupISOenv() {
@@ -524,19 +531,22 @@ setupISOenv() {
 	fi
 
 	# count imagesize and put in in /etc/minsysreqs
-	$SUDO echo "imagesize = $(du -a -x -b -P "$1" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
+	$SUDO echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# set up displaymanager
 	if [ "${TYPE,,}" != "minimal" ]; then
-		$SUDO chroot "$CHROOTNAME" systemctl enable $DISPLAYMANAGER.service 2> /dev/null || :
+		$SUDO chroot "$CHROOTNAME" systemctl enable ${DISPLAYMANAGER,,}.service 2> /dev/null || :
 
-		# Set reasonable defaults
-		if ! [ -f "$CHROOTNAME"/etc/sysconfig/desktop ]; then
-		cat >"$CHROOTNAME"/etc/sysconfig/desktop <<'EOF'
-DISPLAYMANAGER="$DISPLAYMANAGER"
-DESKTOP="$TYPE"
+	    # Set reasonable defaults
+	    if  [ -e "$CHROOTNAME"/etc/sysconfig/desktop ]; then
+		rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
+	    fi
+
+	    # create very important desktop file
+	    cat >"$CHROOTNAME"/etc/sysconfig/desktop <<EOF
+DISPLAYMANAGER=${DISPLAYMANAGER,,}
+DESKTOP=${TYPE^^}
 EOF
-fi
 
 	fi
 
@@ -580,7 +590,7 @@ EOF
 
 	echo "Starting services setup."
 	#enable services
-	SERVICES_ENABLE=(systemd-networkd systemd-networkd-wait-online systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon)
+	SERVICES_ENABLE=(systemd-networkd systemd-networkd-wait-online systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned)
 	# disable services
 	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix)
 
@@ -588,15 +598,14 @@ EOF
 	    if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
 		    echo "Enabling $i"
-		    chroot "$CHROOTNAME" systemctl enable $i
-		    #2> /dev/null || :
+		    ln -sf /lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 		else
 		    echo "Special service $i does not exist. Skipping."
 		fi
 	    elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
 		    echo "Enabling $i.service"
-		    chroot "$CHROOTNAME" systemctl enable $i.service 2> /dev/null || :
+		    ln -sf /lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
 		else
 		    echo "Service $i does not exist. Skipping."
 		fi
@@ -610,14 +619,14 @@ EOF
 	    if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
 		    echo "Disabling $i"
-		    chroot "$CHROOTNAME" systemctl disable $i 2> /dev/null || :
+		    $SUDO rm -rf "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 		else
 		    echo "Special service $i does not exist. Skipping."
 		fi
 	    elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
 		    echo "Disabling $i.service"
-		    chroot "$CHROOTNAME" systemctl disable $i.service 2> /dev/null || :
+		    $SUDO rm -rf "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
 		else
 		    echo "Service $i does not exist. Skipping."
 		fi
@@ -722,11 +731,13 @@ buildIso() {
 	    error
 	fi
 
-	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -l -cache-inodes \
+	echo "Building ISO with options ${XORRISO_OPTIONS}"
+
+	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -cache-inodes \
+	    -graft-points -iso-level 3 -full-iso9660-filenames \
 	    --modification-date=${ISO_DATE} \
 	    -omit-version-number -disable-deep-relocation \
 	    ${XORRISO_OPTIONS} \
-	    -no-emul-boot -boot-load-size 4 -boot-info-table \
 	    -publisher "OpenMandriva Association" \
 	    -preparer "OpenMandriva Association" \
 	    -volid "$LABEL" -o "$ISOFILE" "$ISOROOTNAME"

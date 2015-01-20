@@ -7,10 +7,9 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-%include .///omdv_firefox.lst
+%include .///omdv_calligra.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -18,8 +17,43 @@
 
 # Desktop Specifics
 task-lxqt
+clementine
 qterminal
+quassel
+qupzilla
 sddm
+silicon-audio-disc
+silicon-converter
+silicon-copy-disc
+silicon-database
+silicon-data-disc
+silicon-disc-details
+silicon-disc-eraser
+silicon-disc-imaging
+silicon-disc-scanner
+silicon-image-burner
+silicon-library
+silicon-limoo
+silicon-mounter
+silicon-sample-app
+silicon-script-runner
+silicon-tagarg-player
+silicon-themes
+silicon-plugin-audio-cd-record
+silicon-plugin-cd-record
+silicon-plugin-eraser
+silicon-plugin-fuseiso
+silicon-plugin-lyric-browser
+silicon-plugin-mkdiscfs
+silicon-plugin-mkisofs
+silicon-plugin-mpg123
+silicon-plugin-now-playing
+silicon-plugin-read-cd
+silicon-plugin-single-inner-dialog
+silicon-plugin-system-tray
+silicon-plugin-tagarg-audio-disc
+silicon-plugin-udisks
+trojita
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -47,7 +81,6 @@ edidbins
 avahi #service
 cagibi #service
 firewall-applet #service
-jackit #service
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
@@ -85,14 +118,6 @@ obex-data-server #server for gnome/mate
 openssh-server #server
 samba-server #server
 
-#python deps?
-#python-ldap
-python-notify
-#python-OpenSSL
-#python-pycrypto
-python-sip
-pyxdg
-
 # special featured software
-oma-welcome
+#oma-welcome
 
