@@ -22,6 +22,37 @@ qterminal
 quassel
 qupzilla
 sddm
+silicon-audio-disc
+silicon-converter
+silicon-copy-disc
+silicon-database
+silicon-data-disc
+silicon-disc-details
+silicon-disc-eraser
+silicon-disc-imaging
+silicon-disc-scanner
+silicon-image-burner
+silicon-library
+silicon-limoo
+silicon-mounter
+silicon-sample-app
+silicon-script-runner
+silicon-tagarg-player
+silicon-themes
+silicon-plugin-audio-cd-record
+silicon-plugin-cd-record
+silicon-plugin-eraser
+silicon-plugin-fuseiso
+silicon-plugin-lyric-browser
+silicon-plugin-mkdiscfs
+silicon-plugin-mkisofs
+silicon-plugin-mpg123
+silicon-plugin-now-playing
+silicon-plugin-read-cd
+silicon-plugin-single-inner-dialog
+silicon-plugin-system-tray
+silicon-plugin-tagarg-audio-disc
+silicon-plugin-udisks
 trojita
 
 # Needed Task/Meta Packages
