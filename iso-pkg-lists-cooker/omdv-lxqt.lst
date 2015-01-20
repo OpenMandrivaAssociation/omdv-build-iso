@@ -118,14 +118,6 @@ obex-data-server #server for gnome/mate
 openssh-server #server
 samba-server #server
 
-#python deps?
-#python-ldap
-python-notify
-#python-OpenSSL
-#python-pycrypto
-python-sip
-pyxdg
-
 # special featured software
-oma-welcome
+#oma-welcome
 
