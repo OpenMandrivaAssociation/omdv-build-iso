@@ -18,6 +18,7 @@
 # Desktop Specifics
 task-lxqt
 clementine
+networkmanager-applet
 qterminal
 quassel
 qupzilla

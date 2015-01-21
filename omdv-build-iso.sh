@@ -143,9 +143,9 @@ else
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
 fi
 
-LABEL="$PRODUCT_ID.$EXTARCH"
-[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
-[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
+LABEL="OMVLX"
+#[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
+#[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
 
 # start functions
 
