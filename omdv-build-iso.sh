@@ -576,7 +576,22 @@ EOF
 		$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/live/.kde4
 	else
     	$SUDO rm -rf "$CHROOTNAME"/home/live/.kde4
-    fi
+	fi
+
+	# enable DM autologin
+	if [ "${TYPE,,}" != "minimal" ]; then
+	    case ${DISPLAYMANAGER,,} in
+		"kdm")
+		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=true/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc 
+		    ;;
+		"sddm")
+		    $SUDO sed -i -e 's/^Session.*/Session=${TYPE^^}/g' -e 's/^User.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
+		    ;;
+		*)
+		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
+		    error
+	    esac
+	fi
 
 	$SUDO pushd "$CHROOTNAME"/etc/sysconfig/network-scripts
 	for iface in eth0 wlan0; do
