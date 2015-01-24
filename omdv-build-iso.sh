@@ -237,7 +237,7 @@ getPkgList() {
     fi
 
     # export file list
-    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-$TYPE.lst"
+    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 
     if [ ! -e "$FILELISTS" ]; then
 	echo "$FILELISTS does not exists. Exiting"
