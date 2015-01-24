@@ -632,6 +632,7 @@ EOF
 		    ;;
 		"gdm")
 		    $SUDO sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
+		    ;;
 		*)
 		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
 		    error
