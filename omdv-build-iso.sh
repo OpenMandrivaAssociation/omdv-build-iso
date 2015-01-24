@@ -33,9 +33,14 @@ usage_help() {
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
-    echo " --type= User environment type on ISO: kde4, mate, lxqt, minimal, icewm, hawaii, xfce4"
-    echo " --displaymanager= Display Manager used in desktop environemt: kdm, gdm, lightdm, sddm, xdm"
+    echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, minimal"
+    echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm"
+    echo " --workdir= Set directory where ISO will be build"
+    echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
+    echo ""
+    echo "For example:"
+    echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
     echo ""
     echo "Exiting."
     exit 1
@@ -66,11 +71,47 @@ if [ $# -ge 1 ]; then
         	    shift
         	    ;;
 		--type=*)
-        	    TYPE=${k#*=}
+		    declare -l lc
+		    lc=${k#*=}
+			case "$lc" in
+			    kde4)
+				TYPE=KDE4
+				;;
+			    mate)
+				TYPE=MATE
+				;;
+			    lxqt)
+				TYPE=LXQt
+				;;
+			    icewm)
+				TYPE=IceWM
+				;;
+			    hawaii)
+				TYPE=hawaii
+				;;
+			    xfce4)
+				TYPE=xfce4
+				;;
+			    minimal)
+				TYPE=minimal
+				;;
+			    *)
+				echo "$TYPE is not supported."
+				usage_help
+				;;
+			esac
         	    shift
         	    ;;
     		--displaymanager=*)
         	    DISPLAYMANAGER=${k#*=}
+        	    shift
+        	    ;;
+        	--workdir=*)
+        	    WORKDIR=${k#*=}
+        	    shift
+        	    ;;
+        	--outputdir=*)
+        	    OUTPUTDIR=${k#*=}
         	    shift
         	    ;;
     		--debug)
@@ -114,8 +155,7 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-[ -z "${TYPE}" ] && TYPE=kde4
-[ -z "${DISPLAYMANAGER}" ] && DISPLAYMANAGER="kdm"
+[ -z "${DISPLAYMANAGER}" ] && DISPLAYMANAGER="KDM"
 [ -z "${DEBUG}" ] && DEBUG="nodebug"
 
 # always build free ISO
@@ -124,11 +164,13 @@ FREE=1
 SUDO=sudo
 [ "`id -u`" = "0" ] && SUDO=""
 LOGDIR="."
-# set up main chroot
-ROOTNAME="`mktemp -d /tmp/liverootXXXXXX`"
-[ -z "$ROOTNAME" ] && ROOTNAME=/tmp/liveroot.$$
-CHROOTNAME="$ROOTNAME"/BASE
-ISOROOTNAME="$ROOTNAME"/ISO
+# set up main working directory if it was not set up
+if [ -z "$WORKDIR" ]; then
+    WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+fi
+
+CHROOTNAME="$WORKDIR"/BASE
+ISOROOTNAME="$WORKDIR"/ISO
 ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
@@ -164,7 +206,7 @@ error() {
     unset UEFI
     unset MIRRORLIST
     umountAll "$CHROOTNAME"
-    $SUDO rm -rf "$ROOTNAME"
+    $SUDO rm -rf "$WORKDIR"
     exit 1
 }
 
@@ -207,7 +249,7 @@ getPkgList() {
     fi
 
     # export file list
-    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/$DIST-$TYPE.lst"
+    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 
     if [ ! -e "$FILELISTS" ]; then
 	echo "$FILELISTS does not exists. Exiting"
@@ -223,11 +265,11 @@ showInfo() {
 	echo "Tree is $TREE"
 	echo "Version is $VERSION"
 	echo "Release ID is $RELEASE_ID"
-	echo "Type is ${TYPE^^}"
+	echo "Type is $TYPE"
     if [ "${TYPE,,}" = "minimal" ]; then
 	echo "No display manager for minimal ISO."
     else
-	echo "Display Manager is ${DISPLAYMANAGER,,}"
+	echo "Display Manager is $DISPLAYMANAGER"
     fi
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
@@ -340,11 +382,11 @@ createInitrd() {
 
 	# build initrd for syslinux
 	echo "Building liveinitrd-$KERNEL_ISO for syslinux"
-	if [ ! -f $OURDIR/extraconfig/etc/dracut.conf.d/60-dracut-isobuild.conf ]; then
-		echo "Missing $OURDIR/extraconfig/etc/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
+	if [ ! -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
+		echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 		error
 	fi
-	$SUDO cp -rfT $OURDIR/extraconfig/etc/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+	$SUDO cp -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 	    echo "Dracut is missing 90liveiso module. Installing it."
@@ -365,7 +407,7 @@ createInitrd() {
 	if [ -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	    $SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
 	fi
-
+	# building liveinitrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
 
 	if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
@@ -378,12 +420,13 @@ createInitrd() {
 	$SUDO rm -rf "$CHROOTNAME"/boot/initrd-$KERNEL_ISO.img
 	$SUDO rm -rf "$CHROOTNAME"/boot/initrd0.img
 
-	# remove config for liveinitrd
+	# remove config before building initrd
 	$SUDO rm -rf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 	$SUDO rm -rf "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 
+	# building initrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
-	$SUDO ln -s /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
+	$SUDO ln -s ../boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
 }
 
@@ -503,7 +546,7 @@ setupISOenv() {
 
 	# set up default timezone
 	echo "Setting default timezone"
-	$SUDO ln -s /usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
+	$SUDO ln -s ../usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
 
 	# try harder with systemd-nspawn
 	# version 215 and never has then --share-system option
@@ -544,8 +587,8 @@ setupISOenv() {
 
 	    # create very important desktop file
 	    cat >"$CHROOTNAME"/etc/sysconfig/desktop <<EOF
-DISPLAYMANAGER=${DISPLAYMANAGER,,}
-DESKTOP=${TYPE^^}
+DISPLAYMANAGER=$DISPLAYMANAGER
+DESKTOP=$TYPE
 EOF
 
 	fi
@@ -576,7 +619,24 @@ EOF
 		$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/live/.kde4
 	else
     	$SUDO rm -rf "$CHROOTNAME"/home/live/.kde4
-    fi
+	fi
+
+	# enable DM autologin
+	if [ "${TYPE,,}" != "minimal" ]; then
+	    case ${DISPLAYMANAGER,,} in
+		"kdm")
+		    $SUDO sed -i -e '/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
+		    ;;
+		"sddm")
+		    $SUDO sed -i -e "s/^Session.*/Session=$TYPE/g" -e 's/^User.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
+		    ;;
+		"gdm")
+		    $SUDO sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
+		*)
+		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
+		    error
+	    esac
+	fi
 
 	$SUDO pushd "$CHROOTNAME"/etc/sysconfig/network-scripts
 	for iface in eth0 wlan0; do
@@ -598,14 +658,14 @@ EOF
 	    if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
 		    echo "Enabling $i"
-		    ln -sf /lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
+		    ln -sf ../lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 		else
 		    echo "Special service $i does not exist. Skipping."
 		fi
 	    elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
 		    echo "Enabling $i.service"
-		    ln -sf /lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
+		    ln -sf ../lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
 		else
 		    echo "Service $i does not exist. Skipping."
 		fi
@@ -683,9 +743,9 @@ EOF
 	# get back to real /etc/resolv.conf
 	$SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
 	if [ "`cat /etc/release | grep -o 2014.0`" \< "2015.0" ]; then
-	    $SUDO ln -sf /run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	    $SUDO ln -sf ../run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	else
-	    $SUDO ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	    $SUDO ln -sf ../run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	fi
 
 	# ldetect stuff
@@ -723,7 +783,7 @@ buildIso() {
 	if [ "$ABF" = "1" ]; then
 	    ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
 	else
-	    ISOFILE="/var/tmp/$PRODUCT_ID.$EXTARCH.iso"
+	    ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
 	fi
 
 	if [ ! -x /usr/bin/xorriso ]; then
