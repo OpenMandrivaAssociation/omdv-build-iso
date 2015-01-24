@@ -33,7 +33,7 @@ usage_help() {
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
-    echo " --type= User environment type on ISO: kde4, mate, lxqt, minimal, icewm, hawaii, xfce4"
+    echo " --type= User environment type on ISO: kde4, MATE, LXQt, minimal, icewm, hawaii, xfce4"
     echo " --displaymanager= Display Manager used in desktop environemt: kdm, gdm, lightdm, sddm, xdm"
     echo " --debug Enable debug output"
     echo ""
@@ -135,17 +135,32 @@ ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
 
 # ISO name logic
 if [ "${RELEASE_ID,,}" == "final" ]; then
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
+    PRODUCT_ID="OpenMandrivaLx.$VERSION-${TYPE,,}"
 else
     if [[ "${RELEASE_ID,,}" == "alpha" ]]; then
 	RELEASE_ID="$RELEASE_ID.`date +%Y%m%d`"
     fi
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
+    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-${TYPE,,}"
 fi
 
-LABEL="OMVLX"
-#[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
-#[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
+LABEL="$PRODUCT_ID.$EXTARCH"
+[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
+[ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
+
+# type veryfication
+if [ "${TYPE,,}" ! = "minimal" ]; then
+    case ${TYPE,,} in
+	"kde4") TYPE=kde4 ;;
+	"mate") TYPE=MATE ;;
+	"lxqt") TYPE=LXQt ;;
+	"icewm") TYPE=icewm ;;
+	"hawaii") TYPE=hawaii ;;
+	"xfce4") TYPE=xfce4 ;;
+	*)
+	    echo "$TYPE is not supported"
+	    error
+    esac
+fi
 
 # start functions
 
@@ -207,7 +222,7 @@ getPkgList() {
     fi
 
     # export file list
-    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/$DIST-$TYPE.lst"
+    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 
     if [ ! -e "$FILELISTS" ]; then
 	echo "$FILELISTS does not exists. Exiting"
@@ -223,7 +238,7 @@ showInfo() {
 	echo "Tree is $TREE"
 	echo "Version is $VERSION"
 	echo "Release ID is $RELEASE_ID"
-	echo "Type is ${TYPE^^}"
+	echo "Type is $TYPE"
     if [ "${TYPE,,}" = "minimal" ]; then
 	echo "No display manager for minimal ISO."
     else
@@ -545,7 +560,7 @@ setupISOenv() {
 	    # create very important desktop file
 	    cat >"$CHROOTNAME"/etc/sysconfig/desktop <<EOF
 DISPLAYMANAGER=${DISPLAYMANAGER,,}
-DESKTOP=${TYPE^^}
+DESKTOP=$TYPE
 EOF
 
 	fi
@@ -582,10 +597,10 @@ EOF
 	if [ "${TYPE,,}" != "minimal" ]; then
 	    case ${DISPLAYMANAGER,,} in
 		"kdm")
-		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=true/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc 
+		    $SUDO sed -i -e '/.*AutoLoginEnable.*/AutoLoginEnable=true/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO sed -i -e 's/^Session.*/Session=${TYPE^^}/g' -e 's/^User.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
+		    $SUDO sed -i -e "s/^Session.*/Session=$TYPE/g" -e 's/^User.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
 		    ;;
 		*)
 		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
