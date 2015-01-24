@@ -35,6 +35,8 @@ usage_help() {
     echo " --release_id= Release identifer: alpha, beta, rc, final"
     echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, minimal"
     echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm"
+    echo " --workdir= Set directory where ISO will be build"
+    echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
     echo ""
     echo "For example:"
@@ -104,6 +106,14 @@ if [ $# -ge 1 ]; then
         	    DISPLAYMANAGER=${k#*=}
         	    shift
         	    ;;
+        	--workdir=*)
+        	    WORKDIR=${k#*=}
+        	    shift
+        	    ;;
+        	--outputdir=*)
+        	    OUTPUTDIR=${k#*=}
+        	    shift
+        	    ;;
     		--debug)
         	    DEBUG=debug
         	    shift
@@ -154,11 +164,13 @@ FREE=1
 SUDO=sudo
 [ "`id -u`" = "0" ] && SUDO=""
 LOGDIR="."
-# set up main chroot
-ROOTNAME="`mktemp -d /tmp/liverootXXXXXX`"
-[ -z "$ROOTNAME" ] && ROOTNAME=/tmp/liveroot.$$
-CHROOTNAME="$ROOTNAME"/BASE
-ISOROOTNAME="$ROOTNAME"/ISO
+# set up main working directory if it was not set up
+if [ -z "$WORKDIR" ]; then
+    WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+fi
+
+CHROOTNAME="$WORKDIR"/BASE
+ISOROOTNAME="$WORKDIR"/ISO
 ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
@@ -194,7 +206,7 @@ error() {
     unset UEFI
     unset MIRRORLIST
     umountAll "$CHROOTNAME"
-    $SUDO rm -rf "$ROOTNAME"
+    $SUDO rm -rf "$WORKDIR"
     exit 1
 }
 
@@ -770,7 +782,7 @@ buildIso() {
 	if [ "$ABF" = "1" ]; then
 	    ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
 	else
-	    ISOFILE="/var/tmp/$PRODUCT_ID.$EXTARCH.iso"
+	    ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
 	fi
 
 	if [ ! -x /usr/bin/xorriso ]; then
