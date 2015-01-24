@@ -382,11 +382,11 @@ createInitrd() {
 
 	# build initrd for syslinux
 	echo "Building liveinitrd-$KERNEL_ISO for syslinux"
-	if [ ! -f $OURDIR/extraconfig/etc/dracut.conf.d/60-dracut-isobuild.conf ]; then
-		echo "Missing $OURDIR/extraconfig/etc/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
+	if [ ! -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
+		echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 		error
 	fi
-	$SUDO cp -rfT $OURDIR/extraconfig/etc/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+	$SUDO cp -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 	    echo "Dracut is missing 90liveiso module. Installing it."
@@ -407,7 +407,7 @@ createInitrd() {
 	if [ -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	    $SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
 	fi
-
+	# building liveinitrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
 
 	if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
@@ -420,10 +420,11 @@ createInitrd() {
 	$SUDO rm -rf "$CHROOTNAME"/boot/initrd-$KERNEL_ISO.img
 	$SUDO rm -rf "$CHROOTNAME"/boot/initrd0.img
 
-	# remove config for liveinitrd
+	# remove config before building initrd
 	$SUDO rm -rf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 	$SUDO rm -rf "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 
+	# building initrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
 	$SUDO ln -s ../boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
