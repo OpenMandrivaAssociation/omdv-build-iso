@@ -33,7 +33,7 @@ usage_help() {
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
-    echo " --type= User environment type on ISO: kde4, MATE, LXQt, minimal, icewm, hawaii, xfce4"
+    echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, minimal"
     echo " --displaymanager= Display Manager used in desktop environemt: kdm, gdm, lightdm, sddm, xdm"
     echo " --debug Enable debug output"
     echo ""
@@ -73,7 +73,7 @@ if [ $# -ge 1 ]; then
 		    lc=${k#*=}
 			case "$lc" in
 			    kde4)
-				TYPE=kde4
+				TYPE=KDE4
 				;;
 			    mate)
 				TYPE=MATE
@@ -82,7 +82,7 @@ if [ $# -ge 1 ]; then
 				TYPE=LXQt
 				;;
 			    icewm)
-				TYPE=icewm
+				TYPE=IceWM
 				;;
 			    hawaii)
 				TYPE=hawaii
