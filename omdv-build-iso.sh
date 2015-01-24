@@ -37,6 +37,9 @@ usage_help() {
     echo " --displaymanager= Display Manager used in desktop environemt: kdm, gdm, lightdm, sddm, xdm"
     echo " --debug Enable debug output"
     echo ""
+    echo "For example:"
+    echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
+    echo ""
     echo "Exiting."
     exit 1
 }
@@ -66,7 +69,35 @@ if [ $# -ge 1 ]; then
         	    shift
         	    ;;
 		--type=*)
-        	    TYPE=${k#*=}
+		    declare -l lc
+		    lc=${k#*=}
+			case "$lc" in
+			    kde4)
+				TYPE=kde4
+				;;
+			    mate)
+				TYPE=MATE
+				;;
+			    lxqt)
+				TYPE=LXQt
+				;;
+			    icewm)
+				TYPE=icewm
+				;;
+			    hawaii)
+				TYPE=hawaii
+				;;
+			    xfce4)
+				TYPE=xfce4
+				;;
+			    minimal)
+				TYPE=minimal
+				;;
+			    *)
+				echo "$TYPE is not supported."
+				usage_help
+				;;
+			esac
         	    shift
         	    ;;
     		--displaymanager=*)
@@ -114,7 +145,6 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-[ -z "${TYPE}" ] && TYPE=kde4
 [ -z "${DISPLAYMANAGER}" ] && DISPLAYMANAGER="kdm"
 [ -z "${DEBUG}" ] && DEBUG="nodebug"
 
@@ -135,32 +165,17 @@ ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
 
 # ISO name logic
 if [ "${RELEASE_ID,,}" == "final" ]; then
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-${TYPE,,}"
+    PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
 else
     if [[ "${RELEASE_ID,,}" == "alpha" ]]; then
 	RELEASE_ID="$RELEASE_ID.`date +%Y%m%d`"
     fi
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-${TYPE,,}"
+    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
 fi
 
 LABEL="$PRODUCT_ID.$EXTARCH"
 [ `echo $LABEL | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
 [ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
-
-# type veryfication
-if [ "${TYPE,,}" ! = "minimal" ]; then
-    case ${TYPE,,} in
-	"kde4") TYPE=kde4 ;;
-	"mate") TYPE=MATE ;;
-	"lxqt") TYPE=LXQt ;;
-	"icewm") TYPE=icewm ;;
-	"hawaii") TYPE=hawaii ;;
-	"xfce4") TYPE=xfce4 ;;
-	*)
-	    echo "$TYPE is not supported"
-	    error
-    esac
-fi
 
 # start functions
 
@@ -222,7 +237,7 @@ getPkgList() {
     fi
 
     # export file list
-    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
+    FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-$TYPE.lst"
 
     if [ ! -e "$FILELISTS" ]; then
 	echo "$FILELISTS does not exists. Exiting"
