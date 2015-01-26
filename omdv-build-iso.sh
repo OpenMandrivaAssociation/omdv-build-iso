@@ -33,7 +33,7 @@ usage_help() {
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
-    echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, minimal"
+    echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
     echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm"
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
@@ -91,6 +91,9 @@ if [ $# -ge 1 ]; then
 				;;
 			    xfce4)
 				TYPE=xfce4
+				;;
+			    weston)
+				TYPE=weston
 				;;
 			    minimal)
 				TYPE=minimal
@@ -155,7 +158,6 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-[ -z "${DISPLAYMANAGER}" ] && DISPLAYMANAGER="KDM"
 [ -z "${DEBUG}" ] && DEBUG="nodebug"
 
 # always build free ISO
