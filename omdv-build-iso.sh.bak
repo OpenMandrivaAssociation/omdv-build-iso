@@ -71,6 +71,10 @@ if [ $# -ge 1 ]; then
         	    shift
         	    ;;
 		--type=*)
+<<<<<<< HEAD
+        	    TYPE=${k#*=}
+		    echo "$TYPE"
+=======
 		    declare -l lc
 		    lc=${k#*=}
 			case "$lc" in
@@ -103,6 +107,7 @@ if [ $# -ge 1 ]; then
 				usage_help
 				;;
 			esac
+>>>>>>> 6ea0b02b3db165bccbb6dc6d8c13f9b8b9f467f5
         	    shift
         	    ;;
     		--displaymanager=*)
@@ -121,6 +126,15 @@ if [ $# -ge 1 ]; then
         	    DEBUG=debug
         	    shift
         	    ;;
+	    	 --efibuild=*)
+		    EFIBUILD=${k#*=}
+		    shift
+		    ;;
+		 --debug)
+		    DEBUG=debug
+		    shift
+		    ;;
+
         	--help)
         	    usage_help
         	    ;;
@@ -179,8 +193,13 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
+<<<<<<< HEAD
+[ -z "${TYPE}" ] && TYPE=kde4
+[ -z "${DISPLAYMANAGER}" ] && DISPLAYMANAGER="kdm"
 [ -z "${DEBUG}" ] && DEBUG="debug"
+=======
 [ -z "${DEBUG}" ] && DEBUG="nodebug"
+>>>>>>> 6ea0b02b3db165bccbb6dc6d8c13f9b8b9f467f5
 
 # always build free ISO
 FREE=1
@@ -188,19 +207,26 @@ FREE=1
 SUDO="sudo -E"
 [ "`id -u`" = "0" ] && SUDO=""
 LOGDIR="."
-# set up main working directory if it was not set up
-if [ -z "$WORKDIR" ]; then
-    WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
-fi
-
+<<<<<<< HEAD
+# set up main chroot
 if [ -z "$ABF" ]; then
   ROOTNAME="`mktemp -d ~/omv-build-chroot-$EXTARCH`"
   [ -z "$ROOTNAME" ] && ROOTNAME=~/omv-build-chroot-$EXTARCH
 else
   ROOTNAME="`mktemp -d /tmp/liverootXXXXXX`"
-ISOROOTNAME="$WORKDIR"/ISO
 [ -z "$ROOTNAME" ] && ROOTNAME=/tmp/liveroot.$$
 fi
+CHROOTNAME="$ROOTNAME"/BASE
+ISOROOTNAME="$ROOTNAME"/ISO
+=======
+# set up main working directory if it was not set up
+if [ -z "$WORKDIR" ]; then
+    WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+fi
+
+CHROOTNAME="$WORKDIR"/BASE
+ISOROOTNAME="$WORKDIR"/ISO
+>>>>>>> 6ea0b02b3db165bccbb6dc6d8c13f9b8b9f467f5
 ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
@@ -234,6 +260,7 @@ umountAll() {
 }
 
 error() {
+<<<<<<< HEAD
    echo "Something went wrong. Exiting"
    unset KERNEL_ISO
    unset UEFI
@@ -246,6 +273,15 @@ else
  umountAll "$CHROOTNAME"
 exit 1
 fi
+=======
+    echo "Something went wrong. Exiting"
+    unset KERNEL_ISO
+    unset UEFI
+    unset MIRRORLIST
+    umountAll "$CHROOTNAME"
+    $SUDO rm -rf "$WORKDIR"
+    exit 1
+>>>>>>> 6ea0b02b3db165bccbb6dc6d8c13f9b8b9f467f5
 }
 
 # Don't leave potentially dangerous stuff if we had to error out...
@@ -267,7 +303,6 @@ updateSystem() {
 }
 
 getPkgList() {
-
     #Support for building released isos
     if [ ${TREE,,} = "cooker" ]; then
         BRANCH=master
@@ -540,7 +575,7 @@ setupSyslinux() {
         $SUDO chmod +x "$2"/boot/syslinux/memtest
         # copy SuperGrub iso
         $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$2"/boot/syslinux/sgb.iso
-
+set -x
 	# UEFI support
 	if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
 		export UEFI=1
@@ -548,15 +583,21 @@ setupSyslinux() {
 #		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
 		#For bootable iso's we may need grub.efi as BOOTX64.efi
 #	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
-		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
-#		$SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output="$1"/EFI/BOOT/BOOTX64.efi /EFI/BOOT/grub.cfg
 #		$SUDO mv -f "$1"/EFI/BOOT/BOOTX64.efi "$2"/EFI/BOOT/BOOTX64.efi
-		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
-#		$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
-		$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
-		$SUDO sed -i -e "s,@LABEL@,$LABEL,g" "$2"/EFI/BOOT/*.cfg
+
+		$SUDO sed -i -e "s,@VERSION@,$VERSION,g" $OURDIR/EFI/*.cfg
+		$SUDO sed -i -e "s,@LABEL@,$LABEL,g" $OURDIR/EFI/*.cfg
+                $SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
+                $SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 		$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 		$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
+		$SUDO cp -a -f $OURDIR/EFI/grub.cfg "$1"/boot/grub2/
+#		if _[ -n "$EFIBUILD" ]; then
+		$SUDO chroot "$1" /boot/efi/EFI/openmandriva/mkefi
+#		else
+#                $SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output=boot/efi/EFI/openmandriva/BOOTX64.efi /boot/grub2/crub.cfg
+#		fi
+		$SUDO cp -a -f "$1"/boot/efi/EFI/openmandriva/BOOTX64.efi "$2"/EFI/BOOT/
 		# (tpg) looks like fonts are in themes dir for 2015.0
 		# need to adapt this for n < 2015.0
 		#for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
@@ -565,7 +606,7 @@ setupSyslinux() {
 		# EFI options for xorriso
 		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME"/EFI/BOOT/BOOTX64.efi"
 	fi
-
+set +x
 	echo "Create syslinux menu"
 	# kernel/initrd filenames referenced below are the ISO9660 names.
 	# syslinux doesn't support Rock Ridge.
