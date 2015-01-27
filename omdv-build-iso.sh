@@ -34,7 +34,7 @@ usage_help() {
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
     echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
-    echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm"
+    echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
@@ -579,8 +579,8 @@ setupISOenv() {
 	$SUDO echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# set up displaymanager
-	if [ "${TYPE,,}" != "minimal" ]; then
-		$SUDO chroot "$CHROOTNAME" systemctl enable ${DISPLAYMANAGER,,}.service 2> /dev/null || :
+	if [ "${TYPE,,}" != "minimal" ] && [ ${DISPLAYMANAGER,,} != "none" ]; then
+	    $SUDO ln -sf ../lib/systemd/system/${DISPLAYMANAGER,,}.service "$CHROOTNAME"/etc/systemd/system/display-manager.service 2> /dev/null || :
 
 	    # Set reasonable defaults
 	    if  [ -e "$CHROOTNAME"/etc/sysconfig/desktop ]; then
@@ -637,7 +637,6 @@ EOF
 		    ;;
 		*)
 		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
-		    error
 	    esac
 	fi
 
