@@ -428,7 +428,7 @@ createInitrd() {
 
 	# building initrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
-	$SUDO ln -s ../boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
+	$SUDO ln -sf /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
 }
 
@@ -548,7 +548,7 @@ setupISOenv() {
 
 	# set up default timezone
 	echo "Setting default timezone"
-	$SUDO ln -s ../usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
+	$SUDO ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
 
 	# try harder with systemd-nspawn
 	# version 215 and never has then --share-system option
@@ -580,7 +580,7 @@ setupISOenv() {
 
 	# set up displaymanager
 	if [ "${TYPE,,}" != "minimal" ] && [ ${DISPLAYMANAGER,,} != "none" ]; then
-	    $SUDO ln -sf ../lib/systemd/system/${DISPLAYMANAGER,,}.service "$CHROOTNAME"/etc/systemd/system/display-manager.service 2> /dev/null || :
+	    $SUDO ln -sf /lib/systemd/system/${DISPLAYMANAGER,,}.service "$CHROOTNAME"/etc/systemd/system/display-manager.service 2> /dev/null || :
 
 	    # Set reasonable defaults
 	    if  [ -e "$CHROOTNAME"/etc/sysconfig/desktop ]; then
@@ -660,14 +660,14 @@ EOF
 	    if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
 		    echo "Enabling $i"
-		    ln -sf ../lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
+		    ln -sf /lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 		else
 		    echo "Special service $i does not exist. Skipping."
 		fi
 	    elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 		if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
 		    echo "Enabling $i.service"
-		    ln -sf ../lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
+		    ln -sf /lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
 		else
 		    echo "Service $i does not exist. Skipping."
 		fi
@@ -745,9 +745,9 @@ EOF
 	# get back to real /etc/resolv.conf
 	$SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
 	if [ "`cat /etc/release | grep -o 2014.0`" \< "2015.0" ]; then
-	    $SUDO ln -sf ../run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	    $SUDO ln -sf /run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	else
-	    $SUDO ln -sf ../run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	    $SUDO ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	fi
 
 	# ldetect stuff
