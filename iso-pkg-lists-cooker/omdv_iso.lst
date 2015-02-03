@@ -7,10 +7,10 @@ alsa-utils
 bootsplash #iso
 bootloader-utils # min-iso
 btrfs-progs
+calamares #min-iso
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
 dosfstools
-draklive-install #min-iso
 dynamic
 eject
 #freetype-tools #iso
