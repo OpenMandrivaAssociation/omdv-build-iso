@@ -744,10 +744,10 @@ EOF
 
 	# get back to real /etc/resolv.conf
 	$SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
-	if [ "`cat /etc/release | grep -o 2014.0`" == "2014.0" ]; then
-	    $SUDO ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
-	else
+	if [ "`cat $CHROOTNAME/etc/release | grep -o 2014.0`" == "2014.0" ]; then
 	    $SUDO ln -sf /run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	else
+	    $SUDO ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	fi
 
 	# ldetect stuff
