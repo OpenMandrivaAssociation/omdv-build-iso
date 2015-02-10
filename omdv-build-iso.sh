@@ -652,7 +652,7 @@ EOF
 
 	echo "Starting services setup."
 	#enable services
-	SERVICES_ENABLE=(systemd-networkd systemd-networkd-wait-online systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned)
+	SERVICES_ENABLE=(systemd-networkd systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned)
 	# disable services
 	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix)
 
