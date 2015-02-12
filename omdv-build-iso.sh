@@ -768,7 +768,7 @@ createSquash() {
     # unmout all stuff inside CHROOT to build squashfs image
     umountAll "$CHROOTNAME"
 
-    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 4096
+    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp lz4 -no-progress -no-recovery -b 4096
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	echo "Failed to create squashfs. Exiting."
