@@ -219,14 +219,14 @@ updateSystem() {
     #Force update of critical packages
 	if [ "$ABF" = "1" ]; then
 	    echo "We are inside ABF (www.abf.io)"
-	    urpmq --list-url
-	    urpmi.update -ff updates
+	    $SUDO urpmq --list-url
+	    $SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	    urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools 
+	    $SUDO urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools
 	else
 	    echo "Building in user custom environment"
-	    urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools
+	    $SUDO urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools
 	fi
 }
 
