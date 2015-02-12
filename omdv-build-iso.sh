@@ -219,6 +219,10 @@ updateSystem() {
     #Force update of critical packages
 	if [ "$ABF" = "1" ]; then
 	    echo "We are inside ABF (www.abf.io)"
+	    # workaround
+	    $SUDO urpmi.removemedia -a
+	    $SUDO urpmi.addmedia --distrib --mirrorlist http://abf.rosalinux.ru/downloads/cooker/repository/x86_64
+	    # end of workaround
 	    $SUDO urpmq --list-url
 	    $SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
