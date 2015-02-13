@@ -3,6 +3,7 @@
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -219,7 +220,6 @@ updateSystem() {
     #Force update of critical packages
 	if [ "$ABF" = "1" ]; then
 	    echo "We are inside ABF (www.abf.io)"
-		$SUDO urpmi perl-URPM
 	    $SUDO urpmq --list-url
 	    $SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
