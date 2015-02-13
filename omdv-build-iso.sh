@@ -219,18 +219,15 @@ updateSystem() {
     #Force update of critical packages
 	if [ "$ABF" = "1" ]; then
 	    echo "We are inside ABF (www.abf.io)"
-	    # workaround
-	    $SUDO urpmi.removemedia -a
-	    $SUDO urpmi.addmedia "Main" http://abf.rosalinux.ru/downloads/cooker/repository/x86_64/main/release
-	    # end of workaround
+		$SUDO urpmi perl-URPM
 	    $SUDO urpmq --list-url
 	    $SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	    $SUDO urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools
+	    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools
 	else
 	    echo "Building in user custom environment"
-	    $SUDO urpmi --no-verify-rpm perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools
+	    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools
 	fi
 }
 
