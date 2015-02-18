@@ -1,0 +1,11 @@
+--- omdv-build-iso-0.0.3/EFI/grub.cfg~	2015-01-24 17:53:04.000000000 +0000
++++ omdv-build-iso-0.0.3/EFI/grub.cfg	2015-02-16 18:18:28.048502801 +0000
+@@ -13,7 +13,7 @@
+ set timeout=10
+ ### END /etc/grub.d/00_header ###
+ 
+-search --no-floppy --set=root -l '@LABEL@'
++search --no-floppy --set=root -f '/EFI/BOOT/BOOTX64.cfg'
+   set locale_dir=($root)/EFI/BOOT/locale
+   set lang=en_GB
+   insmod gettext

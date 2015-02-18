@@ -5,7 +5,7 @@ Name:		omdv-build-iso
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
 Version:	0.0.3
-Release:	1
+Release:	2
 License:	GPL
 Group:		System/Libraries
 URL:		https://abf.io/openmandriva/omdv-build-iso
@@ -22,12 +22,15 @@ Requires:	coreutils
 Requires:	timezone
 BuildArch:	noarch
 
+Patch0:		grub-drive-search.patch
+Patch1:		enhanced-local-usage.patch
+
 %description
-Tool to build OopenMandriva ISO.
+Tool to build OpenMandriva ISO.
 
 %prep
 %setup -q
-
+%apply_patches
 %build
 #nothing to do here
 

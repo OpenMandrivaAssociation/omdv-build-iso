@@ -135,10 +135,21 @@ else
     usage_help
 fi
 
+# We lose our cli variables when we invoke sudo so we save them 
+# and pass them to sudo when it is started. Also the user name is needed.
+
+OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
+ SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER"
+
+
+
 # run only when root
 if [ "`id -u`" != "0" ]; then
     # We need to be root for umount and friends to work...
-    exec sudo $0 "$@"
+    # NOTE the following command will only work on OMDV for the first registered user
+    # this user is a member of the wheel group and has root privelidges 
+
+    exec sudo -E `echo $SUDOVAR` $0 "$@"
     echo Run me as root.
     exit 1
 fi
@@ -147,9 +158,29 @@ fi
 if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
     ABF=1
     OURDIR=$(realpath $(dirname $0))
+elif  [ -n $WORKDIR ]; then
+            if  [ -d $WORKDIR/omdv-build-iso ]; then
+                $OURDIR=$WORKDIR/omdv-build-iso
+	    else
+                mkdir $WORKDIR/omdv-build-iso
+                cp -r /usr/share/omdv-build-iso/ $WORKDIR/
+                $OURDIR=$WORKDIR/omdv-build-iso
+                chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-byuild-iso
+	    fi
 else
-    OURDIR="/usr/share/omdv-build-iso"
-	# generate build id if runningoutside ABF
+        # For local builds put the working directory containing.
+        # the package lists into the $WORKDIR if it is defined.
+        # or to the local default of the users $HOME so that they may.
+        # edit it when creating thier own local spins.
+    if   [ -d ~/omdv-build-iso ]; then
+         OURDIR=~/omdv-build-iso
+    else
+        mkdir ~/omdv-build-iso
+        cp -r /usr/share/omdv-build-iso/ ~/
+        # Make it easy for the user to edit the package lists and iso build files.
+        chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso.
+        OURDIR=~/omdv-build-iso
+    fi
 	BUILD_ID=$(($RANDOM%9999+1000))
 fi
 
@@ -164,12 +195,16 @@ DIST=omdv
 # always build free ISO
 FREE=1
 
-SUDO=sudo
+SUDO="sudo -E"
 [ "`id -u`" = "0" ] && SUDO=""
 LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
-    WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+	if [ -z $ABF ];then
+	WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
+	else
+	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+	fi
 fi
 
 CHROOTNAME="$WORKDIR"/BASE
@@ -202,15 +237,20 @@ umountAll() {
     $SUDO umount -l "$1"/dev/pts || :
     $SUDO umount -l "$1"/dev || :
 }
-
+FIX ME:
 error() {
     echo "Something went wrong. Exiting"
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
+if [ "$DEBUG" == "nodebug" ]; then
+ $SUDO rm -rf $(dirname "$FILELISTS")
+ umountAll "$CHROOTNAME"
+ $SUDO rm -rf "$ROOTNAME"
+else
     umountAll "$CHROOTNAME"
-    $SUDO rm -rf "$WORKDIR"
     exit 1
+fi
 }
 
 # Don't leave potentially dangerous stuff if we had to error out...
@@ -240,16 +280,21 @@ getPkgList() {
         BRANCH="$TREE$VERSION"
     fi
 
-    # update iso-pkg-lists from ABF if missing
+;FIX ME
+# update iso-pkg-lists from ABF if missing
+# we need to do this for ABF to ensure any edits have been included
+# Do we need to do this if people are using the tool locally?
+
     if [ ! -d $OURDIR/iso-pkg-lists-$BRANCH ]; then
 	echo "Could not find $OURDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
 	# download iso packages lists from www.abf.io
 	PKGLIST="https://abf.io/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
-	$SUDO wget --tries=10 -O iso-pkg-lists-$BRANCH.tar.gz --content-disposition $PKGLIST
+	$SUDO  wget --tries=10 -O iso-pkg-lists-$BRANCH.tar.gz --content-disposition $PKGLIST ;echo "$HOME"
 	$SUDO tar -xf iso-pkg-lists-$BRANCH.tar.gz
-	# Why not retain the unique list name it will help when people want their own spins ?
+ Why not retain the unique list name it will help when people want their own spins ?
 	$SUDO rm -f iso-pkg-lists-$BRANCH.tar.gz
     fi
+#   fi
 
     # export file list
     FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
@@ -430,7 +475,48 @@ createInitrd() {
 	# building initrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
 	$SUDO ln -sf /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
+	$SUDO ln -s /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
+}
+
+mkeitefi() {
+# Usage: mkeitefi <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
+# Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
+
+	IMGNME="$ISOROOTNAME"/boot/syslinux/efiboot.img
+        GRB2FLS="$ISOROOTNAME"/EFI/BOOT
+
+# Get sizes of the required EFI files in blocks.
+# efipartsize  must be large enough to accomodate a gpt partition tables as well as the data.
+# each table is 17408 and there are two of them.
+	efipartsize=`du -s --block-size=2048 "$ISOROOTNAME/EFI" | awk '{print $1}'`
+	parttablesize=`echo "scale=0; (((2*17408)+2048)/2048)" | bc`
+	PARTSIZE=`echo "$parttablesize+$efipartsize+2048" | bc`
+
+# Create the image.
+	dd if=/dev/zero of=$IMGNME  bs=2048 count=$PARTSIZE
+	losetup -D
+# Mount the file on the loopback device. 
+        LDEV=`losetup -f --show $IMGNME`
+
+# Create a dos filesystem
+        mkdosfs  -S 2048 $LDEV
+sleep 1
+# Re-read the devive
+        losetup -D
+        losetup -f $IMGNME $LDEV
+        mount -t vfat $LDEV /mnt
+
+# copy the files
+	mkdir -p /mnt/EFI/BOOT
+        cp -R $GRB2FLS/* /mnt/EFI/BOOT/
+#	cp /home/colin/vnice /mnt/EFI/BOOT/
+	echo "Made" >/mnt/EFI/BOOT/vnice
+# Unmout the filesystem
+        umount /mnt
+
+# Clean up
+	losetup -D
 }
 
 # Usage: setupGrub2 /target/dir
@@ -502,7 +588,7 @@ setupSyslinux() {
 	if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
 		export UEFI=1
 		$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale
-#		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
+		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
 		#For bootable iso's we may need grub.efi as BOOTX64.efi
 		$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
 #		$SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output="$1"/EFI/BOOT/BOOTX64.efi /EFI/BOOT/grub.cfg
@@ -519,7 +605,7 @@ setupSyslinux() {
 		#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
 		#done
 		# EFI options for xorriso
-		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME"/EFI/BOOT/BOOTX64.efi"
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e boot/syslinux/efiboot.img -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME"/boot/syslinux/efiboot.img"
 	fi
 
 	echo "Create syslinux menu"
@@ -781,19 +867,32 @@ createSquash() {
 # Usage: buildIso filename.iso rootdir
 # Builds an ISO file from the files in rootdir
 buildIso() {
-	echo "Starting ISO build."
-
-	if [ "$ABF" = "1" ]; then
-	    ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
-	else
-	    ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
-	fi
+	echo "Starting ISO build." 
+	
+       if [ "$ABF" = "1" ]; then
+            ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
+            elif
+                [ -n "$OUTPUTDIR" ]; then
+                ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
+            fi
+        else
+            ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
+      fi
 
 	if [ ! -x /usr/bin/xorriso ]; then
 	    echo "xorriso does not exists. Exiting."
 	    error
 	fi
+	
+#Before starting to build remove the old iso. xorriso is much slower to create an iso.
+# if it is overwriting an earlier copy. Also it's not clear whether this affects the.
+# contents or structure of the iso (see --append-partition in the man page)
+# Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
 
+        echo "Removing old iso.
+        if [ -z "$ABF" ]&&[ -z "$ISOFILE" ]; then
+        rm "$ISOFILE"
+        fi
 	echo "Building ISO with options ${XORRISO_OPTIONS}"
 
 	$SUDO xorriso -as mkisofs -R -r -J -joliet-long -cache-inodes \
@@ -845,6 +944,7 @@ getPkgList
 createChroot
 createInitrd
 setupBootloader
+mkeitefi
 setupISOenv
 createSquash
 buildIso
