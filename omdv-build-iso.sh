@@ -475,7 +475,6 @@ createInitrd() {
 	# building initrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
 	$SUDO ln -sf /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
-	$SUDO ln -s /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
 }
 
@@ -506,7 +505,7 @@ mkeitefi() {
 # Create a dos filesystem
 	mkdosfs  -S 2048 $LDEV
 	sleep 1
-# Re-read the devive
+# Re-read the device
 	losetup -D
 	losetup -f $IMGNME $LDEV
 	mount -t vfat $LDEV /mnt
