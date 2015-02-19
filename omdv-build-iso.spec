@@ -11,6 +11,7 @@ Group:		System/Libraries
 URL:		https://abf.io/openmandriva/omdv-build-iso
 Source0:	%{name}-%{version}.tar.xz
 Requires:	bash
+Requires:	bc
 Requires:	dosfstools
 Requires:	urpmi
 Requires:	squashfs-tools
