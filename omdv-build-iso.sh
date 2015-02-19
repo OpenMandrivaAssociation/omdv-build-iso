@@ -4,6 +4,7 @@
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Colin Close <itchka@compuserve.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -263,10 +264,10 @@ updateSystem() {
 	    $SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools
+	    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc
 	else
 	    echo "Building in user custom environment"
-	    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools
+	    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc
 	fi
 }
 
