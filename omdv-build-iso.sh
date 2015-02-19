@@ -174,9 +174,9 @@ elif  [ -n $WORKDIR ]; then
 	    if   [ -d ~/omdv-build-iso ]; then
         	OURDIR=~/omdv-build-iso
 	    else
-		mkdir ~/omdv-build-iso
+			mkdir ~/omdv-build-iso
 	        cp -r /usr/share/omdv-build-iso/ ~/
-        # Make it easy for the user to edit the package lists and iso build files.
+			# Make it easy for the user to edit the package lists and iso build files.
 	        chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso.
 	        OURDIR=~/omdv-build-iso
 	    fi
@@ -200,9 +200,9 @@ LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
     if [ -z $ABF ];then
-	WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
+		WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
     else
-	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+		WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
 fi
 
@@ -217,7 +217,7 @@ if [ "${RELEASE_ID,,}" == "final" ]; then
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
 else
     if [[ "${RELEASE_ID,,}" == "alpha" ]]; then
-	RELEASE_ID="$RELEASE_ID.`date +%Y%m%d`"
+		RELEASE_ID="$RELEASE_ID.`date +%Y%m%d`"
     fi
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
 fi
@@ -286,22 +286,21 @@ getPkgList() {
 # Do we need to do this if people are using the tool locally?
 
     if [ ! -d $OURDIR/iso-pkg-lists-$BRANCH ]; then
-	echo "Could not find $OURDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
-	# download iso packages lists from www.abf.io
-	PKGLIST="https://abf.io/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
-	$SUDO  wget --tries=10 -O iso-pkg-lists-$BRANCH.tar.gz --content-disposition $PKGLIST ;echo "$HOME"
-	$SUDO tar -xf iso-pkg-lists-$BRANCH.tar.gz
-# Why not retain the unique list name it will help when people want their own spins ?
-	$SUDO rm -f iso-pkg-lists-$BRANCH.tar.gz
-
+		echo "Could not find $OURDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
+		# download iso packages lists from www.abf.io
+		PKGLIST="https://abf.io/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
+		$SUDO  wget --tries=10 -O iso-pkg-lists-$BRANCH.tar.gz --content-disposition $PKGLIST ;echo "$HOME"
+		$SUDO tar -xf iso-pkg-lists-$BRANCH.tar.gz
+		# Why not retain the unique list name it will help when people want their own spins ?
+		$SUDO rm -f iso-pkg-lists-$BRANCH.tar.gz
    fi
 
     # export file list
     FILELISTS="$OURDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 
     if [ ! -e "$FILELISTS" ]; then
-	echo "$FILELISTS does not exists. Exiting"
-	error
+		echo "$FILELISTS does not exists. Exiting"
+		error
     fi
 }
 
@@ -339,7 +338,6 @@ parsePkgList() {
 				echo "ERROR: Package list doesn't exist: $INC (included from $1 line $LINE)" >&2
 				error
 			fi
-
 			parsePkgList $(dirname "$1")/"`echo $SANITIZED | cut -b10- | sed -e 's/^\..*\///g'`"
 			continue
 		fi
@@ -457,6 +455,10 @@ createInitrd() {
 	fi
 	# building liveinitrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
+	if [[ $? != 0 ]]; then
+		echo "Failed creating liveinitrd. Exiting."
+		error
+	fi
 
 	if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	    echo "File "$CHROOTNAME"/boot/liveinitrd.img does not exist. Exiting."
@@ -474,6 +476,10 @@ createInitrd() {
 
 	# building initrd
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
+	if [[ $? != 0 ]]; then
+		echo "Failed creating initrd. Exiting."
+		error
+	fi
 	$SUDO ln -sf /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
 }
@@ -498,6 +504,11 @@ mkeitefi() {
 
 # Create the image.
 	dd if=/dev/zero of=$IMGNME  bs=2048 count=$PARTSIZE
+
+	if [[ $? != 0 ]]; then
+		echo "Failed creating UEFI image. Exiting."
+		error
+	fi
 	losetup -D
 # Mount the file on the loopback device. 
 	LDEV=`losetup -f --show $IMGNME`
@@ -509,6 +520,11 @@ mkeitefi() {
 	losetup -D
 	losetup -f $IMGNME $LDEV
 	mount -t vfat $LDEV /mnt
+	
+	if [[ $? != 0 ]]; then
+		echo "Failed creating UEFI image. Exiting."
+		error
+	fi
 
 # copy the files
 	mkdir -p /mnt/EFI/BOOT
@@ -557,9 +573,9 @@ setupSyslinux() {
 	echo "Installing syslinux programs."
         for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk; do
     	    if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
-		echo "$i does not exists. Exiting."
-		error
-	    fi
+				echo "$i does not exists. Exiting."
+				error
+			fi
     	    $SUDO cp -f "$1"/usr/lib/syslinux/$i "$2"/boot/syslinux ;
         done
 	# install pci.ids
@@ -643,14 +659,14 @@ setupISOenv() {
 
 	# try harder with systemd-nspawn
 	# version 215 and never has then --share-system option
-	if (( `rpm -qa systemd --queryformat '%{VERSION} \n'` >= "215" )); then
-	    $SUDO systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/timedatectl set-timezone UTC
-	    # set default locale
-	    echo "Setting default localization"
-	    $SUDO systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/localectl set-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8:en_US:en
-	else
-	    echo "systemd-nspawn does not exists."
-	fi
+#	if (( `rpm -qa systemd --queryformat '%{VERSION} \n'` >= "215" )); then
+#	    $SUDO systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/timedatectl set-timezone UTC
+#	    # set default locale
+#	    echo "Setting default localization"
+#	    $SUDO systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/localectl set-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8:en_US:en
+#	else
+#	    echo "systemd-nspawn does not exists."
+#	fi
 
 	# create /etc/minsysreqs
 	echo "Creating /etc/minsysreqs"
@@ -675,7 +691,7 @@ setupISOenv() {
 
 	    # Set reasonable defaults
 	    if  [ -e "$CHROOTNAME"/etc/sysconfig/desktop ]; then
-		rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
+			rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
 	    fi
 
 	    # create very important desktop file
@@ -819,8 +835,8 @@ EOF
 		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
 
 		    if [[ $? != 0 ]]; then
-			echo "Adding urpmi 32-bit media FAILED. Exiting";
-			error
+				echo "Adding urpmi 32-bit media FAILED. Exiting";
+				error
 		    fi
 		fi
 
@@ -852,7 +868,7 @@ createSquash() {
     echo "Starting squashfs image build."
 
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
-	$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
+		$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
     fi
 
     mkdir -p "$ISOROOTNAME"/LiveOS
@@ -862,8 +878,8 @@ createSquash() {
     $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 4096
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
-	echo "Failed to create squashfs. Exiting."
-	error
+		echo "Failed to create squashfs. Exiting."
+		error
     fi
 
 }
@@ -916,8 +932,8 @@ buildIso() {
 
 postBuild() {
     if [ ! -f $ISOFILE ]; then
-	umountAll "$CHROOTNAME"
-	error
+		umountAll "$CHROOTNAME"
+		error
     fi
 
     if [ "$ABF" = "1" ]; then
