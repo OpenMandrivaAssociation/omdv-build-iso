@@ -481,9 +481,7 @@ createInitrd() {
 mkeitefi() {
 
 # exit this function if not x86_64
-if [ "$EXTARCH" != "x86_64" ]
-    exit 0
-fi
+[ "$EXTARCH" != "x86_64" ] && exit 0
 
 # Usage: mkeitefi <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
