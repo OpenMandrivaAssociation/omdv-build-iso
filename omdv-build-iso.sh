@@ -520,7 +520,7 @@ mkeitefi() {
 	losetup -D
 	losetup -f $IMGNME $LDEV
 	mount -t vfat $LDEV /mnt
-	
+
 	if [[ $? != 0 ]]; then
 		echo "Failed creating UEFI image. Exiting."
 		error
@@ -804,6 +804,13 @@ EOF
 		echo "Wrong service match."
 	    fi
 	done
+
+	# Calamares installer
+	if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
+	    echo "Updating calamares settings."
+	    # update patch to squashfs
+	    $SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
+	fi
 
 	# add urpmi medias inside chroot
 	echo "Removing old urpmi repositories."
