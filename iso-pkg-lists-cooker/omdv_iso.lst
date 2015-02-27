@@ -7,10 +7,10 @@ alsa-utils
 bootsplash #iso
 bootloader-utils # min-iso
 btrfs-progs
+calamares #min-iso
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
 dosfstools
-draklive-install #min-iso
 dynamic
 eject
 #freetype-tools #iso
@@ -71,11 +71,15 @@ wget
 whois #iso
 x11-driver-input-vmmouse #iso
 x11-driver-video-vboxvideo #iso
-x11-driver-video-modesetting #iso
 x11-data-bitmaps
 x11-driver-input-evdev
 x11-driver-input-synaptics
 x11-driver-video
+x11-driver-video-nouveau #workaround
+x11-driver-video-ati #workaround
+x11-driver-video-intel #workaround
+x11-driver-video-vboxvideo #workaround
+x11-driver-video-fbdev #workaround
 xdg-compliance #iso
 xdg-user-dirs #iso
 xdg-user-dirs-gtk #iso

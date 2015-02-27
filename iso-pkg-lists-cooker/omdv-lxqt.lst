@@ -17,6 +17,7 @@
 
 # Desktop Specifics
 task-lxqt
+apper
 clementine
 networkmanager-applet
 qterminal
