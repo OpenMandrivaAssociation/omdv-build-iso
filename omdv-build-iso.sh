@@ -353,7 +353,7 @@ createChroot() {
 	if [ "${TREE,,}" == "cooker" ]; then
 		REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
 	else
-		REPOPATH="http://abf-downloads.abf.io/$TREE$VERSION/repository/$EXTARCH/"
+		REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
 	fi
 
 	echo "Creating chroot $CHROOTNAME"
