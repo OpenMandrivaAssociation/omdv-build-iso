@@ -277,7 +277,7 @@ getPkgList() {
     if [ ${TREE,,} = "cooker" ]; then
         BRANCH=cooker
     else
-        BRANCH="$TREE$VERSION"
+        BRANCH="$TREE"
     fi
 
 #FIX ME
