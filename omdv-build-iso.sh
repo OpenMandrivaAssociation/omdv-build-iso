@@ -707,7 +707,7 @@ EOF
 	$SUDO cp -rfT $OURDIR/extraconfig/usr "$CHROOTNAME"/usr/
 
 	# set up live user
-	$SUDO chroot "$CHROOTNAME" /usr/sbin/adduser live
+	$SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -G wheel live
 	$SUDO chroot "$CHROOTNAME" /usr/bin/passwd -d live
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/live
 	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/live/
