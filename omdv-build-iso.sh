@@ -249,8 +249,8 @@ if [ "$DEBUG" == "nodebug" ]; then
     $SUDO rm -rf "$ROOTNAME"
 else
     umountAll "$CHROOTNAME"
-    exit 1
 fi
+    exit 1
 }
 
 # Don't leave potentially dangerous stuff if we had to error out...
@@ -489,6 +489,8 @@ mkeitefi() {
 # exit this function if not x86_64
 [ "$EXTARCH" != "x86_64" ] && exit 0
 
+echo "Setting up UEFI partiton and image."
+
 # Usage: mkeitefi <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
@@ -573,9 +575,9 @@ setupSyslinux() {
 	echo "Installing syslinux programs."
         for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk; do
     	    if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
-				echo "$i does not exists. Exiting."
-				error
-			fi
+		echo "$i does not exists. Exiting."
+		error
+	    fi
     	    $SUDO cp -f "$1"/usr/lib/syslinux/$i "$2"/boot/syslinux ;
         done
 	# install pci.ids
@@ -585,8 +587,13 @@ setupSyslinux() {
 	$SUDO mkdir -p "$2"/LiveOS
 
 	echo "Installing liveinitrd inside syslinux"
-	$SUDO cp -a "$1"/boot/vmlinuz-$KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
-	$SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/syslinux/liveinitrd.img
+	if [ -e "$1"/boot/vmlinuz-$KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
+	    $SUDO cp -a "$1"/boot/vmlinuz-$KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
+	    $SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/syslinux/liveinitrd.img
+	else
+	    echo "vmlinuz or liveinitrd does not exists. Exiting."
+	    error
+	fi
 
 	if [ ! -f "$2"/boot/syslinux/liveinitrd.img ]; then
 	    echo "Missing /boot/syslinux/liveinitrd.img. Exiting."
