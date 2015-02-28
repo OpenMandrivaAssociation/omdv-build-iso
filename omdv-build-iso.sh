@@ -277,7 +277,7 @@ getPkgList() {
     if [ ${TREE,,} = "cooker" ]; then
         BRANCH=cooker
     else
-        BRANCH="$TREE$VERSION"
+        BRANCH="$TREE"
     fi
 
 #FIX ME
@@ -353,7 +353,7 @@ createChroot() {
 	if [ "${TREE,,}" == "cooker" ]; then
 		REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
 	else
-		REPOPATH="http://abf-downloads.abf.io/$TREE$VERSION/repository/$EXTARCH/"
+		REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
 	fi
 
 	echo "Creating chroot $CHROOTNAME"
