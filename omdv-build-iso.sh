@@ -159,12 +159,12 @@ if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
     OURDIR=$(realpath $(dirname $0))
 elif  [ -n $WORKDIR ]; then
 	if  [ -d $WORKDIR/omdv-build-iso ]; then
-	    $OURDIR=$WORKDIR/omdv-build-iso
+	    OURDIR="$WORKDIR/omdv-build-iso"
 	else
 	    mkdir $WORKDIR/omdv-build-iso
 	    cp -r /usr/share/omdv-build-iso/ $WORKDIR/
-	    $OURDIR=$WORKDIR/omdv-build-iso
-	    chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-byuild-iso
+	    OURDIR="$WORKDIR/omdv-build-iso"
+	    chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-build-iso
 	fi
     else
         # For local builds put the working directory containing.
@@ -174,10 +174,10 @@ elif  [ -n $WORKDIR ]; then
 	    if   [ -d ~/omdv-build-iso ]; then
         	OURDIR=~/omdv-build-iso
 	    else
-			mkdir ~/omdv-build-iso
+		mkdir ~/omdv-build-iso
 	        cp -r /usr/share/omdv-build-iso/ ~/
-			# Make it easy for the user to edit the package lists and iso build files.
-	        chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso.
+		# Make it easy for the user to edit the package lists and iso build files.
+	        chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso
 	        OURDIR=~/omdv-build-iso
 	    fi
     BUILD_ID=$(($RANDOM%9999+1000))
@@ -199,10 +199,10 @@ SUDO="sudo -E"
 LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
-    if [ -z $ABF ];then
-		WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
+    if [ -z $ABF ]; then
+	WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
     else
-		WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
 fi
 
@@ -489,6 +489,8 @@ mkeitefi() {
 # exit this function if not x86_64
 [ "$EXTARCH" != "x86_64" ] && exit 0
 
+echo "Setting up UEFI partiton and image."
+
 # Usage: mkeitefi <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
@@ -759,7 +761,7 @@ EOF
 
 	echo "Starting services setup."
 	#enable services
-	SERVICES_ENABLE=(systemd-networkd systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups org.cups.cupsd.path org.cups.cupsd.socket org.cups.cups-lpd.socket chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned)
+	SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups org.cups.cupsd.path org.cups.cupsd.socket org.cups.cups-lpd.socket chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned)
 	# disable services
 	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix)
 
@@ -875,7 +877,7 @@ createSquash() {
     echo "Starting squashfs image build."
 
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
-		$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
+	$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
     fi
 
     mkdir -p "$ISOROOTNAME"/LiveOS
@@ -885,8 +887,8 @@ createSquash() {
     $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 4096
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
-		echo "Failed to create squashfs. Exiting."
-		error
+	echo "Failed to create squashfs. Exiting."
+	error
     fi
 
 }
@@ -915,7 +917,7 @@ buildIso() {
 # Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
 
 	echo "Removing old iso."
-	if [ -z "$ABF" ]&&[ -z "$ISOFILE" ]; then
+	if [ -z "$ABF" ] && [ -z "$ISOFILE" ]; then
 	    $SUDO rm -rf "$ISOFILE"
 	fi
 	echo "Building ISO with options ${XORRISO_OPTIONS}"
@@ -939,8 +941,8 @@ buildIso() {
 
 postBuild() {
     if [ ! -f $ISOFILE ]; then
-		umountAll "$CHROOTNAME"
-		error
+	umountAll "$CHROOTNAME"
+	error
     fi
 
     if [ "$ABF" = "1" ]; then
@@ -948,8 +950,8 @@ postBuild() {
 	# count checksums
 	echo "Genrating ISO checksums."
 	pushd $OURDIR
-		md5sum  $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.md5sum
-		sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
+	    md5sum  $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.md5sum
+	    sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
 
 	mkdir -p /home/vagrant/results /home/vagrant/archives
