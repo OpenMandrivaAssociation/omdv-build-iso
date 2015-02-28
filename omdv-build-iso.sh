@@ -249,8 +249,8 @@ if [ "$DEBUG" == "nodebug" ]; then
     $SUDO rm -rf "$ROOTNAME"
 else
     umountAll "$CHROOTNAME"
-    exit 1
 fi
+    exit 1
 }
 
 # Don't leave potentially dangerous stuff if we had to error out...
