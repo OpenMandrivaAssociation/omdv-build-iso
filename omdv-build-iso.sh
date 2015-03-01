@@ -487,6 +487,7 @@ mkeitefi() {
 
 # exit this function if not x86_64
 [ "$EXTARCH" != "x86_64" ] && exit 0
+[ "$UEFI" != "1" ] && exit 0
 
 echo "Setting up UEFI partiton and image."
 
