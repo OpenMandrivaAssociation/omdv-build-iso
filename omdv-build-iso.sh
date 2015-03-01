@@ -748,7 +748,7 @@ EOF
     if [ "${TYPE,,}" != "minimal" ]; then
 	case ${DISPLAYMANAGER,,} in
 		"kdm")
-		    $SUDO sed -i -e '/^AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/^AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
+		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
 		    $SUDO sed -i -e "s/^Session.*/Session=$TYPE/g" -e 's/^User.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
