@@ -485,8 +485,11 @@ createInitrd() {
 
 mkeitefi() {
 
-# exit this function if not x86_64
-[ "$EXTARCH" != "x86_64" ] && exit 0
+# exit if no UEFI is set or arch is not x86_64
+if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
+    echo "UEFI support is not available."
+    exit 0
+fi
 
 echo "Setting up UEFI partiton and image."
 
@@ -507,8 +510,8 @@ echo "Setting up UEFI partiton and image."
     $SUDO dd if=/dev/zero of=$IMGNME  bs=2048 count=$PARTSIZE
 
     if [[ $? != 0 ]]; then
-	    echo "Failed creating UEFI image. Exiting."
-	    error
+	echo "Failed creating UEFI image. Exiting."
+	error
     fi
 
     losetup -D
