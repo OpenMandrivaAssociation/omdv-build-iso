@@ -23,15 +23,12 @@ Requires:	coreutils
 Requires:	timezone
 BuildArch:	noarch
 
-Patch0:		grub-drive-search.patch
-Patch1:		enhanced-local-usage.patch
-
 %description
 Tool to build OpenMandriva ISO.
 
 %prep
 %setup -q
-%apply_patches
+
 %build
 #nothing to do here
 
