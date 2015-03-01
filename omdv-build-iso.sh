@@ -840,7 +840,13 @@ EOF
 	# this one is needed to grab firmwares
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
     else
-	MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
+	# use hack for our mirrorlist url
+	if [[ ${TREE,,} =~ ^openmandriva* ]]; then
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
+	else
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
+	fi
+	echo "Using $MIRROLIST"
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
     fi
 
