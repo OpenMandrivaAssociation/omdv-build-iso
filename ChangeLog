@@ -1,6 +1,210 @@
+2015-03-01 00:48:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog (HEAD, master)
+
+2015-03-01 00:42:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove not needed files (origin/master, origin/HEAD)
+
+2015-03-01 00:41:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sleep 1 sec before mounting loopdev in dracut, enable systemd-networkd.socket, code clean in main script
+
+2015-02-28 11:57:30 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add couple of checks, fix exit in error function
+
+2015-02-28 11:48:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix branch and repopath
+
+2015-02-27 17:20:25 +0400 Tomasz Paweł Gajc 
+
+	* prefer OpenMandriva packages
+
+2015-02-27 14:21:31 +0400 Tomasz Paweł Gajc 
+
+	* add live user to wheel group
+
+2015-02-22 02:54:06 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update patch to squashfs for Calamares installer
+
+2015-02-19 19:32:54 +0400 Tomasz Paweł Gajc 
+
+	* add BOOTX64.cfg
+
+2015-02-19 14:47:08 +0400 Tomasz Paweł Gajc 
+
+	* fix search syntax
+
+2015-02-19 14:23:00 +0400 Tomasz Paweł Gajc 
+
+	* more cosmetic fixes
+
+2015-02-19 14:01:22 +0400 Tomasz Paweł Gajc 
+
+	* do not store cmdline in image by default
+
+2015-02-19 13:43:51 +0400 Tomasz Paweł Gajc 
+
+	* remove re-symlinking
+
+2015-02-19 13:40:22 +0400 Tomasz Paweł Gajc 
+
+	* add bc
+
+2015-02-19 13:39:55 +0400 Tomasz Paweł Gajc 
+
+	* update authors add bc programm
+
+2015-02-19 12:13:47 +0400 Tomasz Paweł Gajc 
+
+	* fix typo
+
+2015-02-19 00:20:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix indentation, add some cosmetic changes
+
+2015-02-18 22:11:36 +0000 Colin Close 
+
+	* Fix UEFI booting is reliable from DVD and works from mem stick (only one tester for this. Added support for local builds Added selectable --allow-force --force --nodeps to urpmi command to allow working around broken repos Added defaults to --workdir and --outputdir if it's a local build they now default to the users home. User must be a member of the wheel group to use these options (env variable passing to sudo) Copy package lists and data directory to users home for local builds so that the lists can be edited for personal spins
+
+2015-02-18 17:30:01 +0400 Tomasz Paweł Gajc 
+
+	* add quick-usb-formatter
+
+2015-02-18 17:29:42 +0400 Tomasz Paweł Gajc 
+
+	* add quick-usb-formatter
+
+2015-02-16 00:31:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add apper to lxqt
+
+2015-02-14 09:11:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add x11-driver-video-fbdev
+
+2015-02-14 08:04:18 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* uze xz for squashfs
+
+2015-02-14 07:48:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix mksquashfs command
+
+2015-02-13 17:33:13 +0400 Tomasz Paweł Gajc 
+
+	* remove not needed stuff, add copyrights for 2015
+
+2015-02-13 15:21:06 +0400 Tomasz Paweł Gajc 
+
+	* yet another try
+
+2015-02-13 00:53:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix last commit
+
+2015-02-13 00:49:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* one more workaround
+
+2015-02-13 00:13:47 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add temp workaround fo abf
+
+2015-02-13 00:07:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* call urpmi with sudo
+
+2015-02-12 18:58:19 +0400 Tomasz Paweł Gajc 
+
+	* use high LZ4 compression
+
+2015-02-12 18:56:56 +0400 Tomasz Paweł Gajc 
+
+	* compress squashfs with lz4
+
+2015-02-12 18:55:30 +0400 Tomasz Paweł Gajc 
+
+	* try with LZ4 compression
+
+2015-02-11 20:33:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add x11-driver-video-vboxvideo as a workaround
+
+2015-02-10 13:11:39 +0400 Tomasz Paweł Gajc 
+
+	* enable more cups services
+
+2015-02-10 13:08:53 +0400 Tomasz Paweł Gajc 
+
+	* do not enable systemd-networkd-wait-online.service
+
+2015-02-07 13:29:16 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add few x11 drivers as a temp workaround
+
+2015-02-06 18:08:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix resolv.conf
+
+2015-02-06 09:06:18 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* x11-driver-video-modesetting in cooker is merged into x11-server-1.17.0
+
+2015-02-03 22:09:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix creating /etc/resolv.conf for 2015.0
+
+2015-02-03 19:43:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use calamares as default installer
+
+2015-01-28 12:56:23 +0000 Colin Close 
+
+	* make script executable
+
+2015-01-28 16:38:21 +0400 Tomasz Paweł Gajc 
+
+	* fix symlinks
+
+2015-01-27 18:29:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* allow build without displaymanager
+
+2015-01-27 12:32:05 +0000 Colin Close 
+
+	* Copy grub.cfg to iso EFI dir instead of BOOTX64.cfg
+
+2015-01-27 00:24:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add weston iso
+
+2015-01-24 19:03:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sync sources one more time (tag: cooker-0.0.3-1)
+
+2015-01-24 18:53:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2015-01-24 18:41:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sync sources
+
+2015-01-24 18:40:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.3
+
+2015-01-24 18:39:29 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog
+
 2015-01-24 18:38:46 +0100 tpg (Tomasz Paweł Gajc) 
 
-	* move 60-dracut-isobuild.conf to better place (HEAD, origin/master, origin/HEAD, master)
+	* move 60-dracut-isobuild.conf to better place
 
 2015-01-24 18:31:17 +0100 tpg (Tomasz Paweł Gajc) 
 
