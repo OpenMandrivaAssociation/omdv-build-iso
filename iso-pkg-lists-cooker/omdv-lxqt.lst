@@ -120,7 +120,6 @@ pam_ldap
 poppler-data
 sasl-plug-gssapi
 
-obex-data-server #server for gnome/mate
 openssh-server #server
 samba-server #server
 
