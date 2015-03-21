@@ -40,6 +40,7 @@ usage_help() {
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
+    echo " --noclean Do not clean build chroot"
     echo ""
     echo "For example:"
     echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
@@ -123,6 +124,10 @@ if [ $# -ge 1 ]; then
         	    DEBUG=debug
         	    shift
         	    ;;
+        	--noclean)
+        	    NOCLEAN=noclean
+        	    shift
+        	    ;;
         	--help)
         	    usage_help
         	    ;;
@@ -140,7 +145,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER"
+SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -161,8 +166,8 @@ elif  [ -n $WORKDIR ]; then
     if  [ -d $WORKDIR/omdv-build-iso ]; then
 	OURDIR="$WORKDIR/omdv-build-iso"
     else
-	mkdir $WORKDIR/omdv-build-iso
-	cp -r /usr/share/omdv-build-iso/ $WORKDIR/
+	mkdir -p $WORKDIR/omdv-build-iso
+	cp -r /usr/share/omdv-build-iso $WORKDIR
 	OURDIR="$WORKDIR/omdv-build-iso"
 	chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-build-iso
     fi
@@ -243,7 +248,7 @@ error() {
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
-if [ "$DEBUG" == "nodebug" ]; then
+if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ]; then
     $SUDO rm -rf $(dirname "$FILELISTS")
     umountAll "$CHROOTNAME"
     $SUDO rm -rf "$ROOTNAME"
@@ -360,6 +365,12 @@ createChroot() {
     # Make sure /proc, /sys and friends are mounted so %post scripts can use them
     $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
 
+    # Do not clean build chroot
+    if [ ! -f "$CHROOTNAME"/.noclean ]; then
+    if [ -n "$NOCLEAN" ]; then
+	touch "$CHROOTNAME"/.noclean
+    fi
+
     echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
 
     if [ "$FREE" = "0" ]; then
@@ -403,7 +414,7 @@ createChroot() {
 	echo "Syslinux is missing in chroot. Installing it."
 	$SUDO urpmi --urpmi-root "$CHROOTNAME" --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto syslinux
     fi
-
+    fi #noclean
     # check CHROOT
     if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 	echo "Broken chroot installation. Exiting"
@@ -828,6 +839,8 @@ EOF
 	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
     fi
 
+    if [ -n "$NOCLEAN" ]; then
+
     # add urpmi medias inside chroot
     echo "Removing old urpmi repositories."
     $SUDO urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
@@ -877,6 +890,7 @@ EOF
     #update urpmi medias
     echo "Updating urpmi repositories"
     $SUDO urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
+    fi #noclean
 
     # get back to real /etc/resolv.conf
     $SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
