@@ -38,9 +38,9 @@ mount -n -t tmpfs -o mode=755 /run/initramfs/tmpfs /run/initramfs/tmpfs
 echo "aufs /run/initramfs/union aufs defaults 0 0" >> /etc/fstab
 mount -n -t aufs -o br=/run/initramfs/tmpfs:/run/initramfs/image /run/initramfs/union
 # mount ISO device in /media
-LABEL=`blkid -s LABEL -o value $realdev`
-mkdir -p /run/initramfs/union/media/$LABEL
-mount --rbind /run/initramfs/live /run/initramfs/union/media/$LABEL
+# LABEL=`blkid -s LABEL -o value $realdev`
+# mkdir -p /run/initramfs/union/media/$LABEL
+# mount --rbind /run/initramfs/live /run/initramfs/union/media/$LABEL
 
 ln -s /run/initramfs/union /dev/root
 
