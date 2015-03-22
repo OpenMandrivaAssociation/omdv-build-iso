@@ -833,11 +833,11 @@ EOF
     done
 
     # Calamares installer
-    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
-	echo "Updating calamares settings."
+#    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
+#	echo "Updating calamares settings."
 	# update patch to squashfs
-	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
-    fi
+#	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
+#    fi
 
     if [ -n "$NOCLEAN" ]; then
 
