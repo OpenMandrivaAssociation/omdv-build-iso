@@ -499,7 +499,7 @@ mkeitefi() {
 # exit if no UEFI is set or arch is not x86_64
 if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
     echo "UEFI support is not available."
-    exit 0
+    return 0
 fi
 
 echo "Setting up UEFI partiton and image."
