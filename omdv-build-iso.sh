@@ -465,6 +465,11 @@ createInitrd() {
 	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
     fi
 
+    # set default plymouth theme
+    if [ -x "$CHROOTNAME"/usr/sbin/plymouth-set-default-theme ]; then
+	"chroot $CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
+    fi
+
     # building liveinitrd
     $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
 
