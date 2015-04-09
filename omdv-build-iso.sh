@@ -269,10 +269,10 @@ updateSystem() {
 	$SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     else
 	echo "Building in user custom environment"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
 
@@ -626,7 +626,14 @@ setupSyslinux() {
 
     echo "Copy various syslinux settings"
     # copy boot menu background
-    $SUDO cp -rfT $OURDIR/extraconfig/syslinux/background.png "$2"/boot/syslinux/background.png
+    if [ -e "$1"/usr/share/mdk/backgrounds/default.png ]; then
+	# convert is needed to meet syslinux specifications
+	$SUDO convert -depth 16 -colors 65536 -resize 640x480 "$1"/usr/share/mdk/backgrounds/default.png "$2"/boot/syslinux/background.png
+    else
+	echo "Could not find default.png in iso chroot, using default background for syslinux"
+	$SUDO cp -rfT $OURDIR/extraconfig/syslinux/background.png "$2"/boot/syslinux/background.png
+    fi
+
     # copy memtest
     $SUDO cp -rfT $OURDIR/extraconfig/memtest "$2"/boot/syslinux/memtest
     $SUDO chmod +x "$2"/boot/syslinux/memtest
