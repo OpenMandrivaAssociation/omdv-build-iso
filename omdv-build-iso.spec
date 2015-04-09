@@ -21,6 +21,7 @@ Requires:	tar
 Requires:	util-linux
 Requires:	coreutils
 Requires:	timezone
+Requires:	imagemagick
 BuildArch:	noarch
 
 %description
