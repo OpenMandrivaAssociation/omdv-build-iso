@@ -4,7 +4,7 @@ Name:		omdv-build-iso
 # make dist
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
-Version:	0.0.4
+Version:	0.0.5
 Release:	1
 License:	GPL
 Group:		System/Libraries
