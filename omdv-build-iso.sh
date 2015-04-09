@@ -40,6 +40,7 @@ usage_help() {
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
+    echo " --noclean Do not clean build chroot"
     echo ""
     echo "For example:"
     echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
@@ -123,6 +124,10 @@ if [ $# -ge 1 ]; then
         	    DEBUG=debug
         	    shift
         	    ;;
+        	--noclean)
+        	    NOCLEAN=noclean
+        	    shift
+        	    ;;
         	--help)
         	    usage_help
         	    ;;
@@ -140,7 +145,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER"
+SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -161,8 +166,8 @@ elif  [ -n $WORKDIR ]; then
     if  [ -d $WORKDIR/omdv-build-iso ]; then
 	OURDIR="$WORKDIR/omdv-build-iso"
     else
-	mkdir $WORKDIR/omdv-build-iso
-	cp -r /usr/share/omdv-build-iso/ $WORKDIR/
+	mkdir -p $WORKDIR/omdv-build-iso
+	cp -r /usr/share/omdv-build-iso $WORKDIR
 	OURDIR="$WORKDIR/omdv-build-iso"
 	chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-build-iso
     fi
@@ -243,7 +248,7 @@ error() {
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
-if [ "$DEBUG" == "nodebug" ]; then
+if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ]; then
     $SUDO rm -rf $(dirname "$FILELISTS")
     umountAll "$CHROOTNAME"
     $SUDO rm -rf "$ROOTNAME"
@@ -264,10 +269,10 @@ updateSystem() {
 	$SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc coreutils --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     else
 	echo "Building in user custom environment"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc coreutils --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
 
@@ -360,6 +365,12 @@ createChroot() {
     # Make sure /proc, /sys and friends are mounted so %post scripts can use them
     $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
 
+    # Do not clean build chroot
+    if [ ! -f "$CHROOTNAME"/.noclean ]; then
+    if [ -n "$NOCLEAN" ]; then
+	touch "$CHROOTNAME"/.noclean
+    fi
+
     echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
 
     if [ "$FREE" = "0" ]; then
@@ -403,7 +414,7 @@ createChroot() {
 	echo "Syslinux is missing in chroot. Installing it."
 	$SUDO urpmi --urpmi-root "$CHROOTNAME" --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto syslinux
     fi
-
+    fi #noclean
     # check CHROOT
     if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 	echo "Broken chroot installation. Exiting"
@@ -454,6 +465,11 @@ createInitrd() {
 	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
     fi
 
+    # set default plymouth theme
+    if [ -x "$CHROOTNAME"/usr/sbin/plymouth-set-default-theme ]; then
+	"chroot $CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
+    fi
+
     # building liveinitrd
     $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
 
@@ -485,9 +501,11 @@ createInitrd() {
 
 mkeitefi() {
 
-# exit this function if not x86_64
-[ "$EXTARCH" != "x86_64" ] && exit 0
-[ "$UEFI" != "1" ] && exit 0
+# exit if no UEFI is set or arch is not x86_64
+if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
+    echo "UEFI support is not available."
+    return 0
+fi
 
 echo "Setting up UEFI partiton and image."
 
@@ -508,8 +526,8 @@ echo "Setting up UEFI partiton and image."
     $SUDO dd if=/dev/zero of=$IMGNME  bs=2048 count=$PARTSIZE
 
     if [[ $? != 0 ]]; then
-	    echo "Failed creating UEFI image. Exiting."
-	    error
+	echo "Failed creating UEFI image. Exiting."
+	error
     fi
 
     losetup -D
@@ -608,7 +626,14 @@ setupSyslinux() {
 
     echo "Copy various syslinux settings"
     # copy boot menu background
-    $SUDO cp -rfT $OURDIR/extraconfig/syslinux/background.png "$2"/boot/syslinux/background.png
+    if [ -e "$1"/usr/share/mdk/backgrounds/default.png ]; then
+	# convert is needed to meet syslinux specifications
+	$SUDO convert -depth 16 -colors 65536 -resize 640x480 "$1"/usr/share/mdk/backgrounds/default.png "$2"/boot/syslinux/background.png
+    else
+	echo "Could not find default.png in iso chroot, using default background for syslinux"
+	$SUDO cp -rfT $OURDIR/extraconfig/syslinux/background.png "$2"/boot/syslinux/background.png
+    fi
+
     # copy memtest
     $SUDO cp -rfT $OURDIR/extraconfig/memtest "$2"/boot/syslinux/memtest
     $SUDO chmod +x "$2"/boot/syslinux/memtest
@@ -618,12 +643,13 @@ setupSyslinux() {
     # UEFI support
     if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
 	export UEFI=1
-	$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale
+	$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale "$2"/boot/grub2
 	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
 	#For bootable iso's we may need grub.efi as BOOTX64.efi
 	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
 #	$SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output="$1"/EFI/BOOT/BOOTX64.efi /EFI/BOOT/grub.cfg
 #	$SUDO mv -f "$1"/EFI/BOOT/BOOTX64.efi "$2"/EFI/BOOT/BOOTX64.efi
+	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/boot/grub2/grub.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 	$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
@@ -749,7 +775,7 @@ EOF
 		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO sed -i -e "s/^Session.*/Session=$TYPE/g" -e 's/^User.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
+		    $SUDO sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
 		    ;;
 		"gdm")
 		    $SUDO sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
@@ -819,11 +845,13 @@ EOF
     done
 
     # Calamares installer
-    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
-	echo "Updating calamares settings."
+#    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
+#	echo "Updating calamares settings."
 	# update patch to squashfs
-	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
-    fi
+#	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
+#    fi
+
+    if [ -n "$NOCLEAN" ]; then
 
     # add urpmi medias inside chroot
     echo "Removing old urpmi repositories."
@@ -840,9 +868,9 @@ EOF
     else
 	# use hack for our mirrorlist url
 	if [[ ${TREE,,} =~ ^openmandriva* ]]; then
-    	MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
 	else
-    	MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
 	fi
 	echo "Using $MIRROLIST"
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
@@ -874,6 +902,7 @@ EOF
     #update urpmi medias
     echo "Updating urpmi repositories"
     $SUDO urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
+    fi #noclean
 
     # get back to real /etc/resolv.conf
     $SUDO rm -f "$CHROOTNAME"/etc/resolv.conf

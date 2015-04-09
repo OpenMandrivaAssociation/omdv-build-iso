@@ -27,4 +27,4 @@ info "root was $liveroot, is now $root"
 # make sure that init doesn't complain
 [ -z "$root" ] && root="live"
 
-wait_for_dev /live/union
+wait_for_dev /run/initramfs/union
