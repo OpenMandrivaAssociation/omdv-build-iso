@@ -598,10 +598,10 @@ setupSyslinux() {
     # it is important to detect syslinux version
     syslinux_ver=`chroot "$1" rpm -qa syslinux --queryformat '%{VERSION}'`
     if (( ${syslinux_ver%%.*} >= 6 )); then
-	echo "Detected syslinux verion 6 or greater"
+	echo "Detected syslinux version 6 or greater"
 	syslinux_libs="isolinux.bin libcom32.c32 libutil.c32 libmenu.c32 libgpl.c32 menu.c32 gfxboot.c32 vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 ldlinux.c32 isohdpfx.bin memdisk"
     else
-	echo "Detected syslinux verion older than 6"
+	echo "Detected syslinux version older than 6"
 	syslinux_libs="isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk"
     fi
     for i in $syslinux_libs ; do
