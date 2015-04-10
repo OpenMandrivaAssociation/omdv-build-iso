@@ -171,6 +171,7 @@ elif  [ -n $WORKDIR ]; then
 	OURDIR="$WORKDIR/omdv-build-iso"
 	chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-build-iso
     fi
+    BUILD_ID=$(($RANDOM%9999+1000))
 else
     # For local builds put the working directory containing.
     # the package lists into the $WORKDIR if it is defined.
@@ -205,9 +206,9 @@ LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
     if [ -z $ABF ]; then
-	WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
+	WORKDIR="`mktemp -d ~/omv-build-chroot-$EXTARCH`"
     else
-	WORKDIR="`mktmp -d /tmp/isobuildrootXXXXXX`"
+	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
 fi
 
@@ -499,7 +500,9 @@ createInitrd() {
 
 }
 
-mkeitefi() {
+createUEFI() {
+# Usage: createEFI <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
+# Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
 # exit if no UEFI is set or arch is not x86_64
 if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
@@ -508,9 +511,6 @@ if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
 fi
 
 echo "Setting up UEFI partiton and image."
-
-# Usage: mkeitefi <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
-# Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
     IMGNME="$ISOROOTNAME"/boot/syslinux/efiboot.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
@@ -594,7 +594,17 @@ setupSyslinux() {
     $SUDO chmod 1777 "$2"/boot/syslinux
     # install syslinux programs
     echo "Installing syslinux programs."
-    for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk; do
+
+    # it is important to detect syslinux version
+    syslinux_ver=`chroot "$1" rpm -qa syslinux --queryformat '%{VERSION}'`
+    if (( ${syslinux_ver%%.*} >= 6 )); then
+	echo "Detected syslinux version 6 or greater"
+	syslinux_libs="isolinux.bin libcom32.c32 libutil.c32 libmenu.c32 libgpl.c32 menu.c32 gfxboot.c32 vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 ldlinux.c32 isohdpfx.bin memdisk"
+    else
+	echo "Detected syslinux version older than 6"
+	syslinux_libs="isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk"
+    fi
+    for i in $syslinux_libs ; do
 	if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
 	    echo "$i does not exists. Exiting."
 	    error
@@ -628,7 +638,7 @@ setupSyslinux() {
     # copy boot menu background
     if [ -e "$1"/usr/share/mdk/backgrounds/default.png ]; then
 	# convert is needed to meet syslinux specifications
-	$SUDO convert -depth 16 -colors 65536 -resize 640x480 "$1"/usr/share/mdk/backgrounds/default.png "$2"/boot/syslinux/background.png
+	$SUDO convert -depth 16 -resize 640x480 "$1"/usr/share/mdk/backgrounds/default.png "$2"/boot/syslinux/background.png
     else
 	echo "Could not find default.png in iso chroot, using default background for syslinux"
 	$SUDO cp -rfT $OURDIR/extraconfig/syslinux/background.png "$2"/boot/syslinux/background.png
@@ -652,10 +662,10 @@ setupSyslinux() {
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/boot/grub2/grub.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
-	$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
-	$SUDO sed -i -e "s,@LABEL@,$LABEL,g" "$2"/EFI/BOOT/*.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
+	sed -i -e "s/%LABEL%/${LABEL}/g" "$2"/EFI/BOOT/*.cfg
+	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$2"/EFI/BOOT/themes/OpenMandriva/theme.txt
 	# (tpg) looks like fonts are in themes dir for 2015.0
 	# need to adapt this for n < 2015.0
 	#for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
@@ -672,6 +682,11 @@ setupSyslinux() {
 
     # adjust syslinux config
     sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE}/g" -e "s/%BUILD_ID%/BUILD ID: ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
+
+    # workaround for flickering whitebox when booting ISO
+    if (( ${syslinux_ver%%.*} < 6 )); then
+	sed -i -e "s/vga=current/vga=784/g" "$2"/boot/syslinux/syslinux.cfg
+    fi
 
     $SUDO chmod 0755 "$2"/boot/syslinux
 
@@ -1017,7 +1032,7 @@ getPkgList
 createChroot
 createInitrd
 setupBootloader
-mkeitefi
+createUEFI
 setupISOenv
 createSquash
 buildIso
