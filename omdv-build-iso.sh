@@ -207,7 +207,7 @@ if [ -z "$WORKDIR" ]; then
     if [ -z $ABF ]; then
 	WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
     else
-	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+	WORKDIR="`mktmp -d /tmp/isobuildrootXXXXXX`"
     fi
 fi
 
