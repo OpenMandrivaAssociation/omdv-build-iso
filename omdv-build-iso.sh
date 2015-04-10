@@ -171,6 +171,7 @@ elif  [ -n $WORKDIR ]; then
 	OURDIR="$WORKDIR/omdv-build-iso"
 	chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-build-iso
     fi
+    BUILD_ID=$(($RANDOM%9999+1000))
 else
     # For local builds put the working directory containing.
     # the package lists into the $WORKDIR if it is defined.
@@ -594,7 +595,17 @@ setupSyslinux() {
     $SUDO chmod 1777 "$2"/boot/syslinux
     # install syslinux programs
     echo "Installing syslinux programs."
-    for i in isolinux.bin libcom32.c32 libutil.c32 libmenu.c32 libgpl.c32 menu.c32 gfxboot.c32 vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 ldlinux.c32 isohdpfx.bin memdisk; do
+
+    # it is important to detect syslinux version
+    syslinux_ver=`chroot "$1" rpm -qa syslinux --queryformat '%{VERSION}'`
+    if (( ${syslinux_ver%%.*} >= 6 )); then
+	echo "Detected syslinux verion 6 or greater"
+	syslinux_libs="isolinux.bin libcom32.c32 libutil.c32 libmenu.c32 libgpl.c32 menu.c32 gfxboot.c32 vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 ldlinux.c32 isohdpfx.bin memdisk"
+    else
+	echo "Detected syslinux verion older than 6"
+	syslinux_libs="isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk"
+    fi
+    for i in $syslinux_libs ; do
 	if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
 	    echo "$i does not exists. Exiting."
 	    error
@@ -652,10 +663,10 @@ setupSyslinux() {
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/boot/grub2/grub.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
-	$SUDO sed -i -e "s,@VERSION@,$VERSION,g" "$2"/EFI/BOOT/*.cfg
-	$SUDO sed -i -e "s,@LABEL@,$LABEL,g" "$2"/EFI/BOOT/*.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
+	sed -i -e "s/%LABEL%/${LABEL}/g" "$2"/EFI/BOOT/*.cfg
+	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$2"/EFI/BOOT/themes/OpenMandriva/theme.txt
 	# (tpg) looks like fonts are in themes dir for 2015.0
 	# need to adapt this for n < 2015.0
 	#for i in dejavu_sans_bold_14.pf2 dejavu_sans_mono_11.pf2 terminal_font_11.pf2 unicode.pf2; do
