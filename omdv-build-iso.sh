@@ -500,7 +500,9 @@ createInitrd() {
 
 }
 
-mkeitefi() {
+createUEFI() {
+# Usage: createEFI <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
+# Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
 # exit if no UEFI is set or arch is not x86_64
 if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
@@ -509,9 +511,6 @@ if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
 fi
 
 echo "Setting up UEFI partiton and image."
-
-# Usage: mkeitefi <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
-# Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
     IMGNME="$ISOROOTNAME"/boot/syslinux/efiboot.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
@@ -1028,7 +1027,7 @@ getPkgList
 createChroot
 createInitrd
 setupBootloader
-mkeitefi
+createUEFI
 setupISOenv
 createSquash
 buildIso
