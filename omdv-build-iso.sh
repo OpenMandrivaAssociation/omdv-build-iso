@@ -594,7 +594,7 @@ setupSyslinux() {
     $SUDO chmod 1777 "$2"/boot/syslinux
     # install syslinux programs
     echo "Installing syslinux programs."
-    for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.com chain.c32 isohdpfx.bin memdisk; do
+    for i in isolinux.bin vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 isohdpfx.bin memdisk; do
 	if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
 	    echo "$i does not exists. Exiting."
 	    error
