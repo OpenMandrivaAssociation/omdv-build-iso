@@ -467,7 +467,7 @@ createInitrd() {
 
     # set default plymouth theme
     if [ -x "$CHROOTNAME"/usr/sbin/plymouth-set-default-theme ]; then
-	"chroot $CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
+	chroot "$CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
     fi
 
     # building liveinitrd
@@ -594,7 +594,7 @@ setupSyslinux() {
     $SUDO chmod 1777 "$2"/boot/syslinux
     # install syslinux programs
     echo "Installing syslinux programs."
-    for i in isolinux.bin libcom32.c32 libutil.c32 menu.c32 gfxboot.c32 vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 ldlinux.c32 isohdpfx.bin memdisk; do
+    for i in isolinux.bin libcom32.c32 libutil.c32 libmenu.c32 libgpl.c32 menu.c32 gfxboot.c32 vesamenu.c32 hdt.c32 poweroff.c32 chain.c32 ldlinux.c32 isohdpfx.bin memdisk; do
 	if [ ! -f "$1"/usr/lib/syslinux/$i ]; then
 	    echo "$i does not exists. Exiting."
 	    error
@@ -628,7 +628,7 @@ setupSyslinux() {
     # copy boot menu background
     if [ -e "$1"/usr/share/mdk/backgrounds/default.png ]; then
 	# convert is needed to meet syslinux specifications
-	$SUDO convert -depth 16 -colors 65536 -resize 640x480 "$1"/usr/share/mdk/backgrounds/default.png "$2"/boot/syslinux/background.png
+	$SUDO convert -depth 16 -resize 640x480 "$1"/usr/share/mdk/backgrounds/default.png "$2"/boot/syslinux/background.png
     else
 	echo "Could not find default.png in iso chroot, using default background for syslinux"
 	$SUDO cp -rfT $OURDIR/extraconfig/syslinux/background.png "$2"/boot/syslinux/background.png
