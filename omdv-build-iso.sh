@@ -683,6 +683,11 @@ setupSyslinux() {
     # adjust syslinux config
     sed -i -e "s/%VERSION%/$VERSION/g" -e "s/%EXTARCH%/${EXTARCH}/g" -e "s/%TYPE%/${TYPE}/g" -e "s/%BUILD_ID%/BUILD ID: ${BUILD_ID}/g" -e "s/%LABEL%/${LABEL}/g" "$2"/boot/syslinux/syslinux.cfg
 
+    # workaround for flickering whitebox when booting ISO
+    if (( ${syslinux_ver%%.*} < 6 )); then
+	sed -i -e "s/vga=current/vga=784/g" "$2"/boot/syslinux/syslinux.cfg
+    fi
+
     $SUDO chmod 0755 "$2"/boot/syslinux
 
     echo "syslinux setup completed."
