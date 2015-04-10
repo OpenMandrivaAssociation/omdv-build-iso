@@ -467,7 +467,7 @@ createInitrd() {
 
     # set default plymouth theme
     if [ -x "$CHROOTNAME"/usr/sbin/plymouth-set-default-theme ]; then
-	"chroot $CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
+	chroot "$CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
     fi
 
     # building liveinitrd
