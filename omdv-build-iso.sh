@@ -205,7 +205,7 @@ LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
     if [ -z $ABF ]; then
-	WORKDIR="`mktmp -d ~/omv-build-chroot-$EXTARCH`"
+	WORKDIR="`mktemp -d ~/omv-build-chroot-$EXTARCH`"
     else
 	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
