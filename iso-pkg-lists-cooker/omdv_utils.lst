@@ -27,7 +27,7 @@ lvm2 #utils
 microcode #utils old
 nail #utils
 ndiswrapper #utils
-net_monitor #utils
+#net_monitor #utils
 nfs-utils #utils
 nfs-utils-clients #utils
 networkmanager-openvpn #utils

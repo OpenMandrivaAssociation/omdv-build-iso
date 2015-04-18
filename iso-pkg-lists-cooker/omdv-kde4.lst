@@ -85,7 +85,7 @@ samba-server #server
 
 #python deps?
 #python-ldap
-python-notify
+#python-notify
 #python-OpenSSL
 #python-pycrypto
 python-sip
