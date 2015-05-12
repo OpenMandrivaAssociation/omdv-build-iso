@@ -964,7 +964,7 @@ buildIso() {
 
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
-    elif [ -n "$OUTPUTDIR" ]; then
+    elif [ -z "$OUTPUTDIR" ]; then
 	ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
