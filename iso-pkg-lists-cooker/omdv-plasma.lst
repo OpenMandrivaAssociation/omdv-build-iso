@@ -17,7 +17,7 @@
 %include .///omdv_vlc.lst
 
 # Desktop Specifics
-task-plasma5
+task-plasma
 # %include .///omdv_kde4_apps.lst
 
 # Needed Task/Meta Packages
@@ -59,7 +59,7 @@ gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
 ia_ora-gnome #gtk dep
-notification-daemon #dubious virt req
+#notification-daemon #dubious virt req
 pango #gtk dep
 
 # Support for talking to wrongPhone/wrongPad
@@ -87,8 +87,8 @@ samba-server #server
 #python-notify
 #python-OpenSSL
 #python-pycrypto
-python-sip
-pyxdg
+#python-sip
+#pyxdg
 
 # special featured software
 #oma-welcome

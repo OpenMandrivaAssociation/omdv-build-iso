@@ -10,7 +10,7 @@ PATH=/usr/sbin:/usr/bin:/sbin:/bin
 livedev="$1"
 
 # create live tree
-mkdir -m 0755 -p /run/initramfs/live
+mkdir -m 0755 -p /run/initramfs/omdv
 mkdir -m 0755 -p /run/initramfs/image
 mkdir -m 0755 -p /run/initramfs/tmpfs
 mkdir -m 0755 -p /run/initramfs/union
@@ -23,24 +23,18 @@ realdev=$(echo $livedev |sed 's,\(/dev/sd[a-z]\)[1-9],\1,g')
 # mount the live media
 getargbool 0 UEFI && liveuefi="yes"
 if [ -n "$liveuefi" ]; then
-    mount -n -t vfat -o ro $livedev /run/initramfs/live
+    mount -n -t vfat -o ro $livedev /run/initramfs/omdv
 else
-    mount -n -t iso9660 -o ro $realdev /run/initramfs/live
+    mount -n -t iso9660 -o ro $realdev /run/initramfs/omdv
 fi
 
 LOOPDEV=$( losetup -f )
-losetup -r $LOOPDEV /run/initramfs/live/LiveOS/squashfs.img
-# sleep for a while to get loopdev mounted
-sleep 1
+losetup -r $LOOPDEV /run/initramfs/omdv/LiveOS/squashfs.img
 mount -n -t squashfs -o ro $LOOPDEV /run/initramfs/image
 mount -n -t tmpfs -o mode=755 /run/initramfs/tmpfs /run/initramfs/tmpfs
 # mount aufs as new root
 echo "aufs /run/initramfs/union aufs defaults 0 0" >> /etc/fstab
 mount -n -t aufs -o br=/run/initramfs/tmpfs:/run/initramfs/image /run/initramfs/union
-# mount ISO device in /media
-# LABEL=`blkid -s LABEL -o value $realdev`
-# mkdir -p /run/initramfs/union/media/$LABEL
-# mount --rbind /run/initramfs/live /run/initramfs/union/media/$LABEL
 
 ln -s /run/initramfs/union /dev/root
 
