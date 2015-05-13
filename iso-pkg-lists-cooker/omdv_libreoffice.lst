@@ -2,7 +2,8 @@ libreoffice-calc
 libreoffice-common
 libreoffice-draw
 libreoffice-impress
-libreoffice-kde4
+# (tpg) disable it for Plasma
+# libreoffice-kde4
 libreoffice-math
 libreoffice-style-crystal
 libreoffice-style-oxygen
