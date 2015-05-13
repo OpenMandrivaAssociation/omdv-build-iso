@@ -30,6 +30,8 @@ fi
 
 LOOPDEV=$( losetup -f )
 losetup -r $LOOPDEV /run/initramfs/omdv/LiveOS/squashfs.img
+# sleep for a while to get loopdev mounted
+sleep 1
 mount -n -t squashfs -o ro $LOOPDEV /run/initramfs/image
 mount -n -t tmpfs -o mode=755 /run/initramfs/tmpfs /run/initramfs/tmpfs
 # mount aufs as new root
