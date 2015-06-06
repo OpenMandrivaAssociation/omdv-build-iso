@@ -7,61 +7,18 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-%include .///omdv_calligra.lst
+%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_vlc.lst
 
 # Desktop Specifics
-task-lxqt
-apper
-ark
-cantata
-lximage-qt
-meteo-qt
-networkmanager-applet
-notepadqq
-owncloudclient
-qterminal
-quassel
-qupzilla
-rosa-imagewriter
-sddm
-silicon-audio-disc
-silicon-converter
-silicon-copy-disc
-silicon-database
-silicon-data-disc
-silicon-disc-details
-silicon-disc-eraser
-silicon-disc-imaging
-silicon-disc-scanner
-silicon-image-burner
-silicon-library
-silicon-limoo
-silicon-mounter
-silicon-sample-app
-silicon-script-runner
-silicon-tagarg-player
-silicon-themes
-silicon-plugin-audio-cd-record
-silicon-plugin-cd-record
-silicon-plugin-eraser
-silicon-plugin-fuseiso
-silicon-plugin-lyric-browser
-silicon-plugin-mkdiscfs
-silicon-plugin-mkisofs
-silicon-plugin-mpg123
-silicon-plugin-now-playing
-silicon-plugin-read-cd
-silicon-plugin-single-inner-dialog
-silicon-plugin-system-tray
-silicon-plugin-tagarg-audio-disc
-silicon-plugin-udisks
-trojita
+task-plasma
+# %include .///omdv_kde4_apps.lst
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -75,15 +32,12 @@ system-config-printer-gui #printer
 x11-font-cyrillic
 # keep to check
 x11-server-xorg
-x11-server-xwayland
 x11-compose-cache
 x11-tools
-#x11-docs
+x11-docs
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
-xscreensaver
-xscreensaver-base
 edidbins
 
 # MD this entire list should be shuffled or justified to be needed for the full ISO
@@ -91,6 +45,7 @@ edidbins
 avahi #service
 cagibi #service
 firewall-applet #service
+# jackit #service
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
@@ -103,8 +58,8 @@ gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
-ia_ora-gnome #gtk dep
-notification-daemon #dubious virt req
+# ia_ora-gnome #gtk dep
+#notification-daemon #dubious virt req
 pango #gtk dep
 
 # Support for talking to wrongPhone/wrongPad
@@ -127,6 +82,13 @@ sasl-plug-gssapi
 openssh-server #server
 samba-server #server
 
+#python deps?
+#python-ldap
+#python-notify
+#python-OpenSSL
+#python-pycrypto
+#python-sip
+#pyxdg
+
 # special featured software
 #oma-welcome
-

@@ -35,7 +35,7 @@ usage_help() {
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
-    echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
+    echo " --type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
     echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
@@ -77,6 +77,9 @@ if [ $# -ge 1 ]; then
 		    declare -l lc
 		    lc=${k#*=}
 			case "$lc" in
+			    plasma)
+				TYPE=PLASMA
+				;;
 			    kde4)
 				TYPE=KDE4
 				;;
@@ -961,7 +964,7 @@ buildIso() {
 
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
-    elif [ -n "$OUTPUTDIR" ]; then
+    elif [ -z "$OUTPUTDIR" ]; then
 	ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
