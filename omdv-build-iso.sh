@@ -788,13 +788,13 @@ EOF
     if [ "${TYPE,,}" != "minimal" ]; then
 	case ${DISPLAYMANAGER,,} in
 		"kdm")
-		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
+		    $SUDO chroot "$CHROOTNAME" sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' /usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
+		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 		    ;;
 		"gdm")
-		    $SUDO sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
+		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
 		    ;;
 		*)
 		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
