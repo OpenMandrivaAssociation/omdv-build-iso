@@ -775,6 +775,7 @@ EOF
     $SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/live/.local
     $SUDO mkdir -p "$CHROOTNAME"/home/live/.cache
     $SUDO chroot "$CHROOTNAME" chown 500:500 /home/live/.cache
+    $SUDO chroot "$CHROOTNAME" /bin/cp /usr/share/applications/openmandriva-draklive-install.desktop /home/live/Desktop
 
     # KDE4 related settings
     if [ "${TYPE,,}" = "kde4" ]; then
