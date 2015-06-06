@@ -19,8 +19,10 @@ install() {
     inst_multiple -o eject
 
     inst_hook cmdline 30 "$moddir/liveiso-parse.sh"
+    inst_hook cmdline 31 "$moddir/parse-iso-scan.sh"
     inst_hook pre-udev 30 "$moddir/liveiso-genrules.sh"
     inst "$moddir/liveiso-root.sh" "/sbin/liveiso-root"
+    inst_script "$moddir/iso-scan.sh" "/sbin/iso-scan"
     # should probably just be generally included
     inst_rules 60-cdrom_id.rules
 }
