@@ -220,7 +220,7 @@ ISOROOTNAME="$WORKDIR"/ISO
 #UUID Generation. xorriso needs a string of 16 asci digits.
 # grub2 needs dashes to separate the fields..
 GRUB_UUID="`date -u +%Y-%m-%d-%H-%M-%S-00`"
-ISO_DATE="`echo GRUB_UUID | sed -e s/-//g`"
+ISO_DATE="`echo $GRUB_UUID | sed -e s/-//g`"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
 
