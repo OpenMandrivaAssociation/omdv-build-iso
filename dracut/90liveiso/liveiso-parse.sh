@@ -21,6 +21,10 @@ case "$liveroot" in
         root="$(echo $root | sed 's,/,\\x2f,g')"
         root="live:/dev/disk/by-label/${root#LABEL=}"
         rootok=1 ;;
+    live:UUID=*|UUID=*) \
+        root="${root#live:}"
+        root="live:/dev/disk/by-uuid/${root#UUID=}"
+        rootok=1 ;;
 esac
 info "root was $liveroot, is now $root"
 
