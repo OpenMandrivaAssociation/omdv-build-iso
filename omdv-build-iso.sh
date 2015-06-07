@@ -148,7 +148,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER"
+SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -246,7 +246,6 @@ umountAll() {
     $SUDO umount -l "$1"/dev || :
 }
 
-#FIX ME:
 error() {
     echo "Something went wrong. Exiting"
     unset KERNEL_ISO
@@ -289,7 +288,6 @@ getPkgList() {
         BRANCH="$TREE"
     fi
 
-#FIX ME
 # update iso-pkg-lists from ABF if missing
 # we need to do this for ABF to ensure any edits have been included
 # Do we need to do this if people are using the tool locally?
@@ -298,8 +296,8 @@ getPkgList() {
 	echo "Could not find $OURDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
 	# download iso packages lists from www.abf.io
 	PKGLIST="https://abf.io/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
-	$SUDO  wget --tries=10 -O iso-pkg-lists-$BRANCH.tar.gz --content-disposition $PKGLIST ;echo "$HOME"
-	$SUDO tar -xf iso-pkg-lists-$BRANCH.tar.gz
+	$SUDO  wget --tries=10 -O `echo "$OURDIR/iso-pkg-lists-$BRANCH.tar.gz"` --content-disposition $PKGLIST
+	$SUDO tar zxfC $OURDIR/iso-pkg-lists-$BRANCH.tar.gz $OURDIR
 	# Why not retain the unique list name it will help when people want their own spins ?
 	$SUDO rm -f iso-pkg-lists-$BRANCH.tar.gz
    fi
@@ -675,7 +673,7 @@ setupSyslinux() {
 	#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
 	#done
 	# EFI options for xorriso
-	XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e boot/syslinux/efiboot.img -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME"/boot/syslinux/efiboot.img"
+		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME/boot/syslinux/efiboot.img
     fi
 
     echo "Create syslinux menu"
@@ -790,13 +788,13 @@ EOF
     if [ "${TYPE,,}" != "minimal" ]; then
 	case ${DISPLAYMANAGER,,} in
 		"kdm")
-		    $SUDO chroot "$CHROOTNAME" sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' /usr/share/config/kdm/kdmrc
+		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+		    $SUDO sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
 		    ;;
 		"gdm")
-		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
+		    $SUDO sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
 		    ;;
 		*)
 		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
@@ -939,7 +937,14 @@ EOF
 
 createSquash() {
     echo "Starting squashfs image build."
-
+	# Before we do anything check if we are a local build
+    if [ -n $ABF ]; then 
+	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
+	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
+	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
+	# that there will be enough diskspace to complete the operation.
+    $SUDO umount -l "$1"/run/os-prober/dev/*
+    fi
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
     fi
