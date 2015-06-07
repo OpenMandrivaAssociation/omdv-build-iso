@@ -1,3 +1,10 @@
+2015-06-07 12:55:39_+0000 itchka (Colin Close)
+
+	* Fix download and unpacking of iso package lists for user centric mode
+	* Add USB-3 kernel modules to dracut
+	* Fix mem stick booting
+	* Export additional variables to SUDO env for user centric mode
+
 2015-04-10 00:06:01 +0200 tpg (Tomasz Paweł Gajc) 
 
 	* use background from chroot theme for syslinux (HEAD, origin/master, origin/HEAD, master)
