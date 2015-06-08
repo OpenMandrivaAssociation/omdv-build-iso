@@ -16,8 +16,8 @@ grub2
 grub2-efi
 gnu-efi
 efibootmgr
-kernel-nrjQL-desktop-latest
-kernel-nrjQL-desktop
+kernel-nrj-desktop-latest
+kernel-nrj-desktop
 isolinux
 nscd
 openssh-clients
