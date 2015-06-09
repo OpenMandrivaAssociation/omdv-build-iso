@@ -41,6 +41,7 @@ usage_help() {
     echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
     echo " --noclean Do not clean build chroot"
+    echo " --boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
     echo ""
     echo "For example:"
     echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
@@ -73,6 +74,10 @@ if [ $# -ge 1 ]; then
         	    RELEASE_ID=${k#*=}
         	    shift
         	    ;;
+                --boot-kernel-type=*)
+		    BOOT_KERNEL_TYPE=${k#*=}
+		   shift
+		   ;;
 		--type=*)
 		    declare -l lc
 		    lc=${k#*=}
@@ -382,6 +387,7 @@ createChroot() {
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
     else
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
+        $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
 	# this one is needed to grab firmwares
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
@@ -430,6 +436,8 @@ createChroot() {
     pushd "$CHROOTNAME"/lib/modules
 	KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
 	export KERNEL_ISO
+        BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
+        export BOOT_KERNEL_ISO
     popd
 
 }
@@ -476,7 +484,7 @@ createInitrd() {
     fi
 
     # building liveinitrd
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $BOOT_KERNEL_ISO
 
     if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	echo "File "$CHROOTNAME"/boot/liveinitrd.img does not exist. Exiting."
@@ -623,8 +631,8 @@ setupSyslinux() {
     $SUDO mkdir -p "$2"/LiveOS
 
     echo "Installing liveinitrd inside syslinux"
-    if [ -e "$1"/boot/vmlinuz-$KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
-	$SUDO cp -a "$1"/boot/vmlinuz-$KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
+    if [ -e "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
+	$SUDO cp -a "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
 	$SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/syslinux/liveinitrd.img
     else
 	echo "vmlinuz or liveinitrd does not exists. Exiting."

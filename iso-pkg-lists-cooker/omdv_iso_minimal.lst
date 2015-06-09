@@ -13,6 +13,7 @@ gpm
 grub2
 grub2-efi
 efibootmgr
+kernel-nrj-desktop
 kernel-nrjQL-desktop-latest
 kernel-nrjQL-desktop
 syslinux
