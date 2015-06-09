@@ -387,7 +387,6 @@ createChroot() {
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
     else
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
-        $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
 	# this one is needed to grab firmwares
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
