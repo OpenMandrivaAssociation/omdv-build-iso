@@ -437,6 +437,9 @@ createChroot() {
 	export KERNEL_ISO
         BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
         export BOOT_KERNEL_ISO
+        if [ -n "$BOOT_KERNEL_TYPE" ]; then
+            $SUDO echo $BOOT_KERNEL_TYPE > "$CHROOTNAME"/boot_kernel
+        fi
     popd
 
 }
