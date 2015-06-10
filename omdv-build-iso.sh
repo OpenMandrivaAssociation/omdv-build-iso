@@ -217,7 +217,10 @@ fi
 
 CHROOTNAME="$WORKDIR"/BASE
 ISOROOTNAME="$WORKDIR"/ISO
-ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
+#UUID Generation. xorriso needs a string of 16 asci digits.
+# grub2 needs dashes to separate the fields..
+GRUB_UUID="`date -u +%Y-%m-%d-%H-%M-%S-00`"
+ISO_DATE="`echo $GRUB_UUID | sed -e s/-//g`"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
 
@@ -665,7 +668,7 @@ setupSyslinux() {
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
-	sed -i -e "s/%LABEL%/${LABEL}/g" "$2"/EFI/BOOT/*.cfg
+        $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/EFI/BOOT/*.cfg
 	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$2"/EFI/BOOT/themes/OpenMandriva/theme.txt
 	# (tpg) looks like fonts are in themes dir for 2015.0
 	# need to adapt this for n < 2015.0
