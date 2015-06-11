@@ -455,7 +455,7 @@ createInitrd() {
     fi
 
     # build initrd for syslinux
-    echo "Building liveinitrd-$KERNEL_ISO for syslinux"
+    echo "Building liveinitrd-$BOOT_KERNEL_ISO for syslinux"
     if [ ! -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
 	echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 	error
