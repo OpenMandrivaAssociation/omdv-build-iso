@@ -989,7 +989,7 @@ buildIso() {
 # Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
 
     echo "Removing old iso."
-    if [ -z "$ABF" ] && [ -z "$ISOFILE" ]; then
+    if [ -z "$ABF" ] && [ -n "$ISOFILE" ]; then
 	$SUDO rm -rf "$ISOFILE"
     fi
     echo "Building ISO with options ${XORRISO_OPTIONS}"
