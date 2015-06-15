@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
@@ -46,7 +46,7 @@ usage_help() {
     echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
     echo ""
     echo "Exiting."
-    exit 1
+#    exit 1
 }
 
 # use only allowed arguments
@@ -193,12 +193,6 @@ else
 fi
 
 # default definitions
-
-#UUID Generation. xorriso needs a string of 16 asci digits.
-# grub2 needs dashes to separate the fields. 
-GRUB_UUID="`date -u +%Y-%m-%d-%H-%M-%S-00`"
-ISO_DATE="`echo GRUB_UUID | sed -e s/-//g`"
-
 DIST=omdv
 [ -z "$EXTARCH" ] && EXTARCH=`uname -m`
 [ -z "${TREE}" ] && TREE=cooker
@@ -983,7 +977,7 @@ buildIso() {
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
-	ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
+	ISOFILE="/home/$OLDUSER/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
     fi
