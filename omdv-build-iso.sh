@@ -35,7 +35,7 @@ usage_help() {
     echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
     echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
     echo " --release_id= Release identifer: alpha, beta, rc, final"
-    echo " --type= User environment type on ISO: KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
+    echo " --type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
     echo " --displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
@@ -77,6 +77,9 @@ if [ $# -ge 1 ]; then
 		    declare -l lc
 		    lc=${k#*=}
 			case "$lc" in
+			    plasma)
+				TYPE=PLASMA
+				;;
 			    kde4)
 				TYPE=KDE4
 				;;
@@ -220,7 +223,10 @@ fi
 
 CHROOTNAME="$WORKDIR"/BASE
 ISOROOTNAME="$WORKDIR"/ISO
-ISO_DATE="`echo $(date -u +%Y-%m-%d-%H-%M-%S-00) | sed -e s/-//g`"
+#UUID Generation. xorriso needs a string of 16 asci digits.
+# grub2 needs dashes to separate the fields..
+GRUB_UUID="`date -u +%Y-%m-%d-%H-%M-%S-00`"
+ISO_DATE="`echo $GRUB_UUID | sed -e s/-//g`"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
 
@@ -375,8 +381,10 @@ createChroot() {
     if [ -n "$NOCLEAN" ]; then
 	touch "$CHROOTNAME"/.noclean
     fi	
-    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
 
+  if [ ! -f "$CHROOTNAME"/.noclean ]; then
+
+    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
     if [ "$FREE" = "0" ]; then
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
     else
@@ -392,7 +400,7 @@ createChroot() {
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
 	fi
     fi
-
+  fi
     # update medias
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
@@ -406,6 +414,8 @@ createChroot() {
     $SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
     # start rpm packages installation
+    # but only if .noclean does not exist
+if [ ! -f "$CHROOTNAME"/.noclean ]; then
     echo "Start installing packages in $CHROOTNAME"
     parsePkgList "$FILELISTS" | xargs $SUDO urpmi --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
 
@@ -419,6 +429,7 @@ createChroot() {
 	$SUDO urpmi --urpmi-root "$CHROOTNAME" --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto syslinux
     fi
     fi #noclean
+fi
     # check CHROOT
     if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 	echo "Broken chroot installation. Exiting"
@@ -443,11 +454,11 @@ createInitrd() {
 
     # build initrd for syslinux
     echo "Building liveinitrd-$KERNEL_ISO for syslinux"
-    if [ ! -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
+    if [ ! -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
 	echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 	error
     fi
-    $SUDO cp -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+    $SUDO cp -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 
     if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 	echo "Dracut is missing 90liveiso module. Installing it."
@@ -457,7 +468,7 @@ createInitrd() {
 	    error
 	fi
 
-	$SUDO cp -a -f $OURDIR/dracut/90liveiso "$CHROOTNAME"/usr/lib/dracut/modules.d/
+	$SUDO cp -a -f "$OURDIR"/dracut/90liveiso "$CHROOTNAME"/usr/lib/dracut/modules.d/
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso/*.sh
     fi
@@ -667,7 +678,6 @@ setupSyslinux() {
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
-	$SUDO sed -i -e "s/%LABEL%/${LABEL}/g" "$2"/EFI/BOOT/*.cfg
 	$SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/EFI/BOOT/*.cfg
         sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$2"/EFI/BOOT/themes/OpenMandriva/theme.txt
 	# (tpg) looks like fonts are in themes dir for 2015.0
@@ -791,13 +801,13 @@ EOF
     if [ "${TYPE,,}" != "minimal" ]; then
 	case ${DISPLAYMANAGER,,} in
 		"kdm")
-		    $SUDO sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' "$CHROOTNAME"/usr/share/config/kdm/kdmrc
+		    $SUDO chroot "$CHROOTNAME" sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' /usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' "$CHROOTNAME"/etc/sddm.conf
+		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 		    ;;
 		"gdm")
-		    $SUDO sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
+		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
 		    ;;
 		*)
 		    echo "${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
@@ -972,8 +982,8 @@ buildIso() {
 
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
-    elif [ -n "$OUTPUTDIR" ]; then
-	ISOFILE="$HOME/$PRODUCT_ID.$EXTARCH.iso"
+    elif [ -z "$OUTPUTDIR" ]; then
+	ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
     fi
