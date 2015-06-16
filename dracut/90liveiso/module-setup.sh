@@ -23,6 +23,7 @@ install() {
     inst_hook pre-udev 30 "$moddir/liveiso-genrules.sh"
     inst "$moddir/liveiso-root.sh" "/sbin/liveiso-root"
     inst_script "$moddir/iso-scan.sh" "/sbin/iso-scan"
+    inst_script "$moddir/liveiso-generator.sh" $systemdutildir/system-generators/dracut-liveiso-generator
     # should probably just be generally included
     inst_rules 60-cdrom_id.rules
 }

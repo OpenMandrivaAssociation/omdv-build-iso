@@ -1,6 +1,6 @@
 #!/bin/sh
-# live images are specified with
-# root=live:backingdev
+
+type getarg >/dev/null 2>&1 || . /lib/dracut-lib.sh
 
 [ -z "$root" ] && root=$(getarg root=)
 
@@ -8,12 +8,7 @@ if [ "${root%%:*}" = "live" ] ; then
     liveroot=$root
 fi
 
-[ "${liveroot%%:*}" = "live" ] || return 1
-
-modprobe -q iso9600
-modprobe -q loop
-modprobe -q squashfs
-modprobe -q aufs
+[ "${liveroot%%:*}" = "live" ] || exit 0
 
 case "$liveroot" in
     live:LABEL=*|LABEL=*) \
@@ -27,13 +22,19 @@ case "$liveroot" in
         rootok=1 ;;
 esac
 
-[ "$rootok" = "1" ] || return 1
+[ "$rootok" != "1" ] && exit 0
 
-info "root was $liveroot, is now $root"
+GENERATOR_DIR="$2"
+[ -z "$GENERATOR_DIR" ] && exit 1
 
-# make sure that init doesn't complain
-[ -z "$root" ] && root="live"
+[ -d "$GENERATOR_DIR" ] || mkdir "$GENERATOR_DIR"
 
-wait_for_dev /run/initramfs/union
-
-return 0
+ROOTFLAGS="$(getarg rootflags)"
+{
+    echo "[Unit]"
+    echo "Before=initrd-root-fs.target"
+    echo "[Mount]"
+    echo "Where=/sysroot"
+    echo "What=aufs"
+    echo "Type=aufs"
+} > "$GENERATOR_DIR"/sysroot.mount

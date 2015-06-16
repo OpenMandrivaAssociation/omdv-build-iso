@@ -38,7 +38,9 @@ mount -n -t aufs -o br=/run/initramfs/tmpfs:/run/initramfs/image /run/initramfs/
 
 ln -s /run/initramfs/union /dev/root
 
-printf '/bin/mount --rbind /run/initramfs/union %s\n' "$NEWROOT" > $hookdir/mount/01-$$-live.sh
+if [ -z "$DRACUT_SYSTEMD" ]; then
+    printf '/bin/mount --rbind /run/initramfs/union %s\n' "$NEWROOT" > $hookdir/mount/01-$$-live.sh
+fi
 
 need_shutdown
 
