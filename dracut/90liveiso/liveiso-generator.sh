@@ -35,6 +35,6 @@ ROOTFLAGS="$(getarg rootflags)"
     echo "Before=initrd-root-fs.target"
     echo "[Mount]"
     echo "Where=/sysroot"
-    echo "What=aufs"
-    echo "Type=aufs"
+    echo "What=/run/initramfs/union"
+    echo "Options=rbind"
 } > "$GENERATOR_DIR"/sysroot.mount
