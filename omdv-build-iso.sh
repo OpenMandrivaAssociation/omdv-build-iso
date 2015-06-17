@@ -883,7 +883,7 @@ EOF
 #	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
 #    fi
 
-    if [ -n "$NOCLEAN" ]; then
+    if [ -z "$NOCLEAN" ]; then
 
     # add urpmi medias inside chroot
     echo "Removing old urpmi repositories."
