@@ -513,6 +513,16 @@ createInitrd() {
 	error
     fi
 
+    # build the boot kernel initrd in case the user wants it kept
+    if [ -n "$BOOT_KERNEL_TYPE" ]; then
+        # building boot kernel initrd
+        $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$BOOT_KERNEL_ISO.img $BOOT_KERNEL_ISO
+        if [[ $? != 0 ]]; then
+           echo "Failed creating boot kernel initrd. Exiting."
+           error
+        fi
+    fi
+
     $SUDO ln -sf /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
 }
