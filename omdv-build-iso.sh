@@ -558,7 +558,7 @@ echo "Setting up UEFI partiton and image."
     PARTSIZE=$(( $parttablesize + $efidisksize ))
 
 # Remove old partition map
-    $SUDO kpartx -d $IMGNME
+    kpartx -d $IMGNME
 
 
 # Create the image.
@@ -572,16 +572,16 @@ echo "Setting up UEFI partiton and image."
 # Mount the image on a loopdevice
     LDEV1=`losetup -f --show $IMGNME`
 # Add the fat partition
-    $SUDO parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
+    parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
     losetup -D
     sleep 1
 #Put the partition on /dev/mapper/
-    $SUDO kpartx -a $IMGNME
+    kpartx -a $IMGNME
 
 # Get the /dev/mapper reference
-    LDEV="/dev/mapper/`$SUDO kpartx -l $IMGNME | awk 'BEGIN {FS = ":"} ; {print $1}'`"
+    LDEV="/dev/mapper/`kpartx -l $IMGNME | awk 'BEGIN {FS = ":"} ; {print $1}'`"
 # Then make the filesystem
-     mkfs.vfat $LDEV
+    mkfs.vfat $LDEV
     mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
