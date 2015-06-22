@@ -136,6 +136,10 @@ if [ $# -ge 1 ]; then
         	    NOCLEAN=noclean
         	    shift
         	    ;;
+        	--rebuild)
+		    REBUILD=0
+		    shift
+		    ;;
         	--help)
         	    usage_help
         	    ;;
@@ -153,7 +157,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR"
+SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -451,17 +455,17 @@ createInitrd() {
 
     # check if dracut is installed
     if [ ! -f "$CHROOTNAME"/usr/sbin/dracut ]; then
-	echo "dracut is not insalled inside chroot. Exiting."
+	echo "dracut is not installed inside chroot. Exiting."
 	error
     fi
 
     # build initrd for syslinux
-    echo "Building liveinitrd-$BOOT_KERNEL_ISO for syslinux"
-    if [ ! -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
+    echo "Building liveinitrd-$KERNEL_ISO for syslinux"
+    if [ ! -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
 	echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 	error
     fi
-    $SUDO cp -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+    $SUDO cp -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 
     if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 	echo "Dracut is missing 90liveiso module. Installing it."
@@ -471,7 +475,7 @@ createInitrd() {
 	    error
 	fi
 
-	$SUDO cp -a -f $OURDIR/dracut/90liveiso "$CHROOTNAME"/usr/lib/dracut/modules.d/
+	$SUDO cp -a -f "$OURDIR"/dracut/90liveiso "$CHROOTNAME"/usr/lib/dracut/modules.d/
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso/*.sh
     fi
@@ -544,29 +548,39 @@ echo "Setting up UEFI partiton and image."
 
 # Get sizes of the required EFI files in blocks.
 # efipartsize  must be large enough to accomodate a gpt partition tables as well as the data.
-# each table is 17408 and there are two of them.
-    efipartsize=`du -s --block-size=2048 "$ISOROOTNAME/EFI" | awk '{print $1}'`
-    parttablesize=`echo "scale=0; (((2*17408)+2048)/2048)" | bc`
-    PARTSIZE=`echo "$parttablesize+$efipartsize+2048" | bc`
+# each table is 17408 and there are two of them.a
+# NOTE: This image is still not quite right although it works on most boxes (but not on Lenovo)
+# if you run gdisk on the iso it reports an overlap. Should try and partition this image with gdisk?
+    efifilessize=`du -s --block-size=512 "$ISOROOTNAME/EFI" | awk '{print $1}'`
+    parttablesize=$(((2*17408)/512))
+    efidisksize=$(( $efifilessize  ))
+    PARTSIZE=$(( $parttablesize + $efidisksize ))
+
+# Remove old partition map
+    kpartx -d $IMGNME
+
 
 # Create the image.
-    $SUDO dd if=/dev/zero of=$IMGNME  bs=2048 count=$PARTSIZE
+
+    $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$((( $PARTSIZE * 2 ) + 68 ))
 
     if [[ $? != 0 ]]; then
 	echo "Failed creating UEFI image. Exiting."
 	error
     fi
-
+# Mount the image on a loopdevice
+    LDEV1=`losetup -f --show $IMGNME`
+# Add the fat partition
+    parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
     losetup -D
-# Mount the file on the loopback device. 
-    LDEV=`losetup -f --show $IMGNME`
-
-# Create a dos filesystem
-    mkdosfs  -S 2048 $LDEV
     sleep 1
-# Re-read the device
-    losetup -D
-    losetup -f $IMGNME $LDEV
+#Put the partition on /dev/mapper/
+    kpartx -a $IMGNME
+
+# Get the /dev/mapper reference
+    LDEV="/dev/mapper/`kpartx -l $IMGNME | awk 'BEGIN {FS = ":"} ; {print $1}'`"
+# Then make the filesystem
+     mkfs.vfat $LDEV
     mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
@@ -699,7 +713,7 @@ setupSyslinux() {
 	#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
 	#done
 	# EFI options for xorriso
-		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME/boot/syslinux/efiboot.img
+		XORRISO_OPTIONS="$XORRISO_OPTIONS -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e boot/syslinux/efiboot.img -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef $ISOROOTNAME/boot/syslinux/efiboot.img"
     fi
 
     echo "Create syslinux menu"
@@ -970,7 +984,12 @@ createSquash() {
 	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
 	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
 	# that there will be enough diskspace to complete the operation.
-    $SUDO umount -l "$1"/run/os-prober/dev/*
+     $SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
+       if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
+	  echo "Cannot unount os-prober mounts aborting"
+	  error
+	  exit
+       fi     
     fi
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
@@ -997,7 +1016,7 @@ buildIso() {
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
-	ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
+	ISOFILE="/home/$OLDUSER/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
     fi
