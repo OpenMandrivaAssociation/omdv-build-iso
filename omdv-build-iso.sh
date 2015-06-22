@@ -460,7 +460,7 @@ createInitrd() {
     fi
 
     # build initrd for syslinux
-    echo "Building liveinitrd-$KERNEL_ISO for syslinux"
+    echo "Building liveinitrd-$BOOT_KERNEL_ISO for syslinux"
     if [ ! -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
 	echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 	error
@@ -557,7 +557,7 @@ echo "Setting up UEFI partiton and image."
     PARTSIZE=$(( $parttablesize + $efidisksize ))
 
 # Remove old partition map
-    kpartx -d $IMGNME
+    $SUDO kpartx -d $IMGNME
 
 
 # Create the image.
@@ -571,20 +571,20 @@ echo "Setting up UEFI partiton and image."
 # Mount the image on a loopdevice
     LDEV1=`losetup -f --show $IMGNME`
 # Add the fat partition
-    parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
+    $SUDO parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
     losetup -D
     sleep 1
 #Put the partition on /dev/mapper/
-    kpartx -a $IMGNME
+    $SUDO kpartx -a $IMGNME
 
 # Get the /dev/mapper reference
-    LDEV="/dev/mapper/`kpartx -l $IMGNME | awk 'BEGIN {FS = ":"} ; {print $1}'`"
+    LDEV="/dev/mapper/`$SUDO kpartx -l $IMGNME | awk 'BEGIN {FS = ":"} ; {print $1}'`"
 # Then make the filesystem
      mkfs.vfat $LDEV
     mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
-	echo "Failed creating UEFI image. Exiting."
+	echo "Failed to mount UEFI image. Exiting."
 	error
     fi
 
