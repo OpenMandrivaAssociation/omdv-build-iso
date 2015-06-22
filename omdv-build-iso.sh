@@ -576,10 +576,8 @@ echo "Setting up UEFI partiton and image."
     losetup -D
     sleep 1
 #Put the partition on /dev/mapper/
-    kpartx -a $IMGNME
+    LDEV="/dev/mapper/`kpartx -avs $IMGNME | awk {'print $3'}`"
 
-# Get the /dev/mapper reference
-    LDEV="/dev/mapper/`kpartx -l $IMGNME | awk 'BEGIN {FS = ":"} ; {print $1}'`"
 # Then make the filesystem
     mkfs.vfat $LDEV
     mount -t vfat $LDEV /mnt
