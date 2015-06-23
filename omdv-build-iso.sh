@@ -25,6 +25,7 @@
 # This tools is specified to build OpenMandriva Lx distribution ISO
 
 usage_help() {
+	if [[ -z $EXTARCH && -z $TREE && -z $VERSION && -z $RELEASE_ID && -z $TYPE && -z $DISPLAYMANAGER ]]; then
     echo ""
     echo "Please run script with arguments."
     echo ""
@@ -40,6 +41,8 @@ usage_help() {
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
+    echo " --noclean Do not clean build chroot and keep cached rpms"
+    echo " --rebuild Clean build chroot and rebuild from cached rpms"
     echo " --noclean Do not clean build chroot"
     echo " --boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
     echo ""
@@ -48,6 +51,9 @@ usage_help() {
     echo ""
     echo "Exiting."
     exit 1
+    else
+	    :
+    fi	    
 }
 
 # use only allowed arguments
@@ -256,6 +262,7 @@ umountAll() {
     $SUDO umount -l "$1"/sys || :
     $SUDO umount -l "$1"/dev/pts || :
     $SUDO umount -l "$1"/dev || :
+    $SUDO umount -l "$1"/run/os-prober/dev/* || :
 }
 
 error() {
@@ -284,10 +291,14 @@ updateSystem() {
 	$SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
+	echo "installing rpms"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
-    else
-	echo "Building in user custom environment"
+           elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
+    	      echo "Building in user custom environment will clean rpm cache"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+    	   else
+	      echo "Building in user custom environment will keep rpm cache"
+	      $SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
 
@@ -385,7 +396,7 @@ createChroot() {
 	touch "$CHROOTNAME"/.noclean
     fi
 
-    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
+  	 if [ ! -f "$CHROOTNAME"/.noclean ]; then
 
     if [ "$FREE" = "0" ]; then
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
@@ -403,7 +414,7 @@ createChroot() {
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
 	fi
     fi
-
+         fi
     # update medias
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
@@ -417,6 +428,8 @@ createChroot() {
     $SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
     # start rpm packages installation
+    # but only if .noclean does not exist
+      if [ ! -f "$CHROOTNAME"/.noclean ]; then
     echo "Start installing packages in $CHROOTNAME"
     parsePkgList "$FILELISTS" | xargs $SUDO urpmi --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
 
@@ -430,6 +443,7 @@ createChroot() {
 	$SUDO urpmi --urpmi-root "$CHROOTNAME" --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto syslinux
     fi
     fi #noclean
+    fi
     # check CHROOT
     if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 	echo "Broken chroot installation. Exiting"
@@ -977,19 +991,7 @@ EOF
 
 createSquash() {
     echo "Starting squashfs image build."
-	# Before we do anything check if we are a local build
-    if [ -n $ABF ]; then 
-	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
-	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
-	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
-	# that there will be enough diskspace to complete the operation.
-     $SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
-       if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
-	  echo "Cannot unount os-prober mounts aborting"
-	  error
-	  exit
-       fi     
-    fi
+
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
     fi
@@ -997,7 +999,18 @@ createSquash() {
     mkdir -p "$ISOROOTNAME"/LiveOS
     # unmout all stuff inside CHROOT to build squashfs image
     umountAll "$CHROOTNAME"
-
+	# Before we do anything check if we are a local build
+    if [ -n $ABF ]; then 
+	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
+	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
+	# It's likely that the img will be written to one of the mounted drives so there will never 
+	# be enough diskspace to complete the operation.
+       if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
+	  echo "Cannot unount os-prober mounts aborting"
+	  error
+	  exit
+       fi     
+    fi
     $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 4096
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
