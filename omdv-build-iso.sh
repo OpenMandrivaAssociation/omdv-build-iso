@@ -449,6 +449,9 @@ createChroot() {
         export KERNEL_ISO
     popd
 
+    #remove rpm db files which may not match the target chroot environment
+    $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+
 }
 
 createInitrd() {
