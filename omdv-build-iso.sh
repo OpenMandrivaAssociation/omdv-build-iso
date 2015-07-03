@@ -463,6 +463,9 @@ createChroot() {
         export KERNEL_ISO
     popd
 
+    #remove rpm db files which may not match the target chroot environment
+    $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+
 }
 
 createInitrd() {
@@ -920,6 +923,9 @@ EOF
 
     if [ -z "$NOCLEAN" ]; then
 
+    #remove rpm db files which may not match the non-chroot environment
+    $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+
     # add urpmi medias inside chroot
     echo "Removing old urpmi repositories."
     $SUDO urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
@@ -939,7 +945,7 @@ EOF
 	else
 	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
 	fi
-	echo "Using $MIRROLIST"
+	echo "Using $MIRRORLIST"
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
     fi
 
@@ -1008,7 +1014,7 @@ createSquash() {
 	  exit
        fi     
     fi
-    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 4096
+    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 16384
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	echo "Failed to create squashfs. Exiting."
