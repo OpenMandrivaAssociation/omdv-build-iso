@@ -292,13 +292,13 @@ updateSystem() {
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
 	echo "installing rpms"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick gptfdisk kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
            elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
     	      echo "Building in user custom environment will clean rpm cache"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick gptfdisk kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     	   else
 	      echo "Building in user custom environment will keep rpm cache"
-	      $SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	      $SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick gptfdisk kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
 
@@ -564,20 +564,17 @@ echo "Setting up UEFI partiton and image."
 # Get sizes of the required EFI files in blocks.
 # efipartsize  must be large enough to accomodate a gpt partition tables as well as the data.
 # each table is 17408 and there are two of them.a
-# NOTE: This image is still not quite right although it works on most boxes (but not on Lenovo)
-# if you run gdisk on the iso it reports an overlap. Should try and partition this image with gdisk?
     efifilessize=`du -s --block-size=512 "$ISOROOTNAME/EFI" | awk '{print $1}'`
     parttablesize=$(((2*17408)/512))
-    efidisksize=$(( $efifilessize  ))
-    PARTSIZE=$(( $parttablesize + $efidisksize ))
+    PARTSIZE=$efifilessize
+    EFIDISKSIZE=$(( $parttablesize + $efifilessize ))
 
 # Remove old partition map
     kpartx -d $IMGNME
 
 
 # Create the image.
-
-    $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$((( $PARTSIZE * 2 ) + 68 ))
+    $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$EFIDISKSIZE
 
     if [[ $? != 0 ]]; then
 	echo "Failed creating UEFI image. Exiting."
@@ -586,14 +583,14 @@ echo "Setting up UEFI partiton and image."
 # Mount the image on a loopdevice
     LDEV1=`losetup -f --show $IMGNME`
 # Add the fat partition
-    parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
+    sgdisk -a 1 -n 1:34:"$PARTSIZE" -c 1:"EFI System Partition" -t 1:EF00 $LDEV1
     losetup -D
     sleep 1
 #Put the partition on /dev/mapper/
     LDEV="/dev/mapper/`kpartx -avs $IMGNME | awk {'print $3'}`"
 
 # Then make the filesystem
-    mkfs.vfat $LDEV
+    mkfs.vfat -s 1 -S 512 $LDEV
     mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
@@ -610,7 +607,7 @@ echo "Setting up UEFI partiton and image."
     umount /mnt
 
 # Clean up
-    losetup -D
+    kpartx -d $IMGNME
 }
 
 # Usage: setupGrub2 /target/dir
