@@ -874,8 +874,7 @@ EOF
 #    fi
 
     if [ -n "$NOCLEAN" ]; then
-    
-	#remove rpm db files which may not match the non-chroot environment
+    #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 
     # add urpmi medias inside chroot
@@ -938,7 +937,14 @@ EOF
     fi
 
     # ldetect stuff
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/update-ldetect-lst
+    if [ -x /usr/sbin/update-ldetect-lst ]; then
+	$SUDO chroot "$CHROOTNAME" /usr/sbin/update-ldetect-lst
+    fi
+
+    # fontconfig cache
+    if [ -x /usr/bin/fc-cache ]; then
+	$SUDO chroot "$CHROOTNAME" fc-cache -s -r
+    fi
 
     #remove rpm db files to save some space
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
@@ -974,7 +980,7 @@ createSquash() {
 # Usage: buildIso filename.iso rootdir
 # Builds an ISO file from the files in rootdir
 buildIso() {
-    echo "Starting ISO build." 
+    echo "Starting ISO build."
 
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
