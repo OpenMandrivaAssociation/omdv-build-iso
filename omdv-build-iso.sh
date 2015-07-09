@@ -937,14 +937,22 @@ EOF
     fi
 
     # ldetect stuff
-    if [ -x /usr/sbin/update-ldetect-lst ]; then
+    if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/update-ldetect-lst
     fi
 
     # fontconfig cache
-    if [ -x /usr/bin/fc-cache ]; then
+    if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
 	$SUDO chroot "$CHROOTNAME" fc-cache -s -r
     fi
+
+	# rebuild man-db
+    if [ -x "$CHROOTNAME"/usr/bin/mandb ]; then
+    	$SUDO chroot "$CHROOTNAME" /usr/bin/mandb --quiet
+    fi
+
+    # rebuild linker cache
+	$SUDO chroot "$CHROOTNAME" /sbin/ldconfig -X
 
     #remove rpm db files to save some space
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
