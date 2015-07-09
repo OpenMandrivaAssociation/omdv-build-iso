@@ -5,6 +5,7 @@
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Colin Close <itchka@compuserve.com>
+# Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -275,10 +276,10 @@ updateSystem() {
 	$SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     else
 	echo "Building in user custom environment"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
 
@@ -438,30 +439,29 @@ createChroot() {
 }
 
 createInitrd() {
-
     # check if dracut is installed
     if [ ! -f "$CHROOTNAME"/usr/sbin/dracut ]; then
-	echo "dracut is not insalled inside chroot. Exiting."
+	echo "dracut is not installed inside chroot. Exiting."
 	error
     fi
 
     # build initrd for syslinux
     echo "Building liveinitrd-$KERNEL_ISO for syslinux"
-    if [ ! -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
-	echo "Missing $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
+    if [ ! -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
+	echo "Missing "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 	error
     fi
-    $SUDO cp -f $OURDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+    $SUDO cp -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 
     if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 	echo "Dracut is missing 90liveiso module. Installing it."
 
-	if [ ! -d $OURDIR/dracut/90liveiso ]; then
+	if [ ! -d "$OURDIR"/dracut/90liveiso ]; then
 	    echo "Cant find 90liveiso dracut module in $OURDIR/dracut. Exiting."
 	    error
 	fi
 
-	$SUDO cp -a -f $OURDIR/dracut/90liveiso "$CHROOTNAME"/usr/lib/dracut/modules.d/
+	$SUDO cp -a -f "$OURDIR"/dracut/90liveiso "$CHROOTNAME"/usr/lib/dracut/modules.d/
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso/*.sh
     fi
@@ -512,45 +512,51 @@ createUEFI() {
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
 
 # exit if no UEFI is set or arch is not x86_64
-if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
-    echo "UEFI support is not available."
-    return 0
-fi
+    if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
+	echo "UEFI support is not available."
+	return 0
+    fi
 
-echo "Setting up UEFI partiton and image."
+    echo "Setting up UEFI partiton and image."
 
     IMGNME="$ISOROOTNAME"/boot/syslinux/efiboot.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
 # Get sizes of the required EFI files in blocks.
 # efipartsize  must be large enough to accomodate a gpt partition tables as well as the data.
-# each table is 17408 and there are two of them.
-    efipartsize=`du -s --block-size=2048 "$ISOROOTNAME/EFI" | awk '{print $1}'`
-    parttablesize=`echo "scale=0; (((2*17408)+2048)/2048)" | bc`
-    PARTSIZE=`echo "$parttablesize+$efipartsize+2048" | bc`
+# each table is 17408 and there are two of them.a
+# NOTE: This image is still not quite right although it works on most boxes (but not on Lenovo)
+# if you run gdisk on the iso it reports an overlap. Should try and partition this image with gdisk?
+    efifilessize=`du -s --block-size=512 "$ISOROOTNAME/EFI" | awk '{print $1}'`
+    parttablesize=$(((2*17408)/512))
+    efidisksize=$(( $efifilessize  ))
+    PARTSIZE=$(( $parttablesize + $efidisksize ))
+
+# Remove old partition map
+    kpartx -d $IMGNME
 
 # Create the image.
-    $SUDO dd if=/dev/zero of=$IMGNME  bs=2048 count=$PARTSIZE
+    $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$((( $PARTSIZE * 2 ) + 68 ))
 
     if [[ $? != 0 ]]; then
 	echo "Failed creating UEFI image. Exiting."
 	error
     fi
-
+# Mount the image on a loopdevice
+    LDEV1=`losetup -f --show $IMGNME`
+# Add the fat partition
+    parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
     losetup -D
-# Mount the file on the loopback device. 
-    LDEV=`losetup -f --show $IMGNME`
-
-# Create a dos filesystem
-    mkdosfs  -S 2048 $LDEV
     sleep 1
-# Re-read the device
-    losetup -D
-    losetup -f $IMGNME $LDEV
+#Put the partition on /dev/mapper/
+    LDEV="/dev/mapper/`kpartx -avs $IMGNME | awk {'print $3'}`"
+
+# Then make the filesystem
+    mkfs.vfat $LDEV
     mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
-	echo "Failed creating UEFI image. Exiting."
+	echo "Failed to mount UEFI image. Exiting."
 	error
     fi
 
@@ -679,7 +685,7 @@ setupSyslinux() {
 	#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
 	#done
 	# EFI options for xorriso
-		XORRISO_OPTIONS="${XORRISO_OPTIONS} -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME/boot/syslinux/efiboot.img
+	XORRISO_OPTIONS="$XORRISO_OPTIONS -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME/boot/syslinux/efiboot.img
     fi
 
     echo "Create syslinux menu"
@@ -875,7 +881,7 @@ EOF
 #	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
 #    fi
 
-    if [ -n "$NOCLEAN" ]; then
+    if [ -z "$NOCLEAN" ]; then
     #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 
@@ -963,13 +969,19 @@ EOF
 createSquash() {
     echo "Starting squashfs image build."
 	# Before we do anything check if we are a local build
-    if [ -n $ABF ]; then 
+    if [ -n $ABF ]; then
 	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
 	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
 	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
 	# that there will be enough diskspace to complete the operation.
-    $SUDO umount -l "$1"/run/os-prober/dev/*
+	$SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
+
+	if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
+	    echo "Cannot unount os-prober mounts aborting."
+	    error
+	fi
     fi
+
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	$SUDO rm -rf "$ISOROOTNAME"/LiveOS/squashfs.img
     fi
@@ -995,7 +1007,7 @@ buildIso() {
     if [ "$ABF" = "1" ]; then
 	ISOFILE="$OURDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
-	ISOFILE="~/$PRODUCT_ID.$EXTARCH.iso"
+	ISOFILE="/home/$OLDUSER/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
     fi
