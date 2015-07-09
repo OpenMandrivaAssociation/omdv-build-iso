@@ -685,7 +685,7 @@ setupSyslinux() {
 	#	$SUDO cp -f "$1"/boot/grub2/themes/*/$i "$2"/EFI/BOOT/fonts/$i
 	#done
 	# EFI options for xorriso
-	XORRISO_OPTIONS="$XORRISO_OPTIONS -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e EFI/BOOT/BOOTX64.efi -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef "$ISOROOTNAME/boot/syslinux/efiboot.img
+	XORRISO_OPTIONS="$XORRISO_OPTIONS -isohybrid-mbr "$2"/boot/syslinux/isohdpfx.bin -partition_offset 16  -eltorito-alt-boot -e boot/syslinux/efiboot.img -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef $ISOROOTNAME/boot/syslinux/efiboot.img"
     fi
 
     echo "Create syslinux menu"
