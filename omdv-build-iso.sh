@@ -827,7 +827,7 @@ EOF
 
     echo "Starting services setup."
     #enable services
-    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups org.cups.cupsd.path org.cups.cupsd.socket org.cups.cups-lpd.socket chronyd acpid alsa atd avahi-daemon irqbalance netfs resolvconf rpcbind sound udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
+    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket org.cups.cupsd.path org.cups.cupsd.socket org.cups.cups-lpd.socket acpid alsa atd avahi-daemon irqbalance netfs rpcbind udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
@@ -851,7 +851,7 @@ EOF
     done
 
     # disable services
-    SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix NetworkManager-wait-online)
+    SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix NetworkManager-wait-online chronyd)
 
     for i in "${SERVICES_DISABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
