@@ -974,11 +974,12 @@ createSquash() {
 	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
 	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
 	# that there will be enough diskspace to complete the operation.
-	$SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
-
 	if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
-	    echo "Cannot unount os-prober mounts aborting."
-	    error
+	    $SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
+	    if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
+		echo "Cannot unount os-prober mounts aborting."
+		error
+	    fi
 	fi
     fi
 
