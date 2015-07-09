@@ -766,28 +766,30 @@ EOF
     $SUDO cp -rfT $OURDIR/extraconfig/etc "$CHROOTNAME"/etc/
     $SUDO cp -rfT $OURDIR/extraconfig/usr "$CHROOTNAME"/usr/
 
-	# set up live user
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -G wheel live
-    $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -d live
-    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/live
-    $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/live/
-    $SUDO chroot "$CHROOTNAME" /bin/chown -R live:live /home/live
-    $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/live/Desktop
-    $SUDO chroot "$CHROOTNAME" /bin/chown -R live:live /home/live/Desktop
-    $SUDO cp -rfT $OURDIR/extraconfig/etc/skel "$CHROOTNAME"/home/live/
-    $SUDO chroot "$CHROOTNAME" chown -R 500:500 /home/live/
-    $SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/live/.local
-    $SUDO mkdir -p "$CHROOTNAME"/home/live/.cache
-    $SUDO chroot "$CHROOTNAME" chown 500:500 /home/live/.cache
+    # set up live user
+    live_user=live
+    echo "Setting up user ${live_user}"
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -G wheel ${live_user}
+    $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -d ${live_user}
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
+    $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
+    $SUDO cp -rfT $OURDIR/extraconfig/etc/skel "$CHROOTNAME"/home/${live_user}/
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}/.cache
+    $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
+    $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/Desktop
+    $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.cache
+    $SUDO chroot "$CHROOTNAME" /bin/chmod -R 0777 /home/${live_user}/.local
 
     # KDE4 related settings
     if [ "${TYPE,,}" = "kde4" ]; then
-	$SUDO mkdir -p "$CHROOTNAME"/home/live/.kde4/env
-	echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/live/.kde4/env/00-live.sh
-	echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/live/.kde4/env/00-live.sh
-	$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/live/.kde4
+	$SUDO mkdir -p "$CHROOTNAME"/home/$live_user/.kde4/env
+	echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
+	echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
+	$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/${live_user}/.kde4
+	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.kde4
     else
-	$SUDO rm -rf "$CHROOTNAME"/home/live/.kde4
+	$SUDO rm -rf "$CHROOTNAME"/home/$live_user}/.kde4
     fi
 
     # enable DM autologin
