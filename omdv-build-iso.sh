@@ -533,7 +533,9 @@ createUEFI() {
     PARTSIZE=$(( $parttablesize + $efidisksize ))
 
 # Remove old partition map
-    kpartx -d $IMGNME
+	if [ -e $IMGNME ]; then
+    	kpartx -d $IMGNME
+	fi
 
 # Create the image.
     $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$((( $PARTSIZE * 2 ) + 68 ))
