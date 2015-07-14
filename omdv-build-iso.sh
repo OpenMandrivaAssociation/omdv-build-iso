@@ -829,7 +829,7 @@ EOF
 
     echo "Starting services setup."
     #enable services
-    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups.path cups.socket cups-lpd.socket cups.service acpid alsa atd avahi-daemon irqbalance netfs rpcbind udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
+    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups.path cups.socket cups-lpd.socket cups.service acpid alsa atd avahi-daemon irqbalance netfs rpcbind.socket udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
