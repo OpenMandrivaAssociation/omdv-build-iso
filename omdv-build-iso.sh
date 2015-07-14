@@ -635,7 +635,7 @@ setupSyslinux() {
 
     echo "Installing liveinitrd inside syslinux"
     if [ -e "$1"/boot/vmlinuz-$KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
-	$SUDO cp -a "$1"/boot/vmlinuz-$KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
+    $SUDO cp -a "$1"/boot/vmlinuz-$KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
 	$SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/syslinux/liveinitrd.img
     else
 	echo "vmlinuz or liveinitrd does not exists. Exiting."
