@@ -790,10 +790,16 @@ EOF
     $SUDO chroot "$CHROOTNAME" /bin/chmod -R 0777 /home/${live_user}/.local
 
     # KDE4 related settings
-    if [ "${TYPE,,}" = "kde4" ]; then
+    if [ "${TYPE,,}" = "kde4" ] || [ "${TYPE,,}" = "plasma" ]; then
 	$SUDO mkdir -p "$CHROOTNAME"/home/$live_user/.kde4/env
 	echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
 	echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
+	# disable baloo in live session
+	$SUDO mkdir -p "$CHROOTNAME"/home/${live_user}/.kde4/share/config
+	cat >"$CHROOTNAME"/home/${live_user}/.kde4/share/config/baloofilerc << EOF
+[Basic Settings]
+Indexing-Enabled=false
+EOF
 	$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/${live_user}/.kde4
 	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.kde4
     else
