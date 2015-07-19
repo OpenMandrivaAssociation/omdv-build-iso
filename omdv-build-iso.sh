@@ -271,14 +271,14 @@ trap error ERR
 updateSystem() {
     #Force update of critical packages
     if [ "$ABF" = "1" ]; then
-	echo "We are inside ABF (www.abf.io)"
+	echo "We are inside ABF (www.abf.io). Updating packages."
 	$SUDO urpmq --list-url
 	$SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     else
-	echo "Building in user custom environment"
+	echo "Building in user custom environment. Updating packages."
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
