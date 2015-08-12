@@ -163,7 +163,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
+SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -195,14 +195,14 @@ else
     # the package lists into the $WORKDIR if it is defined.
     # or to the local default of the users $HOME so that they may.
     # edit it when creating thier own local spins.
-    if   [ -d ~/omdv-build-iso ]; then
-	OURDIR=~/omdv-build-iso
+    if   [ -d $UHOME/omdv-build-iso ]; then
+	OURDIR=$UHOME/omdv-build-iso
     else
-	mkdir ~/omdv-build-iso
-	cp -r /usr/share/omdv-build-iso/ ~/
+	mkdir $UHOME/omdv-build-iso
+	cp -r /usr/share/omdv-build-iso/ $UHOME/
 	# Make it easy for the user to edit the package lists and iso build files.
 	chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso
-	OURDIR=~/omdv-build-iso
+	OURDIR=$UHOME/omdv-build-iso
     fi
     BUILD_ID=$(($RANDOM%9999+1000))
 fi
@@ -224,7 +224,7 @@ LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
     if [ -z $ABF ]; then
-	WORKDIR="`mktemp -d ~/omv-build-chroot-$EXTARCH`"
+	WORKDIR="`mkdir -d $UHOME/omv-build-chroot-$EXTARCH`"
     else
 	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
@@ -398,6 +398,7 @@ createChroot() {
 
   	 if [ ! -f "$CHROOTNAME"/.noclean ]; then
 
+    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
     if [ "$FREE" = "0" ]; then
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
     else
@@ -552,12 +553,11 @@ createInitrd() {
 createUEFI() {
 # Usage: createEFI <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
-
-# exit if no UEFI is set or arch is not x86_64
-if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
-    echo "UEFI support is not available."
-    return 0
-fi
+   if [ $EXTARCH = "x86_64" ]; then
+	   EFIARCH=X64
+   else		   
+   	   EFIARCH="IA32"
+   fi
 
 echo "Setting up UEFI partiton and image."
 
@@ -705,16 +705,19 @@ setupSyslinux() {
     $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$2"/boot/syslinux/sgb.iso
 
     # UEFI support
-    if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
+    if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ]; then
 	export UEFI=1
 	$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale "$2"/boot/grub2
 	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
-	#For bootable iso's we may need grub.efi as BOOTX64.efi
+	#For bootable iso's we need grub.efi as BOOTX64.efi or BOOTIA32.efi
+	if [ "$EXTARCH" = "x86_64" ]; then
 	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
-#	$SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output="$1"/EFI/BOOT/BOOTX64.efi /EFI/BOOT/grub.cfg
-#	$SUDO mv -f "$1"/EFI/BOOT/BOOTX64.efi "$2"/EFI/BOOT/BOOTX64.efi
+        $SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
+     else
+	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTIA32.efi
+        $SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTIA32.cfg
+     fi
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/boot/grub2/grub.cfg
-	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
