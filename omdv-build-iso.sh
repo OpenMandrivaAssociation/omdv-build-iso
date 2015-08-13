@@ -26,6 +26,7 @@
 # This tools is specified to build OpenMandriva Lx distribution ISO
 
 usage_help() {
+	if [[ -z $EXTARCH && -z $TREE && -z $VERSION && -z $RELEASE_ID && -z $TYPE && -z $DISPLAYMANAGER ]]; then
     echo ""
     echo "Please run script with arguments."
     echo ""
@@ -41,13 +42,19 @@ usage_help() {
     echo " --workdir= Set directory where ISO will be build"
     echo " --outputdir= Set destination directory to where put final ISO file"
     echo " --debug Enable debug output"
+    echo " --noclean Do not clean build chroot and keep cached rpms"
+    echo " --rebuild Clean build chroot and rebuild from cached rpms"
     echo " --noclean Do not clean build chroot"
+    echo " --boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
     echo ""
     echo "For example:"
     echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
     echo ""
     echo "Exiting."
     exit 1
+    else
+	    :
+    fi	    
 }
 
 # use only allowed arguments
@@ -74,6 +81,10 @@ if [ $# -ge 1 ]; then
         	    RELEASE_ID=${k#*=}
         	    shift
         	    ;;
+                --boot-kernel-type=*)
+		    BOOT_KERNEL_TYPE=${k#*=}
+		   shift
+		   ;;
 		--type=*)
 		    declare -l lc
 		    lc=${k#*=}
@@ -132,6 +143,10 @@ if [ $# -ge 1 ]; then
         	    NOCLEAN=noclean
         	    shift
         	    ;;
+        	--rebuild)
+		    REBUILD=0
+		    shift
+		    ;;
         	--help)
         	    usage_help
         	    ;;
@@ -149,7 +164,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR"
+SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -166,32 +181,29 @@ fi
 if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
     ABF=1
     OURDIR=$(realpath $(dirname $0))
-elif  [ -n $WORKDIR ]; then
-    if  [ -d $WORKDIR/omdv-build-iso ]; then
-	OURDIR="$WORKDIR/omdv-build-iso"
-    else
-	mkdir -p $WORKDIR/omdv-build-iso
-	cp -r /usr/share/omdv-build-iso $WORKDIR
-	OURDIR="$WORKDIR/omdv-build-iso"
-	chown -R $OLDUSER:$OLDUSER $WORKDIR/omdv-build-iso
-    fi
-    BUILD_ID=$(($RANDOM%9999+1000))
-else
     # For local builds put the working directory containing.
     # the package lists into the $WORKDIR if it is defined.
     # or to the local default of the users $HOME so that they may.
-    # edit it when creating thier own local spins.
-    if   [ -d ~/omdv-build-iso ]; then
-	OURDIR=~/omdv-build-iso
-    else
-	mkdir ~/omdv-build-iso
-	cp -r /usr/share/omdv-build-iso/ ~/
-	# Make it easy for the user to edit the package lists and iso build files.
-	chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso
-	OURDIR=~/omdv-build-iso
-    fi
-    BUILD_ID=$(($RANDOM%9999+1000))
+    # edit it when creating their own local spins.    
+    
+elif  [ -n $WORKDIR ]; then
+	echo Working Directory is null "$WORKDIR"
+	WORKDIR="$UHOME"
+	OURDIR="$WORKDIR"/omdv-build-iso-"$EXTARCH"
+else  
+	OURDIR="$WORKDIR"/omdv-build-iso-"$EXTARCH"
 fi
+
+if  [ -d $WORKDIR/omdv-build-iso-$EXTARCH ]; then
+	echo "$OURDIR"
+else
+	mkdir -p "$OURDIR"
+	cp -r /usr/share/omdv-build-iso/* $OURDIR
+	chown -R $OLDUSER:$OLDUSER $OURDIR
+fi
+    BUILD_ID=$(($RANDOM%9999+1000))
+
+
 
 # default definitions
 DIST=omdv
@@ -210,7 +222,8 @@ LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
     if [ -z $ABF ]; then
-	WORKDIR="`mktemp -d ~/omv-build-chroot-$EXTARCH`"
+	WORKDIR=`mkdir -p "$UHOME"/omv-build-chroot-$EXTARCH`
+	echo This is the "$WORKDIR"
     else
 	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
@@ -248,6 +261,7 @@ umountAll() {
     $SUDO umount -l "$1"/sys || :
     $SUDO umount -l "$1"/dev/pts || :
     $SUDO umount -l "$1"/dev || :
+    $SUDO umount -l "$1"/run/os-prober/dev/* || :
 }
 
 error() {
@@ -276,10 +290,14 @@ updateSystem() {
 	$SUDO urpmi.update -ff updates
     # inside ABF, lxc-container which is used to run this script is based
     # on Rosa2012 which does not have cdrtools
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
-    else
-	echo "Building in user custom environment. Updating packages."
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick parted kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+	echo "installing rpms"
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick gptfdisk kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+           elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
+    	      echo "Building in user custom environment will clean rpm cache"
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick gptfdisk kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+    	   else
+	      echo "Building in user custom environment will keep rpm cache"
+	      $SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 xorriso syslinux grub2 squashfs-tools bc imagemagick gptfdisk kpartx --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
 
@@ -377,8 +395,9 @@ createChroot() {
 	touch "$CHROOTNAME"/.noclean
     fi
 
-    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
+  	 if [ ! -f "$CHROOTNAME"/.noclean ]; then
 
+    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
     if [ "$FREE" = "0" ]; then
 	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
     else
@@ -389,12 +408,13 @@ createChroot() {
 
 	if [ "${TREE,,}" != "cooker" ]; then
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
+            $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
 	    # this one is needed to grab firmwares
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
 	fi
     fi
-
+         fi
     # update medias
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
@@ -408,6 +428,8 @@ createChroot() {
     $SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
     # start rpm packages installation
+    # but only if .noclean does not exist
+      if [ ! -f "$CHROOTNAME"/.noclean ]; then
     echo "Start installing packages in $CHROOTNAME"
     parsePkgList "$FILELISTS" | xargs $SUDO urpmi --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
 
@@ -421,6 +443,7 @@ createChroot() {
 	$SUDO urpmi --urpmi-root "$CHROOTNAME" --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto syslinux
     fi
     fi #noclean
+    fi
     # check CHROOT
     if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 	echo "Broken chroot installation. Exiting"
@@ -429,8 +452,15 @@ createChroot() {
 
     # this will be needed in future
     pushd "$CHROOTNAME"/lib/modules
-	KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
-	export KERNEL_ISO
+        BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
+        export BOOT_KERNEL_ISO
+        if [ -n "$BOOT_KERNEL_TYPE" ]; then
+            $SUDO echo $BOOT_KERNEL_TYPE > "$CHROOTNAME"/boot_kernel
+            KERNEL_ISO=`ls -d --sort=time [0-9]* | grep -v $BOOT_KERNEL_TYPE | head -n1 | sed -e 's,/$,,'`
+        else
+            KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
+        fi
+        export KERNEL_ISO
     popd
 
     #remove rpm db files which may not match the target chroot environment
@@ -439,6 +469,7 @@ createChroot() {
 }
 
 createInitrd() {
+
     # check if dracut is installed
     if [ ! -f "$CHROOTNAME"/usr/sbin/dracut ]; then
 	echo "dracut is not installed inside chroot. Exiting."
@@ -446,7 +477,7 @@ createInitrd() {
     fi
 
     # build initrd for syslinux
-    echo "Building liveinitrd-$KERNEL_ISO for syslinux"
+    echo "Building liveinitrd-$BOOT_KERNEL_ISO for syslinux"
     if [ ! -f "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
 	echo "Missing "$OURDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
 	error
@@ -466,8 +497,9 @@ createInitrd() {
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso/*.sh
     fi
 
+    # Not needed now we use UUID
     # fugly hack to get /dev/disk/by-label
-    $SUDO sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
+    # $SUDO sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
 
     if [ -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
@@ -479,7 +511,7 @@ createInitrd() {
     fi
 
     # building liveinitrd
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $BOOT_KERNEL_ISO
 
     if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	echo "File "$CHROOTNAME"/boot/liveinitrd.img does not exist. Exiting."
@@ -503,6 +535,17 @@ createInitrd() {
 	error
     fi
 
+    # build the boot kernel initrd in case the user wants it kept
+    if [ -n "$BOOT_KERNEL_TYPE" ]; then
+        # building boot kernel initrd
+        echo "Building initrd-$BOOT_KERNEL_ISO inside chroot"
+        $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$BOOT_KERNEL_ISO.img $BOOT_KERNEL_ISO
+        if [[ $? != 0 ]]; then
+           echo "Failed creating boot kernel initrd. Exiting."
+           error
+        fi
+    fi
+
     $SUDO ln -sf /boot/initrd-$KERNEL_ISO.img "$CHROOTNAME"/boot/initrd0.img
 
 }
@@ -510,14 +553,13 @@ createInitrd() {
 createUEFI() {
 # Usage: createEFI <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system. 
+   if [ $EXTARCH = "x86_64" ]; then
+	   EFIARCH=X64
+   else		   
+   	   EFIARCH="IA32"
+   fi
 
-# exit if no UEFI is set or arch is not x86_64
-    if [ "$UEFI" != "1" ] || [ "$EXTARCH" != "x86_64" ]; then
-	echo "UEFI support is not available."
-	return 0
-    fi
-
-    echo "Setting up UEFI partiton and image."
+echo "Setting up UEFI partiton and image."
 
     IMGNME="$ISOROOTNAME"/boot/syslinux/efiboot.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
@@ -525,20 +567,17 @@ createUEFI() {
 # Get sizes of the required EFI files in blocks.
 # efipartsize  must be large enough to accomodate a gpt partition tables as well as the data.
 # each table is 17408 and there are two of them.a
-# NOTE: This image is still not quite right although it works on most boxes (but not on Lenovo)
-# if you run gdisk on the iso it reports an overlap. Should try and partition this image with gdisk?
     efifilessize=`du -s --block-size=512 "$ISOROOTNAME/EFI" | awk '{print $1}'`
     parttablesize=$(((2*17408)/512))
-    efidisksize=$(( $efifilessize  ))
-    PARTSIZE=$(( $parttablesize + $efidisksize ))
+    PARTSIZE=$efifilessize
+    EFIDISKSIZE=$(( $parttablesize + $efifilessize ))
 
 # Remove old partition map
-	if [ -e $IMGNME ]; then
-    	kpartx -d $IMGNME
-	fi
+    kpartx -d $IMGNME
+
 
 # Create the image.
-    $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$((( $PARTSIZE * 2 ) + 68 ))
+    $SUDO dd if=/dev/zero of=$IMGNME  bs=512 count=$EFIDISKSIZE
 
     if [[ $? != 0 ]]; then
 	echo "Failed creating UEFI image. Exiting."
@@ -547,14 +586,14 @@ createUEFI() {
 # Mount the image on a loopdevice
     LDEV1=`losetup -f --show $IMGNME`
 # Add the fat partition
-    parted --script $LDEV1 mklabel -a minimal gpt unit b mkpart "'EFI System Partition'" fat32 17408 $(( $PARTSIZE  * 512 )) set 1 boot on
+    sgdisk -a 1 -n 1:34:"$PARTSIZE" -c 1:"EFI System Partition" -t 1:EF00 $LDEV1
     losetup -D
     sleep 1
 #Put the partition on /dev/mapper/
     LDEV="/dev/mapper/`kpartx -avs $IMGNME | awk {'print $3'}`"
 
 # Then make the filesystem
-    mkfs.vfat $LDEV
+    mkfs.vfat -s 1 -S 512 $LDEV
     mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
@@ -571,7 +610,7 @@ createUEFI() {
     umount /mnt
 
 # Clean up
-    losetup -D
+    kpartx -d $IMGNME
 }
 
 # Usage: setupGrub2 /target/dir
@@ -634,8 +673,8 @@ setupSyslinux() {
     $SUDO mkdir -p "$2"/LiveOS
 
     echo "Installing liveinitrd inside syslinux"
-    if [ -e "$1"/boot/vmlinuz-$KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
-    $SUDO cp -a "$1"/boot/vmlinuz-$KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
+    if [ -e "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
+	$SUDO cp -a "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO "$2"/boot/syslinux/vmlinuz0
 	$SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/syslinux/liveinitrd.img
     else
 	echo "vmlinuz or liveinitrd does not exists. Exiting."
@@ -666,16 +705,19 @@ setupSyslinux() {
     $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$2"/boot/syslinux/sgb.iso
 
     # UEFI support
-    if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
+    if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ]; then
 	export UEFI=1
 	$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale "$2"/boot/grub2
 	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
-	#For bootable iso's we may need grub.efi as BOOTX64.efi
+	#For bootable iso's we need grub.efi as BOOTX64.efi or BOOTIA32.efi
+	if [ "$EXTARCH" = "x86_64" ]; then
 	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
-#	$SUDO chroot "$1" /usr/bin/grub2-mkstandalone  --directory="/usr/lib/grub/x86_64-efi/" --format="x86_64-efi" --compress=xz --output="$1"/EFI/BOOT/BOOTX64.efi /EFI/BOOT/grub.cfg
-#	$SUDO mv -f "$1"/EFI/BOOT/BOOTX64.efi "$2"/EFI/BOOT/BOOTX64.efi
+        $SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
+     else
+	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTIA32.efi
+        $SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTIA32.cfg
+     fi
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/boot/grub2/grub.cfg
-	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/BOOTX64.cfg
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
@@ -1082,7 +1124,7 @@ postBuild() {
 
 showInfo
 updateSystem
-getPkgList
+getPkgList $OURDIR
 createChroot
 createInitrd
 setupBootloader
