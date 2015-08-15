@@ -855,7 +855,7 @@ EOF
 		    $SUDO chroot "$CHROOTNAME" sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' /usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 		    ;;
 		"gdm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
@@ -877,7 +877,7 @@ EOF
 
     echo "Starting services setup."
     #enable services
-    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups.path cups.socket cups-lpd.socket cups acpid alsa atd avahi-daemon irqbalance netfs rpcbind.socket udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
+    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups.path cups.socket cups-lpd.socket cups cups-browsed acpid alsa atd avahi-daemon irqbalance netfs rpcbind.socket udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
