@@ -497,9 +497,8 @@ createInitrd() {
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso/*.sh
     fi
 
-    # Not needed now we use UUID
     # fugly hack to get /dev/disk/by-label
-    # $SUDO sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
+    $SUDO sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
 
     if [ -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
@@ -511,7 +510,8 @@ createInitrd() {
     fi
 
     # building liveinitrd
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $BOOT_KERNEL_ISO
+	$SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
+#    fi
 
     if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	echo "File "$CHROOTNAME"/boot/liveinitrd.img does not exist. Exiting."
@@ -561,7 +561,7 @@ createUEFI() {
 
 echo "Setting up UEFI partiton and image."
 
-    IMGNME="$ISOROOTNAME"/boot/syslinux/efiboot.img
+    IMGNME="$ISOROOTNAME"/boot/grub2/efiboot.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
 # Get sizes of the required EFI files in blocks.
@@ -622,19 +622,61 @@ setupGrub2() {
 	error
     fi
 
-    grub2_lib="/usr/lib/grub/i386-pc"
-    core_img=$(mktemp)
+    echo "Building Grub2 El-Torito image."
 
-    echo "TODO - add grub2 support"
-    mkdir -p "$2"/boot/grub2 "$2"/boot/grub2/themes "2"/boot/grub2/locale
-    for i in "$1"$grub2_lib/*.mod "$1"$grub2_lib/*.lst "$1"$grub2_lib/efiemu*.o "$1"/usr/share/grub/*.pf2; do
-	$SUDO cp -f $i "$2"/boot/grub2 ;
-    done
+    GRUB_LIB=/usr/lib/grub/i386-pc
+    GRUB_IMG=$(mktemp)
 
-    $SUDO chroot "$1" /usr/bin/grub2-mkimage -p /boot/grub2 -d "$1"$grub2_lib -o ${core_img} -O i386-pc biosdisk iso9660
-    $SUDO cat "$1"/usr/lib/grub/i386-pc/boot.img ${core_img} > "$2"/boot/grub2/grub_eltorito
-    XORRISO_OPTIONS="${XORRISO_OPTIONS} -b boot/grub2/grub_eltorito -J"
+    mkdir -p "$2"/boot/grub2 "$2"/boot/grub2/themes "$2"/boot/grub2/locale
+    $SUDO cp -f $OURDIR/grub2/grub2-bios.cfg "$1"/boot/grub2/grub2-bios.cfg
+    $SUDO cp -a -f "$1"/boot/grub2/themes "$2"/boot/grub2/themes
+#    for i in "$1"$GRUB_LIB/*.mod "$1"$GRUB_LIB/*.lst "$1"$GRUB_LIB/efiemu*.o "$1"/usr/share/grub/*.pf2; do
+#	$SUDO cp -f $i "$2"/boot/grub2 ;
+#    done
+
+    $SUDO chroot "$1" /usr/bin/grub2-mkimage -d $GRUB_LIB -O i386-pc -o $GRUB_IMG -p /boot/grub2 -c /boot/grub2/grub2-bios.cfg  iso9660 search search_fs_uuid search_fs_file search_label ext2 fat part_msdos part_gpt normal biosdisk cat configfile minicmd legacycfg
+    $SUDO cat "$1"$GRUB_LIB/cdboot.img "$1"$GRUB_IMG > "$2"/boot/grub2/grub2-eltorito.img
+    XORRISO_OPTIONS=" -b boot/grub2/grub2-eltorito.img -no-emul-boot -boot-info-table -boot-load-size 4 -boot-info-table --protective-msdos-label --grub2-boot-info --grub2-mbr "$1"$GRUB_LIB/boot_hybrid.img "
     echo "End grub2."
+
+
+
+        echo "Installing liveinitrd for grub2"
+	    if [ -e "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
+            $SUDO cp -a "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO "$2"/boot/vmlinuz0
+            $SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/liveinitrd.img
+	    else
+	        echo "vmlinuz or liveinitrd does not exists. Exiting."
+	        error
+	    fi
+
+            if [ ! -f "$2"/boot/liveinitrd.img ]; then
+	        echo "Missing /boot/syslinux/liveinitrd.img. Exiting."
+	        error
+	    else
+	            $SUDO rm -rf "$1"/boot/liveinitrd.img
+	    fi
+
+
+
+    # UEFI support
+    if [ -f "$1"/boot/efi/EFI/openmandriva/grub.efi ] && [ "$EXTARCH" = "x86_64" ]; then
+	export UEFI=1
+	$SUDO mkdir -m 0755 -p "$2"/EFI/BOOT "$2"/EFI/BOOT/fonts "$2"/EFI/BOOT/themes "$2"/EFI/BOOT/locale "$2"/boot/grub2
+	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/grub.efi
+	#For bootable iso's we may need grub.efi as BOOTX64.efi
+	$SUDO cp -f "$1"/boot/efi/EFI/openmandriva/grub.efi "$2"/EFI/BOOT/BOOTX64.efi
+	$SUDO cp -f $OURDIR/grub2/grub2-efi.cfg "$2"/EFI/BOOT/BOOTX64.cfg
+	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
+	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
+        $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/boot/grub2/*.cfg
+	$SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/EFI/BOOT/*.cfg
+	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$2"/EFI/BOOT/themes/OpenMandriva/theme.txt
+#	XORRISO_OPTIONS="$XORRISO_OPTIONS -partition_offset 16  -eltorito-alt-boot --efi-boot boot/grub2/efiboot.img -no-emul-boot -isohybrid-gpt-basdat -append_partition 2 0xef $ISOROOTNAME/boot/grub2/efiboot.img"
+	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot boot/grub2/efiboot.img -efi-boot-part --efi-boot-image"
+    fi
+
+    $SUDO rm -rf $GRUB_IMG
 }
 
 # Usage: setupSysLinux /target/dir
@@ -721,7 +763,9 @@ setupSyslinux() {
 	$SUDO cp -f $OURDIR/EFI/grub.cfg "$2"/EFI/BOOT/grub.cfg
 	$SUDO cp -a -f "$1"/boot/grub2/themes "$2"/EFI/BOOT/
 	$SUDO cp -a -f "$1"/boot/grub2/locale "$2"/EFI/BOOT/
-        $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/EFI/BOOT/*.cfg
+        $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/boot/grub2/*.cfg
+        $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/boot/grub2/grub2-bios*.cfg
+	$SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$2"/EFI/BOOT/*.cfg
 	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$2"/EFI/BOOT/themes/OpenMandriva/theme.txt
 	# (tpg) looks like fonts are in themes dir for 2015.0
 	# need to adapt this for n < 2015.0
@@ -754,7 +798,7 @@ setupSyslinux() {
 # Sets up grub2/syslinux to boot /target/dir
 setupBootloader() {
 
-    setupSyslinux "$CHROOTNAME" "$ISOROOTNAME"
+    setupGrub2 "$CHROOTNAME" "$ISOROOTNAME"
 
 }
 
@@ -855,7 +899,7 @@ EOF
 		    $SUDO chroot "$CHROOTNAME" sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' /usr/share/config/kdm/kdmrc
 		    ;;
 		"sddm")
-		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 		    ;;
 		"gdm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
