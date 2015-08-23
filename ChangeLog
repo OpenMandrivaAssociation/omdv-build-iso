@@ -1,13 +1,294 @@
-2015-06-07 12:55:39_+0000 itchka (Colin Close)
+2015-08-23 15:50:28 +0200 tpg (Tomasz Paweł Gajc) 
 
-	* Fix download and unpacking of iso package lists for user centric mode
-	* Add USB-3 kernel modules to dracut
-	* Fix mem stick booting
-	* Export additional variables to SUDO env for user centric mode
+	* new version 0.0.7 - sync with grub-bios baranch (HEAD, origin/master, origin/HEAD, master)
+
+2015-08-15 03:22:55 +0400 Tomasz Paweł Gajc 
+
+	* fix session for sddm
+
+2015-08-14 11:24:55 +0400 Tomasz Paweł Gajc 
+
+	* enable cups-browsed
+
+2015-08-11 10:52:32 +0400 Tomasz Paweł Gajc 
+
+	* fix cups service
+
+2015-07-19 21:11:34 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable baloo indexing on live user
+
+2015-07-19 19:47:47 +0400 Bernhard Rosenkraenzer 
+
+	* MassBuild#774: Increase release tag (tag: cooker-0.0.6-2)
+
+2015-07-19 14:42:27 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* update LO packages
+
+2015-07-14 23:15:08 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* enable only rpcbind.socket
+
+2015-07-14 22:47:56 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* use old cups names
+
+2015-07-14 12:14:37 +0400 Tomasz Paweł Gajc 
+
+	* Updated grub.cfg
+
+2015-07-14 12:13:05 +0400 Tomasz Paweł Gajc 
+
+	* Updated omdv-build-iso.sh
+
+2015-07-10 18:24:47 +0400 Tomasz Paweł Gajc 
+
+	* remove old partition map only if it exists
+
+2015-07-10 00:33:26 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* adjust xorriso options
+
+2015-07-09 23:54:52 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* adjust services
+
+2015-07-09 23:53:03 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* umount os-prober if it exists
+
+2015-07-09 23:17:42 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* sync with work from Colin and Cris
+
+2015-07-09 22:50:04 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix chown live user dirs
+
+2015-07-09 17:23:03 +0400 Tomasz Paweł Gajc 
+
+	* enable firewalld
+
+2015-07-09 17:04:03 +0400 Tomasz Paweł Gajc 
+
+	* rebuild linker and man cache
+
+2015-07-08 23:52:31 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* run fc-cache
+
+2015-07-08 23:08:13 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* drop x11-docs and add xorg-x11-100dpi-fonts
+
+2015-07-07 18:57:35 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable NetworkManager-wait-online.service
+
+2015-07-06 19:19:22 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* Delete local boot option, there's no way to reliably find the ESP fro...
+
+2015-07-06 19:16:03 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* Create sysconfig network file (bug #1265)
+
+2015-06-29 10:52:07 +0400 Tomasz Paweł Gajc 
+
+	* Clean the rpm db files
+
+2015-06-24 21:15:20 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add fonts-ttf-poltawski-antiqua for polish language
+
+2015-06-23 17:18:26 +0400 Tomasz Paweł Gajc 
+
+	* incerase block chunks to 16384 to reduce ISO image size
+
+2015-06-20 18:20:10 +0400 Tomasz Paweł Gajc 
+
+	* Fix distro name in efi grub menu
+
+2015-06-17 00:15:38 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix sysroot mount
+
+2015-06-16 21:28:48 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add dracut-liveiso-generator for systemd 220
+
+2015-06-14 17:22:22 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* require omdv_myspell.lst for plasma
+
+2015-06-11 17:49:59 +0400 Tomasz Paweł Gajc 
+
+	* fix removing old iso
+
+2015-06-10 19:05:33 +0100 itchka (Colin Close) 
+
+	* Add UUID iso booting
+
+2015-06-10 20:00:08 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* update Plasma list
+
+2015-06-06 22:14:39 +0100 Crispin Boylan 
+
+	* Fix live user login
+
+2015-06-07 14:28:34 +0100 itchka (Colin Close) 
+
+	* Fix mems stick booting Add USB3 modules to drakcut Various user centric mode fixes
+
+2015-06-06 22:14:39 +0100 Crispin Boylan 
+
+	* Fix live user login
+
+2015-06-04 23:28:06 +0100 Crispin Boylan 
+
+	* sync with 2014 package lists
+
+2015-06-06 18:34:55 +0400 Tomasz Paweł Gajc 
+
+	* do not sleep
+
+2015-06-06 16:29:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.6 (tag: cooker-0.0.6-1)
+
+2015-06-06 16:27:11 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix bug #1187
+
+2015-05-13 15:41:10 +0400 Tomasz Paweł Gajc 
+
+	* disable jackit and ia_ora-gnome
+
+2015-05-13 15:37:01 +0400 Tomasz Paweł Gajc 
+
+	* disable libreoffice-kde4
+
+2015-05-13 14:32:50 +0400 Tomasz Paweł Gajc 
+
+	* disable dmsquash-live
+
+2015-05-13 14:30:52 +0400 Tomasz Paweł Gajc 
+
+	* reintroduce sleep
+
+2015-05-12 21:10:37 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* rename to Plasma5 to Plasma, try to fix bug #1187
+
+2015-05-12 17:25:09 +0400 Tomasz Paweł Gajc 
+
+	* add fix by mandian
+
+2015-05-09 09:51:05 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add Plasma5 support
+
+2015-05-06 11:53:06 +0400 Tomasz Paweł Gajc 
+
+	* enable dm module
+
+2015-05-05 14:59:26 +0400 Tomasz Paweł Gajc 
+
+	* adjust dracut modules as suggested in bug #1187
+
+2015-04-23 04:20:59 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* enable xscreensaver for LXQt
+
+2015-04-22 00:48:43 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* adjust grub menuentries for EFI
+
+2015-04-21 15:52:10 +0400 Tomasz Paweł Gajc 
+
+	* disable xscreensaver
+
+2015-04-19 14:19:26 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add owncloudclient to LXQt
+
+2015-04-18 19:17:31 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* use systemd.unit=calamares.target as a default boot target for instal...
+
+2015-04-18 19:14:46 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add xscreensaver to LXQt
+
+2015-04-18 19:13:31 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable some py2 old stuff
+
+2015-04-11 11:54:19 +0400 Tomasz Paweł Gajc 
+
+	* switch to gstreamer 1.0
+
+2015-04-10 22:33:47 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version
+
+2015-04-10 22:31:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2015-04-10 22:02:35 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* for syslinux 6 and newer use vga=current, for older use vga=784 as a workaround
+
+2015-04-10 21:57:59 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* rename mkeitefi to createUEFI
+
+2015-04-10 21:41:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* detect syslinux version and use different settings, add title in grub2 theme, adjust dracut settings
+
+2015-04-10 20:00:05 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* support syslinux 6.03
+
+2015-04-10 18:41:02 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2015-04-10 14:48:26 +0400 Tomasz Paweł Gajc 
+
+	* add missing libs to syslinux
+
+2015-04-10 13:28:22 +0400 Tomasz Paweł Gajc 
+
+	* add ldlinux.c32
+
+2015-04-10 11:48:57 +0400 Tomasz Paweł Gajc 
+
+	* use poweroff.c32
+
+2015-04-10 00:33:11 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* sync sources (tag: cooker-0.0.5-1)
+
+2015-04-10 00:31:42 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* try with vga=784
+
+2015-04-10 00:07:37 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.5
+
+2015-04-10 00:06:58 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog
 
 2015-04-10 00:06:01 +0200 tpg (Tomasz Paweł Gajc) 
 
-	* use background from chroot theme for syslinux (HEAD, origin/master, origin/HEAD, master)
+	* use background from chroot theme for syslinux
 
 2015-04-07 14:59:24 +0400 Tomasz Paweł Gajc 
 
