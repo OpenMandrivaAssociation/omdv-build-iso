@@ -182,12 +182,12 @@ fi
 if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
     ABF=1
     echo "This is $NOCLEAN"
-    if [ -n $NOCLEAN ]; then
+    if [ -n "$NOCLEAN" ]; then
 	echo "You cannot use --noclean inside ABF"
 	exit 1
     fi
 
-    if [ -n $WORKDIR ]; then
+    if [ -n "$WORKDIR" ]; then
 	echo "You cannot use --workdir inside ABF"
 	exit 1
     fi
@@ -213,15 +213,15 @@ SUDO="sudo -E"
 LOGDIR="."
 
 # set up main working directory if it was not set up
-if [ -z $WORKDIR ]; then
-    if [ -z $ABF ]; then
+if [ -z "$WORKDIR" ]; then
+    if [ -z "$ABF" ]; then
 	# set up working directory
 	WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
 
 	# create working directory
 	if [ ! -d $WORKDIR ]; then
 	    $SUDO mkdir -p $WORKDIR
-	elif [ -z $NOCLEAN ]; then
+	elif [ -z "$NOCLEAN" ]; then
 	    $SUDO rm -rf $WORKDIR
 	fi
 
@@ -237,12 +237,12 @@ if [ -z $WORKDIR ]; then
 	# Yes we are inside ABF
 	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
-elif [ -n $WORKDIR ] && [ -z $ABF ]; then
+elif [ -n "$WORKDIR" ] && [ -z "$ABF" ]; then
 
 	# create working directory
 	if [ ! -d $WORKDIR ]; then
 	    $SUDO mkdir -p $WORKDIR
-	elif [ -z $NOCLEAN ]; then
+	elif [ -z "$NOCLEAN" ]; then
 	    $SUDO rm -rf $WORKDIR
 	fi
 
@@ -313,7 +313,7 @@ trap errorCatch ERR SIGHUP SIGINT SIGTERM
 updateSystem() {
 
     # Force update of critical packages
-    if [ "$ABF" = "1" ]; then
+    if [ -n "$ABF" ]; then
 	echo "We are inside ABF (www.abf.io). Updating packages."
 	$SUDO urpmq --list-url
 	$SUDO urpmi.update -ff updates
@@ -1049,59 +1049,58 @@ EOF
 #	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
 #    fi
 
-    if [ -z "$NOCLEAN" ]; then
     #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 
-    # add urpmi medias inside chroot
-    echo "Removing old urpmi repositories."
-    $SUDO urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
+    if [ -z "$NOCLEAN" ]; then
+	# add urpmi medias inside chroot
+        echo "Removing old urpmi repositories."
+	$SUDO urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
 
-    echo "Adding new urpmi repositories."
-    if [ "${TREE,,}" = "cooker" ]; then
-	MIRRORLIST="http://downloads.openmandriva.org/mirrors/cooker.$EXTARCH.list"
+        echo "Adding new urpmi repositories."
+	if [ "${TREE,,}" = "cooker" ]; then
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/cooker.$EXTARCH.list"
 
-	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main' 'media/main/release'
-	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
-	# this one is needed to grab firmwares
-	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
-    else
-	# use hack for our mirrorlist url
-	if [[ ${TREE,,} =~ ^openmandriva* ]]; then
-	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main' 'media/main/release'
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
+	    # this one is needed to grab firmwares
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
 	else
-	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
-	fi
-	echo "Using $MIRRORLIST"
-	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
-    fi
-
-
-    # add 32-bit medias only for x86_64 arch
-    if [ "$EXTARCH" = "x86_64" ]; then
-	echo "Adding 32-bit media repository."
-
-	# use previous MIRRORLIST declaration but with i586 arch in link name
-	MIRRORLIST="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
-	$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32' 'media/main/release'
-
-	if [ "${TREE,,}" != "cooker" ]; then
-	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
-
-	    if [[ $? != 0 ]]; then
-		echo "Adding urpmi 32-bit media FAILED. Exiting";
-		errorCatch
+	    # use hack for our mirrorlist url
+	    if [[ ${TREE,,} =~ ^openmandriva* ]]; then
+		MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
+	    else
+		MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
 	    fi
+	    echo "Using $MIRRORLIST"
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	fi
 
-    else
-	echo "urpmi 32-bit media repository not needed"
-    fi
+	# add 32-bit medias only for x86_64 arch
+	if [ "$EXTARCH" = "x86_64" ]; then
+	    echo "Adding 32-bit media repository."
 
-    #update urpmi medias
-    echo "Updating urpmi repositories"
-    $SUDO urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
-    fi #noclean
+	    # use previous MIRRORLIST declaration but with i586 arch in link name
+	    MIRRORLIST="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32' 'media/main/release'
+
+	    if [ "${TREE,,}" != "cooker" ]; then
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
+
+		if [[ $? != 0 ]]; then
+		    echo "Adding urpmi 32-bit media FAILED. Exiting";
+		    errorCatch
+		fi
+	    fi
+
+	else
+	    echo "urpmi 32-bit media repository not needed"
+	fi
+
+	# update urpmi medias
+	echo "Updating urpmi repositories"
+	$SUDO urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
+    fi # noclean
 
     # get back to real /etc/resolv.conf
     $SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
@@ -1136,7 +1135,7 @@ EOF
 createSquash() {
     echo "Starting squashfs image build."
 	# Before we do anything check if we are a local build
-    if [ -n $ABF ]; then
+    if [ -n "$ABF" ]; then
 	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
 	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
 	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
@@ -1172,7 +1171,7 @@ createSquash() {
 buildIso() {
     echo "Starting ISO build."
 
-    if [ "$ABF" = "1" ]; then
+    if [ -n "$ABF" ]; then
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
 	ISOFILE="/home/$OLDUSER/$PRODUCT_ID.$EXTARCH.iso"
@@ -1219,7 +1218,7 @@ postBuild() {
 	errorCatch
     fi
 
-    if [ "$ABF" = "1" ]; then
+    if [ -n "$ABF" ]; then
     	# We're running in ABF adjust to its directory structure
 	# count checksums
 	echo "Genrating ISO checksums."
