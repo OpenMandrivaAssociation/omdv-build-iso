@@ -4,8 +4,8 @@ Name:		omdv-build-iso
 # make dist
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
-Version:	0.0.6
-Release:	2
+Version:	0.0.7
+Release:	1
 License:	GPL
 Group:		System/Libraries
 URL:		https://abf.io/openmandriva/omdv-build-iso
@@ -22,6 +22,10 @@ Requires:	util-linux
 Requires:	coreutils
 Requires:	timezone
 Requires:	imagemagick
+Requires:	gptfdisk
+Requires:	kpartx
+Requires:	grub2
+Requires:	syslinux
 BuildArch:	noarch
 
 %description
