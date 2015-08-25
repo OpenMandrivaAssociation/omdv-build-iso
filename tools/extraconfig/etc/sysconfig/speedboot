@@ -1,4 +1,0 @@
-#possible values : auto / yes / no / probe 
-#probe should only be used on kernel commandline : speedboot=probe
-#to reset speedboot status for current kernel
-SPEEDBOOT=no

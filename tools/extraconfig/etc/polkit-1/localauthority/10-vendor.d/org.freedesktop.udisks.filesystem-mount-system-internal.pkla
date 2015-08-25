@@ -1,6 +1,0 @@
-[org.freedesktop.udisks.filesystem-mount-system-internal]
-Identity=unix-group:*
-Action=org.freedesktop.udisks.filesystem-mount-system-internal
-ResultAny=auth_admin
-ResultInactive=auth_admin
-ResultActive=yes
