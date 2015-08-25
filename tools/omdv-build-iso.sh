@@ -1,9 +1,9 @@
 #!/bin/bash
-
+#set -x
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Pawe≥ Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Pawe≥ Gajc <tpgxyz@gmail.com>
+# Modified on 2014 by: Tomasz Pawe≈Ç Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Pawe≈Ç Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Colin Close <itchka@compuserve.com>
 # Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
 
@@ -192,9 +192,20 @@ if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
 	exit 1
     fi
 
-    # hardcode workdir for ABF
+    # set workdir for ABF
     WORKDIR=$(realpath $(dirname $0))
 fi
+
+#elif  [ -z $WORKDIR ] && [ -z $ABF ]; then
+    # For local builds put the working directory containing.
+    # the package lists into the $WORKDIR if it is defined.
+    # or to the local default of the users $HOME so that they may.
+    # edit it when creating their own local spins.
+#    WORKDIR="$UHOME"
+#    OURDIR="$WORKDIR"/omdv-build-iso-"$EXTARCH"
+#else
+#    OURDIR="$WORKDIR"/omdv-build-iso-"$EXTARCH"
+#fi
 
 # default definitions
 DIST=omdv
@@ -215,17 +226,10 @@ LOGDIR="."
 # set up main working directory if it was not set up
 if [ -z $WORKDIR ]; then
     if [ -z $ABF ]; then
-	# set up working directory
-	WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+	WORKDIR=`mkdir -p "$UHOME"/omdv-build-chroot-$EXTARCH`
+	echo "$UHOME"/omdv-build-chroot-$EXTARCH
+	echo "This is the $WORKDIR"
 
-	# create working directory
-	if [ ! -d $WORKDIR ]; then
-	    $SUDO mkdir -p $WORKDIR
-	elif [ -z $NOCLEAN ]; then
-	    $SUDO rm -rf $WORKDIR
-	fi
-
-	# copy contents to the workdir
 	if [ -e /usr/share/omdv-build-iso ]; then
 	    $SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
 	else
@@ -234,30 +238,17 @@ if [ -z $WORKDIR ]; then
 	fi
 
     else
-	# Yes we are inside ABF
 	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
 elif [ -n $WORKDIR ] && [ -z $ABF ]; then
-
-	# create working directory
-	if [ ! -d $WORKDIR ]; then
-	    $SUDO mkdir -p $WORKDIR
-	elif [ -z $NOCLEAN ]; then
-	    $SUDO rm -rf $WORKDIR
-	fi
-
-	# copy contents to the workdir
 	if [ -d /usr/share/omdv-build-iso ]; then
 	    $SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
-	else
 	    echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
 	    exit 1
 	fi
 fi
 
-# this is where rpm are installed
 CHROOTNAME="$WORKDIR"/BASE
-# this is where ISO image is prepared based on above
 ISOROOTNAME="$WORKDIR"/ISO
 
 # UUID Generation. xorriso needs a string of 16 asci digits.
@@ -583,9 +574,9 @@ createInitrd() {
 
 }
 
+createUEFI() {
 # Usage: createEFI <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
-createUEFI() {
 
     if [ $EXTARCH = "x86_64" ]; then
 	EFIARCH=X64
@@ -607,7 +598,7 @@ createUEFI() {
 
     if [ -e $IMGNME ]; then
 	$SUDO rm -rf $IMGNME
-	$SUDO kpartx -d $IMGNME
+	kpartx -d $IMGNME
     fi
 
     # Create the image.
@@ -623,7 +614,7 @@ createUEFI() {
     LDEV1=`losetup -f --show $IMGNME`
 
     # Add the fat partition
-    $SUDO sgdisk -a 1 -n 1:34:"$EFIFILESIZE" -c 1:"EFI System Partition" -t 1:EF00 $LDEV1
+    sgdisk -a 1 -n 1:34:"$EFIFILESIZE" -c 1:"EFI System Partition" -t 1:EF00 $LDEV1
     losetup -D
     sleep 1
 
@@ -631,28 +622,24 @@ createUEFI() {
     LDEV="/dev/mapper/`kpartx -avs $IMGNME | awk {'print $3'}`"
 
     # Then make the filesystem
-    $SUDO mkfs.vfat -s 1 -S 512 $LDEV
-    $SUDO mount -t vfat $LDEV /mnt
+    mkfs.vfat -s 1 -S 512 $LDEV
+    mount -t vfat $LDEV /mnt
 
     if [[ $? != 0 ]]; then
 	echo "Failed to mount UEFI image. Exiting."
 	errorCatch
     fi
 
-    # copy the Grub2 files to the EFI image
-    if [ ! -e /mnt/EFI/BOOT ]; then
-	$SUDO mkdir -p /mnt/EFI/BOOT
-    else
-	$SUDO rm -rf /mnt/EFI/BOOT
-    fi
-    $SUDO cp -R $GRB2FLS/* /mnt/EFI/BOOT/
+    # copy the files
+    mkdir -p /mnt/EFI/BOOT
+    cp -R $GRB2FLS/* /mnt/EFI/BOOT/
     echo "Made" >/mnt/EFI/BOOT/vnice
 
-    # Unmout the filesystem with EFI image
+    # Unmout the filesystem
     umount /mnt
 
     # Clean up
-    $SUDO kpartx -d $IMGNME
+    kpartx -d $IMGNME
 }
 
 # Usage: setupGrub2 /target/dir
@@ -703,7 +690,6 @@ setupGrub2() {
     XORRISO_OPTIONS=" -b boot/grub/grub-eltorito.img -no-emul-boot -boot-info-table -boot-load-size 4 -boot-info-table --protective-msdos-label --grub2-boot-info --grub2-mbr "$1"$GRUB_LIB/boot_hybrid.img --embedded-boot "$2"/boot/grub/grub-embedded.img "
 
     echo "End building Grub2 El-Torito image."
-
     echo "Installing liveinitrd for grub2"
 
     if [ -e "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then

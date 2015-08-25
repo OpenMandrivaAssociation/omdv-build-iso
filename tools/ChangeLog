@@ -1,0 +1,916 @@
+2015-08-23 15:50:28 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.7 - sync with grub-bios baranch (HEAD, origin/master, origin/HEAD, master)
+
+2015-08-15 03:22:55 +0400 Tomasz Paweł Gajc 
+
+	* fix session for sddm
+
+2015-08-14 11:24:55 +0400 Tomasz Paweł Gajc 
+
+	* enable cups-browsed
+
+2015-08-11 10:52:32 +0400 Tomasz Paweł Gajc 
+
+	* fix cups service
+
+2015-07-19 21:11:34 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable baloo indexing on live user
+
+2015-07-19 19:47:47 +0400 Bernhard Rosenkraenzer 
+
+	* MassBuild#774: Increase release tag (tag: cooker-0.0.6-2)
+
+2015-07-19 14:42:27 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* update LO packages
+
+2015-07-14 23:15:08 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* enable only rpcbind.socket
+
+2015-07-14 22:47:56 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* use old cups names
+
+2015-07-14 12:14:37 +0400 Tomasz Paweł Gajc 
+
+	* Updated grub.cfg
+
+2015-07-14 12:13:05 +0400 Tomasz Paweł Gajc 
+
+	* Updated omdv-build-iso.sh
+
+2015-07-10 18:24:47 +0400 Tomasz Paweł Gajc 
+
+	* remove old partition map only if it exists
+
+2015-07-10 00:33:26 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* adjust xorriso options
+
+2015-07-09 23:54:52 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* adjust services
+
+2015-07-09 23:53:03 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* umount os-prober if it exists
+
+2015-07-09 23:17:42 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* sync with work from Colin and Cris
+
+2015-07-09 22:50:04 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix chown live user dirs
+
+2015-07-09 17:23:03 +0400 Tomasz Paweł Gajc 
+
+	* enable firewalld
+
+2015-07-09 17:04:03 +0400 Tomasz Paweł Gajc 
+
+	* rebuild linker and man cache
+
+2015-07-08 23:52:31 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* run fc-cache
+
+2015-07-08 23:08:13 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* drop x11-docs and add xorg-x11-100dpi-fonts
+
+2015-07-07 18:57:35 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable NetworkManager-wait-online.service
+
+2015-07-06 19:19:22 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* Delete local boot option, there's no way to reliably find the ESP fro...
+
+2015-07-06 19:16:03 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* Create sysconfig network file (bug #1265)
+
+2015-06-29 10:52:07 +0400 Tomasz Paweł Gajc 
+
+	* Clean the rpm db files
+
+2015-06-24 21:15:20 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add fonts-ttf-poltawski-antiqua for polish language
+
+2015-06-23 17:18:26 +0400 Tomasz Paweł Gajc 
+
+	* incerase block chunks to 16384 to reduce ISO image size
+
+2015-06-20 18:20:10 +0400 Tomasz Paweł Gajc 
+
+	* Fix distro name in efi grub menu
+
+2015-06-17 00:15:38 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix sysroot mount
+
+2015-06-16 21:28:48 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add dracut-liveiso-generator for systemd 220
+
+2015-06-14 17:22:22 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* require omdv_myspell.lst for plasma
+
+2015-06-11 17:49:59 +0400 Tomasz Paweł Gajc 
+
+	* fix removing old iso
+
+2015-06-10 19:05:33 +0100 itchka (Colin Close) 
+
+	* Add UUID iso booting
+
+2015-06-10 20:00:08 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* update Plasma list
+
+2015-06-06 22:14:39 +0100 Crispin Boylan 
+
+	* Fix live user login
+
+2015-06-07 14:28:34 +0100 itchka (Colin Close) 
+
+	* Fix mems stick booting Add USB3 modules to drakcut Various user centric mode fixes
+
+2015-06-06 22:14:39 +0100 Crispin Boylan 
+
+	* Fix live user login
+
+2015-06-04 23:28:06 +0100 Crispin Boylan 
+
+	* sync with 2014 package lists
+
+2015-06-06 18:34:55 +0400 Tomasz Paweł Gajc 
+
+	* do not sleep
+
+2015-06-06 16:29:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.6 (tag: cooker-0.0.6-1)
+
+2015-06-06 16:27:11 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix bug #1187
+
+2015-05-13 15:41:10 +0400 Tomasz Paweł Gajc 
+
+	* disable jackit and ia_ora-gnome
+
+2015-05-13 15:37:01 +0400 Tomasz Paweł Gajc 
+
+	* disable libreoffice-kde4
+
+2015-05-13 14:32:50 +0400 Tomasz Paweł Gajc 
+
+	* disable dmsquash-live
+
+2015-05-13 14:30:52 +0400 Tomasz Paweł Gajc 
+
+	* reintroduce sleep
+
+2015-05-12 21:10:37 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* rename to Plasma5 to Plasma, try to fix bug #1187
+
+2015-05-12 17:25:09 +0400 Tomasz Paweł Gajc 
+
+	* add fix by mandian
+
+2015-05-09 09:51:05 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add Plasma5 support
+
+2015-05-06 11:53:06 +0400 Tomasz Paweł Gajc 
+
+	* enable dm module
+
+2015-05-05 14:59:26 +0400 Tomasz Paweł Gajc 
+
+	* adjust dracut modules as suggested in bug #1187
+
+2015-04-23 04:20:59 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* enable xscreensaver for LXQt
+
+2015-04-22 00:48:43 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* adjust grub menuentries for EFI
+
+2015-04-21 15:52:10 +0400 Tomasz Paweł Gajc 
+
+	* disable xscreensaver
+
+2015-04-19 14:19:26 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add owncloudclient to LXQt
+
+2015-04-18 19:17:31 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* use systemd.unit=calamares.target as a default boot target for instal...
+
+2015-04-18 19:14:46 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add xscreensaver to LXQt
+
+2015-04-18 19:13:31 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* disable some py2 old stuff
+
+2015-04-11 11:54:19 +0400 Tomasz Paweł Gajc 
+
+	* switch to gstreamer 1.0
+
+2015-04-10 22:33:47 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version
+
+2015-04-10 22:31:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2015-04-10 22:02:35 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* for syslinux 6 and newer use vga=current, for older use vga=784 as a workaround
+
+2015-04-10 21:57:59 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* rename mkeitefi to createUEFI
+
+2015-04-10 21:41:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* detect syslinux version and use different settings, add title in grub2 theme, adjust dracut settings
+
+2015-04-10 20:00:05 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* support syslinux 6.03
+
+2015-04-10 18:41:02 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2015-04-10 14:48:26 +0400 Tomasz Paweł Gajc 
+
+	* add missing libs to syslinux
+
+2015-04-10 13:28:22 +0400 Tomasz Paweł Gajc 
+
+	* add ldlinux.c32
+
+2015-04-10 11:48:57 +0400 Tomasz Paweł Gajc 
+
+	* use poweroff.c32
+
+2015-04-10 00:33:11 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* sync sources (tag: cooker-0.0.5-1)
+
+2015-04-10 00:31:42 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* try with vga=784
+
+2015-04-10 00:07:37 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.5
+
+2015-04-10 00:06:58 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog
+
+2015-04-10 00:06:01 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* use background from chroot theme for syslinux
+
+2015-04-07 14:59:24 +0400 Tomasz Paweł Gajc 
+
+	* add vga=788
+
+2015-04-03 11:39:05 +0400 Tomasz Paweł Gajc 
+
+	* drop themes and networkmanager-applet
+
+2015-04-01 22:49:49 +0200 tpg (Tomasz Paweł Gajc) 
+
+	* add papyros-shell to weston
+
+2015-03-28 11:16:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* force set default plymouth theme
+
+2015-03-28 04:14:34 +0400 Tomasz Paweł Gajc 
+
+	* strip all partitions to get a real device
+
+2015-03-27 18:47:44 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not kill whole script
+
+2015-03-24 23:00:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use cantata for lxqt
+
+2015-03-23 00:48:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* no need to update calamares settings
+
+2015-03-23 00:46:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* comment out my last changes
+
+2015-03-21 16:02:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix bug #1116 - mout device inside aufs, add --noclean option for ease dubigging
+
+2015-03-18 01:27:01 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add temporary workaround for LXQt session
+
+2015-03-18 01:17:05 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix sddm config
+
+2015-03-16 21:53:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove workarounds for broken x11 video drivers
+
+2015-03-16 15:22:32 +0400 Tomasz Paweł Gajc 
+
+	* remove gnu-efi as it is SDK
+
+2015-03-05 19:15:27 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* try xz for liveinitrd
+
+2015-03-05 14:29:18 +0400 Tomasz Paweł Gajc 
+
+	* create /boot/grub2/grub.cfg from /EFI/grub.cfg
+
+2015-03-05 13:22:44 +0400 Tomasz Paweł Gajc 
+
+	* remove obex-data-server as it is not ready for bluez5
+
+2015-03-05 13:22:25 +0400 Tomasz Paweł Gajc 
+
+	* remove obex-data-server as it is not ready for bluez5
+
+2015-03-05 13:15:05 +0400 Tomasz Paweł Gajc 
+
+	* remove obex-data-server as it is not ready for bluez5
+
+2015-03-04 20:26:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add meteo-qt to lxqt
+
+2015-03-04 20:03:06 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add lximage-qt and notepadqq
+
+2015-03-03 19:09:53 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add ark to lxqt
+
+2015-03-01 21:49:51 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix calligra mess
+
+2015-03-01 20:44:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use hack for our mirrolist name
+
+2015-03-01 19:53:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix KDM autologin
+
+2015-03-01 19:51:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix mirrorlist for released products
+
+2015-03-01 04:38:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix enabling autologin for KDM
+
+2015-03-01 04:13:50 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* exit EFI partition create if UEFI is not set
+
+2015-03-01 04:07:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use grub2-efi
+
+2015-03-01 01:01:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* no more patches (tag: cooker-0.0.4-1)
+
+2015-03-01 01:00:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.4
+
+2015-03-01 00:48:57 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* bump version
+
+2015-03-01 00:48:47 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog
+
+2015-03-01 00:48:26 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog
+
+2015-03-01 00:42:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove not needed files
+
+2015-03-01 00:41:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sleep 1 sec before mounting loopdev in dracut, enable systemd-networkd.socket, code clean in main script
+
+2015-02-28 11:57:30 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add couple of checks, fix exit in error function
+
+2015-02-28 11:48:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix branch and repopath
+
+2015-02-27 17:20:25 +0400 Tomasz Paweł Gajc 
+
+	* prefer OpenMandriva packages
+
+2015-02-27 14:21:31 +0400 Tomasz Paweł Gajc 
+
+	* add live user to wheel group
+
+2015-02-22 02:54:06 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update patch to squashfs for Calamares installer
+
+2015-02-19 19:32:54 +0400 Tomasz Paweł Gajc 
+
+	* add BOOTX64.cfg
+
+2015-02-19 14:47:08 +0400 Tomasz Paweł Gajc 
+
+	* fix search syntax
+
+2015-02-19 14:23:00 +0400 Tomasz Paweł Gajc 
+
+	* more cosmetic fixes
+
+2015-02-19 14:01:22 +0400 Tomasz Paweł Gajc 
+
+	* do not store cmdline in image by default
+
+2015-02-19 13:43:51 +0400 Tomasz Paweł Gajc 
+
+	* remove re-symlinking
+
+2015-02-19 13:40:22 +0400 Tomasz Paweł Gajc 
+
+	* add bc
+
+2015-02-19 13:39:55 +0400 Tomasz Paweł Gajc 
+
+	* update authors add bc programm
+
+2015-02-19 12:13:47 +0400 Tomasz Paweł Gajc 
+
+	* fix typo
+
+2015-02-19 00:20:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix indentation, add some cosmetic changes
+
+2015-02-18 22:11:36 +0000 Colin Close 
+
+	* Fix UEFI booting is reliable from DVD and works from mem stick (only one tester for this. Added support for local builds Added selectable --allow-force --force --nodeps to urpmi command to allow working around broken repos Added defaults to --workdir and --outputdir if it's a local build they now default to the users home. User must be a member of the wheel group to use these options (env variable passing to sudo) Copy package lists and data directory to users home for local builds so that the lists can be edited for personal spins
+
+2015-02-18 17:30:01 +0400 Tomasz Paweł Gajc 
+
+	* add quick-usb-formatter
+
+2015-02-18 17:29:42 +0400 Tomasz Paweł Gajc 
+
+	* add quick-usb-formatter
+
+2015-02-16 00:31:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add apper to lxqt
+
+2015-02-14 09:11:24 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add x11-driver-video-fbdev
+
+2015-02-14 08:04:18 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* uze xz for squashfs
+
+2015-02-14 07:48:35 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix mksquashfs command
+
+2015-02-13 17:33:13 +0400 Tomasz Paweł Gajc 
+
+	* remove not needed stuff, add copyrights for 2015
+
+2015-02-13 15:21:06 +0400 Tomasz Paweł Gajc 
+
+	* yet another try
+
+2015-02-13 00:53:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix last commit
+
+2015-02-13 00:49:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* one more workaround
+
+2015-02-13 00:13:47 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add temp workaround fo abf
+
+2015-02-13 00:07:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* call urpmi with sudo
+
+2015-02-12 18:58:19 +0400 Tomasz Paweł Gajc 
+
+	* use high LZ4 compression
+
+2015-02-12 18:56:56 +0400 Tomasz Paweł Gajc 
+
+	* compress squashfs with lz4
+
+2015-02-12 18:55:30 +0400 Tomasz Paweł Gajc 
+
+	* try with LZ4 compression
+
+2015-02-11 20:33:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add x11-driver-video-vboxvideo as a workaround
+
+2015-02-10 13:11:39 +0400 Tomasz Paweł Gajc 
+
+	* enable more cups services
+
+2015-02-10 13:08:53 +0400 Tomasz Paweł Gajc 
+
+	* do not enable systemd-networkd-wait-online.service
+
+2015-02-07 13:29:16 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add few x11 drivers as a temp workaround
+
+2015-02-06 18:08:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix resolv.conf
+
+2015-02-06 09:06:18 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* x11-driver-video-modesetting in cooker is merged into x11-server-1.17.0
+
+2015-02-03 22:09:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix creating /etc/resolv.conf for 2015.0
+
+2015-02-03 19:43:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use calamares as default installer
+
+2015-01-28 12:56:23 +0000 Colin Close 
+
+	* make script executable
+
+2015-01-28 16:38:21 +0400 Tomasz Paweł Gajc 
+
+	* fix symlinks
+
+2015-01-27 18:29:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* allow build without displaymanager
+
+2015-01-27 12:32:05 +0000 Colin Close 
+
+	* Copy grub.cfg to iso EFI dir instead of BOOTX64.cfg
+
+2015-01-27 00:24:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add weston iso
+
+2015-01-24 19:03:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sync sources one more time (tag: cooker-0.0.3-1)
+
+2015-01-24 18:53:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix typo
+
+2015-01-24 18:41:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sync sources
+
+2015-01-24 18:40:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.3
+
+2015-01-24 18:39:29 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* generated changelog
+
+2015-01-24 18:38:46 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move 60-dracut-isobuild.conf to better place
+
+2015-01-24 18:31:17 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add support for workdir and outputdir
+
+2015-01-24 18:19:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix support for many displaymanagers
+
+2015-01-24 17:32:36 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update types
+
+2015-01-24 15:35:14 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* lowercase TYPE in FILELIST
+
+2015-01-24 15:24:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* qualify only special --type= words
+
+2015-01-24 13:03:09 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add type verification
+
+2015-01-24 12:41:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add support for kdm and sddm live user autologin
+
+2015-01-23 08:41:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* create only relative symlinks
+
+2015-01-21 23:52:10 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add networkmanager-applet to lxqt iso
+
+2015-01-20 21:55:30 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update source (tag: cooker-0.0.2-1)
+
+2015-01-20 21:53:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* new version 0.0.2
+
+2015-01-20 21:25:33 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add missing % in syslinux.cfg
+
+2015-01-20 18:41:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove oma-welcome from LxQt iso for now
+
+2015-01-20 17:17:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add silicon to lxqt iso
+
+2015-01-20 01:37:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* get back to grub2 efi image copying
+
+2015-01-20 00:29:53 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move created efi image on ISO
+
+2015-01-19 22:32:42 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix comression
+
+2015-01-19 19:33:32 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* build new EFI image instead of copy already existing one
+
+2015-01-18 21:10:51 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix creation of /etc/sysconfig/desktop
+
+2015-01-18 20:17:49 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add missing space
+
+2015-01-18 20:14:22 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix grub2.cfg label
+
+2015-01-18 13:59:13 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not remove iso-pkg-lists
+
+2015-01-18 00:58:55 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove not needed fi
+
+2015-01-17 19:53:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* convert  to uppercase and  to lowercase
+
+2015-01-17 19:41:01 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* do not overwrite /etc/sysconfig/desktop
+
+2015-01-17 18:31:47 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix service enable/disable
+
+2015-01-16 20:11:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add tuned
+
+2015-01-16 19:49:16 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix services enable/disable
+
+2015-01-16 15:42:52 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* revert last commit
+
+2015-01-16 15:32:54 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* grub2 bootloader test
+
+2015-01-15 12:35:42 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add back vga=788 to syslinux.cfg to get plymouth splash working
+
+2015-01-15 11:38:39 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use syslinux's memdisk, rather one from extraconfig (dunno why this was like that)
+
+2015-01-15 11:35:27 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* move syslinux menu 5 lines closer to top of the screen
+
+2015-01-15 10:32:05 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* update syslinux background to reflect OpenMandriva theme
+
+2015-01-15 10:18:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove unneccesaryy vga parameters in cmdline
+
+2015-01-15 01:16:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix installation of themes, fonts and locales for grub in EFI mode
+
+2015-01-15 01:05:03 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* sync EFI's grub.cfg with syslinux.cfg boot parameters
+
+2015-01-14 19:59:19 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* generate BUILD_ID if outside of ABF
+
+2015-01-14 19:50:59 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* xorriso append partition as 0xef which correspods to  "EFI (FAT-12/16/32)"
+
+2015-01-14 19:42:45 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add requires on dosfstools
+
+2015-01-14 19:18:23 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add xorriso options -iso-level 3 -full-iso9660-filenames
+
+2015-01-14 19:05:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add -graft-points option to xorriso
+
+2015-01-14 18:49:05 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add quassel to lxqt iso
+
+2015-01-14 11:40:42 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix that xorriso options
+
+2015-01-14 11:22:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix last commit
+
+2015-01-14 11:18:20 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add xorriso -isohybrid-gpt-basdat option when UEFI is enabled
+
+2015-01-14 10:41:28 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* clean out some packages from pkg lists
+
+2015-01-14 10:37:00 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use chroot to execute grub2-mkimage
+
+2015-01-13 17:59:17 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add calligra list, also add calligra to LxQt iso
+
+2015-01-13 11:45:29 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* adjust LxQt package lists according to https://project.openmandriva.org/work_packages/58
+
+2015-01-13 11:33:27 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* splash.xpm.gz is fron grub1 era, remove it
+
+2015-01-13 11:03:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix creation of /etc/minsysreq
+
+2015-01-13 00:40:41 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix missing dot
+
+2015-01-13 00:39:21 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix patch for real
+
+2015-01-12 22:19:49 +0000 Colin Close 
+
+	* Merge branch 'master' of abf.io:openmandriva/omdv-build-iso
+
+2015-01-12 22:18:22 +0000 Colin Close 
+
+	* Fix grub.cfg paths
+
+2015-01-12 21:46:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* use recent Super Grub2 Disk
+
+2015-01-12 21:41:12 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* exist script on urpmi install only for non cooker
+
+2015-01-12 03:36:24 +0400 Tomasz Paweł Gajc 
+
+	* fix typo
+
+2015-01-12 03:26:38 +0400 Tomasz Paweł Gajc 
+
+	* Updated .abf.yml (tag: cooker-0.0.1-1)
+
+2015-01-12 03:26:21 +0400 Tomasz Paweł Gajc 
+
+	* add info about update process
+
+2015-01-12 00:19:49 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove not needed CHRT_LOCK
+
+2015-01-12 00:04:15 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix iso-pkg-lists, adjust help_usage, minor changes
+
+2015-01-11 23:37:04 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix spec file
+
+2015-01-11 23:24:56 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove useless files
+
+2015-01-11 23:15:34 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* package is noarch
+
+2015-01-11 23:13:44 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* fix .abf.yml
+
+2015-01-11 23:13:06 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add empty .abf.yml
+
+2015-01-11 23:12:38 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* remove one more debug option
+
+2015-01-11 23:04:58 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* add sources
+
+2014-12-21 03:37:55 +0100 tpg (Tomasz Paweł Gajc) 
+
+	* initial spec file
+

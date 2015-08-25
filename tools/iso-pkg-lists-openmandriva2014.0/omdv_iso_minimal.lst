@@ -1,0 +1,31 @@
+%include .///omdv_core.lst
+
+acpi
+acpid
+at
+basesystem
+bootloader-utils #min-iso
+busybox-static #min-iso
+cronie-anacron
+#dash-static #min-iso what is that for ???????
+dhcp-client
+draklive-install #min-iso
+drakx-installer-binaries-probe #min-iso
+gpm
+grub2
+grub2-efi
+gnu-efi
+efibootmgr
+kernel-nrjQL-desktop-latest
+kernel-nrjQL-desktop
+isolinux
+nscd
+openssh-clients
+omv-bug-report
+pciutils
+syslinux
+timezone
+usbutils
+usb_modeswitch
+vim-minimal #min-iso
+wireless-tools
