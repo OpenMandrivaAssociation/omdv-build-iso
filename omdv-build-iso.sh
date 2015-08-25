@@ -181,7 +181,7 @@ fi
 # check whether script is executed inside ABF (www.abf.io)
 if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
     ABF=1
-
+    echo "This is $NOCLEAN"
     if [ -n $NOCLEAN ]; then
 	echo "You cannot use --noclean inside ABF"
 	exit 1
