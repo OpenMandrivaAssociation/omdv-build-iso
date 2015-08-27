@@ -18,7 +18,6 @@ install:
 	-install -d $(DATAFILE)/iso-pkg-lists-cooker
 	-install -d $(DATAFILE)/iso-pkg-lists-openmandriva2014.0
 	install -m 755 omdv-build-iso.sh $(BINFILE)
-	cp -fr EFI/* $(DATAFILE)/EFI/
 	cp -fr data/* $(DATAFILE)/data/
 	cp -fr dracut/* $(DATAFILE)/dracut/
 	cp -fr grub2/* $(DATAFILE)/grub2/
