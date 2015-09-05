@@ -4,7 +4,7 @@ insmod  part_gpt
 insmod  part_msdos
 insmod normal
 insmod test
-search --no-floppy --set=root -fs-uuid '2015-09-04-09-12-10-00'
+search --no-floppy --set=root -fs-uuid '%GRUB_UUID%'
 if [ "${grub_platform}" == "efi" ]
 set efi = 1
 source ($root)/boot/grub/grub.cfg

@@ -589,23 +589,21 @@ setupISOdir () {
 # Usage: setupISOdir $WORKDIR $CHROOTNAME $ISOROOTNAME
 # Installs all the files needed to the ISO build directory for building the grub images.
 
-# UEFI support
-    $SUDO cp -f "$1"/grub2/grub2-efi.cfg "$3"/EFI/BOOT/grub.cfg
-    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$3"/EFI/BOOT/*.cfg
 
 # BIOS Boot and theme support
-    mkdir -p "$3"/boot/grub "$3"/boot/grub/themes "$3"/boot/grub/locale "$3"/boot/grub/fonts
+    mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
 
-    $SUDO cp -f "$1"/grub2/grub2-bios.cfg "$3"/boot/grub/grub.cfg
-    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$3"/boot/grub/grub.cfg
-    $SUDO cp -f "$1"/grub2/start_cfg "$3"/boot/grub/start_cfg
-    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$3"/boot/grub/start_cfg
+    $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
+    $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
     if [ "${TYPE}" != "minimal" ]; then
-    $SUDO cp -a -f "$2"/boot/grub2/themes "$3"/boot/grub/
-    $SUDO cp -a -f "$2"/boot/grub2/locale "$3"/boot/grub/
-    $SUDO cp -a -f "$2"/usr/share/grub/*.pf2 "$3"/boot/grub/fonts/
-    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$3"/boot/grub/themes/OpenMandriva/theme.txt
+    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
+    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
+    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
+    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
     fi
+
 #	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot boot/grub/efiboot_img -efi-boot-part --efi-boot-image"
 #	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot EFI/BOOT/mdcore_img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efiboot_img"
 #	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot boot/grub/efiboot_img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efiboot_img"
@@ -614,6 +612,10 @@ setupISOdir () {
 createMemDisk () {
 # Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
+
+# UEFI support
+    $SUDO cp -f "$WORKDIR"/grub2/grub2-efi.cfg "$ISOROOTNAME"/EFI/BOOT/grub.cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/EFI/BOOT/*.cfg
 
     if [ $EXTARCH = "x86_64" ]; then
 	   ARCHFMT=x86_64-efi
@@ -638,7 +640,7 @@ createMemDisk () {
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
     # Job done just remember to move it back again
 
-    chroot "$1"  /usr/bin/grub2-mkimage -O $ARCHFMT  -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/mdcore_img -p '(memdisk)/boot/grub' search iso9660 normal memdisk tar -c /ISO/EFI/BOOT/grub.cfg
+    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT  -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/mdcore_img -p '(memdisk)/boot/grub' search iso9660 normal memdisk tar -c /ISO/EFI/BOOT/grub.cfg
     # Move back the ISO filesystem after building the EFI image.
     $SUDO mv -f $CHROOTNAME/ISO/ $ISOROOTNAME
 }
@@ -663,16 +665,17 @@ createUEFI() {
     IMGNME="$ISOROOTNAME"/boot/grub/efiboot_img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
-    # Copy the grub config file to the chroot dir
-#    $SUDO cp -f "$3"/grub/grub2-efi.cfg "$1"/boot/grub/grub2-efi.cfg
-
+    # Copy the grub config file to the chroot dir for UEFI support
+    # Also set the uuid
+    $SUDO cp -f "$WORKDIR"/grub2/grub2-efi.cfg "$ISOROOTNAME"/EFI/BOOT/grub.cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/EFI/BOOT/*.cfg
 
 #  Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
 # To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
     # Job done just remember to move it back again
 
-    chroot "$1"  /usr/bin/grub2-mkimage -O $ARCHFMT -C xz  -o /ISO/EFI/BOOT/$EFINME -d $ARCHLIB -p "/EFI/BOOT" linux multiboot multiboot2 all_video boot \
+    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT -C xz  -o /ISO/EFI/BOOT/$EFINME -d $ARCHLIB -p "/EFI/BOOT" linux multiboot multiboot2 all_video boot \
     btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
     gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt part_bsd password_pbkdf2 \
     png reboot search search_fs_uuid search_fs_file search_label sleep memdisk tftp video xfs mdraid09 mdraid1x lua loopback test 
@@ -745,19 +748,37 @@ createUEFI() {
 # Sets up grub2 to boot /target/dir
 setupGrub2() {
 
-    if [ ! -e "$1"/usr/bin/grub2-mkimage ]; then
+    if [ ! -e "$CHROOTNAME"/usr/bin/grub2-mkimage ]; then
 	echo "Missing grub2-mkimage in installation."
 	errorCatch
     fi
 
+    # BIOS Boot and theme support
+    # NOTE Themes are used by the EFI boot as well.
+    # Copy grub config files to the ISO build directory
+    # and set the UUID's
+    $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
+    $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
+
+    # Add the themes, locales and fonts to the ISO build firectory
+    if [ "${TYPE}" != "minimal" ]; then
+    mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
+    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
+    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
+    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
+    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+    fi
+    
     echo "Building Grub2 El-Torito image and an embedded image."
 
     GRUB_LIB=/usr/lib/grub/i386-pc
     GRUB_IMG=$(mktemp)
 
     # copy memtest
-    $SUDO cp -rfT $WORKDIR/extraconfig/memtest "$2"/boot/grub/memtest
-    $SUDO chmod +x "$2"/boot/grub/memtest
+    $SUDO cp -rfT $WORKDIR/extraconfig/memtest "$ISOROOTNAME"/boot/grub/memtest
+    $SUDO chmod +x "$ISOROOTNAME"/boot/grub/memtest
     # To use an embedded image with our grub2 we need to make the modules available in the /boot/grub directory of the iso. The modules can't be carried in the payload of
     # the embedded image as it's size is limited to 32kb. So we copy the i386-pc modules to the isobuild directory
 
@@ -785,12 +806,12 @@ setupGrub2() {
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
     # Job done just remember to move it back again
 
-    $SUDO chroot "$1" /usr/bin/grub2-mkimage -d $GRUB_LIB -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 biosdisk 
+    $SUDO chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d $GRUB_LIB -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 biosdisk 
     # Move the ISO director back to the working directory
     $SUDO mv -f $CHROOTNAME/ISO/ $WORKDIR
 
-    $SUDO cat "$1"/$GRUB_LIB/boot.img "$1"/$GRUB_IMG > "$2"/boot/grub/grub2-embed_img
-    $SUDO cat "$1"/$GRUB_LIB/cdboot.img "$1"/$GRUB_IMG > "$2"/boot/grub/grub2-eltorito.img
+    $SUDO cat "$CHROOTNAME"/"$GRUB_LIB"/boot.img "$CHROOTNAME"/"$GRUB_IMG" > "$ISOROOTNAME"/boot/grub/grub2-embed_img
+    $SUDO cat "$CHROOTNAME"/"$GRUB_LIB"/cdboot.img "$CHROOTNAME"/"$GRUB_IMG" > "$ISOROOTNAME"/boot/grub/grub2-eltorito.img
 
     XORRISO_OPTIONS=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img "
     echo "End grub2."
@@ -800,9 +821,10 @@ setupGrub2() {
 	errorCatch
     fi
 
-    if [ -e "$1"/boot/grub/grub-eltorito.img -o -e "$1"/boot/grub/grub-embedded.img ]; then
-	$SUDO rm -rf "$2"/boot/grub/{grub-eltorito,grub-embedded}.img
-    fi
+    # Not needed?
+    #if [ -e "$1"/boot/grub/grub-eltorito.img -o -e "$1"/boot/grub/grub2-embed_img ]; then
+    #$SUDO rm -rf "$2"/boot/grub/{grub-eltorito,grub-embedded}.img
+    #fi
 
 
     # copy SuperGrub iso
@@ -812,19 +834,19 @@ setupGrub2() {
 
     echo "Installing liveinitrd for grub2"
 
-    if [ -e "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$1"/boot/liveinitrd.img ]; then
-	$SUDO cp -a "$1"/boot/vmlinuz-$BOOT_KERNEL_ISO "$2"/boot/vmlinuz0
-	$SUDO cp -a "$1"/boot/liveinitrd.img "$2"/boot/liveinitrd.img
+    if [ -e "$CHROOTNAME"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$CHROOTNAME"/boot/liveinitrd.img ]; then
+	$SUDO cp -a "$CHROOTNAME"/boot/vmlinuz-"$BOOT_KERNEL_ISO" "$ISOROOTNAME"/boot/vmlinuz0
+	$SUDO cp -a "$CHROOTNAME"/boot/liveinitrd.img "$ISOROOTNAME"/boot/liveinitrd.img
     else
 	echo "vmlinuz or liveinitrd does not exists. Exiting."
 	errorCatch
     fi
 
-    if [ ! -f "$2"/boot/liveinitrd.img ]; then
+    if [ ! -f "$ISOROOTNAME"/boot/liveinitrd.img ]; then
 	echo "Missing /boot/liveinitrd.img. Exiting."
 	errorCatch
     else
-	$SUDO rm -rf "$1"/boot/liveinitrd.img
+	$SUDO rm -rf "$CHROOTDIR"/boot/liveinitrd.img
     fi
 
 	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot boot/grub/efiboot_img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efiboot_img"
@@ -1210,10 +1232,10 @@ updateSystem
 getPkgList
 createChroot
 createInitrd
-setupISOdir $WORKDIR $CHROOTNAME $ISOROOTNAME
-createMemDisk "$CHROOTNAME" "$ISOROOTNAME"
-createUEFI "$CHROOTNAME" "$ISOROOTNAME"
-setupGrub2 "$CHROOTNAME" "$ISOROOTNAME"
+#setupISOdir 
+createMemDisk 
+createUEFI 
+setupGrub2 
 setupISOenv
 createSquash
 buildIso
