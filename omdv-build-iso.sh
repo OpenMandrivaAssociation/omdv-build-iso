@@ -165,7 +165,7 @@ fi
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
 SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
-#export $SUDOVAR
+
 
     # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -301,6 +301,7 @@ errorCatch() {
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
+    $SUDO losetup -D
 if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ]; then
 #    $SUDO rm -rf $(dirname "$FILELISTS")
     umountAll "$CHROOTNAME"
@@ -603,19 +604,12 @@ setupISOdir () {
     $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
     sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
     fi
-
-#	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot boot/grub/efiboot_img -efi-boot-part --efi-boot-image"
-#	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot EFI/BOOT/mdcore_img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efiboot_img"
-#	XORRISO_OPTIONS="$XORRISO_OPTIONS --efi-boot boot/grub/efiboot_img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efiboot_img"
 }
 
 createMemDisk () {
 # Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
 
-# UEFI support
-    $SUDO cp -f "$WORKDIR"/grub2/grub2-efi.cfg "$ISOROOTNAME"/EFI/BOOT/grub.cfg
-    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/EFI/BOOT/*.cfg
 
     if [ $EXTARCH = "x86_64" ]; then
 	   ARCHFMT=x86_64-efi
@@ -632,15 +626,20 @@ createMemDisk () {
     IMGNME="$ISOROOTNAME"/boot/grub/efiboot_img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
+    # Copy the grub config file to the chroot dir for UEFI support
+    # Also set the uuid
+    $SUDO cp -f "$WORKDIR"/grub2/grub2-efi.cfg "$ISOROOTNAME"/EFI/BOOT/grub.cfg
+    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/EFI/BOOT/*.cfg
 
 #  Create a memdisk img called memdisk_img
     tar cvf $CHROOTNAME/memdisk_img -C $ISOROOTNAME/EFI/BOOT .
 #  Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
-# To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
+#  To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
-    # Job done just remember to move it back again
+#  Job done just remember to move it back again
 
-    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT  -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/mdcore_img -p '(memdisk)/boot/grub' search iso9660 normal memdisk tar -c /ISO/EFI/BOOT/grub.cfg
+    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT  -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/mdcore_img -p '(memdisk)/boot/grub' search iso9660 normal regexp memdisk tar -c /ISO/boot/grub/grub.cfg
+#    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT  -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/mdcore_img search iso9660 normal regexp memdisk tar -c /ISO/boot/grub/grub.cfg
     # Move back the ISO filesystem after building the EFI image.
     $SUDO mv -f $CHROOTNAME/ISO/ $ISOROOTNAME
 }
@@ -669,20 +668,21 @@ createUEFI() {
     # Also set the uuid
     $SUDO cp -f "$WORKDIR"/grub2/grub2-efi.cfg "$ISOROOTNAME"/EFI/BOOT/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/EFI/BOOT/*.cfg
+#   Set up the ISO/boot/grub directory
+    mkdir -p "$ISOROOTNAME"/boot/grub
 
 #  Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
-# To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
+#  To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
     # Job done just remember to move it back again
 
-    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT -C xz  -o /ISO/EFI/BOOT/$EFINME -d $ARCHLIB -p "/EFI/BOOT" linux multiboot multiboot2 all_video boot \
+    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT -C xz  -o /ISO/EFI/BOOT/$EFINME -d $ARCHLIB  -p /EFI/BOOT linux multiboot multiboot2 all_video boot \
     btrfs cat chain configfile echo efifwsetup efinet ext2 fat font gfxmenu gfxterm gfxterm_menu gfxterm_background \
     gzio halt hfsplus iso9660 jpeg lvm mdraid09 mdraid1x minicmd normal part_apple part_msdos part_gpt part_bsd password_pbkdf2 \
-    png reboot search search_fs_uuid search_fs_file search_label sleep memdisk tftp video xfs mdraid09 mdraid1x lua loopback test 
+    png reboot search search_fs_uuid search_fs_file search_label sleep memdisk tftp video xfs mdraid09 mdraid1x lua loopback test regexp 
 
 # Move back the ISO filesystem after building the EFI image.
     $SUDO mv -f $CHROOTNAME/ISO/ $WORKDIR
-    sync
 
     # Get sizes of the required EFI files in blocks.
     # efipartsize  must be large enough to accomodate a gpt partition tables as well as the data.
@@ -796,7 +796,7 @@ setupGrub2() {
     
     # Build the grub images in the chroot rather that in the host OS this avoids any issues with different versions of grub in the host OS especially when using local mode.
     # this means cooker isos can be built on a local machine running a different version of OpenMandriva
-    # This requires that all the files needed to build the image must be within the chroot directory when the chroot command is invoked.
+    # It requires that all the files needed to build the image must be within the chroot directory when the chroot command is invoked.
     # Also we cannot write outside of the chroot so the images generated will remain in the chroot directory and will need to be removed before the squashfs is built
     # these will be in /tmp and they are only small so leave them for the time being.
     # Probably best to use a function for this. If the entire ~/ISO director is copied to the chroot whe do do have to worry too much with hacking the existing script to work 
@@ -1232,8 +1232,7 @@ updateSystem
 getPkgList
 createChroot
 createInitrd
-#setupISOdir 
-createMemDisk 
+#createMemDisk 
 createUEFI 
 setupGrub2 
 setupISOenv
