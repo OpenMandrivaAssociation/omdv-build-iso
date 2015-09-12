@@ -7,9 +7,8 @@ insmod	test
 search --no-floppy --set=root -fs-uuid '%GRUB_UUID%'
 if [ "${grub_platform}" == "efi" ]
     set efi = 1
-    source ($root)/boot/grub/grub.cfg
 else
     set bios = 1
     set efi = 0
-    source ($root)/boot/grub/grub.cfg
 fi
+source ($root)/boot/grub/grub.cfg
