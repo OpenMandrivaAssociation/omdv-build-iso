@@ -974,7 +974,7 @@ EOF
 	$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/${live_user}/.kde4
 	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.kde4
     else
-	$SUDO rm -rf "$CHROOTNAME"/home/$live_user}/.kde4
+	$SUDO rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
     fi
 
     # enable DM autologin
@@ -985,7 +985,6 @@ EOF
 		    ;;
 		"sddm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
-
 		    ;;
 		"gdm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
