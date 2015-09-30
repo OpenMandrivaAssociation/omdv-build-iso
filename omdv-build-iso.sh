@@ -773,6 +773,11 @@ setupGrub2() {
 	$SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
 	$SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
 	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+
+	if [[ $? != 0 ]]; then
+	    echo "Failed to update Grub2 theme."
+	    errorCatch
+	fi
     fi
 
     echo "Building Grub2 El-Torito image and an embedded image."
