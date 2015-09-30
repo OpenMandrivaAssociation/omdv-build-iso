@@ -875,8 +875,18 @@ setupBootloader() { $CHROOTNAME $ISOROOTNAME $WORKDIR
 
 setupISOenv() {
 
+    # kill it as it prevents clearing passwords
+    if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
+	$SUDO rm -rf "$CHROOTNAME"/etc/shadow.lock
+    fi
+
     # clear root password
     $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -d root
+
+    if [[ $? != 0 ]]; then
+	echo "Failed to clear root user password. Exiting."
+	errorCatch
+    fi
 
     # set up default timezone
     echo "Setting default timezone"
@@ -936,6 +946,10 @@ EOF
     echo "Setting up user ${live_user}"
     $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -G wheel ${live_user}
     $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -d ${live_user}
+    if [[ $? != 0 ]]; then
+	echo "Failed to clear ${live_user} user password. Exiting."
+	errorCatch
+    fi
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
