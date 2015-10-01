@@ -875,19 +875,6 @@ setupBootloader() { $CHROOTNAME $ISOROOTNAME $WORKDIR
 
 setupISOenv() {
 
-    # kill it as it prevents clearing passwords
-    if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
-	$SUDO rm -rf "$CHROOTNAME"/etc/shadow.lock
-    fi
-
-    # clear root password
-    $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -d root
-
-    if [[ $? != 0 ]]; then
-	echo "Failed to clear root user password. Exiting."
-	errorCatch
-    fi
-
     # set up default timezone
     echo "Setting default timezone"
     $SUDO ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
@@ -922,6 +909,11 @@ setupISOenv() {
 
     # set up displaymanager
     if [ "${TYPE,,}" != "minimal" ] && [ ${DISPLAYMANAGER,,} != "none" ]; then
+	if [ ! -e /lib/systemd/system/${DISPLAYMANAGER,,}.service ]; then
+	    echo "File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
+	    errorCatch
+	fi
+
 	$SUDO ln -sf /lib/systemd/system/${DISPLAYMANAGER,,}.service "$CHROOTNAME"/etc/systemd/system/display-manager.service 2> /dev/null || :
 
 	# Set reasonable defaults
@@ -944,12 +936,25 @@ EOF
     # set up live user
     live_user=live
     echo "Setting up user ${live_user}"
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -G wheel ${live_user}
-    $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -d ${live_user}
-    if [[ $? != 0 ]]; then
-	echo "Failed to clear ${live_user} user password. Exiting."
-	errorCatch
-    fi
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel ${live_user}
+
+    # clear user passwords
+    for username in root $live_user; do
+	# kill it as it prevents clearing passwords
+	if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
+	    $SUDO rm -rf "$CHROOTNAME"/etc/shadow.lock
+	fi
+	echo "Clearing $username password."
+	$SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username
+
+	if [[ $? != 0 ]]; then
+	    echo "Failed to clear $username user password. Exiting."
+	    errorCatch
+	fi
+
+	$SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -u $username
+    done
+
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
