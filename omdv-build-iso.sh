@@ -451,7 +451,7 @@ createChroot() {
 
 		if [ "${TREE,,}" != "cooker" ]; then
 		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
-            $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+        	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
 		    # this one is needed to grab firmwares
 		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
@@ -459,29 +459,29 @@ createChroot() {
 	    fi
 	fi
 
-	    # update medias
-	    $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
-	    if [ "${TREE,,}" != "cooker" ]; then
-		echo "Updating urpmi repositories in $CHROOTNAME"
-		$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
-	    fi
+	# update medias
+	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
+	if [ "${TREE,,}" != "cooker" ]; then
+	    echo "Updating urpmi repositories in $CHROOTNAME"
+	    $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
+	fi
 
-	    $SUDO mount --bind /proc "$CHROOTNAME"/proc
-	    $SUDO mount --bind /sys "$CHROOTNAME"/sys
-	    $SUDO mount --bind /dev "$CHROOTNAME"/dev
-	    $SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
+	$SUDO mount --bind /proc "$CHROOTNAME"/proc
+	$SUDO mount --bind /sys "$CHROOTNAME"/sys
+	$SUDO mount --bind /dev "$CHROOTNAME"/dev
+	$SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
-	    # start rpm packages installation
-	    # but only if .noclean does not exist
-	    if [ ! -f "$CHROOTNAME"/.noclean ]; then
-		echo "Start installing packages in $CHROOTNAME"
-		parsePkgList "$FILELISTS" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
-
-		if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
-		    echo "Can not install packages from $FILELISTS";
-		    errorCatch
-		fi
-	    fi
+	# start rpm packages installation
+	# but only if .noclean does not exist
+	if [ ! -f "$CHROOTNAME"/.noclean ]; then
+	    echo "Start installing packages in $CHROOTNAME"
+	    parsePkgList "$FILELISTS" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
+# disable for now
+#	    if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
+#		echo "Can not install packages from $FILELISTS";
+#		errorCatch
+#	    fi
+	fi
     fi #noclean
 
     # check CHROOT
@@ -625,7 +625,7 @@ createMemDisk () {
     fi
 
     ARCHLIB=/usr/lib/grub/"$ARCHFMT"
-	   EFINAME=BOOT"$ARCHPFX".efi
+    EFINAME=BOOT"$ARCHPFX".efi
 
     echo "Setting up UEFI partiton and image."
 
@@ -678,7 +678,7 @@ createUEFI() {
     fi
 
     ARCHLIB=/usr/lib/grub/"$ARCHFMT"
-	   EFINAME=BOOT"$ARCHPFX".efi
+    EFINAME=BOOT"$ARCHPFX".efi
 
     echo "Setting up UEFI partiton and image."
 
@@ -1265,7 +1265,7 @@ updateSystem
 getPkgList
 createChroot
 createInitrd
-createMemDisk 
+createMemDisk
 createUEFI
 setupGrub2
 setupISOenv
