@@ -979,8 +979,35 @@ EOF
     $SUDO popd
 
     echo "Starting services setup."
-    # enable services
-    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager ModemManager sshd.socket cups.path cups.socket cups-lpd.socket cups cups-browsed saned.socket dm-event.socket acpid alsa atd avahi-daemon irqbalance netfs rpcbind.socket udev-post mandrake_everytime crond accounts-daemon tuned dkms cpupower smb nmb winbind firewalld fstrim.timer)
+
+    # (tpg) enable services based on preset files from systemd and others
+    UNIT_DIR="$CHROOTNAME"/lib/systemd/system
+    if [ -f $UNIT_DIR-preset/90-default.preset ]; then
+	PRESETS=($UNIT_DIR-preset/*.preset)
+	for file in "${PRESETS[@]}"; do
+	    while read line; do
+		if [[ -n "$line" && "$line" != [[:blank:]#]* && "${line,,}" = [[:blank:]enable]* ]]; then
+		    SANITIZED="${line#*enable}"
+		    for s_file in `find $UNIT_DIR -type f -name $SANITIZED`; do
+			DEST=`grep -o 'WantedBy=.*' $s_file  | cut -f2- -d'='`
+			if [ -n "$DEST" ] && [ -d "$CHROOTNAME"/etc/systemd/system ] && [ ! -e "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/} ] ; then
+			    [[ ! -d /etc/systemd/system/$DEST.wants ]] && mkdir -p "$CHROOTNAME"/etc/systemd/system/$DEST.wants
+			    echo "Enabling ${s_file#$UNIT_DIR/}"
+			    #/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
+			    ln -sf $UNIT_DIR/${s_file#$UNIT_DIR/} "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}
+			fi
+		    done
+		fi
+	    done < "$file"
+	done
+    else
+	echo "File $UNIT_DIR-preset/90-default.preset does not exist. Installation is broken"
+	errorCatch
+    fi
+
+
+    # enable services on demand
+    SERVICES_ENABLE=(sshd.socket irqbalance smb nmb winbind)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
