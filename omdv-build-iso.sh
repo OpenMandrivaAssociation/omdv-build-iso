@@ -617,13 +617,14 @@ createMemDisk () {
 
 
     if [ $EXTARCH = "x86_64" ]; then
-	   ARCHFMT=x86_64-efi
-	   ARCHPFX=X64
+	ARCHFMT=x86_64-efi
+	ARCHPFX=X64
     else
-	   ARCHFMT=i386-pc
-   	   ARCHPFX=IA32
+	ARCHFMT=i386-pc
+	ARCHPFX=IA32
     fi
-	   ARCHLIB=/usr/lib/grub/"$ARCHFMT"
+
+    ARCHLIB=/usr/lib/grub/"$ARCHFMT"
 	   EFINAME=BOOT"$ARCHPFX".efi
 
     echo "Setting up UEFI partiton and image."
@@ -669,19 +670,22 @@ createUEFI() {
 # PLEASE NOTE THAT THE ISO DIRECTORY IS TEMPORARILY MOVED TO THE CHROOT DIRECTORY FOR THE PURPOSE OF GENERATING THE GRUB IMAGE.
 
     if [ $EXTARCH = "x86_64" ]; then
-	   ARCHFMT=x86_64-efi
-	   ARCHPFX=X64
+	ARCHFMT=x86_64-efi
+	ARCHPFX=X64
     else
-	   ARCHFMT=i386-pc
-   	   ARCHPFX=IA32
+	ARCHFMT=i386-pc
+	ARCHPFX=IA32
     fi
-	   ARCHLIB=/usr/lib/grub/"$ARCHFMT"
+
+    ARCHLIB=/usr/lib/grub/"$ARCHFMT"
 	   EFINAME=BOOT"$ARCHPFX".efi
 
     echo "Setting up UEFI partiton and image."
 
     IMGNME="$ISOROOTNAME"/boot/grub/efi.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
+
+    echo "Building GRUB's EFI image"
     if [ -e $IMGNME ]; then
 	$SUDO rm -rf $IMGNME
     fi
@@ -740,13 +744,18 @@ setupGrub2() {
 
     # Add the themes, locales and fonts to the ISO build firectory
     if [ "${TYPE}" != "minimal" ]; then
-    mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
-    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
-    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
-    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
-    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+	mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
+	$SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
+	$SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
+	$SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
+	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+
+	if [[ $? != 0 ]]; then
+	    echo "Failed to update Grub2 theme."
+	    errorCatch
+	fi
     fi
-    
+
     echo "Building Grub2 El-Torito image and an embedded image."
 
     GRUB_LIB=/usr/lib/grub/i386-pc
@@ -773,11 +782,11 @@ setupGrub2() {
     if [ -e "$ISOROOTNAME"/boot/grub/grub-eltorito.img -o -e "$ISOROOTNAME"/boot/grub/grub2-embed_img ]; then
       $SUDO rm -rf "$ISOROOTNAME"/boot/grub/{grub-eltorito,grub-embedded}.img
     fi
-    
+
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
     # Job done just remember to move it back again
     # Make the image
-    $SUDO chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d $GRUB_LIB -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 biosdisk 
+    $SUDO chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d $GRUB_LIB -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 all_video biosdisk boot cat chain configfile echo ext2 fat font gettext gfxmenu gfxterm gfxterm_background gzio halt help jpeg legacycfg linux linux16 loadenv ls minicmd multiboot multiboot2 normal part_gpt part_msdos png regexp reboot search search_fs_file search_fs_uuid search_label sleep test vbe vga
     # Move the ISO director back to the working directory
     $SUDO mv -f $CHROOTNAME/ISO/ $WORKDIR
     # Create bootable hard disk image
@@ -835,9 +844,6 @@ setupGrub2() {
 
 setupISOenv() {
 
-    # clear root password
-    $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -d root
-
     # set up default timezone
     echo "Setting default timezone"
     $SUDO ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
@@ -872,6 +878,11 @@ setupISOenv() {
 
     # set up displaymanager
     if [ "${TYPE,,}" != "minimal" ] && [ ${DISPLAYMANAGER,,} != "none" ]; then
+	if [ ! -e /lib/systemd/system/${DISPLAYMANAGER,,}.service ]; then
+	    echo "File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
+	    errorCatch
+	fi
+
 	$SUDO ln -sf /lib/systemd/system/${DISPLAYMANAGER,,}.service "$CHROOTNAME"/etc/systemd/system/display-manager.service 2> /dev/null || :
 
 	# Set reasonable defaults
@@ -894,8 +905,25 @@ EOF
     # set up live user
     live_user=live
     echo "Setting up user ${live_user}"
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -G wheel ${live_user}
-    $SUDO chroot "$CHROOTNAME" /usr/bin/passwd -d ${live_user}
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel ${live_user}
+
+    # clear user passwords
+    for username in root $live_user; do
+	# kill it as it prevents clearing passwords
+	if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
+	    $SUDO rm -rf "$CHROOTNAME"/etc/shadow.lock
+	fi
+	echo "Clearing $username password."
+	$SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username
+
+	if [[ $? != 0 ]]; then
+	    echo "Failed to clear $username user password. Exiting."
+	    errorCatch
+	fi
+
+	$SUDO chroot "$CHROOTNAME" /usr/bin/passwd -f -u $username
+    done
+
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
@@ -920,7 +948,7 @@ EOF
 	$SUDO chroot "$CHROOTNAME" chmod -R 0777 /home/${live_user}/.kde4
 	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.kde4
     else
-	$SUDO rm -rf "$CHROOTNAME"/home/$live_user}/.kde4
+	$SUDO rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
     fi
 
     # enable DM autologin
@@ -931,7 +959,6 @@ EOF
 		    ;;
 		"sddm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
-
 		    ;;
 		"gdm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
@@ -953,7 +980,7 @@ EOF
 
     echo "Starting services setup."
     # enable services
-    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager sshd.socket cups.path cups.socket cups-lpd.socket cups cups-browsed acpid alsa atd avahi-daemon irqbalance netfs rpcbind.socket udev-post mandrake_everytime crond accounts-daemon tuned firewalld)
+    SERVICES_ENABLE=(systemd-networkd systemd-networkd.socket systemd-resolved systemd-timesyncd systemd-timedated NetworkManager ModemManager sshd.socket cups.path cups.socket cups-lpd.socket cups cups-browsed saned.socket dm-event.socket acpid alsa atd avahi-daemon irqbalance netfs rpcbind.socket udev-post mandrake_everytime crond accounts-daemon tuned dkms cpupower smb nmb winbind firewalld fstrim.timer)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
@@ -1212,8 +1239,8 @@ getPkgList
 createChroot
 createInitrd
 createMemDisk 
-createUEFI 
-setupGrub2 
+createUEFI
+setupGrub2
 setupISOenv
 createSquash
 buildIso
