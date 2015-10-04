@@ -166,8 +166,7 @@ fi
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
 SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
 
-
-    # run only when root
+# run only when root
 if [ "`id -u`" != "0" ]; then
     # We need to be root for umount and friends to work...
     # NOTE the following command will only work on OMDV for the first registered user
@@ -207,10 +206,14 @@ DIST=omdv
 
 # always build free ISO
 FREE=1
-
-SUDO="sudo -E"
-[ "`id -u`" = "0" ] && SUDO=""
 LOGDIR="."
+UHOME="$HOME"
+
+if [ "`id -u`" = "0" ]; then
+    SUDO=""
+else
+    SUDO="sudo -E"
+fi
 
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
@@ -223,7 +226,7 @@ if [ -z "$WORKDIR" ]; then
 	if [ ! -d $WORKDIR ]; then
 	    $SUDO mkdir -p $WORKDIR
 	# Make it easy for the user to edit the package lists and iso build files.
-        chown -R $OLDUSER:$OLDUSER ~/omdv-build-iso
+	    chown -R $OLDUSER:$OLDUSER $WORKDIR
 	elif [ -z "$NOCLEAN" ]; then
 	    $SUDO rm -rf $WORKDIR
 	fi
@@ -1250,11 +1253,13 @@ postBuild() {
 # Beginnings of package management for user spins
 
 addPkgs () {
-if [ -n ADDPKG ];then
+if [ -n ADDPKG ]; then
 echo "Start installing packages in $CHROOTNAME"
 parsePkgList "$ADDPKG" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
+fi
 }
 remoVePkgs () {
+echo NULL
 }
 
 # START ISO BUILD
