@@ -1250,8 +1250,7 @@ postBuild() {
 # Beginnings of package management for user spins
 
 addPkgs () {
-if [ -n ADDPKG ]
-then 
+if [ -n ADDPKG ];then
 echo "Start installing packages in $CHROOTNAME"
 parsePkgList "$ADDPKG" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
 }
