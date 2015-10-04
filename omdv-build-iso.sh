@@ -881,7 +881,7 @@ setupISOenv() {
 
     # set up displaymanager
     if [ "${TYPE,,}" != "minimal" ] && [ ${DISPLAYMANAGER,,} != "none" ]; then
-	if [ ! -e /lib/systemd/system/${DISPLAYMANAGER,,}.service ]; then
+	if [ ! -e "$CHROOTNAME"/lib/systemd/system/${DISPLAYMANAGER,,}.service ]; then
 	    echo "File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 	    errorCatch
 	fi
