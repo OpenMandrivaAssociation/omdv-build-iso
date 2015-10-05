@@ -4,7 +4,7 @@ insmod  part_gpt
 insmod  part_msdos
 insmod  normal
 insmod  test
-search --no-floppy --set=root -fs-uuid '%GRUB_UUID%'
+search --no-floppy --set=root --fs-uuid '%GRUB_UUID%'
 if [ "${grub_platform}" == "efi" ]
 set efi=1
 else
