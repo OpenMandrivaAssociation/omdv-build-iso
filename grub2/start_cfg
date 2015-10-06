@@ -5,7 +5,7 @@ insmod  part_msdos
 insmod  normal
 insmod  test
 search --no-floppy --set=root --fs-uuid '%GRUB_UUID%'
-if [ "${grub_platform}" == "efi" ]
+if [ "${grub_platform}" == "efi" ]; then
 set efi=1
 else
 set bios=1
