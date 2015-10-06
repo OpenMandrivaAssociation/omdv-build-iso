@@ -594,25 +594,26 @@ createInitrd() {
 
 }
 
-setupISOdir () {
+# DEPRECIATED ?
+#setupISOdir () {
 # Usage: setupISOdir $WORKDIR $CHROOTNAME $ISOROOTNAME
 # Installs all the files needed to the ISO build directory for building the grub images.
 
 
 # BIOS Boot and theme support
-    mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
-
-    $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
-    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
-    $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
-    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
-    if [ "${TYPE}" != "minimal" ]; then
-    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
-    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
-    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
-    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
-    fi
-}
+#    mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
+#
+#    $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
+#    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
+#    $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
+#    $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
+#    if [ "${TYPE}" != "minimal" ]; then
+#    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
+#    $SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
+#    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
+#    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+#    fi
+#}
 
 createMemDisk () {
 # Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
@@ -657,7 +658,7 @@ createMemDisk () {
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
 #  Job done just remember to move it back again
 
-    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT  -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/"$EFINAME" -p '(memdisk)/boot/grub' \
+    chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/"$EFINAME" -p '(memdisk)/boot/grub' \
      search iso9660 normal memdisk tar boot linux part_msdos part_gpt part_apple configfile help loadenv ls reboot chain multiboot fat udf \
      ext2 btrfs ntfs reiserfs xfs lvm ata cat test echo multiboot multiboot2 all_video efifwsetup efinet font gfxmenu gfxterm gfxterm_menu \
      gfxterm_background gzio halt hfsplus jpeg mdraid09 mdraid1x minicmd part_apple part_msdos part_gpt part_bsd password_pbkdf2 png reboot \
@@ -705,10 +706,10 @@ createUEFI() {
 # loopback mount the image
     $SUDO losetup -f $IMGNME
     sleep 1
-    $SUDO mount -t vfat $IMGNME /mnt   
+    $SUDO mount -t vfat $IMGNME /mnt
     if [[ $? != 0 ]]; then
 	echo "Failed to mount UEFI image. Exiting."
-	errorCatch 
+	errorCatch
     fi
 
     # copy the Grub2 files to the EFI image
@@ -716,13 +717,13 @@ createUEFI() {
     $SUDO cp -R "$GRB2FLS"/"$EFINAME" /mnt/EFI/BOOT/"$EFINAME"
 
     # Unmout the filesystem with EFI image
-    umount /mnt
+    $SUDO umount /mnt
     # Make sure that the image is copied to the ISOROOT
-    cp -f "$IMGNME" "$ISOROOTNAME"
+    $SUDO cp -f "$IMGNME" "$ISOROOTNAME"
     # Clean up
     $SUDO kpartx -d $IMGNME
     # Remove the EFI directory
-    /bin/rm -R "$ISOROOTNAME"/EFI
+    $SUDO rm -R "$ISOROOTNAME"/EFI
     XORRISO_OPTIONS2=" --efi-boot efi.img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efi.img"
 }
 
@@ -1034,7 +1035,8 @@ EOF
     done
 
     # disable services
-    SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql postfix NetworkManager-wait-online chronyd)
+    # ATTENTION getty@.service always needs to be disabled
+    SERVICES_DISABLE=(getty@.service pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql mysqld postfix NetworkManager-wait-online chronyd)
 
     for i in "${SERVICES_DISABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
