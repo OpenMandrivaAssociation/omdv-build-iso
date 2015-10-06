@@ -10,5 +10,5 @@ set efi=1
 else
 set bios=1
 set efi=0
-source ($root)/boot/grub/grub.cfg
 fi
+source ($root)/boot/grub/grub.cfg
