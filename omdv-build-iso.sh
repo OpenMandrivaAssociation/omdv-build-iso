@@ -790,7 +790,7 @@ setupGrub2() {
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
     # Job done just remember to move it back again
     # Make the image
-    $SUDO chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d $GRUB_LIB -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 all_video biosdisk boot cat chain configfile echo ext2 fat font gettext gfxmenu gfxterm gfxterm_background gzio halt help jpeg legacycfg linux linux16 loadenv ls minicmd multiboot multiboot2 normal part_gpt part_msdos png regexp reboot search search_fs_file search_fs_uuid search_label sleep test vbe vga
+    $SUDO chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d "$GRUB_LIB" -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 biosdisk test
     # Move the ISO director back to the working directory
     $SUDO mv -f $CHROOTNAME/ISO/ $WORKDIR
     # Create bootable hard disk image
@@ -806,7 +806,7 @@ setupGrub2() {
 	errorCatch
     fi
 
-    XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img "
+    XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
     echo "End grub2."
 
     # copy SuperGrub iso
@@ -831,8 +831,8 @@ setupGrub2() {
 	$SUDO rm -rf "$CHROOTDIR"/boot/liveinitrd.img
     fi
 
-    XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2" --efi-boot boot/grub/efi.img --protective-msdos-label -append_partition 2 0xef "$ISOROOTNAME"/boot/grub/efi.img"
-
+#    XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2" --efi-boot boot/grub/efi.img --protective-msdos-label -append_partition 2 0xef "$ISOROOTNAME"/boot/grub/efi.img"
+XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2""
     $SUDO rm -rf $GRUB_IMG
 
 }
@@ -1218,7 +1218,7 @@ buildIso() {
 	${XORRISO_OPTIONS} \
 	-publisher "OpenMandriva Association" \
 	-preparer "OpenMandriva Association" \
-	-volid "$LABEL" -o "$ISOFILE" "$ISOROOTNAME"
+	-volid "$LABEL" -o "$ISOFILE" "$ISOROOTNAME" --sort-weight 0 / --sort-weight 1 /boot
 
     if [ ! -f "$ISOFILE" ]; then
 	echo "Failed build iso image. Exiting"
