@@ -2,13 +2,13 @@ if [ "${grub_platform}" == "efi" ]; then
 search --no-floppy --set=root --fs-uuid '%GRUB_UUID%'
 set prefix=($root)/boot/grub
 set efi=1
-source ($root)/boot/grub/grub.cfg
-fi
+else
 insmod part_apple
 insmod part_bsd
 insmod part_gpt
 insmod part_msdos
 set bios=1
 set efi=0
+fi
 source ($root)/boot/grub/grub.cfg
 
