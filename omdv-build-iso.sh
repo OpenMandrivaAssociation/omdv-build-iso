@@ -724,7 +724,7 @@ createUEFI() {
     $SUDO kpartx -d $IMGNME
     # Remove the EFI directory
     $SUDO rm -R "$ISOROOTNAME"/EFI
-    XORRISO_OPTIONS2=" --efi-boot efi.img --protective-msdos-label -append_partition 2 0xef $ISOROOTNAME/boot/grub/efi.img"
+    XORRISO_OPTIONS2=" --efi-boot efi.img -append_partition 2 0xef $ISOROOTNAME/boot/grub/efi.img"
 }
 
 
@@ -831,20 +831,10 @@ setupGrub2() {
 	$SUDO rm -rf "$CHROOTDIR"/boot/liveinitrd.img
     fi
 
-#    XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2" --efi-boot boot/grub/efi.img --protective-msdos-label -append_partition 2 0xef "$ISOROOTNAME"/boot/grub/efi.img"
-XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2""
+    XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2""
     $SUDO rm -rf $GRUB_IMG
-
 }
 
-# Deprecated?
-# Usage: setupBootloader
-# Sets up grub2/syslinux to boot /target/dir
-#setupBootloader() { $CHROOTNAME $ISOROOTNAME $WORKDIR
-#
-#    setupGrub2 $CHROOTNAME $ISOROOTNAME $WORKDIR
-
-#}
 
 setupISOenv() {
 
