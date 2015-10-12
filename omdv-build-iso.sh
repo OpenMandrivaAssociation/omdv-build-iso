@@ -650,7 +650,7 @@ createMemDisk () {
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$MEMDISKDIR"/grub.cfg
     # Ensure the old image is removed
     if [ -e "$CHROOTNAME"/memdisk.img ]; then
-    $SUDO rm "$CHROOTNAME"/memdisk_img
+	$SUDO rm -f "$CHROOTNAME"/memdisk_img
     fi
     # Create a memdisk img called memdisk_img
     cd "$WORKDIR"
@@ -668,6 +668,11 @@ createMemDisk () {
 
     # Move back the ISO filesystem after building the EFI image.
     $SUDO mv -f $CHROOTNAME/ISO/ $ISOROOTNAME
+
+    # Ensure the ISO image is clear
+    if [ -e "$CHROOTNAME"/memdisk.img ]; then
+	$SUDO rm -f "$CHROOTNAME"/memdisk_img
+    fi
 }
 
 createUEFI() {
@@ -1138,7 +1143,17 @@ EOF
     $SUDO chroot "$CHROOTNAME" /sbin/ldconfig -X
 
     # remove rpm db files to save some space
-    $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+    $SUDO rm -f "$CHROOTNAME"/var/lib/rpm/__db.*
+
+    # clear tmp
+    $SUDO rm -f "$CHROOTNAME"/tmp/*
+
+    # clear urpmi cache
+    $SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
+    $SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/rpms/*
+
+    # generate list of installed rpm packages
+    $SUDO chroot "$CHROOTNAME" rpm -qa --queryformat="%{NAME}\n" | sort > /var/lib/rpm/installed-by-default
 }
 
 createSquash() {
