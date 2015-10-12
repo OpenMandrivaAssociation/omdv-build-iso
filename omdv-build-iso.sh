@@ -649,14 +649,16 @@ createMemDisk () {
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$MEMDISKDIR"/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$MEMDISKDIR"/grub.cfg
     # Ensure the old image is removed
+    if [ -e "$CHROOTNAME"/memdisk.img ]; then
     $SUDO rm "$CHROOTNAME"/memdisk_img
-#  Create a memdisk img called memdisk_img
+    fi
+    # Create a memdisk img called memdisk_img
     cd "$WORKDIR"
     tar cvf $CHROOTNAME/memdisk_img boot
-#  Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
-#  To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
+    # Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
+    # To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
-#  Job done just remember to move it back again
+    # Job done just remember to move it back again
 
     chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/"$EFINAME" -p '(memdisk)/boot/grub' \
      search iso9660 normal memdisk tar boot linux part_msdos part_gpt part_apple configfile help loadenv ls reboot chain multiboot fat udf \
