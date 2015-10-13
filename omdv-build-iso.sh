@@ -479,11 +479,11 @@ createChroot() {
 	if [ ! -f "$CHROOTNAME"/.noclean ]; then
 	    echo "Start installing packages in $CHROOTNAME"
 	    parsePkgList "$FILELISTS" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
-# disable for now
-#	    if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
-#		echo "Can not install packages from $FILELISTS";
-#		errorCatch
-#	    fi
+
+	    if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
+		echo "Can not install packages from $FILELISTS";
+		errorCatch
+	    fi
 	fi
     fi #noclean
 
