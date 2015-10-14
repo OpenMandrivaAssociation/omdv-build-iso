@@ -1017,7 +1017,8 @@ createSquash() {
 	  exit
        fi     
     fi
-    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 16384
+    #$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-recovery -b 16384
+    $SUDO tar cvf "$ISOROOTNAME"/LiveOS/squashfs.img "$CHROOTNAME"
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	echo "Failed to create squashfs. Exiting."
