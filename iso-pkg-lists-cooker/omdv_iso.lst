@@ -6,7 +6,6 @@ alsa-plugins-pulseaudio
 alsa-utils
 bootsplash #iso
 bootloader-utils # min-iso
-btrfs-progs
 calamares #min-iso
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
@@ -33,7 +32,6 @@ lm_sensors #iso
 mailcap #iso
 man
 mc
-mdadm #iso
 mdv-rpm-summary #iso
 monitor-edid #iso
 memtest86+
