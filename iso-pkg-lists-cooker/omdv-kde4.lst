@@ -31,11 +31,11 @@ hplip-gui #printer
 system-config-printer-gui #printer
 
 x11-font-cyrillic
+xorg-x11-100dpi-fonts
 # keep to check
 x11-server-xorg
 x11-compose-cache
 x11-tools
-x11-docs
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
