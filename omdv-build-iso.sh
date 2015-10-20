@@ -864,6 +864,7 @@ EOF
 DEVICE=$iface
 ONBOOT=yes
 NM_CONTROLLED=yes
+BOOTPROTO=dhcp
 EOF
     done
     $SUDO popd
