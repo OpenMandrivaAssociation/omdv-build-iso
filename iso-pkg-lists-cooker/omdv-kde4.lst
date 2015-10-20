@@ -31,7 +31,8 @@ hplip-gui #printer
 system-config-printer-gui #printer
 
 x11-font-cyrillic
-xorg-x11-100dpi-fonts
+# crisb - 100dpi fonts make some apps (qupzilla for example) have really ugly fonts
+# xorg-x11-100dpi-fonts
 # keep to check
 x11-server-xorg
 x11-compose-cache
