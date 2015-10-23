@@ -20,6 +20,7 @@ gnu-efi
 efibootmgr
 kernel-nrjQL-desktop-latest
 kernel-nrjQL-desktop
+lvm2
 mdadm
 nscd
 openssh-server
