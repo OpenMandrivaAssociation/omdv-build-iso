@@ -1033,8 +1033,8 @@ EOF
     done
 
     # disable services
-    # ATTENTION getty@.service always needs to be disabled
-    SERVICES_DISABLE=(getty@.service pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql mysqld postfix NetworkManager-wait-online chronyd)
+    # ATTENTION getty@getty.service always needs to be disabled
+    SERVICES_DISABLE=(getty@getty.service pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mysql mysqld postfix NetworkManager-wait-online chronyd)
 
     for i in "${SERVICES_DISABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
