@@ -438,7 +438,7 @@ createChroot() {
 
     # Do not clean build chroot
     if [ ! -f "$CHROOTNAME"/.noclean ]; then
-	if [ -n "$NOCLEAN" ]; then
+	if [ -n "$NOCLEAN" -a -d "$CHROOTNAME"/lib/modules ]; then
 	    touch "$CHROOTNAME"/.noclean
 	fi
 
@@ -484,6 +484,10 @@ createChroot() {
 		echo "Can not install packages from $FILELISTS";
 		errorCatch
 	    fi
+	fi
+
+	if [ -n "$NOCLEAN" ]; then
+	    touch "$CHROOTNAME"/.noclean
 	fi
     fi #noclean
 
@@ -996,7 +1000,7 @@ EOF
 			    [[ ! -d /etc/systemd/system/$DEST.wants ]] && mkdir -p "$CHROOTNAME"/etc/systemd/system/$DEST.wants
 			    echo "Enabling ${s_file#$UNIT_DIR/}"
 			    #/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
-			    ln -sf ${s_file#$UNIT_DIR/} "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}
+			    ln -sf /${s_file#$CHROOTNAME/} "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}
 			fi
 		    done
 		fi
@@ -1033,8 +1037,7 @@ EOF
     done
 
     # disable services
-    # ATTENTION getty@getty.service always needs to be disabled
-    SERVICES_DISABLE=(getty@getty.service pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online chronyd)
+    SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online chronyd)
 
     for i in "${SERVICES_DISABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
@@ -1056,6 +1059,9 @@ EOF
 	    echo "Wrong service match."
 	fi
     done
+
+    # ATTENTION getty@.service must be always disabled
+    [[ -e "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service ]] && rm -rf "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service
 
     # Calamares installer
 #    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
@@ -1182,7 +1188,7 @@ createSquash() {
     # unmout all stuff inside CHROOT to build squashfs image
     umountAll "$CHROOTNAME"
 
-    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-exports -exit-on-error -no-recovery -b 16384
+    $SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-exports -no-recovery -b 16384
 
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	echo "Failed to create squashfs. Exiting."
