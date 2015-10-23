@@ -996,7 +996,7 @@ EOF
 			    [[ ! -d /etc/systemd/system/$DEST.wants ]] && mkdir -p "$CHROOTNAME"/etc/systemd/system/$DEST.wants
 			    echo "Enabling ${s_file#$UNIT_DIR/}"
 			    #/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
-			    ln -sf $UNIT_DIR/${s_file#$UNIT_DIR/} "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}
+			    ln -sf ${s_file#$UNIT_DIR/} "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}
 			fi
 		    done
 		fi
