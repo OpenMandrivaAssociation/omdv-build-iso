@@ -878,7 +878,7 @@ setupISOenv() {
     $SUDO echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
     # set up displaymanager
-    if [ "${TYPE,,}" != "minimal" ] && [ ${DISPLAYMANAGER,,} != "none" ]; then
+    if [ "${TYPE,,}" != "minimal" ] && [ "${DISPLAYMANAGER,,}" != "none" ]; then
 	if [ ! -e "$CHROOTNAME"/lib/systemd/system/${DISPLAYMANAGER,,}.service ]; then
 	    echo "File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 	    errorCatch
