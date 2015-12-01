@@ -1064,6 +1064,43 @@ EOF
     [[ -e "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service ]] && rm -rf "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service
 
     # Calamares installer
+    if [ -e "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf ]; then
+
+	# enable settings for specific desktop environment
+	# https://issues.openmandriva.org/show_bug.cgi?id=1424
+	sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+
+	if [ "${TYPE,,}" = "plasma" ]; then
+	    sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	    sed -i -e "s/.*desktopFile:.*/desktopFile: "plasma"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	fi
+
+	if [ "${TYPE,,}" = "kde4" ]; then
+	    sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	    sed -i -e "s/.*desktopFile:.*/desktopFile: "kde-plasma"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	fi
+
+	if [ "${TYPE,,}" = "mate" ]; then
+	    sed -i -e "s/.*executable:.*/executable: "mate-session"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	    sed -i -e "s/.*desktopFile:.*/desktopFile: "mate"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	fi
+
+	if [ "${TYPE,,}" = "lxqt" ]; then
+	    sed -i -e "s/.*executable:.*/executable: "lxqt-session"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	    sed -i -e "s/.*desktopFile:.*/desktopFile: "lxqt"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	fi
+
+	if [ "${TYPE,,}" = "icewm" ]; then
+	    sed -i -e "s/.*desktopFile:.*/desktopFile: "icewm"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	fi
+
+	if [ "${TYPE,,}" = "xfce4" ]; then
+	    sed -i -e "s/.*executable:.*/executable: "startxfce4"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	    sed -i -e "s/.*desktopFile:.*/desktopFile: "xfce"/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
+	fi
+
+
+    fi
 #    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
 #	echo "Updating calamares settings."
 	# update patch to squashfs
