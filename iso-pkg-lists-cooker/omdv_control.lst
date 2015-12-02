@@ -3,8 +3,6 @@ drakconf
 drakx-finish-install
 firewalld #control
 harddrake
-#hcl #control
-#networkmanager-applet
 rfkill
 userdrake
 wpa_supplicant
