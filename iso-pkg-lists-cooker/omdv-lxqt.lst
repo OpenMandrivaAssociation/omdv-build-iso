@@ -41,22 +41,19 @@ silicon-disc-imaging
 silicon-disc-scanner
 silicon-image-burner
 silicon-library
-silicon-limoo
 silicon-mounter
 silicon-sample-app
 silicon-script-runner
-silicon-tagarg-player
 silicon-themes
 silicon-plugin-audio-cd-record
 silicon-plugin-cd-record
 silicon-plugin-eraser
 silicon-plugin-fuseiso
-silicon-plugin-lyric-browser
 silicon-plugin-mkdiscfs
 silicon-plugin-mkisofs
 silicon-plugin-mpg123
-silicon-plugin-now-playing
 silicon-plugin-read-cd
+silicon-plugin-rootmount
 silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-tagarg-audio-disc
@@ -129,4 +126,3 @@ samba-server #server
 
 # special featured software
 #oma-welcome
-
