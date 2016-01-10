@@ -932,12 +932,18 @@ EOF
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
-    $SUDO cp -rfT $WORKDIR/extraconfig/etc/skel "$CHROOTNAME"/home/${live_user}/
+    $SUDO cp -rfT "$WORKDIR"/extraconfig/etc/skel "$CHROOTNAME"/home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}/.cache
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/Desktop
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.cache
     $SUDO chroot "$CHROOTNAME" /bin/chmod -R 0777 /home/${live_user}/.local
+    # (tpg) support for AccountsService
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /var/lib/AccountsService/users
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /var/lib/AccountsService/icons
+    $SUDO cp -f "$WORKDIR"/data/account-user "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
+    $SUDO cp -f "$WORKDIR"/data/account-icon "$CHROOTNAME"/var/lib/AccountsService/icons/${live_user}
+    $SUDO chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
 
     # KDE4 related settings
     if [ "${TYPE,,}" = "kde4" ] || [ "${TYPE,,}" = "plasma" ]; then
