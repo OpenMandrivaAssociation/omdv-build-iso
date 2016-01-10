@@ -1,10 +1,242 @@
+2016-01-10 03:22:10 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* add support for AccountsService (HEAD, origin/master, origin/HEAD, master)
+
+2016-01-06 12:04:55 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* update silicon plugins for lxqt
+
+2015-12-02 01:40:03 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* update
+
+2015-12-01 21:42:58 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix bug #1424
+
+2015-10-24 13:13:00 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* remove duplicated grub menu entry
+
+2015-10-24 03:18:07 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* grub.cfg: use gfxpayload keep mode, set default gfxmodes
+
+2015-10-24 00:40:38 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix --noclean option, fix enabling/disabling services
+
+2015-10-23 16:11:53 +0400 Tomasz Paweł Gajc 
+
+	* disable mariadb service
+
+2015-10-23 03:39:40 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add lvm2 to pkg list
+
+2015-10-23 02:18:39 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix unary operator expected
+
+2015-10-23 02:17:03 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* disable getty@getty.service
+
+2015-10-23 02:15:26 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix creating symlink when enabling services
+
+2015-10-23 00:58:20 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* enable getty@tty1.service
+
+2015-10-23 00:35:25 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* adjust mksquashfs options
+
+2015-10-20 11:50:16 +0100 crisb 
+
+	* remove 100dpi fonts, makes some apps look ugly
+
+2015-10-20 11:48:53 +0100 crisb 
+
+	* Add missing bootproto flag for change in nm behaviour (0.9.10+) see bug #1395
+
+2015-10-17 14:54:09 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add face icon
+
+2015-10-17 14:28:47 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* adjust packages on iso
+
+2015-10-17 01:13:07 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* update dracut configs
+
+2015-10-13 17:55:19 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* enable error checking when installing packages with urpmi
+
+2015-10-12 19:30:12 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* clean ISO
+
+2015-10-12 13:50:14 +0100 itchka (Colin Close) 
+
+	* Add vim-common to omdv-minimal Make rm of memdisk_img conditional
+
+2015-10-10 09:49:09 +0100 itchka (Colin Close) 
+
+	* Finalise grub2 cfg files in the light of new info Remove spurious xorriso option Remove deprecated grub setup function
+
+2015-10-08 19:54:35 +0100 itchka (Colin Close) 
+
+	* Fix doubled menu in EFI mode.
+
+2015-10-08 13:28:00 +0100 itchka (Colin Close) 
+
+	* Remove modules from core img so that it's below 32k. Fixes "Imcompatible Licence" breakage. Re-arrange start_cfg
+
+2015-10-06 23:03:28 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
+
+2015-10-06 22:31:51 +0100 itchka (Colin Close) 
+
+	* Move source statement
+
+2015-10-06 23:03:44 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* always disable getty@.service
+
+2015-10-06 22:51:00 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* try to fix grub2 configs
+
+2015-10-06 16:15:02 +0400 Tomasz Paweł Gajc 
+
+	* disable mysqld
+
+2015-10-06 02:21:50 +0100 itchka (Colin Close) 
+
+	* Fix another syntax error
+
+2015-10-06 00:45:21 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
+
+2015-10-06 00:44:51 +0100 itchka (Colin Close) 
+
+	* Fix syntax
+
+2015-10-05 04:03:46 +0400 Colin Close 
+
+	* Fix start_cfg syntax error
+
+2015-10-04 12:47:38 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix dm setup
+
+2015-10-04 11:57:23 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix locall builds
+
+2015-10-04 10:25:57 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix typo
+
+2015-10-02 21:34:50 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* clean it a little bit, do not bail out when urpmi failed to install some package just for now
+
+2015-10-02 21:29:11 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* enable systemd services based on preset files from installation
+
+2015-10-02 13:25:31 +0100 crisb 
+
+	* Add google calibra replacement font
+
+2015-10-02 01:02:01 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
+
+2015-10-01 23:30:20 +0100 itchka (Colin Close) 
+
+	* Improve iso booting Simplify efi image building Rationalise theme storage
+
+2015-10-02 00:27:12 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* try different approach in cearing user passwords and ulocking users
+
+2015-10-01 16:39:11 +0400 Tomasz Paweł Gajc 
+
+	* Update configuration according to Mandian's bugreport #1187
+
+2015-09-30 23:35:01 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix typo
+
+2015-09-30 23:26:24 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* enable a lot of services
+
+2015-09-30 20:58:09 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix typo
+
+2015-09-30 20:50:41 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix clearing passwords
+
+2015-09-30 20:40:46 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fail when grub2 theme update did not work
+
+2015-09-12 10:34:28 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* clean grun config
+
+2015-09-12 10:26:57 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* various cleans
+
+2015-09-08 11:09:19 +0100 itchka (Colin Close) 
+
+	* Fix missing directory
+
+2015-09-05 22:49:27 +0100 itchka (Colin Close) 
+
+	* Fix coding style Fix hard coded uuids Move file copy operations to functions.
+
+2015-09-05 16:22:45 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
+
+2015-09-05 16:21:30 +0100 itchka (Colin Close) 
+
+	* Fix up grub booting
+
+2015-08-30 23:11:24 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* sync sources
+
+2015-08-30 23:10:22 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* generated changelog
+
 2015-08-27 15:54:15 +0000 Robert Xu 
 
-	* Also get rid of old EFI (HEAD, origin/master, origin/HEAD, master)
+	* Also get rid of old EFI
 
 2015-08-27 15:29:24 +0000 Robert Xu 
 
 	* Fix Makefile paths
+
+2015-08-26 08:35:47 +0100 itchka (Colin Close) 
+
+	* merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
 
 2015-08-26 01:29:09 +0200 tpg (Tomasz Paweł Gajc) 
 
@@ -26,6 +258,10 @@
 
 	* fix build inside and outside of ABF
 
+2015-08-25 08:50:17 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
+
 2015-08-25 02:00:15 +0200 tpg (Tomasz Paweł Gajc) 
 
 	* enable EFI and BIOS booting with grub2
@@ -42,6 +278,14 @@
 
 	* new version 0.0.7 - sync with grub-bios baranch
 
+2015-08-18 10:50:52 +0100 itchka (Colin Close) 
+
+	* Remove syslinux use Grub2
+
+2015-08-15 15:07:33 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of abf.io:/openmandriva/omdv-build-iso
+
 2015-08-15 03:22:55 +0400 Tomasz Paweł Gajc 
 
 	* fix session for sddm
@@ -49,6 +293,10 @@
 2015-08-14 11:24:55 +0400 Tomasz Paweł Gajc 
 
 	* enable cups-browsed
+
+2015-08-13 15:27:00 +0100 itchka (Colin Close) 
+
+	* Add stuff from 2014.2 Add improvements to user centric mode
 
 2015-08-11 10:52:32 +0400 Tomasz Paweł Gajc 
 
