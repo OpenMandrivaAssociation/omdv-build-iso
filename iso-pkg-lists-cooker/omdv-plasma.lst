@@ -21,6 +21,28 @@
 task-plasma
 rosa-imagewriter
 quick-usb-formatter
+# digikam and kipi-plugins
+kipi-plugins-advancedslideshow
+kipi-plugins-calendar
+kipi-plugins-dropbox
+# kipi-plugins-expoblending  disable it as it needs wxgtk3.0
+kipi-plugins-facebook
+kipi-plugins-flashexport
+kipi-plugins-flickr
+kipi-plugins-googleservices
+kipi-plugins-imageshack
+kipi-plugins-imageviewer
+kipi-plugins-imgurexport
+kipi-plugins-kmlexport
+# kipi-plugins-panorama disable it as it needs wxgtk3.0
+kipi-plugins-piwigoexport
+kipi-plugins-printimages
+kipi-plugins-rajceexport
+kipi-plugins-remotestorage
+kipi-plugins-sendimages
+kipi-plugins-smug
+kipi-plugins-yandexfotki
+showfoto
 
 # Needed Task/Meta Packages
 task-pulseaudio
