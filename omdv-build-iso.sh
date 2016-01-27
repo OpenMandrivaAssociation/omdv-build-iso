@@ -943,7 +943,7 @@ EOF
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /var/lib/AccountsService/icons
     $SUDO cp -f "$WORKDIR"/data/account-user "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
     $SUDO cp -f "$WORKDIR"/data/account-icon "$CHROOTNAME"/var/lib/AccountsService/icons/${live_user}
-    $SUDO chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
+    $SUDO chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" /var/lib/AccountsService/users/${live_user}
 
     # KDE4 related settings
     if [ "${TYPE,,}" = "kde4" ] || [ "${TYPE,,}" = "plasma" ]; then
