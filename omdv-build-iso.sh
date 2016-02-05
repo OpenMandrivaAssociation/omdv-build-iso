@@ -445,19 +445,19 @@ createChroot() {
 	if [ ! -f "$CHROOTNAME"/.noclean ]; then
 	    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
 	    if [ "$FREE" = "0" ]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
 	    else
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
 		# this one is needed to grab firmwares
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
 
 		if [ "${TREE,,}" != "cooker" ]; then
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
-        	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
+        	    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
 		    # this one is needed to grab firmwares
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
 		fi
 	    fi
 	fi
