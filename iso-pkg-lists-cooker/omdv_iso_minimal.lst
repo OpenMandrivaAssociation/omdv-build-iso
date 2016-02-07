@@ -11,7 +11,6 @@ distro-release-OpenMandriva
 dhcp-client
 dmraid
 e2fsprogs
-gpm
 grub2
 grub2-efi
 efibootmgr
@@ -24,7 +23,6 @@ openssh-server
 openssh-clients
 omv-bug-report
 pciutils
-syslinux
 timezone
 usbutils
 usb_modeswitch
