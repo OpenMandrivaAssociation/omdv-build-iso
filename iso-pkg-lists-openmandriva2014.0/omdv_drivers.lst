@@ -12,8 +12,6 @@ ipw2200-firmware
 iwlwifi-agn-ucode
 iwlwifi-3945-ucode
 iwlwifi-4965-ucode
-kernel-firmware
-kernel-firmware-extra
 ld10k1
 madwimax
 pcmcia-cis-firmware

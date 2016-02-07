@@ -16,6 +16,8 @@ grub2-efi
 efibootmgr
 kernel-nrjQL-desktop-latest
 kernel-nrjQL-desktop
+kernel-firmware
+kernel-firmware-extra
 lvm2
 mdadm
 nscd
