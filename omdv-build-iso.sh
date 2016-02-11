@@ -1301,8 +1301,8 @@ postBuild() {
 	    sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
 
-	mkdir -p /home/vagrant/results /home/vagrant/archives
-	mv $WORKDIR/*.iso* /home/vagrant/results/
+	mkdir -p $WORKDIR/results $WORKDIR/archives
+	mv $WORKDIR/*.iso* $WORKDIR/results/
     fi
 
     # clean chroot
