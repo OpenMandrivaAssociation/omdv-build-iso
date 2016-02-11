@@ -2,10 +2,11 @@
 
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Paweï¿½ Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Paweï¿½ Gajc <tpgxyz@gmail.com>
+# Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Colin Close <itchka@compuserve.com>
 # Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
+# Modified on 2016 by: Tomasz Pawe³½ Gajc <tpgxyz@gmail.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -1300,14 +1301,14 @@ postBuild() {
 	    md5sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.md5sum
 	    sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
-	
-    if [ "$WORKDIR" = "/home/vagrant/iso_builder" ]; then
-    mkdir -p /home/vagrant/results /home/vagrant/archives
-    mv $WORKDIR/*.iso* /home/vagrant/results/
-    else
-	mkdir -p $WORKDIR/results $WORKDIR/archives
-	mv $WORKDIR/*.iso* $WORKDIR/results/
-    fi
+
+	if [ "$WORKDIR" = "/home/vagrant/iso_builder" ]; then
+	    $SUDO mkdir -p /home/vagrant/results /home/vagrant/archives
+	    $SUOD mv $WORKDIR/*.iso* /home/vagrant/results/
+	else
+	    $SUOD mkdir -p $WORKDIR/results $WORKDIR/archives
+	    $SUOD mv $WORKDIR/*.iso* $WORKDIR/results/
+	fi
     fi
 
     # clean chroot
@@ -1317,13 +1318,14 @@ postBuild() {
 # Beginnings of package management for user spins
 
 addPkgs () {
-if [ -n ADDPKG ]; then
-echo "Start installing packages in $CHROOTNAME"
-parsePkgList "$ADDPKG" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
-fi
+    if [ -n ADDPKG ]; then
+	echo "Start installing packages in $CHROOTNAME"
+	parsePkgList "$ADDPKG" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
+    fi
 }
+
 remoVePkgs () {
-echo NULL
+    echo NULL
 }
 
 # START ISO BUILD
