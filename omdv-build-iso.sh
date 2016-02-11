@@ -318,6 +318,10 @@ if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ]; then
 else
     umountAll "$CHROOTNAME"
 fi
+
+# Get our process group id to kill children processes
+    PGID=$(ps -o pgid= $$ | grep -o [0-9]*)
+    $SUDO setsid kill -- -$PGID
     exit 1
 }
 
