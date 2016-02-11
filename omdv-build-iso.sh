@@ -1300,9 +1300,14 @@ postBuild() {
 	    md5sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.md5sum
 	    sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
-
+	
+    if [ "$WORKDIR" = "/home/vagrant/iso_builder" ]; then
+    mkdir -p /home/vagrant/results /home/vagrant/archives
+    mv $WORKDIR/*.iso* /home/vagrant/results/
+    else
 	mkdir -p $WORKDIR/results $WORKDIR/archives
 	mv $WORKDIR/*.iso* $WORKDIR/results/
+    fi
     fi
 
     # clean chroot
