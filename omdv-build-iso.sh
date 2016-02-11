@@ -164,7 +164,7 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD"
+SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "EFIBUILD="$EFIBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "REBUILD="$REBUILD "ABF="$ABF"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -178,16 +178,16 @@ if [ "`id -u`" != "0" ]; then
 fi
 
 # check whether script is executed inside ABF (www.abf.io)
-if echo $(realpath $(dirname $0)) | grep -q /home/vagrant; then
-    ABF=1
-    echo "This is $NOCLEAN"
+if [ "$ABF" == "1" ]; then
+    IN_ABF=1
+    echo "We are in ABF (www.abf.io) environment"
     if [ -n "$NOCLEAN" ]; then
-	echo "You cannot use --noclean inside ABF"
+	echo "You cannot use --noclean inside ABF (www.abf.io)"
 	exit 1
     fi
 
     if [ -n "$WORKDIR" ]; then
-	echo "You cannot use --workdir inside ABF"
+	echo "You cannot use --workdir inside ABF (www.abf.io)"
 	exit 1
     fi
 
@@ -217,7 +217,7 @@ fi
 
 # set up main working directory if it was not set up
 if [ -z "$WORKDIR" ]; then
-    if [ -z "$ABF" ]; then
+    if [ -z "$IN_ABF" ]; then
 
 	# set up working directory
 	WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
@@ -243,7 +243,7 @@ if [ -z "$WORKDIR" ]; then
 	# Yes we are inside ABF
 	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
     fi
-elif [ -n "$WORKDIR" ] && [ -z "$ABF" ]; then
+elif [ -n "$WORKDIR" ] && [ -z "$IN_ABF" ]; then
 
 	# create working directory
 	if [ ! -d $WORKDIR ]; then
@@ -326,7 +326,7 @@ trap errorCatch ERR SIGHUP SIGINT SIGTERM
 updateSystem() {
 
     # Force update of critical packages
-    if [ -n "$ABF" ]; then
+    if [ -n "$IN_ABF" ]; then
 	echo "We are inside ABF (www.abf.io). Updating packages."
 	$SUDO urpmq --list-url
 	$SUDO urpmi.update -ff updates
@@ -1209,7 +1209,7 @@ EOF
 createSquash() {
     echo "Starting squashfs image build."
 	# Before we do anything check if we are a local build
-    if [ -n "$ABF" ]; then
+    if [ -n "$IN_ABF" ]; then
 	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
 	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
 	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
@@ -1245,7 +1245,7 @@ createSquash() {
 buildIso() {
     echo "Starting ISO build."
 
-    if [ -n "$ABF" ]; then
+    if [ -n "$IN_ABF" ]; then
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
 	ISOFILE="/home/$OLDUSER/$PRODUCT_ID.$EXTARCH.iso"
@@ -1263,7 +1263,7 @@ buildIso() {
     # contents or structure of the iso (see --append-partition in the man page)
     # Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
     echo "Removing old iso."
-    if [ -z "$ABF" ] && [ -n "$ISOFILE" ]; then
+    if [ -z "$IN_ABF" ] && [ -n "$ISOFILE" ]; then
 	$SUDO rm -rf "$ISOFILE"
     fi
     echo "Building ISO with options ${XORRISO_OPTIONS}"
@@ -1292,7 +1292,7 @@ postBuild() {
 	errorCatch
     fi
 
-    if [ -n "$ABF" ]; then
+    if [ -n "$IN_ABF" ]; then
     	# We're running in ABF adjust to its directory structure
 	# count checksums
 	echo "Genrating ISO checksums."

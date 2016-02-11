@@ -19,6 +19,7 @@ freerdp #utils
 gnupg #utils
 html2text #utils
 htop #utils
+hw-probe #utils
 krb5-workstation #utils
 lftp #utils
 libgphoto-common #utils
