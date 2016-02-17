@@ -2,11 +2,11 @@
 
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
+# Modified on 2014 by: Tomasz PaweÂ³ Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz PaweÂ³ Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Colin Close <itchka@compuserve.com>
 # Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
-# Modified on 2016 by: Tomasz Pawe³½ Gajc <tpgxyz@gmail.com>
+# Modified on 2016 by: Tomasz PaweÂ³Â½ Gajc <tpgxyz@gmail.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -432,9 +432,9 @@ createChroot() {
 
     # path to repository
     if [ "${TREE,,}" == "cooker" ]; then
-	REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
+	REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
     else
-	REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
+	REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
     fi
 
     echo "Creating chroot $CHROOTNAME"
