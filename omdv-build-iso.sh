@@ -319,14 +319,17 @@ else
     umountAll "$CHROOTNAME"
 fi
 
-# Get our process group id to kill children processes
-    PGID=$(ps -o pgid= $$ | grep -o [0-9]*)
-    $SUDO setsid kill -- -$PGID
+#if $1 is set - clean exit
+if [ -z $1 ]; then
     exit 1
+else
+    exit 0
+fi
 }
 
 # Don't leave potentially dangerous stuff if we had to error out...
-trap errorCatch ERR SIGHUP SIGINT SIGTERM
+trap errorCatch ERR SIGHUP SIGINT
+trap "errorCatch 1" EXIT
 
 updateSystem() {
 
