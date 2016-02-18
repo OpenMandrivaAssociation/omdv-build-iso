@@ -320,16 +320,11 @@ else
 fi
 
 #if $1 is set - clean exit
-if [ -z $1 ]; then
     exit 1
-else
-    exit 0
-fi
 }
 
 # Don't leave potentially dangerous stuff if we had to error out...
-trap errorCatch ERR SIGHUP SIGINT
-trap "errorCatch 1" EXIT
+trap errorCatch ERR SIGHUP SIGINT SIGTERM
 
 updateSystem() {
 
