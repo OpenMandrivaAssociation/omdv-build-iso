@@ -178,17 +178,17 @@ if [ "`id -u`" != "0" ]; then
     exit 1
 fi
 
-# check whether script is executed inside ABF (www.abf.io)
+# check whether script is executed inside ABF (https://abf.openmandriva.org)
 if [ "$ABF" == "1" ]; then
     IN_ABF=1
-    echo "We are in ABF (www.abf.io) environment"
+    echo "We are in ABF (https://abf.openmandriva.org) environment"
     if [ -n "$NOCLEAN" ]; then
-	echo "You cannot use --noclean inside ABF (www.abf.io)"
+	echo "You cannot use --noclean inside ABF (https://abf.openmandriva.org)"
 	exit 1
     fi
 
     if [ -n "$WORKDIR" ]; then
-	echo "You cannot use --workdir inside ABF (www.abf.io)"
+	echo "You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
 	exit 1
     fi
 
@@ -330,7 +330,7 @@ updateSystem() {
 
     # Force update of critical packages
     if [ -n "$IN_ABF" ]; then
-	echo "We are inside ABF (www.abf.io). Updating packages."
+	echo "We are inside ABF (https://abf.openmandriva.org). Updating packages."
 	$SUDO urpmq --list-url
 	$SUDO urpmi.update -ff updates
 
@@ -364,8 +364,8 @@ getPkgList() {
 
     if [ ! -d $WORKDIR/iso-pkg-lists-$BRANCH ]; then
 	echo "Could not find $WORKDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
-	# download iso packages lists from www.abf.io
-	PKGLIST="https://abf.io/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
+	# download iso packages lists from https://abf.openmandriva.org
+	PKGLIST="https://abf.openmandriva.org/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
 	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-$BRANCH.tar.gz"` --content-disposition $PKGLIST
 	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-$BRANCH.tar.gz $WORKDIR
 	# Why not retain the unique list name it will help when people want their own spins ?
