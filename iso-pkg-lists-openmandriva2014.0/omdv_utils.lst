@@ -24,7 +24,7 @@ lftp #utils
 libgphoto-common #utils
 libmtp-utils #utils
 lvm2 #utils
-microcode #utils old
+microcode_ctl #utils old
 nail #utils
 ndiswrapper #utils
 net_monitor #utils
