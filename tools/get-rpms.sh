@@ -38,7 +38,7 @@ $SUDO mkdir -p "$ROOT"/tmp
 
 [ -d iso-pkg-lists ] || git clone https://abf.io/openmandriva/iso-pkg-lists.git
 cd iso-pkg-lists
-$SUDO urpmi.addmedia --urpmi-root "$ROOT" --distrib http://abf-downloads.abf.io/$TREE/repository/$ARCH
+$SUDO urpmi.addmedia --urpmi-root "$ROOT" --distrib http://abf-downloads.openmandriva.org/$TREE/repository/$ARCH
 $SUDO urpmi.update --urpmi-root "$ROOT" -a
 parsePkgList ${DIST}-${TYPE}.lst |xargs $SUDO urpmi --urpmi-root "$ROOT" --no-install --download-all "$ROOT"/tmp --auto --prefer /default-kde4-config/
 cd ..

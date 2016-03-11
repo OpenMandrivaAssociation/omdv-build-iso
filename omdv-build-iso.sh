@@ -381,9 +381,9 @@ parsePkgList() {
 createChroot() {
     # path to repository
     if [ "${TREE,,}" == "cooker" ]; then
-	REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
+	REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
     else
-	REPOPATH="http://abf-downloads.abf.io/$TREE/repository/$EXTARCH/"
+	REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
     fi
 
     echo "Creating chroot $CHROOTNAME"
