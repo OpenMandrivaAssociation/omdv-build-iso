@@ -14,8 +14,7 @@ e2fsprogs
 grub2
 grub2-efi
 efibootmgr
-kernel-nrjQL-desktop-latest
-kernel-nrjQL-desktop
+kernel-desktop-latest
 kernel-firmware
 kernel-firmware-extra
 lvm2
