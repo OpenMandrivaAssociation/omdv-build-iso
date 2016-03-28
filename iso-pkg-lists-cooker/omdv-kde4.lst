@@ -15,6 +15,7 @@
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_vlc.lst
+%include .///omdv_smplayer.lst
 
 # Desktop Specifics
 task-kde4
