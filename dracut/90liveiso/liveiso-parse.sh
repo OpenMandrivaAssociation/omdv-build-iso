@@ -13,7 +13,7 @@ fi
 modprobe -q iso9600
 modprobe -q loop
 modprobe -q squashfs
-modprobe -q aufs
+modprobe -q overlay
 
 case "$liveroot" in
     live:LABEL=*|LABEL=*) \

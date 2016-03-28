@@ -32,9 +32,12 @@ LOOPDEV=$( losetup -f )
 losetup -r $LOOPDEV /run/initramfs/omdv/LiveOS/squashfs.img
 mount -n -t squashfs -o ro $LOOPDEV /run/initramfs/image
 mount -n -t tmpfs -o mode=755 /run/initramfs/tmpfs /run/initramfs/tmpfs
-# mount aufs as new root
-echo "aufs /run/initramfs/union aufs defaults 0 0" >> /etc/fstab
-mount -n -t aufs -o br=/run/initramfs/tmpfs:/run/initramfs/image /run/initramfs/union
+# work and memory must be on same root
+mkdir -m 0755 -p /run/initramfs/tmpfs/work
+mkdir -m 0755 -p /run/initramfs/tmpfs/memory
+# mount overlayfs as new root
+echo "overlay /run/initramfs/union overlay defaults 0 0" >> /etc/fstab
+mount -n -t overlay overlay -o lowerdir=/run/initramfs/image,upperdir=/run/initramfs/tmpfs/memory,workdir=/run/initramfs/tmpfs/work /live/union
 
 ln -s /run/initramfs/union /dev/root
 
