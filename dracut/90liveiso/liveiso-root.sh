@@ -37,7 +37,7 @@ mkdir -m 0755 -p /run/initramfs/tmpfs/work
 mkdir -m 0755 -p /run/initramfs/tmpfs/memory
 # mount overlayfs as new root
 echo "overlay /run/initramfs/union overlay defaults 0 0" >> /etc/fstab
-mount -n -t overlay overlay -o lowerdir=/run/initramfs/image,upperdir=/run/initramfs/tmpfs/memory,workdir=/run/initramfs/tmpfs/work /live/union
+mount -n -t overlay overlay -o lowerdir=/run/initramfs/image,upperdir=/run/initramfs/tmpfs/memory,workdir=/run/initramfs/tmpfs/work /run/initramfs/union
 
 ln -s /run/initramfs/union /dev/root
 
