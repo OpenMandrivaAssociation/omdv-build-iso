@@ -120,7 +120,7 @@ samba-server #server
 #pyxdg
 
 # special featured software
-#oma-welcome
+oma-welcome
 
 # More i18n to take care of the translations we usually provide
 kde-l10n-de
