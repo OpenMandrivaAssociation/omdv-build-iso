@@ -29,5 +29,4 @@ timezone
 usbutils
 usb_modeswitch
 vim-minimal #min-iso
-vim-common
 wireless-tools
