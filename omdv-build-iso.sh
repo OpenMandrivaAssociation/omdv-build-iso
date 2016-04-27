@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
@@ -680,6 +680,8 @@ createMemDisk () {
     if [ -e "$CHROOTNAME"/memdisk.img ]; then
 	$SUDO rm -f "$CHROOTNAME"/memdisk_img
     fi
+#    # Copy the efi image to the ISO/boot/ grub dir
+#    cp "$ISOROOTNAME"/"$EFINAME" "$ISOROOTNAME"/boot/grub/"$EFINAME" 
 }
 
 createUEFI() {
@@ -700,7 +702,7 @@ createUEFI() {
 
     echo "Setting up UEFI partiton and image."
 
-    IMGNME="$ISOROOTNAME"/boot/grub/efi.img
+    IMGNME="$ISOROOTNAME"/"$EFINAME"
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
     echo "Building GRUB's EFI image"
@@ -738,8 +740,8 @@ createUEFI() {
     $SUDO kpartx -d $IMGNME
     # Remove the EFI directory
     $SUDO rm -R "$ISOROOTNAME"/EFI
-    XORRISO_OPTIONS2=" --efi-boot efi.img -append_partition 2 0xef $ISOROOTNAME/boot/grub/efi.img"
-}
+    XORRISO_OPTIONS2=" --efi-boot "$EFINAME" -append_partition 2 0xef "$ISOROOTNAME"/"$EFINAME""
+} 
 
 
 # Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>) 
