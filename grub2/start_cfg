@@ -1,0 +1,11 @@
+insmod part_apple
+insmod part_bsd
+insmod part_gpt
+insmod part_msdos
+insmod search
+insmod normal
+insmod configfile
+insmod minicmd
+search.fs_uuid '%GRUB_UUID%' root
+set prefix=($root)/boot/grub
+configfile ($root)/boot/grub/grub.cfg
