@@ -19,6 +19,7 @@ freerdp #utils
 gnupg #utils
 html2text #utils
 htop #utils
+hw-probe #utils
 krb5-workstation #utils
 lftp #utils
 libgphoto-common #utils
@@ -27,7 +28,6 @@ lvm2 #utils
 microcode #utils old
 nail #utils
 ndiswrapper #utils
-net_monitor #utils
 nfs-utils #utils
 nfs-utils-clients #utils
 networkmanager-openvpn #utils
@@ -49,7 +49,6 @@ samba-winbind #utils
 sane-backends-iscan #utils
 sash #utils
 sscape_ctl #utils old
-vnstat #utils
 vpnpptp-allde #utils
 xev #utils
 xl2tpd #utils old

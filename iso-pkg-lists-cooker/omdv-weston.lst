@@ -14,7 +14,9 @@
 %include .///omdv_vlc.lst
 
 # Desktop Specifics
+calamares
 mesa-demos
+papyros-shell
 quassel
 weston
 wayland-tools

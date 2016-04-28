@@ -5,7 +5,6 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 bootsplash #iso
-btrfs-progs
 chrony
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
@@ -32,7 +31,6 @@ lm_sensors #iso
 mailcap #iso
 man
 mc
-mdadm #iso
 mdv-rpm-summary #iso
 monitor-edid #iso
 memtest86+

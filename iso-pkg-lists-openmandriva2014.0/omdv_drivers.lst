@@ -12,8 +12,6 @@ ipw2200-firmware
 iwlwifi-agn-ucode
 iwlwifi-3945-ucode
 iwlwifi-4965-ucode
-kernel-firmware
-kernel-firmware-extra
 ld10k1
 madwimax
 pcmcia-cis-firmware
@@ -25,7 +23,6 @@ sb16_csp
 speedtouch-firmware
 speedtouch-firmware-extractor
 turtlebeach-firmware
-ueagle-firmware
 us428control
 zd1201-firmware
 zd1211-firmware

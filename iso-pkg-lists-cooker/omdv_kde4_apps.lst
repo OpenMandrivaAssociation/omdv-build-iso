@@ -99,19 +99,8 @@ plasma-scriptengine-ruby
 plasma-wallpaper-weather
 rosa-imagewriter
 qgtkstylealt
+quick-usb-formatter
 skanlite
-###
-krita
-calligra-l10n-de
-calligra-l10n-es
-calligra-l10n-fr
-calligra-l10n-it
-calligra-l10n-nb
-calligra-l10n-nl
-calligra-l10n-pl
-calligra-l10n-pt
-calligra-l10n-pt_BR
-calligra-l10n-ru
 
 # More i18n to take care of the translations we usually provide
 kde-l10n-de

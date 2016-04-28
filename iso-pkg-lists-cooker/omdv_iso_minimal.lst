@@ -4,24 +4,27 @@ acpi
 acpid
 at
 basesystem
+btrfs-progs
 busybox-static #min-iso
 cronie-anacron
-#dash-static #min-iso what is that for ???????
 distro-release-OpenMandriva
 dhcp-client
-gpm
+dmraid
+e2fsprogs
 grub2
 grub2-efi
-gnu-efi
 efibootmgr
-kernel-nrjQL-desktop-latest
-kernel-nrjQL-desktop
-syslinux
+kernel-release-desktop-latest
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
 nscd
+openssh-server
 openssh-clients
 omv-bug-report
 pciutils
-syslinux
 timezone
 usbutils
 usb_modeswitch

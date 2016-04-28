@@ -4,27 +4,31 @@ acpi
 acpid
 at
 basesystem
+btrfs-progs
 bootloader-utils #min-iso
 busybox-static #min-iso
 cronie-anacron
-#dash-static #min-iso what is that for ???????
 dhcp-client
+dmraid
+e2fsprogs
 draklive-install #min-iso
 drakx-installer-binaries-probe #min-iso
 gpm
 grub2
-grub-efi
-grub-efi-efi
+grub2-efi
 gnu-efi
 efibootmgr
 kernel-nrjQL-desktop-latest
 kernel-nrjQL-desktop
-isolinux
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
 nscd
+openssh-server
 openssh-clients
 omv-bug-report
 pciutils
-syslinux
 timezone
 usbutils
 usb_modeswitch

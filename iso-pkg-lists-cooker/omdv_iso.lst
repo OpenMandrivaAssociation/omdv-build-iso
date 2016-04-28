@@ -6,11 +6,10 @@ alsa-plugins-pulseaudio
 alsa-utils
 bootsplash #iso
 bootloader-utils # min-iso
-btrfs-progs
+calamares #min-iso
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
 dosfstools
-draklive-install #min-iso
 dynamic
 eject
 #freetype-tools #iso
@@ -33,7 +32,6 @@ lm_sensors #iso
 mailcap #iso
 man
 mc
-mdadm #iso
 mdv-rpm-summary #iso
 monitor-edid #iso
 memtest86+
@@ -71,7 +69,6 @@ wget
 whois #iso
 x11-driver-input-vmmouse #iso
 x11-driver-video-vboxvideo #iso
-x11-driver-video-modesetting #iso
 x11-data-bitmaps
 x11-driver-input-evdev
 x11-driver-input-synaptics
