@@ -294,7 +294,7 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 [ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
 
 # urpmi debug
-if [ "${DEBUG,,}"" == "debug" ]; then
+if [ "${DEBUG,,}" == "debug" ]; then
 	URPMI_DEBUG=" --debug "
 fi
 
