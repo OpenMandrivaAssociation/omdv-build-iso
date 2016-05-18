@@ -5,8 +5,8 @@
 %include .///omdv_locales.lst
 
 cups
-draklive-install
-drakx-installer-binaries-probe
+#draklive-install
+#drakx-installer-binaries-probe
 icewm
 joe
 kdm
@@ -19,7 +19,7 @@ openssh-server
 samba-server
 samba-client
 task-x11
-uClibc
+#uClibc
 x11-driver-input-vmmouse
 x11-driver-video-vboxvideo
 x11-driver-video-modesetting
