@@ -10,6 +10,7 @@ install:
 	-install -d $(BINFILE)
 	-install -d $(DATAFILE)
 	-install -d $(DATAFILE)/data
+	-install -d $(DATAFILE)/doc
 	-install -d $(DATAFILE)/dracut
 	-install -d $(DATAFILE)/dracut/90liveiso
 	-install -d $(DATAFILE)/extraconfig

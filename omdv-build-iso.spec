@@ -26,6 +26,7 @@ Requires:	gptfdisk
 Requires:	kpartx
 Requires:	grub2
 Requires:	syslinux
+Requires:	diffutils
 BuildArch:	noarch
 
 %description
