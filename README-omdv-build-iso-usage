@@ -58,3 +58,5 @@ Developing iso spins can be quite time consuming and whilst the -noclean and --r
 
 --debug
 The debug flag enables the printing (and in some cases saving) of various lists that are created during the build process. In addition a list file diffing system in incorporated to allow review of changes to the iso's package lists. This part of the package is still under development though some of the functionality is already available.
+
+Extras there is a simple utility in the tool directory which will allow you to mount your chroot providing you have named it and it resides in your personal /home directory.
