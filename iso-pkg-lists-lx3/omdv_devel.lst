@@ -1,0 +1,15 @@
+%include .///omdv_core.lst
+
+bzip2
+gcc-cpp
+gettext
+lynx
+mc
+nano
+pkgutils
+rpm-build
+strace
+subversion
+sudo
+traceroute
+wget
