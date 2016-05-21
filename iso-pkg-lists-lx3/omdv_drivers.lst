@@ -10,8 +10,6 @@ emu1010-firmware
 ipw2100-firmware
 ipw2200-firmware
 iwlwifi-agn-ucode
-iwlwifi-3945-ucode
-iwlwifi-4965-ucode
 ld10k1
 madwimax
 pcmcia-cis-firmware
