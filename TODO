@@ -10,5 +10,10 @@ This is a TODO list.
 6. Allow users to create a remove list. The point? Create a KDE spin and remove the packages you dont want. Done
 7. Allow users to create a local add list. The point? Same as above. Also keeps the package lists clean. Done
 8: Method of reverting to minimal if you have built a larger package. Done 
-9: Separate utility that enables simple mount operations on the existing chroot. Simple utility called ./mntem has been produced.
+9: Separate utility that enables simple mount operations on the existing chroot. Simple utility called ./mntem has been produced.  Done
+10: Diffs for user session Done
+11: Investigate using solvedb as suggested by jbj
+12; Make update chroot repos into a separate function
+11: Add the ability to definitively call abf-downloads for the package lists.  (Perhaps a debug function)
+12: Add flag to set the number of acceptable rpm installation failures for parallels only for user mode
    Perhaps combined with apper and packagit
