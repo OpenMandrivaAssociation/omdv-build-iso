@@ -34,4 +34,4 @@ to the rest of the build system that the files in the chroot require updating. O
 checksums will be used to determina and create a list of the f iles that have changed.
 A second function takes these file names and presents and generates a diff to serve as a permanent record (if required) of the chroots
 life. This can be extremely useful when trying to create new spins in an on the fly manner as new file lists can be contructed 
-from the diffs. This functionality is not yet complete.
+from the diffs. 
