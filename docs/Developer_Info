@@ -23,6 +23,15 @@ first used to remove the primary files and then urpme --auto-orphans is used to 
 It's possible that this could be improved there some minor issues around removing old config files which some packages leave around 
 these may well be due to package issues rather than the uninstall process itself but some investigation is needed to 
 improve the result.
+When the script was used in earnest it was discovered that xargs would immediately exit if a package listed in one of the package lists 
+did not exist. This is ideal behaviour for building isos on ABF but not so ideal for a user struggling to find the right packages for a personal spin.
+To get around this issue the paralles program was used instead of xargs to process the rpmlists. Parallels has a very flexible failure mode 
+such that one can set the number of errors before the program exits. Currently the number of failures is set to 10 (probably excessive) 
+a future development could make this number a variable set from the command line.
+Do not be tempted to set the -P option of parallels to a number greater than 1 for greater speed it will not produce a useful iso.
+A future development would be to use a solvdb to generate the full package list and then present this list to parallels using the 
+urpmi equivalent of --nodeps this will allow much faster generation of the iso chroot.
+
 
 Two additional functions are provided. The are related to iso list management and build control and are only intended for local use.
 The largest function localMd5Change() Offers a means of controlling the build and the quality of the build files.
