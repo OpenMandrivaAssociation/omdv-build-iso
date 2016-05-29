@@ -57,7 +57,7 @@ usage_help() {
         echo ""
         echo "For example:"
         echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
-        echo ""
+        echo "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
         echo "Exiting."
 	exit 1
     else
