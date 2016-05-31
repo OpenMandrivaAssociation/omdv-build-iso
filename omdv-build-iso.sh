@@ -27,9 +27,9 @@
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
-if [ "$BASH_DEBUG" == "1" ]; then
-    set -x
-fi
+#if [ "$BASH_DEBUG" == "1" ]; then
+#    set -x
+#fi
 usage_help() {
 
     if [[ -z $EXTARCH && -z $TREE && -z $VERSION && -z $RELEASE_ID && -z $TYPE && -z $DISPLAYMANAGER ]]; then
@@ -73,8 +73,23 @@ if [ $# -ge 1 ]; then
         	    EXTARCH=${k#*=}
         	    shift
         	    ;;
+#FIXME?
     		--tree=*)
-        	    TREE=${k#*=}
+                TREE=${k#*=}
+            case "$TREE" in
+                cooker)
+                BRANCH=cooker
+                ;;
+                lx3)
+                BRANCH=3.0
+                ;;
+                openmandriva2014.0)
+                BRANCH=openmandriva2014.0
+                ;;
+                *)
+                BRANCH="$TREE"
+                ;;
+            esac
         	    shift
         	    ;;
 		--version=*)
@@ -181,7 +196,7 @@ fi
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
 SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP"
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "BRANCH="$BRANCH"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -235,12 +250,15 @@ FREE=1
 LOGDIR="."
 UHOME="$HOME"
 
+#FIXME: TREE should probably be renamed to BRANCH. This is unecessary obscurity
 # Moved from getPkgList needs to globally available to other funtions
-    if [ ${TREE,,} = "cooker" ]; then
-        BRANCH=cooker
-    else
-        BRANCH="$TREE"
-    fi
+#    if [ ${TREE,,} = "cooker" ]; then
+#        BRANCH=cooker
+#    elif [ ${TREE,,} = "lx3" ]; then
+#        BRANCH=3.0
+#    else
+#        BRANCH="$TREE"
+#    fi
 
 
 
@@ -315,7 +333,7 @@ else
 fi
 
 # Assign and check for the config build list
-FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
+FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST,,}-${TYPE,,}.lst"
 if [ ! -e "$FILELISTS" ]; then
     echo "$FILELISTS does not exists. Exiting"
     errorCatch
@@ -407,26 +425,30 @@ updateSystem() {
 }
 
 getPkgList() {
+
 # THIS IS BROKEN. THERE IS ONLY A MASTER PACKAGE LIST ON OM'S ABF
     # Support for building released isos
-    if [ ${TREE,,} = "cooker" ]; then
-        BRANCH=cooker
-    else
-        BRANCH="$TREE"
-    fi
+#    if [ ${TREE,,} = "cooker" ]; then
+#        BRANCH=cooker
+#    elif [ ${TREE,,} = "lx3" ]; then
+#      BRANCH=3.0
+#    else
+#        BRANCH="$TREE"
+#    fi
 
     # update iso-pkg-lists from ABF if missing
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
 
-    if [ ! -d $WORKDIR/iso-pkg-lists-$BRANCH ]; then
-	echo "Could not find $WORKDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
+    if [ ! -d $WORKDIR/iso-pkg-lists-$TREE ]; then
+#Only master exists on github	echo "Could not find $WORKDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
+		echo "Could not find $WORKDIR/iso-pkg-lists-master. Downloading from ABF."
 	# download iso packages lists from https://abf.openmandriva.org
-	PKGLIST="https://github.com/OpenMandrivaAssociation/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
+	PKGLIST="https://github.com/OpenMandrivaAssociation/iso-pkg-lists/archive/iso-pkg-lists-master.tar.gz"
 	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-master.tar.gz"` --content-disposition $PKGLIST
-	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-$BRANCH.tar.gz $WORKDIR
+	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-master.tar.gz $WORKDIR
 	# Why not retain the unique list name it will help when people want their own spins ?
-	$SUDO rm -f iso-pkg-lists-$BRANCH.tar.gz
+	$SUDO rm -f iso-pkg-lists-master.tar.gz
 	# Finally get an md5checksum for the package list dir so it can be conditionally re-processed on local builds
     fi
  
@@ -448,6 +470,7 @@ showInfo() {
 	    echo "Distribution is $DIST"
 	    echo "Architecture is $EXTARCH"
 	    echo "Tree is $TREE"
+	    echo "Branch is $BRANCH"
 	    echo "Version is $VERSION"
 	    echo "Release ID is $RELEASE_ID"
 	    echo "Type is $TYPE"
@@ -494,9 +517,9 @@ localMd5Change() {
 #		  fi
 #		  if [ -f $WORKDIR/.new ]; then
 		      echo "Making directory reference sum" 
-		      REF_CHGSENSE=`$SUDO md5sum /usr/share/omdv-build-iso/iso-pkg-lists-$BRANCH/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/ref_chgsense`
+		      REF_CHGSENSE=`$SUDO md5sum /usr/share/omdv-build-iso/iso-pkg-lists-$TREE/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/ref_chgsense`
 		      echo "Making reference file sums" "$REF_CHGSENSE"
-		      REF_FILESUMS=`$SUDO find /usr/share/omdv-build-iso/iso-pkg-lists-$BRANCH/*  -type f   -exec md5sum {} \; | tee $WORKDIR/sessrec/ref_filesums`
+		      REF_FILESUMS=`$SUDO find /usr/share/omdv-build-iso/iso-pkg-lists-$TREE/*  -type f   -exec md5sum {} \; | tee $WORKDIR/sessrec/ref_filesums`
 #		      rm -f $WORKDIR/.new
 		  else
 		      REF_CHGSENSE=`cat "$WORKDIR"/sessrec/ref_chgsense`
@@ -504,8 +527,8 @@ localMd5Change() {
 		  echo "References loaded" 
 		  fi
 		  # Generate the references for this run
-		  NEW_CHGSENSE=`$SUDO md5sum $WORKDIR/iso-pkg-lists-${BRANCH}/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
-		  NEW_FILESUMS=`$SUDO find  $WORKDIR/iso-pkg-lists-$BRANCH/*  -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
+		  NEW_CHGSENSE=`$SUDO md5sum $WORKDIR/iso-pkg-lists-${TREE}/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
+		  NEW_FILESUMS=`$SUDO find  $WORKDIR/iso-pkg-lists-$TREE/*  -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
 		  echo "New references created"
 		  if [ -f $WORKDIR/sessrec/ref_chgsense ]; then
 		      if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then 
@@ -558,7 +581,7 @@ getIncFiles() {
 	      # Recursively fetch included files 
 	      while read -r  r; do
 		      [ -z "$r" ] && continue
-		      __addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$BRANCH"/"$r"
+		      __addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
 		      getIncFiles $(dirname "$1")/"$r" "$2" "$3"
 		      continue
 		      # Avoid sub-shells make sure commented out includes are removed. Dev discipline needed here.
@@ -713,10 +736,10 @@ updateUserSpin() {
 # has been created with mkUserSpin.
 
 		  echo "Updating user spin"
-		  getIncFiles $WORKDIR/iso-pkg-lists-$BRANCH/my.add UADDRPMINC my.add
+		  getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
 		  # re-assign just for consistancy
 		  ALLRPMINC=`echo "$UADDRPMINC"`
-		  getIncFiles $WORKDIR/iso-pkg-lists-$BRANCH/my.rmv PRE_RMRPMINC  my.rmv
+		  getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
 		  # "Remove any duplicate includes" 
 		  RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
 		  createPkgList "$ALLRPMINC" INSTALL_LIST 
@@ -749,9 +772,9 @@ mkUserSpin() {
 #set -x
 	      echo "Making a user spin"
 	      getIncFiles "$FILELISTS" ADDRPMINC $TYPE
-	      getIncFiles $WORKDIR/iso-pkg-lists-$BRANCH/my.add UADDRPMINC my.add
+	      getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
 	      ALLRPMINC=`echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u`
-	      getIncFiles $WORKDIR/iso-pkg-lists-$BRANCH/my.rmv PRE_RMRPMINC  my.rmv 
+	      getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv 
 	      echo "Remove the common include lines for the remove package includes"
 	      RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
 	      # Create the package lists
@@ -825,11 +848,13 @@ mkUpdateChroot() {
 createChroot() {
 #set -x
 		# path to repository
-		if [ "${TREE,,}" == "cooker" ]; then
-		    REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
-		else
-		    REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
-		fi
+#		if [ "${TREE,,}" == "cooker" ]; then
+#		    REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
+#        elif [ "${TREE,,}" == "lx3" ]; then
+#            REPOPATH="http://abf-downloads.openmandriva.org/3.0/repository/$EXTARCH/"
+#		else
+		    REPOPATH="http://abf-downloads.openmandriva.org/$BRANCH/repository/$EXTARCH/"
+#		fi
 
 		echo "Creating chroot $CHROOTNAME"
 		# Make sure /proc, /sys and friends are mounted so %post scripts can use them
@@ -1085,7 +1110,7 @@ createMemDisk () {
 	ARCHFMT=x86_64-efi
 	ARCHPFX=X64
     else
-	ARCHFMT=i386-pc
+	ARCHFMT=i386-efi
 	ARCHPFX=IA32
     fi
 
@@ -1110,7 +1135,7 @@ createMemDisk () {
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$MEMDISKDIR"/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$MEMDISKDIR"/grub.cfg
     # Ensure the old image is removed
-    if [ -e "$CHROOTNAME"/memdisk.img ]; then
+    if [ -e "$CHROOTNAME"/memdisk_img ]; then
 	$SUDO rm -f "$CHROOTNAME"/memdisk_img
     fi
     # Create a memdisk img called memdisk_img
@@ -1140,12 +1165,13 @@ createUEFI() {
 # Usage: createEFI $EXTARCH $ISOCHROOTNAME 
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
 # PLEASE NOTE THAT THE ISO DIRECTORY IS TEMPORARILY MOVED TO THE CHROOT DIRECTORY FOR THE PURPOSE OF GENERATING THE GRUB IMAGE.
-
+#
+#set -x
     if [ $EXTARCH = "x86_64" ]; then
 	ARCHFMT=x86_64-efi
 	ARCHPFX=X64
     else
-	ARCHFMT=i386-pc
+	ARCHFMT=i386-efi
 	ARCHPFX=IA32
     fi
 
@@ -1276,7 +1302,6 @@ setupGrub2() {
 
     XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
     echo "End grub2."
-
     # copy SuperGrub iso
     # do not copy it for now
 
