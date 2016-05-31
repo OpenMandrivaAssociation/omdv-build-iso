@@ -27,7 +27,7 @@ Requires:	kpartx
 Requires:	grub2
 Requires:	syslinux
 Requires:	diffutils
-Requires:	parallels
+Requires:	parallel
 BuildArch:	noarch
 
 %description
