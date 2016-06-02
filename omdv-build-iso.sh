@@ -417,7 +417,7 @@ updateSystem() {
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gdisk --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
     elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
 	echo "Building in user custom environment will clean rpm cache"
-	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gptfdisk --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gptfdisk parallel --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
     elif  [ ! -z $REBUILD ]; then  
 	  echo "Rebuilding the user custom environment using saved rpm cache"
 #	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --replacepkgs --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 gptfdisk --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
@@ -814,16 +814,20 @@ mkUpdateChroot() {
 #		  echo "$__install_list" >"$WORKDIR"\checklist
 		  if [ ! -z "$REBUILD" ]; then
 			  printf '%s\n' "Reloading saved rpms"
-#			  printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto 
+			  printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto 
 			  # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
-			  printf '%s\n' "$__install_list" | parallel  --halt now,fail=10 -P 1 --verbose  --keep-order  ""$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto"  #--replacepkgs --verbose" < < <printf '%s\n' "$__install_list"
+			  #printf '%s' "$__install_list" | parallel -q --verbose --halt now,fail=10 -P 1 --keep-order  "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force
 		  fi
 		  if [ ! -z "$1" ] && [ ! -z $NOCLEAN ]; then
-			  # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
-			  printf '%s\n' "$__install_list" | parallel  --halt now,fail=10 -P 1  --verbose --keep-order ""$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto "
-			  printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
+			#Should be parallel here but an update broke something or changed the syntax not sure which. --dry-run works fine. So using xargs for the time being.
+            #  echo  "Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility"
+            #echo "$__install_list" | parallel -q --halt now,fail=10 -j 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --debug --env /home/colin/ubug  
+            #printf '%s\n' "$__install_list" | parallel -q --halt now,fail=10 -P 1 --verbose "$SUDO"/usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
+            printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
+            $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
 		  elif	[ ! -z "$1" ]; then
-			  printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
+		  echo "We just have the list here"
+			  printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
 		  else 
 			  printf '%s\n' "No rpms need to be installed"
 			  echo " "
@@ -958,9 +962,9 @@ createChroot() {
 		    mkUserSpin $FILELISTS
 		elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ]; then
 		    updateUserSpin "$FILELISTS"
-		elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
+#		elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 		# Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
-	#	elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
+		elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
 		# This functionality will only update the build if there is a change in files
 		# other then my.add and my.rmv. NOT IMPLEMENTED YET
 		  mkOmSpin "$FILELISTS"
@@ -1213,7 +1217,7 @@ createUEFI() {
     # Unmout the filesystem with EFI image
     $SUDO umount /mnt
     # Make sure that the image is copied to the ISOROOT
-    $SUDO cp -f "$IMGNME" "$ISOROOTNAME"
+    $SUDO cp -f "$IMGNME" "$ISOROOTNAME"/BOOTI32
     # Clean up
     $SUDO kpartx -d $IMGNME
     # Remove the EFI directory
@@ -1610,16 +1614,16 @@ EOF
 
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main' 'media/main/release'
 	    if [[ $? != 0 ]]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/main/release
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/main/release
 	    fi
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
 	    if [[ $? != 0 ]]; then
-	      $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/contrib/release 
+	      $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/contrib/release 
 	    fi
 	    # this one is needed to grab firmwares
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
 	    if [[ $? != 0 ]]; then
-	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release 
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/non-free/release 
 	    fi
 	else
 	    # use hack for our mirrorlist url
@@ -1642,7 +1646,7 @@ EOF
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32' 'media/main/release'
 		if [[ $? != 0 ]]; then
 #		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' 'media/main/release' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/release/main
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/release
+		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/release
 		    if [[ $? != 0 ]]; then
 			echo "Adding urpmi 32-bit media FAILED. Exiting";
 			errorCatch
@@ -1651,7 +1655,7 @@ EOF
 	    if [ "${TREE,,}" != "cooker" ]; then
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
 		if [[ $? != 0 ]]; then
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget  'Main32Updates' --no-md5sum http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/updates
+		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget  'Main32Updates' --no-md5sum http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/updates
 		    if [[ $? != 0 ]]; then
 			echo "Adding urpmi 32-bit media FAILED. Exiting";
 		      errorCatch
