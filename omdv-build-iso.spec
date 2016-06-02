@@ -4,7 +4,7 @@ Name:		omdv-build-iso
 # make dist
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
-Version:	0.1.1
+Version:	0.0.9
 Release:	1
 License:	GPL
 Group:		System/Libraries
@@ -26,8 +26,6 @@ Requires:	gptfdisk
 Requires:	kpartx
 Requires:	grub2
 Requires:	syslinux
-Requires:	diffutils
-#Requires:	parallel
 BuildArch:	noarch
 
 %description
