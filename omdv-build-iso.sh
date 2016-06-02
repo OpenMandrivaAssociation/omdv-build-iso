@@ -1184,9 +1184,7 @@ createUEFI() {
 
     echo "Setting up UEFI partiton and image."
 
-    #Why doesn't this work on ABF
-    #IMGNME="$ISOROOTNAME"/"$EFINAME"
-    IMGNME="$ISOROOTNAME"/boot/efi.img
+    IMGNME="$ISOROOTNAME"/"$EFINAME"
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
     echo "Building GRUB's EFI image"
@@ -1224,7 +1222,7 @@ createUEFI() {
     $SUDO kpartx -d $IMGNME
     # Remove the EFI directory
     $SUDO rm -R "$ISOROOTNAME"/EFI
-    XORRISO_OPTIONS2=" --efi-boot efi.img -append_partition 2 0xef $ISOROOTNAME/boot/grub/efi.img"
+    XORRISO_OPTIONS2=" --efi-boot "$EFINAME" -append_partition 2 0xef "$ISOROOTNAME"/"$EFINAME""
 }
 
 
