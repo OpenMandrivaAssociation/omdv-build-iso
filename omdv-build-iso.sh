@@ -244,6 +244,7 @@ DIST=omdv
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
 [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
+[ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
 
 # always build free ISO
 FREE=1
@@ -330,6 +331,23 @@ if [ -e /usr/share/omdv-build-iso ]; then
     fi
 else
     echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
+    fi
+elif [ -n "$WORKDIR" ] && [ -z "$IN_ABF" ]; then
+
+	# create working directory
+	if [ ! -d $WORKDIR ]; then
+	    $SUDO mkdir -p $WORKDIR
+	elif [ -z "$NOCLEAN" ]; then
+	    $SUDO rm -rf $WORKDIR
+	fi
+
+	# copy contents to the workdir
+	if [ -d /usr/share/omdv-build-iso ]; then
+	    $SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
+	else
+	    echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
+	    exit 1
+	fi
 fi
 
 # Assign and check for the config build list
@@ -369,6 +387,10 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 [ `echo $LABEL | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
 [ `echo $LABEL | wc -m` -gt 32 ] && LABEL="`echo $LABEL |cut -b1-32`"
 
+# urpmi debug
+if [ "${DEBUG,,}" == "debug" ]; then
+	URPMI_DEBUG=" --debug "
+fi
 # start functions
 umountAll() {
     echo "Umounting all."
@@ -388,6 +410,7 @@ errorCatch() {
     $SUDO losetup -D
 if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
 # for some reason the next line deletes irrespective of flags
+#    $SUDO rm -rf $(dirname "$FILELISTS")
     umountAll "$CHROOTNAME"
     $SUDO rm -rf "$CROOTNAME"
 else
@@ -440,17 +463,17 @@ getPkgList() {
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
 
-    if [ ! -d $WORKDIR/iso-pkg-lists-$TREE ]; then
-#Only master exists on github	echo "Could not find $WORKDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
-		echo "Could not find $WORKDIR/iso-pkg-lists-master. Downloading from ABF."
+    if [ ! -d $WORKDIR/iso-pkg-lists-$BRANCH ]; then
+	echo "Could not find $WORKDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
 	# download iso packages lists from https://abf.openmandriva.org
-	PKGLIST="https://github.com/OpenMandrivaAssociation/iso-pkg-lists/archive/iso-pkg-lists-master.tar.gz"
-	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-master.tar.gz"` --content-disposition $PKGLIST
+	PKGLIST="https://abf.openmandriva.org/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
+	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-$BRANCH.tar.gz"` --content-disposition $PKGLIST
+	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-$BRANCH.tar.gz $WORKDIR
 	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-master.tar.gz $WORKDIR
 	# Why not retain the unique list name it will help when people want their own spins ?
 	$SUDO rm -f iso-pkg-lists-master.tar.gz
 	# Finally get an md5checksum for the package list dir so it can be conditionally re-processed on local builds
-    fi
+   fi
  
           echo "Your ISO has a modified filelist"      
 
@@ -765,7 +788,6 @@ updateUserSpin() {
 		  mkUpdateChroot  "$INSTALL_LIST" "$REMOVE_LIST" 	
 		  }
 
-
 mkUserSpin() {
 # mkUserSpin [main install file path} i.e. [path]/omdv-kde4.lst
 # Sets two variables
@@ -853,7 +875,7 @@ mkUpdateChroot() {
 # Creates a chroot environment with all packages in the packages.lst
 # file and their dependencies in /target/dir
 createChroot() {
-#set -x
+
 		# path to repository
 #		if [ "${TREE,,}" == "cooker" ]; then
 #		    REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
@@ -983,6 +1005,7 @@ createChroot() {
 		if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
 		    echo "Can not install packages from $FILELISTS";
 		    errorCatch
+	    fi
 		fi
 
 
@@ -1000,6 +1023,7 @@ createChroot() {
 		if [ ! -z "$NOCLEAN" ]; then
 		    touch "$CHROOTNAME"/.noclean
 		fi
+    fi #noclean
 
 		# check CHROOT
 		if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
@@ -1022,6 +1046,7 @@ createChroot() {
 
 		# remove rpm db files which may not match the target chroot environment
 		$SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+
 	    }
 
 createInitrd() {
@@ -1119,6 +1144,22 @@ createMemDisk () {
     else
 	ARCHFMT=i386-efi
 	ARCHPFX=IA32
+#    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
+#    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+#    fi
+#}
+
+createMemDisk () {
+# Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
+# Creates a fat formatted file ifilesystem image which will boot an UEFI system.
+
+
+    if [ $EXTARCH = "x86_64" ]; then
+	ARCHFMT=x86_64-efi
+	ARCHPFX=X64
+    else
+	ARCHFMT=i386-pc
+	ARCHPFX=IA32
     fi
 
     ARCHLIB=/usr/lib/grub/"$ARCHFMT"
@@ -1184,8 +1225,14 @@ createUEFI() {
 
     ARCHLIB=/usr/lib/grub/"$ARCHFMT"
     EFINAME=BOOT"$ARCHPFX".efi
+	ARCHPFX=X64
+    else
+	ARCHFMT=i386-pc
+	ARCHPFX=IA32
+    fi
 
     echo "Setting up UEFI partiton and image."
+    EFINAME=BOOT"$ARCHPFX".efi
 
     #Why doesn't this work on ABF
     IMGNME="$ISOROOTNAME"/boot/grub/"$EFINAME"
@@ -1312,29 +1359,6 @@ setupGrub2() {
 
     XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
     echo "End grub2."
-    # copy SuperGrub iso
-    # do not copy it for now
-
-    echo "End building Grub2 El-Torito image."
-
-    echo "Installing liveinitrd for grub2"
-
-    if [ -e "$CHROOTNAME"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$CHROOTNAME"/boot/liveinitrd.img ]; then
-	$SUDO cp -a "$CHROOTNAME"/boot/vmlinuz-"$BOOT_KERNEL_ISO" "$ISOROOTNAME"/boot/vmlinuz0
-	$SUDO cp -a "$CHROOTNAME"/boot/liveinitrd.img "$ISOROOTNAME"/boot/liveinitrd.img
-    else
-	echo "vmlinuz or liveinitrd does not exists. Exiting."
-	errorCatch
-    fi
-
-    if [ ! -f "$ISOROOTNAME"/boot/liveinitrd.img ]; then
-	echo "Missing /boot/liveinitrd.img. Exiting."
-	errorCatch
-    else
-	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
-    fi
-
-    XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2""
     $SUDO rm -rf $GRUB_IMG
 }
 
@@ -1614,7 +1638,7 @@ EOF
         echo "Removing old urpmi repositories."
 	$SUDO urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
 
-	echo "Adding new urpmi repositories."
+        echo "Adding new urpmi repositories."
 	if [ "${TREE,,}" = "cooker" ]; then
 	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/cooker.$EXTARCH.list"
 
@@ -1662,8 +1686,8 @@ EOF
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
 		if [[ $? != 0 ]]; then
 		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget  'Main32Updates' --no-md5sum http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/updates
-		    if [[ $? != 0 ]]; then
-			echo "Adding urpmi 32-bit media FAILED. Exiting";
+		if [[ $? != 0 ]]; then
+		    echo "Adding urpmi 32-bit media FAILED. Exiting";
 		      errorCatch
 		    fi
 		fi
@@ -1843,6 +1867,18 @@ postBuild() {
     umountAll "$CHROOTNAME"
 }
 
+# Beginnings of package management for user spins
+
+addPkgs () {
+    if [ -n ADDPKG ]; then
+	echo "Start installing packages in $CHROOTNAME"
+	parsePkgList "$ADDPKG" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
+    fi
+}
+
+remoVePkgs () {
+    echo NULL
+}
 
 # START ISO BUILD
 showInfo
