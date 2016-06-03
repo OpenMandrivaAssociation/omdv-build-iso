@@ -412,7 +412,7 @@ updateSystem() {
 	# Inside ABF, lxc-container which is used to run this script is based
 	# on Rosa2012 which does not have cdrtools
 	# List of packages that needs to be installed inside lxc-container
-	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx"
+	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx omdv-build-iso"
 	echo "Installing rpms files"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gdisk --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
     elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
