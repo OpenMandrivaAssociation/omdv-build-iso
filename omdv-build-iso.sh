@@ -244,7 +244,6 @@ DIST=omdv
 [ -z "${VERSION}" ] && VERSION="`date +%Y.0`"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
 [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
-[ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
 
 # always build free ISO
 FREE=1
@@ -331,23 +330,6 @@ if [ -e /usr/share/omdv-build-iso ]; then
     fi
 else
     echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
-    fi
-elif [ -n "$WORKDIR" ] && [ -z "$IN_ABF" ]; then
-
-	# create working directory
-	if [ ! -d $WORKDIR ]; then
-	    $SUDO mkdir -p $WORKDIR
-	elif [ -z "$NOCLEAN" ]; then
-	    $SUDO rm -rf $WORKDIR
-	fi
-
-	# copy contents to the workdir
-	if [ -d /usr/share/omdv-build-iso ]; then
-	    $SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
-	else
-	    echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
-	    exit 1
-	fi
 fi
 
 # Assign and check for the config build list
@@ -1006,7 +988,6 @@ createChroot() {
 		    echo "Can not install packages from $FILELISTS";
 		    errorCatch
 	    fi
-		fi
 
 
 #DEPRECATED	
@@ -1023,7 +1004,6 @@ createChroot() {
 		if [ ! -z "$NOCLEAN" ]; then
 		    touch "$CHROOTNAME"/.noclean
 		fi
-    fi #noclean
 
 		# check CHROOT
 		if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
@@ -1144,22 +1124,6 @@ createMemDisk () {
     else
 	ARCHFMT=i386-efi
 	ARCHPFX=IA32
-#    $SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
-#    sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
-#    fi
-#}
-
-createMemDisk () {
-# Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
-# Creates a fat formatted file ifilesystem image which will boot an UEFI system.
-
-
-    if [ $EXTARCH = "x86_64" ]; then
-	ARCHFMT=x86_64-efi
-	ARCHPFX=X64
-    else
-	ARCHFMT=i386-pc
-	ARCHPFX=IA32
     fi
 
     ARCHLIB=/usr/lib/grub/"$ARCHFMT"
@@ -1225,14 +1189,8 @@ createUEFI() {
 
     ARCHLIB=/usr/lib/grub/"$ARCHFMT"
     EFINAME=BOOT"$ARCHPFX".efi
-	ARCHPFX=X64
-    else
-	ARCHFMT=i386-pc
-	ARCHPFX=IA32
-    fi
 
     echo "Setting up UEFI partiton and image."
-    EFINAME=BOOT"$ARCHPFX".efi
 
     #Why doesn't this work on ABF
     IMGNME="$ISOROOTNAME"/boot/grub/"$EFINAME"
@@ -1359,6 +1317,29 @@ setupGrub2() {
 
     XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
     echo "End grub2."
+    # copy SuperGrub iso
+    # do not copy it for now
+
+    echo "End building Grub2 El-Torito image."
+
+    echo "Installing liveinitrd for grub2"
+
+    if [ -e "$CHROOTNAME"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$CHROOTNAME"/boot/liveinitrd.img ]; then
+	$SUDO cp -a "$CHROOTNAME"/boot/vmlinuz-"$BOOT_KERNEL_ISO" "$ISOROOTNAME"/boot/vmlinuz0
+	$SUDO cp -a "$CHROOTNAME"/boot/liveinitrd.img "$ISOROOTNAME"/boot/liveinitrd.img
+    else
+	echo "vmlinuz or liveinitrd does not exists. Exiting."
+	errorCatch
+    fi
+
+    if [ ! -f "$ISOROOTNAME"/boot/liveinitrd.img ]; then
+	echo "Missing /boot/liveinitrd.img. Exiting."
+	errorCatch
+    else
+	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
+    fi
+
+    XORRISO_OPTIONS=""$XORRISO_OPTIONS1" "$XORRISO_OPTIONS2""
     $SUDO rm -rf $GRUB_IMG
 }
 
@@ -1867,18 +1848,6 @@ postBuild() {
     umountAll "$CHROOTNAME"
 }
 
-# Beginnings of package management for user spins
-
-addPkgs () {
-    if [ -n ADDPKG ]; then
-	echo "Start installing packages in $CHROOTNAME"
-	parsePkgList "$ADDPKG" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --no-verify-rpm --fastunsafe --ignoresize --nolock --auto
-    fi
-}
-
-remoVePkgs () {
-    echo NULL
-}
 
 # START ISO BUILD
 showInfo
