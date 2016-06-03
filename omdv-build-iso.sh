@@ -333,7 +333,7 @@ else
 fi
 
 # Assign and check for the config build list
-FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST,,}-${TYPE,,}.lst"
+FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 if [ ! -e "$FILELISTS" ]; then
     echo "$FILELISTS does not exists. Exiting"
     errorCatch
@@ -510,6 +510,7 @@ localMd5Change() {
 # This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
 
 		  #set -x
+            if [ -z $IN_ABF ]; then
 		  local __dodiff='diff --suppress-common-lines --unchanged-group-format=\"\" --changed-group-format=\""%>\""'
 		  local __difflist
 		  if [ ! -d "$WORKDIR/sessrec" ]; then
@@ -561,6 +562,7 @@ localMd5Change() {
 		      # Create a diff for the users reference
 		      diffPkgLists "$USERMOD"
 		  fi
+            fi
 		  }
 
 
@@ -647,7 +649,7 @@ diffPkgLists() {
 # Below not yet implemented
 # Adding the --keep flag will move the diffs to the users home directory. They will be moved back at
 # the start of each new session if the --keep flag is set and --noclean or --rebuild are selected.
-
+        if [ -z $IN_ABF ]; then
 		local __difflist=$1
 		local dodiff="/usr/bin/diff -Naur"
 
@@ -687,6 +689,7 @@ diffPkgLists() {
 			SEQNUM=`echo $((SEQNUM+1))`
 			$SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
 		    fi
+		fi
 		fi
 		}
 
@@ -838,7 +841,7 @@ mkUpdateChroot() {
 			  # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
 			  printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
 			  # This exposed a bug in urpme
-			  $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto-orphans --force
+			  $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto-orphans 
 	  #               printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME" 
 		  else
 			  printf '%s\' "No rpms need to be removed" 
@@ -1184,7 +1187,10 @@ createUEFI() {
 
     echo "Setting up UEFI partiton and image."
 
-    IMGNME="$ISOROOTNAME"/"$EFINAME"
+    #Why doesn't this work on ABF
+    IMGNME="$ISOROOTNAME"/boot/grub/"$EFINAME"
+#        IMGNME="$ISOROOTNAME"/"$EFINAME"
+    #IMGNME="$ISOROOTNAME"/boot/efi.img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
     echo "Building GRUB's EFI image"
@@ -1217,12 +1223,12 @@ createUEFI() {
     # Unmout the filesystem with EFI image
     $SUDO umount /mnt
     # Make sure that the image is copied to the ISOROOT
-    $SUDO cp -f "$IMGNME" "$ISOROOTNAME"/BOOTI32
+    $SUDO cp -f  "$IMGNME" "$ISOROOTNAME"
     # Clean up
     $SUDO kpartx -d $IMGNME
     # Remove the EFI directory
     $SUDO rm -R "$ISOROOTNAME"/EFI
-    XORRISO_OPTIONS2=" --efi-boot "$EFINAME" -append_partition 2 0xef "$ISOROOTNAME"/"$EFINAME""
+    XORRISO_OPTIONS2=" --efi-boot "$EFINAME" -append_partition 2 0xef "$IMGNME""
 }
 
 
