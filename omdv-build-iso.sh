@@ -260,8 +260,6 @@ UHOME="$HOME"
 #        BRANCH="$TREE"
 #    fi
 
-
-
 if [ "`id -u`" = "0" ]; then
     SUDO=""
 else
@@ -276,7 +274,7 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	    $SUDO mkdir -p $WORKDIR
 	    $SUDO touch $WORKDIR/.new
 	    echo "The work directory is "$WORKDIR""
-    
+
       elif [ ! -z $NOCLEAN ] && [ -d $WORKDIR ]; then
 #	     if [ -d $WORKDIR/sessrec ]; then 
 	  echo "You have chosen not to clean the base installation" 
@@ -307,26 +305,26 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	    fi
 	fi
 else
-	if [ ! -z "$IN_ABF" ]; then
-	  echo "Yes we are inside ABF"
-	  WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
-	  # create working directory
-	else
-	  echo "Workdir not set"
-	  WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-	  echo "The work directory is "$WORKDIR""
-	  $SUDO mkdir -p $WORKDIR
-	fi
-fi	
+    if [ ! -z "$IN_ABF" ]; then
+	echo "Yes we are inside ABF"
+	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
+	# create working directory
+    else
+	 echo "Workdir not set"
+	WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+	echo "The work directory is "$WORKDIR""
+	$SUDO mkdir -p $WORKDIR
+    fi
+fi
 
 # copy contents of /usr/share/omdv-build-iso to the workdir if required
 if [ -e /usr/share/omdv-build-iso ]; then
     if [ ! -d $WORKDIR/dracut ]; then
-	 $SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
-	 touch $WORKDIR/.new
-	 chown -R $OLDUSER:$OLDUSER $WORKDIR #this doesn't do ISO OR BASE
+	$SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
+	touch $WORKDIR/.new
+	chown -R $OLDUSER:$OLDUSER $WORKDIR #this doesn't do ISO OR BASE
     else
-	    echo "Your build lists have been retained" 	# Files already copied
+	echo "Your build lists have been retained" 	# Files already copied
     fi
 else
     echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
@@ -337,7 +335,7 @@ FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 if [ ! -e "$FILELISTS" ]; then
     echo "$FILELISTS does not exists. Exiting"
     errorCatch
-fi  
+fi
 
 # this is where rpms are installed
 CHROOTNAME="$WORKDIR"/BASE
@@ -373,7 +371,11 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 if [ "${DEBUG,,}" == "debug" ]; then
 	URPMI_DEBUG=" --debug "
 fi
-# start functions
+
+########################
+#   Start functions    #
+########################
+
 umountAll() {
     echo "Umounting all."
     unset KERNEL_ISO
@@ -423,8 +425,8 @@ updateSystem() {
     elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
 	echo "Building in user custom environment will clean rpm cache"
 	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gptfdisk parallel --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-    elif  [ ! -z $REBUILD ]; then  
-	  echo "Rebuilding the user custom environment using saved rpm cache"
+    elif  [ ! -z $REBUILD ]; then
+	echo "Rebuilding the user custom environment using saved rpm cache"
 #	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --replacepkgs --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 gptfdisk --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 }
@@ -455,11 +457,11 @@ getPkgList() {
 	# Why not retain the unique list name it will help when people want their own spins ?
 	$SUDO rm -f iso-pkg-lists-master.tar.gz
 	# Finally get an md5checksum for the package list dir so it can be conditionally re-processed on local builds
-   fi
- 
-          echo "Your ISO has a modified filelist"      
+    fi
 
-          # export file list
+    echo "Your ISO has a modified filelist"
+
+    # export file list
     FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 
 
@@ -470,43 +472,44 @@ getPkgList() {
 }
 
 showInfo() {
-	    echo $'###\n'
-	    echo "Building ISO with arguments:"
-	    echo "Distribution is $DIST"
-	    echo "Architecture is $EXTARCH"
-	    echo "Tree is $TREE"
-	    echo "Branch is $BRANCH"
-	    echo "Version is $VERSION"
-	    echo "Release ID is $RELEASE_ID"
-	    echo "Type is $TYPE"
-	    if [ "${TYPE,,}" = "minimal" ]; then
-		echo "No display manager for minimal ISO."
-	    else
-		echo "Display Manager is $DISPLAYMANAGER"
-	    fi
-	    echo "ISO label is $LABEL"
-	    echo "Build ID is $BUILD_ID"
-	    echo "Working directory is $WORKDIR"
-	    if  [ ! -z $REBUILD ]; then 
-		echo "All rpms will be re-installed" 
-	    elif [ ! -z $NOCLEAN ]; then 
-		echo "Installed rpms will be updated"
-	    fi
-	    if [ ! -z $DEBUG ]; then
-	      echo "Debugging enabled"
-	    fi
-	    if [ ! -z $QUICKEN ]; then
-		echo "Squashfs compression disabled"
-	    fi
-	    if [ ! -z $KEEP ]; then
-		echo "The session diffs will be retained"
-	    fi
-		echo $'###\n'
-	    }
+
+	echo $'###\n'
+	echo "Building ISO with arguments:"
+	echo "Distribution is $DIST"
+	echo "Architecture is $EXTARCH"
+	echo "Tree is $TREE"
+	echo "Branch is $BRANCH"
+	echo "Version is $VERSION"
+	echo "Release ID is $RELEASE_ID"
+	echo "Type is $TYPE"
+	if [ "${TYPE,,}" = "minimal" ]; then
+	    echo "No display manager for minimal ISO."
+	else
+	    echo "Display Manager is $DISPLAYMANAGER"
+	fi
+	echo "ISO label is $LABEL"
+	echo "Build ID is $BUILD_ID"
+	echo "Working directory is $WORKDIR"
+	if  [ ! -z $REBUILD ]; then 
+	    echo "All rpms will be re-installed" 
+	elif [ ! -z $NOCLEAN ]; then 
+	    echo "Installed rpms will be updated"
+	fi
+	if [ ! -z $DEBUG ]; then
+	    echo "Debugging enabled"
+	fi
+	if [ ! -z $QUICKEN ]; then
+	    echo "Squashfs compression disabled"
+	fi
+	if [ ! -z $KEEP ]; then
+	    echo "The session diffs will be retained"
+	fi
+	echo $'###\n'
+}
 
 localMd5Change() {
 # Usage: userMd5Change [VARNAME] {Name of variable to contain diff list}
-# Function: 
+# Function:
 # Creates md5sums current iso package list directory and store to file if file does not already exist. 
 # Three files are created "$WORKDIR/filesums", "/tmp/filesums" and $WORKDIR/chngsense 
 # The first two contain file md5's for the original set and the current set, the last contains the checksum for the entire directory.
@@ -515,60 +518,60 @@ localMd5Change() {
 # This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
 
 		  #set -x
-            if [ -z $IN_ABF ]; then
-		  local __dodiff='diff --suppress-common-lines --unchanged-group-format=\"\" --changed-group-format=\""%>\""'
-		  local __difflist
-		  if [ ! -d "$WORKDIR/sessrec" ]; then
-			mkdir -p $WORKDIR/sessrec
-#		  fi
-#		  if [ -f $WORKDIR/.new ]; then
-		      echo "Making directory reference sum" 
-		      REF_CHGSENSE=`$SUDO md5sum /usr/share/omdv-build-iso/iso-pkg-lists-$TREE/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/ref_chgsense`
-		      echo "Making reference file sums" "$REF_CHGSENSE"
-		      REF_FILESUMS=`$SUDO find /usr/share/omdv-build-iso/iso-pkg-lists-$TREE/*  -type f   -exec md5sum {} \; | tee $WORKDIR/sessrec/ref_filesums`
-#		      rm -f $WORKDIR/.new
-		  else
-		      REF_CHGSENSE=`cat "$WORKDIR"/sessrec/ref_chgsense`
-		      REF_FILESUMS=`cat $WORKDIR/sessrec/ref_filesums`
-		  echo "References loaded" 
-		  fi
-		  # Generate the references for this run
-		  NEW_CHGSENSE=`$SUDO md5sum $WORKDIR/iso-pkg-lists-${TREE}/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
-		  NEW_FILESUMS=`$SUDO find  $WORKDIR/iso-pkg-lists-$TREE/*  -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
-		  echo "New references created"
-		  if [ -f $WORKDIR/sessrec/ref_chgsense ]; then
-		      if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then 
-			  CHGFLAG=0
-		      else
-			  $SUDO echo "$NEW_CHGSENSE" >"$WORKDIR"/sessrec/ref_chgsense
-			  CHGFLAG=1
-		      fi
-		  fi
-		  if [ $CHGFLAG == 1 ]; then
-		      echo "Your build files have changed"
-		  fi
+    if [ -z $IN_ABF ]; then
+	local __dodiff='diff --suppress-common-lines --unchanged-group-format=\"\" --changed-group-format=\""%>\""'
+	local __difflist
+	if [ ! -d "$WORKDIR/sessrec" ]; then
+	    mkdir -p $WORKDIR/sessrec
+#		fi
+#		if [ -f $WORKDIR/.new ]; then
+	    echo "Making directory reference sum" 
+	    REF_CHGSENSE=`$SUDO md5sum /usr/share/omdv-build-iso/iso-pkg-lists-$TREE/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/ref_chgsense`
+	    echo "Making reference file sums" "$REF_CHGSENSE"
+	    REF_FILESUMS=`$SUDO find /usr/share/omdv-build-iso/iso-pkg-lists-$TREE/*  -type f   -exec md5sum {} \; | tee $WORKDIR/sessrec/ref_filesums`
+#		rm -f $WORKDIR/.new
+	else
+	    REF_CHGSENSE=`cat "$WORKDIR"/sessrec/ref_chgsense`
+	    REF_FILESUMS=`cat $WORKDIR/sessrec/ref_filesums`
+	    echo "References loaded" 
+	fi
+	# Generate the references for this run
+	NEW_CHGSENSE=`$SUDO md5sum $WORKDIR/iso-pkg-lists-${TREE}/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
+	NEW_FILESUMS=`$SUDO find  $WORKDIR/iso-pkg-lists-$TREE/*  -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
+	echo "New references created"
+	if [ -f $WORKDIR/sessrec/ref_chgsense ]; then
+	    if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
+		CHGFLAG=0
+	    else
+		$SUDO echo "$NEW_CHGSENSE" >"$WORKDIR"/sessrec/ref_chgsense
+		CHGFLAG=1
+	    fi
+	fi
+	if [ $CHGFLAG == 1 ]; then
+	    echo "Your build files have changed"
+	fi
 
-		  # Create a list of changed files by diffing checksums
-		  # In these circumstances awk does a better job than diff
-		  # This looks complicated but all it does is to put the two fields in each file into independent arrays, 
-		  # compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-		  USERMOD=`awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' $WORKDIR/sessrec/ref_filesums $WORKDIR/sessrec/new_filesums` 
-		  if [ -z "$USERMOD" ]; then
-		      echo "No Changes"
-		  else      
-			echo "$USERMOD"
-		  fi
-		  DEVMOD=`printf '%s' "$USERMOD" grep -v 'my.add\|my.rmv'`
-		  # This list is intended for Developers
-		  if [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
-		      # Create a developer diff ommitting my.add and my.rmv
-		      diffPkgLists "$DEVMOD"
-		  elif [ $CHGFLAG == 1 ]; then
-		      # Create a diff for the users reference
-		      diffPkgLists "$USERMOD"
-		  fi
-            fi
-		  }
+# Create a list of changed files by diffing checksums
+# In these circumstances awk does a better job than diff
+# This looks complicated but all it does is to put the two fields in each file into independent arrays, 
+# compares the first field from each file and if they are not equal then print the second field (filename) from each file.
+	USERMOD=`awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' $WORKDIR/sessrec/ref_filesums $WORKDIR/sessrec/new_filesums` 
+	if [ -z "$USERMOD" ]; then
+	    echo "No Changes"
+	else
+		echo "$USERMOD"
+	fi
+	DEVMOD=`printf '%s' "$USERMOD" grep -v 'my.add\|my.rmv'`
+# This list is intended for Developers
+	if [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
+# Create a developer diff ommitting my.add and my.rmv
+	    diffPkgLists "$DEVMOD"
+	elif [ $CHGFLAG == 1 ]; then
+# Create a diff for the users reference
+	    diffPkgLists "$USERMOD"
+	fi
+    fi
+}
 
 
 getIncFiles() {
@@ -576,36 +579,35 @@ getIncFiles() {
 # Function: Gets all the include lines for the specified package file
 # The full path to the package list must be supplied
 
-	      # Set 'lastpipe' options so as not to lose variable in sub-shells.
-	      set +m
-	      shopt -s lastpipe
-	      #set -x
-		  # Define a some local variables
-	      local __infile=$1   # The main build file
-	      local __incflist=$2 # Carries returned variable
-	      local __addrpminc   # Package list
+# Set 'lastpipe' options so as not to lose variable in sub-shells.
+    set +m
+    shopt -s lastpipe
+#set -x
+# Define a some local variables
+    local __infile=$1   # The main build file
+    local __incflist=$2 # Carries returned variable
+    local __addrpminc   # Package list
 
-	      # Recursively fetch included files 
-	      while read -r  r; do
-		      [ -z "$r" ] && continue
-		      __addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
-		      getIncFiles $(dirname "$1")/"$r" "$2" "$3"
-		      continue
-		      # Avoid sub-shells make sure commented out includes are removed. Dev discipline needed here.
-
-	      done < <(cat "$1" | grep -v '#.*include' | awk -F\./// '{print $2}' | sed '/^\s$/d')
-	      #  Add the primary file to the list
-	      __addrpminc+=$'\n'"$1"
-		# Sort so the main file is at the top and export
-		# Note this functionality allows us to combine package lists that may contain duplicates
-	      __addrpminc=`echo "$__addrpminc" | sort -u | sed -n '/^$/!p'`
-	      eval $__incflist="'$__addrpminc'"
-	      shopt -u lastpipe
-	      set -m 
-	      }
+# Recursively fetch included files
+    while read -r  r; do
+	[ -z "$r" ] && continue
+	__addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
+	getIncFiles $(dirname "$1")/"$r" "$2" "$3"
+	continue
+# Avoid sub-shells make sure commented out includes are removed. Dev discipline needed here.
+    done < <(cat "$1" | grep -v '#.*include' | awk -F\./// '{print $2}' | sed '/^\s$/d')
+#  Add the primary file to the list
+    __addrpminc+=$'\n'"$1"
+    # Sort so the main file is at the top and export
+    # Note this functionality allows us to combine package lists that may contain duplicates
+    __addrpminc=`echo "$__addrpminc" | sort -u | sed -n '/^$/!p'`
+    eval $__incflist="'$__addrpminc'"
+    shopt -u lastpipe
+    set -m
+}
 
 createPkgList() {
-#Usage: createPkgList  "$VAR" VARNAME 
+# Usage: createPkgList  "$VAR" VARNAME 
 # Function: Creates lists of packages from package lists 
 # VAR: A variable containing a list of package lists
 # VARNAME: A variable name to identify the returned list of packages.
@@ -615,30 +617,30 @@ createPkgList() {
 # NOTE: This routine requires 'lastpipe' so that
 # subshells do not dump their data.
 # This requires that job control be disabled.
-		set +m
-		shopt -s lastpipe
-		#set -x
+    set +m
+    shopt -s lastpipe
+#set -x
 
-		# Define a local variable to hold user VAR
-		local __pkglist=$2 # Carries returned variable name
-		# other locals not needed outside routine
-		local __pkgs # The list of packages
-		local __pkglst # The current package list
-		while read -r __pkglst; do
-		      __pkgs+=$'\n'`cat "$__pkglst"`
-		done < <(printf '%s\n' "$1")
-		#sanitise regex compliments of TPG
-		__pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p'`
-		eval $__pkglist="'$__pkgs'"
-			
-		if [ ! -z $DEBUG ]; then
-		    echo "This is the $2 package list"
-		    echo "$__pkgs"
-		    $SUDO printf '%s' "$__pkgs" >$WORKDIR/$2.list
-		fi
-		shopt -u lastpipe
-		set -m
-		}
+# Define a local variable to hold user VAR
+    local __pkglist=$2 # Carries returned variable name
+# other locals not needed outside routine
+    local __pkgs # The list of packages
+    local __pkglst # The current package list
+    while read -r __pkglst; do
+	__pkgs+=$'\n'`cat "$__pkglst"`
+    done < <(printf '%s\n' "$1")
+# sanitise regex compliments of TPG
+    __pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p'`
+    eval $__pkglist="'$__pkgs'"
+    if [ ! -z $DEBUG ]; then
+	echo "This is the $2 package list"
+	echo "$__pkgs"
+	$SUDO printf '%s' "$__pkgs" >$WORKDIR/$2.list
+    fi
+
+    shopt -u lastpipe
+    set -m
+}
 
 
 diffPkgLists() {
@@ -654,49 +656,47 @@ diffPkgLists() {
 # Below not yet implemented
 # Adding the --keep flag will move the diffs to the users home directory. They will be moved back at
 # the start of each new session if the --keep flag is set and --noclean or --rebuild are selected.
-        if [ -z $IN_ABF ]; then
-		local __difflist=$1
-		local dodiff="/usr/bin/diff -Naur"
+    if [ -z $IN_ABF ]; then
+	local __difflist=$1
+	local dodiff="/usr/bin/diff -Naur"
 
-		if [ -f "$WORKDIR"/sessrec/.seqnum ]; then
-		  SEQNUM=`cat "$WORKDIR"/sessrec/.seqnum`
-		else
-		  SEQNUM=1
-		  $SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
-		fi
-		# Here a combined diff is created
-		while read -r DIFF ; do
-		ALL+=`eval  "$dodiff" "$DIFF"`$'\n'
-		done < <(printf '%s\n' "$__difflist")
-		
+	if [ -f "$WORKDIR"/sessrec/.seqnum ]; then
+	    SEQNUM=`cat "$WORKDIR"/sessrec/.seqnum`
+	else
+	    SEQNUM=1
+	    $SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
+	fi
+# Here a combined diff is created
+	while read -r DIFF ; do
+	    ALL+=`eval  "$dodiff" "$DIFF"`$'\n'
+	done < <(printf '%s\n' "$__difflist")
 
-		if [ -d "$WORKDIR/sessrec" ]; then
-		    # Here the old diff is compared with the new if it exists
-		    local   __lastdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
-		    if [ -s $__lastdiffname ]; then
-			diff -y <(printf %s "$ALL")  "$WORKDIR"/sessrec/"$__lastdiffname"
-			local __same=$?
-			# Here we save the diff but only if it's different from the previous one
-			   if [ $__same -eq 1 ]; then
-			      SEQNUM=`echo $((SEQNUM+1))`
-			      local __newdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
-			      $SUDO echo "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
-			      $SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
-			   elif
-			    [ $__same -eq 2 ]; then
-			    echo "Diff has reported an error"
-			    echo "Your files may be corrupted"
-			   fi
-		    else
-			# Here no previous diff existed; so write the first one
-			local __newdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
-			$SUDO echo "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
-			SEQNUM=`echo $((SEQNUM+1))`
-			$SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
-		    fi
+	if [ -d "$WORKDIR/sessrec" ]; then
+# Here the old diff is compared with the new if it exists
+	    local __lastdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
+	    if [ -s $__lastdiffname ]; then
+		diff -y <(printf %s "$ALL")  "$WORKDIR"/sessrec/"$__lastdiffname"
+		local __same=$?
+# Here we save the diff but only if it's different from the previous one
+		if [ $__same -eq 1 ]; then
+		    SEQNUM=`echo $((SEQNUM+1))`
+		    local __newdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
+		    $SUDO echo "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
+		    $SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
+		elif [ $__same -eq 2 ]; then
+		    echo "Diff has reported an error"
+		    echo "Your files may be corrupted"
 		fi
-		fi
-		}
+	    else
+# Here no previous diff existed; so write the first one
+		local __newdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
+		$SUDO echo "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
+		SEQNUM=`echo $((SEQNUM+1))`
+		$SUDO echo $SEQNUM >"$WORKDIR"/sessrec/.seqnum
+	    fi
+	fi
+    fi
+}
 
 #DEPRECATED
 # Usage: parsePkgList xyz.lst
@@ -725,14 +725,15 @@ mkOmSpin() {
 # Usage: mkOMSpin [main install file path} i.e. [path]/omdv-kde4.lst.
 # Returns a variable "$INSTALL_LIST" containing all rpms 
 # to be installed
-	    echo "omspin"
-	    echo "Creating OpenMandriva spin"
-		    getIncFiles "$FILELISTS" ADDRPMINC
-		    printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
-		    createPkgList "$ADDRPMINC" INSTALL_LIST
-		    printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"		    
-		    mkUpdateChroot "$INSTALL_LIST"
-	    }
+
+    echo "omspin"
+    echo "Creating OpenMandriva spin"
+    getIncFiles "$FILELISTS" ADDRPMINC
+    printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
+    createPkgList "$ADDRPMINC" INSTALL_LIST
+    printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
+    mkUpdateChroot "$INSTALL_LIST"
+}
 
 updateUserSpin() {
 # updateUserSpin [main install file path] i.e. path/omdv-kde4.lst
@@ -743,32 +744,33 @@ updateUserSpin() {
 # It is used to add user updates after the main chroot
 # has been created with mkUserSpin.
 
-		  echo "Updating user spin"
-		  getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
-		  # re-assign just for consistancy
-		  ALLRPMINC=`echo "$UADDRPMINC"`
-		  getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
-		  # "Remove any duplicate includes" 
-		  RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
-		  createPkgList "$ALLRPMINC" INSTALL_LIST 
-		  createPkgList "$RMRPMINC" PRE_REMOVE_LIST
-		  if [ ! -z $DEBUG ]; then
-		      echo "This is the include incfile list"
-		      echo "$ALLRPMINC"
-		      $SUDO printf '%s\n' "$ALLRPMINC" >$WORKDIR/add_incfile.list
-		      printf '%s\n\n' " "
-		      echo "This is the remove incfile list"
-		      echo "$RMRPMINC"
-		      $SUDO printf '%s\n' "$ALLRPMINC" >$WORKDIR/remove_incfile.list
-		  fi
-		  # "Remove any packages that occur in both lists"
-		  REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)` 
-		  if [ ! -z DEBUG ]; then
-		      $SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_update_add_rpmlist"
-		      $SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_update_rm_rpmlist"
-		  fi
-		  mkUpdateChroot  "$INSTALL_LIST" "$REMOVE_LIST" 	
-		  }
+    echo "Updating user spin"
+    getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
+# re-assign just for consistancy
+    ALLRPMINC=`echo "$UADDRPMINC"`
+    getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
+# "Remove any duplicate includes" 
+    RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
+    createPkgList "$ALLRPMINC" INSTALL_LIST 
+    createPkgList "$RMRPMINC" PRE_REMOVE_LIST
+    if [ ! -z $DEBUG ]; then
+	echo "This is the include incfile list"
+	echo "$ALLRPMINC"
+	$SUDO printf '%s\n' "$ALLRPMINC" >$WORKDIR/add_incfile.list
+	printf '%s\n\n' " "
+	echo "This is the remove incfile list"
+	echo "$RMRPMINC"
+	$SUDO printf '%s\n' "$ALLRPMINC" >$WORKDIR/remove_incfile.list
+    fi
+
+# "Remove any packages that occur in both lists"
+    REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
+    if [ ! -z DEBUG ]; then
+	$SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_update_add_rpmlist"
+	$SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_update_rm_rpmlist"
+    fi
+    mkUpdateChroot  "$INSTALL_LIST" "$REMOVE_LIST"
+}
 
 mkUserSpin() {
 # mkUserSpin [main install file path} i.e. [path]/omdv-kde4.lst
@@ -777,25 +779,25 @@ mkUserSpin() {
 # $REMOVE_LIST = All list files to be removed
 # This function includes all the user adds and removes.
 #set -x
-	      echo "Making a user spin"
-	      getIncFiles "$FILELISTS" ADDRPMINC $TYPE
-	      getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
-	      ALLRPMINC=`echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u`
-	      getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv 
-	      echo "Remove the common include lines for the remove package includes"
-	      RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
-	      # Create the package lists
-	      createPkgList "$ALLRPMINC" INSTALL_LIST
-	      createPkgList "$RMRPMINC" REMOVE_LIST
-	      #	"Then to be sure remove the common lines from the remove package lists."
-	      REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
-	      if [ ! -z DEBUG ]; then
-		  $SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_add_rpmlist"
-		  $SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_rm_rpmlist"	      
-	      fi 
-	      mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
-	      }
 
+    echo "Making a user spin"
+    getIncFiles "$FILELISTS" ADDRPMINC $TYPE
+    getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
+    ALLRPMINC=`echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u`
+    getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
+    echo "Remove the common include lines for the remove package includes"
+    RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
+# Create the package lists
+    createPkgList "$ALLRPMINC" INSTALL_LIST
+    createPkgList "$RMRPMINC" REMOVE_LIST
+# Then to be sure remove the common lines from the remove package lists
+    REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
+    if [ ! -z DEBUG ]; then
+	$SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_add_rpmlist"
+	$SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_rm_rpmlist"
+    fi
+    mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
+}
 
 mkUpdateChroot() {
 # Usage: mkUpdateChroot [Install variable] [remove variable] [update type]
@@ -814,49 +816,49 @@ mkUpdateChroot() {
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
 #set -x
-		  echo "Updating chroot"
-		  
-		  local __install_list="$1"
-		  local __removelist="$2"
-#		  echo "$__install_list" >"$WORKDIR"\checklist
-		  if [ ! -z "$REBUILD" ]; then
-			  printf '%s\n' "Reloading saved rpms"
-			  printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto 
-			  # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
-			  #printf '%s' "$__install_list" | parallel -q --verbose --halt now,fail=10 -P 1 --keep-order  "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force
-		  fi
-		  if [ ! -z "$1" ] && [ ! -z $NOCLEAN ]; then
-			#Should be parallel here but an update broke something or changed the syntax not sure which. --dry-run works fine. So using xargs for the time being.
-            #  echo  "Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility"
-            #echo "$__install_list" | parallel -q --halt now,fail=10 -j 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --debug --env /home/colin/ubug  
-            #printf '%s\n' "$__install_list" | parallel -q --halt now,fail=10 -P 1 --verbose "$SUDO"/usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
-            printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
-            $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-		  elif	[ ! -z "$1" ]; then
-		  echo "We just have the list here"
-			  printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
-		  else 
-			  printf '%s\n' "No rpms need to be installed"
-			  echo " "
-		  fi
 
-		  if [ ! -z "$2" ]; then
-			  echo "Removing user specified rpms and orphans"
-			  # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-			  printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
-			  # This exposed a bug in urpme
-			  $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto-orphans 
-	  #               printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME" 
-		  else
-			  printf '%s\' "No rpms need to be removed" 
-		  fi
-			  
-		  }
+	echo "Updating chroot"
+	local __install_list="$1"
+	local __removelist="$2"
+# echo "$__install_list" >"$WORKDIR"\checklist
+	if [ ! -z "$REBUILD" ]; then
+	    printf '%s\n' "Reloading saved rpms"
+	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto 
+# Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
+	    #printf '%s' "$__install_list" | parallel -q --verbose --halt now,fail=10 -P 1 --keep-order  "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force
+	fi
 
+	if [ ! -z "$1" ] && [ ! -z $NOCLEAN ]; then
+# Should be parallel here but an update broke something or changed the syntax not sure which. --dry-run works fine. So using xargs for the time being.
+	    #  echo  "Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility"
+	    #echo "$__install_list" | parallel -q --halt now,fail=10 -j 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --debug --env /home/colin/ubug  
+	    #printf '%s\n' "$__install_list" | parallel -q --halt now,fail=10 -P 1 --verbose "$SUDO"/usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
+	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
+	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
+	elif [ ! -z "$1" ]; then
+	    echo "We just have the list here"
+	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
+	else
+	    printf '%s\n' "No rpms need to be installed"
+	    echo " "
+	fi
+
+	if [ ! -z "$2" ]; then
+	    echo "Removing user specified rpms and orphans"
+# rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
+	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+# This exposed a bug in urpme
+	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto-orphans
+	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME" 
+	else
+	    printf '%s\' "No rpms need to be removed"
+	fi
+}
+
+createChroot() {
 # Usage: createChroot packages.lst /target/dir
 # Creates a chroot environment with all packages in the packages.lst
 # file and their dependencies in /target/dir
-createChroot() {
 
 		# path to repository
 #		if [ "${TREE,,}" == "cooker" ]; then
@@ -864,133 +866,132 @@ createChroot() {
 #        elif [ "${TREE,,}" == "lx3" ]; then
 #            REPOPATH="http://abf-downloads.openmandriva.org/3.0/repository/$EXTARCH/"
 #		else
-		    REPOPATH="http://abf-downloads.openmandriva.org/$BRANCH/repository/$EXTARCH/"
+	REPOPATH="http://abf-downloads.openmandriva.org/$BRANCH/repository/$EXTARCH/"
 #		fi
 
-		echo "Creating chroot $CHROOTNAME"
-		# Make sure /proc, /sys and friends are mounted so %post scripts can use them
-		$SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
-		# Do not clean build chroot
-		if [ ! -f "$CHROOTNAME"/.noclean ]; then
-		    if [ ! -z $NOCLEAN ] && [ -d "$CHROOTNAME"/lib/modules ]; then
-			touch "$CHROOTNAME"/.noclean
-		    fi
+	echo "Creating chroot $CHROOTNAME"
+# Make sure /proc, /sys and friends are mounted so %post scripts can use them
+	$SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
+# Do not clean build chroot
+	if [ ! -f "$CHROOTNAME"/.noclean ]; then
+	    if [ ! -z $NOCLEAN ] && [ -d "$CHROOTNAME"/lib/modules ]; then
+		touch "$CHROOTNAME"/.noclean
+	    fi
+	fi
+
+	if [ ! -z $REBUILD ]; then
+	    ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
+	    if [ -z $ANYRPMS ]; then
+		echo "You must run with --noclean before you use --rebuild"
+	    errorCatch
+	    fi
+	    echo "The contents of $CHROOTNAME will be DELETED"
+	    if [ -d $WORKDIR/sessrec ]; then
+		echo "Your session diffs will be saved if you have used the --keep flag"
+		echo "If you have not set the --keep flag and wish to keep them hit abort now and restart with the flag set"
+		if [ ! -z $KEEP ]; then
+		    $SUDO mv $WORKDIR/sessrec $UHOME/
+		    echo "Your session diffs have been saved"
 		fi
-     
-		if [ ! -z $REBUILD ]; then
-		    ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
-		    if [ -z $ANYRPMS ]; then
-			echo "You must run with --noclean before you use --rebuild"
+		echo "You have been WARNED!"
+		echo "Enter 'y' or 'yes' to continue, any other key to abort"
+		read -r in1
+		echo $in1
+		if [[ $in1 == "yes" || $in1 == "y" ]]; then
+		    echo "Deleting the contents of "$CHROOTNAME""
+		    if [ -d $CHROOTNAME/var/cache/urpmi/rpms ]; then
+			$SUDO mv $CHROOTNAME/var/cache/urpmi/rpms $WORKDIR
+			$SUDO rm -rf $CHROOTNAME/*
+# Recreate the mountpoints for the chroot files
+			$SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
+			$SUDO mkdir -p $CHROOTNAME/var/lib/rpm
+			$SUDO mkdir -p $CHROOTNAME/var/cache/urpmi
+			$SUDO mv $WORKDIR/rpms $CHROOTNAME/var/cache/urpmi/
+# Restore the .noclean file when complete
+			$SUDO touch $CHROOTNAME/.noclean
+# Restore the session diffs
+			if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
+			    mv $UHOME/sessrec $WORKDIR/
+			fi
+# Need to update the md5sum too otherwise it will add files again on next running mmm thinking about his one
+		    else
+			echo "rpm cache directory missing"
 			errorCatch
 		    fi
-		echo "The contents of $CHROOTNAME will be DELETED" 
-		    if [ -d $WORKDIR/sessrec ]; then
-			  echo "             Your session diffs will be saved if you have used the --keep flag"
-			  echo "If you have not set the --keep flag and wish to keep them hit abort now and restart with the flag set"
-			  if [ ! -z $KEEP ]; then
-			      $SUDO mv $WORKDIR/sessrec $UHOME/
-			      echo "Your session diffs have been saved"
-			  fi
-		    echo "You have been WARNED!"
-		    echo "Enter 'y' or 'yes' to continue, any other key to abort" 
-		    read -r in1
-		    echo $in1
-			if [[ $in1 == "yes" || $in1 == "y" ]]; then
-			  echo "Deleting the contents of "$CHROOTNAME""
-				if [ -d $CHROOTNAME/var/cache/urpmi/rpms ]; then
-				    $SUDO mv $CHROOTNAME/var/cache/urpmi/rpms $WORKDIR
-				    rm -rf $CHROOTNAME/*
-				    # Recreate the mountpoints for the chroot files
-				    $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
-				    $SUDO mkdir -p $CHROOTNAME/var/lib/rpm
-				    $SUDO mkdir -p $CHROOTNAME/var/cache/urpmi		    
-				    $SUDO mv $WORKDIR/rpms $CHROOTNAME/var/cache/urpmi/		    
-				    # Restore the .noclean file when complete
-				    $SUDO touch $CHROOTNAME/.noclean
-				    # Restore the session diffs
-				      if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
-					  mv $UHOME/sessrec $WORKDIR/
-				      fi
-				      #need to update the md5sum too otherwise it will add files again on next running mmm thinking about his one
-				else
-				    echo "rpm cache directory missing"
-				    errorCatch
-				fi
-			else
-			  echo "Aborting"
-			  exit 1
-			      fi
-		    else
-			echo "Rebuilding"
-		    fi
-		fi
-		
-		if [ ! -f "$CHROOTNAME"/.noclean ] || [ ! -z $REBUILD ]; then
-		    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
-		    if [ "$FREE" = "0" ]; then
-			$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
-		    else
-			$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
-			$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
-			# this one is needed to grab firmwares
-			$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
-
-			if [ "${TREE,,}" != "cooker" ]; then
-			    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
-			    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-			    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
-			    # this one is needed to grab firmwares
-			    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
-			fi
-		    fi
-		fi
-	
-		# update media
-		$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
-		if [ "${TREE,,}" != "cooker" ]; then
-		    echo "Updating urpmi repositories in $CHROOTNAME"
-		    $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
-		fi
-
-		$SUDO mount --bind /proc "$CHROOTNAME"/proc
-		$SUDO mount --bind /sys "$CHROOTNAME"/sys
-		$SUDO mount --bind /dev "$CHROOTNAME"/dev
-		$SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
-
-
-		# start rpm packages installation
-		# but only if .noclean does not exist and CHGFLAG=0
-		# CHGFLAG=1 Indicates a global change in the iso lists
-		if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -Z $debug ]; then
-		      mkOmSpin
-		elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
-		      mkUserSpin $FILELISTS
-		elif [ ! -z $REBUILD ]; then
-		    mkUserSpin $FILELISTS
-		elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ]; then
-		    updateUserSpin "$FILELISTS"
-#		elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
-		# Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
-		elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
-		# This functionality will only update the build if there is a change in files
-		# other then my.add and my.rmv. NOT IMPLEMENTED YET
-		  mkOmSpin "$FILELISTS"
 		else
-		  updateUserSpin "$FILELISTS"
+		    echo "Aborting"
+		    exit 1
 		fi
+	    else
+		    echo "Rebuilding"
+	    fi
+	fi
 
-		if [ ! -z $REBUILD ]; then
-		    # Restore the noclean status
-		    $SUDO touch $CHROOTNAME/.noclean
+	if [ ! -f "$CHROOTNAME"/.noclean ] || [ ! -z $REBUILD ]; then
+	    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
+	    if [ "$FREE" = "0" ]; then
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
+	    else
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
+# This one is needed to grab firmwares
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
+
+		if [ "${TREE,,}" != "cooker" ]; then
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
+# This one is needed to grab firmwares
+		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
 		fi
-	    
-		if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
-		    echo "Can not install packages from $FILELISTS";
-		    errorCatch
+	    fi
+	fi
+
+# Update media
+	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
+	    if [ "${TREE,,}" != "cooker" ]; then
+		echo "Updating urpmi repositories in $CHROOTNAME"
+		$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
 	    fi
 
+	$SUDO mount --bind /proc "$CHROOTNAME"/proc
+	$SUDO mount --bind /sys "$CHROOTNAME"/sys
+	$SUDO mount --bind /dev "$CHROOTNAME"/dev
+	$SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
-#DEPRECATED	
+
+# Start rpm packages installation
+# but only if .noclean does not exist and CHGFLAG=0
+# CHGFLAG=1 Indicates a global change in the iso lists
+	if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -Z $debug ]; then
+	    mkOmSpin
+	elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
+	    mkUserSpin $FILELISTS
+	elif [ ! -z $REBUILD ]; then
+	    mkUserSpin $FILELISTS
+	elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ]; then
+	    updateUserSpin "$FILELISTS"
+#	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
+# Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
+	elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
+# This functionality will only update the build if there is a change in files
+# other then my.add and my.rmv. NOT IMPLEMENTED YET
+	    mkOmSpin "$FILELISTS"
+	else
+	    updateUserSpin "$FILELISTS"
+	fi
+
+	if [ ! -z $REBUILD ]; then
+# Restore the noclean status
+	    $SUDO touch $CHROOTNAME/.noclean
+	fi
+
+	if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
+	    echo "Can not install packages from $FILELISTS";
+	    errorCatch
+	fi
+
+#DEPRECATED
 #	if [ ! -f "$CHROOTNAME"/.noclean ]; then
 #	    echo "Start installing packages in $CHROOTNAME"
 #	    parsePkgList "$FILELISTS" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
@@ -1000,44 +1001,46 @@ createChroot() {
 #		errorCatch
 #	    fi
 #	fi
-		# If --noclean selected mark the chroot
-		if [ ! -z "$NOCLEAN" ]; then
-		    touch "$CHROOTNAME"/.noclean
-		fi
 
-		# check CHROOT
-		if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
-		    echo "Broken chroot installation. Exiting"
-		    errorCatch
-		fi
+# If --noclean selected mark the chroot
+	if [ ! -z "$NOCLEAN" ]; then
+	    touch "$CHROOTNAME"/.noclean
+	fi
 
-		# export installed and boot kernel
-		pushd "$CHROOTNAME"/lib/modules
-		BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
-		export BOOT_KERNEL_ISO
-		if [ -n "$BOOT_KERNEL_TYPE" ]; then
-		    $SUDO echo $BOOT_KERNEL_TYPE > "$CHROOTNAME"/boot_kernel
-		    KERNEL_ISO=`ls -d --sort=time [0-9]* | grep -v $BOOT_KERNEL_TYPE | head -n1 | sed -e 's,/$,,'`
-		else
-		    KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
-		fi
-		export KERNEL_ISO
-		popd
+# Check CHROOT
+	if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
+	    echo "Broken chroot installation. Exiting"
+	    errorCatch
+	fi
 
-		# remove rpm db files which may not match the target chroot environment
-		$SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+# Export installed and boot kernel
+	pushd "$CHROOTNAME"/lib/modules
+	BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
+	export BOOT_KERNEL_ISO
+	if [ -n "$BOOT_KERNEL_TYPE" ]; then
+	    $SUDO echo $BOOT_KERNEL_TYPE > "$CHROOTNAME"/boot_kernel
+	    KERNEL_ISO=`ls -d --sort=time [0-9]* | grep -v $BOOT_KERNEL_TYPE | head -n1 | sed -e 's,/$,,'`
+	else
+	    KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
+	fi
 
-	    }
+	export KERNEL_ISO
+	popd
+
+# remove rpm db files which may not match the target chroot environment
+    $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+
+}
 
 createInitrd() {
 
-    # check if dracut is installed
+# Check if dracut is installed
     if [ ! -f "$CHROOTNAME"/usr/sbin/dracut ]; then
 	echo "dracut is not installed inside chroot. Exiting."
 	errorCatch
     fi
 
-    # build initrd for syslinux
+# Build initrd for syslinux
     echo "Building liveinitrd-$BOOT_KERNEL_ISO for ISO boot"
     if [ ! -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf ]; then
 	echo "Missing "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf . Exiting."
@@ -1059,19 +1062,19 @@ createInitrd() {
 	$SUDO chmod 0755 "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso/*.sh
     fi
 
-    # fugly hack to get /dev/disk/by-label
+# Fugly hack to get /dev/disk/by-label
     $SUDO sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
 
     if [ -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	$SUDO rm -rf "$CHROOTNAME"/boot/liveinitrd.img
     fi
 
-    # set default plymouth theme
+# Set default plymouth theme
     if [ -x "$CHROOTNAME"/usr/sbin/plymouth-set-default-theme ]; then
 	chroot "$CHROOTNAME" /usr/sbin/plymouth-set-default-theme OpenMandriva
     fi
 
-    # building liveinitrd
+# Building liveinitrd
     $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf $KERNEL_ISO
 
     if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
@@ -1080,15 +1083,15 @@ createInitrd() {
     fi
 
     echo "Building initrd-$KERNEL_ISO inside chroot"
-    # remove old initrd
+# Remove old initrd
     $SUDO rm -rf "$CHROOTNAME"/boot/initrd-$KERNEL_ISO.img
     $SUDO rm -rf "$CHROOTNAME"/boot/initrd0.img
 
-    # remove config before building initrd
+# Remove config before building initrd
     $SUDO rm -rf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
     $SUDO rm -rf "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 
-    # building initrd
+# Building initrd
     $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
 
     if [[ $? != 0 ]]; then
@@ -1096,9 +1099,9 @@ createInitrd() {
 	errorCatch
     fi
 
-    # build the boot kernel initrd in case the user wants it kept
+# Build the boot kernel initrd in case the user wants it kept
     if [ -n "$BOOT_KERNEL_TYPE" ]; then
-        # building boot kernel initrd
+# Building boot kernel initrd
         echo "Building initrd-$BOOT_KERNEL_ISO inside chroot"
         $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$BOOT_KERNEL_ISO.img $BOOT_KERNEL_ISO
 
@@ -1112,11 +1115,9 @@ createInitrd() {
 
 }
 
-
 createMemDisk () {
 # Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
-
 
     if [ $EXTARCH = "x86_64" ]; then
 	ARCHFMT=x86_64-efi
@@ -1142,21 +1143,21 @@ createMemDisk () {
     fi
     MEMDISKDIR=$WORKDIR/boot/grub
 
-    # Copy the grub config file to the chroot dir for UEFI support
-    # Also set the uuid
+# Copy the grub config file to the chroot dir for UEFI support
+# Also set the uuid
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$MEMDISKDIR"/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$MEMDISKDIR"/grub.cfg
-    # Ensure the old image is removed
+# Ensure the old image is removed
     if [ -e "$CHROOTNAME"/memdisk_img ]; then
 	$SUDO rm -f "$CHROOTNAME"/memdisk_img
     fi
-    # Create a memdisk img called memdisk_img
+# Create a memdisk img called memdisk_img
     cd "$WORKDIR"
     tar cvf $CHROOTNAME/memdisk_img boot
-    # Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
-    # To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
+# Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
+# To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
-    # Job done just remember to move it back again
+# Job done just remember to move it back again
 
     chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O $ARCHFMT -d $ARCHLIB -m memdisk_img -o /ISO/EFI/BOOT/"$EFINAME" -p '(memdisk)/boot/grub' \
      search iso9660 normal memdisk tar boot linux part_msdos part_gpt part_apple configfile help loadenv ls reboot chain multiboot fat udf \
@@ -1164,10 +1165,10 @@ createMemDisk () {
      gfxterm_background gzio halt hfsplus jpeg mdraid09 mdraid1x minicmd part_apple part_msdos part_gpt part_bsd password_pbkdf2 png reboot \
      search search_fs_uuid search_fs_file search_label sleep tftp video xfs lua loopback regexp
 
-    # Move back the ISO filesystem after building the EFI image.
+# Move back the ISO filesystem after building the EFI image.
     $SUDO mv -f $CHROOTNAME/ISO/ $ISOROOTNAME
 
-    # Ensure the ISO image is clear
+# Ensure the ISO image is clear
     if [ -e "$CHROOTNAME"/memdisk.img ]; then
 	$SUDO rm -f "$CHROOTNAME"/memdisk_img
     fi
@@ -1192,7 +1193,7 @@ createUEFI() {
 
     echo "Setting up UEFI partiton and image."
 
-    #Why doesn't this work on ABF
+# Why doesn't this work on ABF
     IMGNME="$ISOROOTNAME"/boot/grub/"$EFINAME"
 #        IMGNME="$ISOROOTNAME"/"$EFINAME"
     #IMGNME="$ISOROOTNAME"/boot/efi.img
@@ -1212,7 +1213,7 @@ createUEFI() {
 
 # mkfs.vfat can create the image and filesystem directly    
     $SUDO mkfs.vfat -C -F 16 -s 1 -S 512 -M 0xFF $IMGNME $EFIDISKSIZE
-# loopback mount the image
+# Loopback mount the image
     $SUDO losetup -f $IMGNME
     sleep 1
     $SUDO mount -t vfat $IMGNME /mnt
@@ -1221,41 +1222,40 @@ createUEFI() {
 	errorCatch
     fi
 
-    # copy the Grub2 files to the EFI image
+# Copy the Grub2 files to the EFI image
     $SUDO mkdir -p /mnt/EFI/BOOT
     $SUDO cp -R "$GRB2FLS"/"$EFINAME" /mnt/EFI/BOOT/"$EFINAME"
 
-    # Unmout the filesystem with EFI image
+# Unmout the filesystem with EFI image
     $SUDO umount /mnt
-    # Make sure that the image is copied to the ISOROOT
+# Make sure that the image is copied to the ISOROOT
     $SUDO cp -f  "$IMGNME" "$ISOROOTNAME"
-    # Clean up
+# Clean up
     $SUDO kpartx -d $IMGNME
-    # Remove the EFI directory
+# Remove the EFI directory
     $SUDO rm -R "$ISOROOTNAME"/EFI
     XORRISO_OPTIONS2=" --efi-boot "$EFINAME" -append_partition 2 0xef "$IMGNME""
 }
 
-
+setupGrub2() {
 # Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>) 
 # Sets up grub2 to boot /target/dir
-setupGrub2() {
 
     if [ ! -e "$CHROOTNAME"/usr/bin/grub2-mkimage ]; then
 	echo "Missing grub2-mkimage in installation."
 	errorCatch
     fi
 
-    # BIOS Boot and theme support
-    # NOTE Themes are used by the EFI boot as well.
-    # Copy grub config files to the ISO build directory
-    # and set the UUID's
+# BIOS Boot and theme support
+# NOTE Themes are used by the EFI boot as well.
+# Copy grub config files to the ISO build directory
+# and set the UUID's
     $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
 
-    # Add the themes, locales and fonts to the ISO build firectory
+# Add the themes, locales and fonts to the ISO build firectory
     if [ "${TYPE}" != "minimal" ]; then
 	mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
 	$SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
@@ -1274,41 +1274,41 @@ setupGrub2() {
     GRUB_LIB=/usr/lib/grub/i386-pc
     GRUB_IMG=$(mktemp)
 
-    # copy memtest
+# Copy memtest
     $SUDO cp -rfT $WORKDIR/extraconfig/memtest "$ISOROOTNAME"/boot/grub/memtest
     $SUDO chmod +x "$ISOROOTNAME"/boot/grub/memtest
-    # To use an embedded image with our grub2 we need to make the modules available in the /boot/grub directory of the iso. The modules can't be carried in the payload of
-    # the embedded image as it's size is limited to 32kb. So we copy the i386-pc modules to the isobuild directory
+# To use an embedded image with our grub2 we need to make the modules available in the /boot/grub directory of the iso. The modules can't be carried in the payload of
+# the embedded image as it's size is limited to 32kb. So we copy the i386-pc modules to the isobuild directory
 
     mkdir -p $ISOROOTNAME/boot/grub/i386-pc
     $SUDO cp -rf $CHROOTNAME/usr/lib/grub/i386-pc $ISOROOTNAME/boot/grub/
 
-    # Build the grub images in the chroot rather that in the host OS this avoids any issues with different versions of grub in the host OS especially when using local mode.
-    # this means cooker isos can be built on a local machine running a different version of OpenMandriva
-    # It requires that all the files needed to build the image must be within the chroot directory when the chroot command is invoked.
-    # Also we cannot write outside of the chroot so the images generated will remain in the chroot directory and will need to be removed before the squashfs is built
-    # these will be in /tmp and they are only small so leave them for the time being.
-    # If the entire ~/ISO director is copied to the chroot we do do have to worry too much about hacking the existing script to work 
-    # with new paths we can simple add the $CHROOTNAME to the $ISOCHROOTNAME to get get the new path.
-    # So the quickest and easiest method is to mv the $ISOROOTNAME this avoids having two copies and is simple to understand
-    # First thoughmake sure we actually build new images
+# Build the grub images in the chroot rather that in the host OS this avoids any issues with different versions of grub in the host OS especially when using local mode.
+# this means cooker isos can be built on a local machine running a different version of OpenMandriva
+# It requires that all the files needed to build the image must be within the chroot directory when the chroot command is invoked.
+# Also we cannot write outside of the chroot so the images generated will remain in the chroot directory and will need to be removed before the squashfs is built
+# these will be in /tmp and they are only small so leave them for the time being.
+# If the entire ~/ISO director is copied to the chroot we do do have to worry too much about hacking the existing script to work 
+# with new paths we can simple add the $CHROOTNAME to the $ISOCHROOTNAME to get get the new path.
+# So the quickest and easiest method is to mv the $ISOROOTNAME this avoids having two copies and is simple to understand
+# First thoughmake sure we actually build new images
     if [ -e "$ISOROOTNAME"/boot/grub/grub-eltorito.img -o -e "$ISOROOTNAME"/boot/grub/grub2-embed_img ]; then
       $SUDO rm -rf "$ISOROOTNAME"/boot/grub/{grub-eltorito,grub-embedded}.img
     fi
 
     $SUDO mv -f $ISOROOTNAME $CHROOTNAME
-    # Job done just remember to move it back again
-    # Make the image
+# Job done just remember to move it back again
+# Make the image
     $SUDO chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d "$GRUB_LIB" -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 biosdisk test
-    # Move the ISO director back to the working directory
+# Move the ISO director back to the working directory
     $SUDO mv -f $CHROOTNAME/ISO/ $WORKDIR
-    # Create bootable hard disk image
+# Create bootable hard disk image
     $SUDO cat "$CHROOTNAME"/"$GRUB_LIB"/boot.img "$CHROOTNAME"/"$GRUB_IMG" > "$ISOROOTNAME"/boot/grub/grub2-embed_img
     if [[ $? != 0 ]]; then
 	echo "Failed to create Grub2 El-Torito image. Exiting."
 	errorCatch
     fi
-    # Create bootable cdimage
+# Create bootable cdimage
     $SUDO cat "$CHROOTNAME"/"$GRUB_LIB"/cdboot.img "$CHROOTNAME"/"$GRUB_IMG" > "$ISOROOTNAME"/boot/grub/grub2-eltorito.img
     if [[ $? != 0 ]]; then
 	echo "Failed to create Grub2 El-Torito image. Exiting."
@@ -1317,11 +1317,10 @@ setupGrub2() {
 
     XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
     echo "End grub2."
-    # copy SuperGrub iso
-    # do not copy it for now
+# Copy SuperGrub iso
+# do not copy it for now
 
     echo "End building Grub2 El-Torito image."
-
     echo "Installing liveinitrd for grub2"
 
     if [ -e "$CHROOTNAME"/boot/vmlinuz-$BOOT_KERNEL_ISO ] && [ -e "$CHROOTNAME"/boot/liveinitrd.img ]; then
@@ -1346,12 +1345,12 @@ setupGrub2() {
 
 setupISOenv() {
 
-    # set up default timezone
+# Set up default timezone
     echo "Setting default timezone"
     $SUDO ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME"/etc/localtime
 
-    # try harder with systemd-nspawn
-    # version 215 and never has then --share-system option
+# try harder with systemd-nspawn
+# version 215 and never has then --share-system option
 #	if (( `rpm -qa systemd --queryformat '%{VERSION} \n'` >= "215" )); then
 #	    $SUDO systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/timedatectl set-timezone UTC
 #	    # set default locale
@@ -1361,7 +1360,7 @@ setupISOenv() {
 #	    echo "systemd-nspawn does not exists."
 #	fi
 
-	# create /etc/minsysreqs
+# Create /etc/minsysreqs
     echo "Creating /etc/minsysreqs"
 
     if [ "${TYPE,,}" = "minimal" ]; then
@@ -1375,10 +1374,10 @@ setupISOenv() {
 	echo "hdd = 10" >> "$CHROOTNAME"/etc/minsysreqs
     fi
 
-    # count imagesize and put in in /etc/minsysreqs
+# Count imagesize and put in in /etc/minsysreqs
     $SUDO echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
-    # set up displaymanager
+# Set up displaymanager
     if [ "${TYPE,,}" != "minimal" ] && [ "${DISPLAYMANAGER,,}" != "none" ]; then
 	if [ ! -e "$CHROOTNAME"/lib/systemd/system/${DISPLAYMANAGER,,}.service ]; then
 	    echo "File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
@@ -1387,12 +1386,12 @@ setupISOenv() {
 
 	$SUDO ln -sf /lib/systemd/system/${DISPLAYMANAGER,,}.service "$CHROOTNAME"/etc/systemd/system/display-manager.service 2> /dev/null || :
 
-	# Set reasonable defaults
+# Set reasonable defaults
 	if  [ -e "$CHROOTNAME"/etc/sysconfig/desktop ]; then
 	    $SUDO rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
 	fi
 
-    # create very important desktop file
+# Create very important desktop file
     cat >"$CHROOTNAME"/etc/sysconfig/desktop <<EOF
 DISPLAYMANAGER=$DISPLAYMANAGER
 DESKTOP=$TYPE
@@ -1400,18 +1399,18 @@ EOF
 
     fi
 
-    # copy some extra config files
+# Copy some extra config files
     $SUDO cp -rfT $WORKDIR/extraconfig/etc "$CHROOTNAME"/etc/
     $SUDO cp -rfT $WORKDIR/extraconfig/usr "$CHROOTNAME"/usr/
 
-    # set up live user
+# Set up live user
     live_user=live
     echo "Setting up user ${live_user}"
     $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel ${live_user}
 
-    # clear user passwords
+# Clear user passwords
     for username in root $live_user; do
-	# kill it as it prevents clearing passwords
+# Kill it as it prevents clearing passwords
 	if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
 	    $SUDO rm -rf "$CHROOTNAME"/etc/shadow.lock
 	fi
@@ -1435,19 +1434,19 @@ EOF
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/Desktop
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.cache
     $SUDO chroot "$CHROOTNAME" /bin/chmod -R 0777 /home/${live_user}/.local
-    # (tpg) support for AccountsService
+# (tpg) support for AccountsService
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /var/lib/AccountsService/users
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /var/lib/AccountsService/icons
     $SUDO cp -f "$WORKDIR"/data/account-user "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
     $SUDO cp -f "$WORKDIR"/data/account-icon "$CHROOTNAME"/var/lib/AccountsService/icons/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" /var/lib/AccountsService/users/${live_user}
 
-    # KDE4 related settings
+# KDE4 related settings
     if [ "${TYPE,,}" = "kde4" ] || [ "${TYPE,,}" = "plasma" ]; then
 	$SUDO mkdir -p "$CHROOTNAME"/home/$live_user/.kde4/env
 	echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
 	echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
-	# disable baloo in live session
+# disable baloo in live session
 	$SUDO mkdir -p "$CHROOTNAME"/home/${live_user}/.kde4/share/config
 	cat >"$CHROOTNAME"/home/${live_user}/.kde4/share/config/baloofilerc << EOF
 [Basic Settings]
@@ -1459,7 +1458,7 @@ EOF
 	$SUDO rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
     fi
 
-    # enable DM autologin
+# Enable DM autologin
     if [ "${TYPE,,}" != "minimal" ]; then
 	case ${DISPLAYMANAGER,,} in
 		"kdm")
@@ -1489,7 +1488,7 @@ EOF
 
     echo "Starting services setup."
 
-    # (tpg) enable services based on preset files from systemd and others
+# (tpg) enable services based on preset files from systemd and others
     UNIT_DIR="$CHROOTNAME"/lib/systemd/system
     if [ -f $UNIT_DIR-preset/90-default.preset ]; then
 	PRESETS=($UNIT_DIR-preset/*.preset)
@@ -1515,7 +1514,7 @@ EOF
     fi
 
 
-    # enable services on demand
+# Enable services on demand
     SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind)
 
     for i in "${SERVICES_ENABLE[@]}"; do
@@ -1539,7 +1538,7 @@ EOF
 	fi
     done
 
-    # disable services
+# Disable services
     SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online chronyd)
 
     for i in "${SERVICES_DISABLE[@]}"; do
@@ -1563,14 +1562,14 @@ EOF
 	fi
     done
 
-    # ATTENTION getty@.service must be always disabled
+# ATTENTION getty@.service must be always disabled
     [[ -e "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service ]] && rm -rf "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service
 
-    # Calamares installer
+# Calamares installer
     if [ -e "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf ]; then
 
-	# enable settings for specific desktop environment
-	# https://issues.openmandriva.org/show_bug.cgi?id=1424
+# Enable settings for specific desktop environment
+# https://issues.openmandriva.org/show_bug.cgi?id=1424
 	sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf
 
 	if [ "${TYPE,,}" = "plasma" ]; then
@@ -1612,8 +1611,8 @@ EOF
 
     #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
-#Fix Me This should be a function
-#FIX ME There should be a fallback to abf-downloads here or perhaps to a primary mirror.
+# Fix Me This should be a function
+# FIX ME There should be a fallback to abf-downloads here or perhaps to a primary mirror.
     if [ -z $NOCLEAN ]; then
 	# add urpmi medias inside chroot
         echo "Removing old urpmi repositories."
@@ -1631,13 +1630,13 @@ EOF
 	    if [[ $? != 0 ]]; then
 	      $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/contrib/release 
 	    fi
-	    # this one is needed to grab firmwares
+# This one is needed to grab firmwares
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
 	    if [[ $? != 0 ]]; then
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/non-free/release 
 	    fi
 	else
-	    # use hack for our mirrorlist url
+# use hack for our mirrorlist url
 	    if [[ ${TREE,,} =~ ^openmandriva* ]]; then
 	    echo $TREE
 		MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
@@ -1648,11 +1647,11 @@ EOF
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	fi
 
-	# add 32-bit medias only for x86_64 arch
+# Add 32-bit medias only for x86_64 arch
 	if [ "$EXTARCH" = "x86_64" ]; then
 	    echo "Adding 32-bit media repository."
-	    
-	    # use previous MIRRORLIST declaration but with i586 arch in link name
+
+# Use previous MIRRORLIST declaration but with i586 arch in link name
 	    MIRRORLIST="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32' 'media/main/release'
 		if [[ $? != 0 ]]; then
@@ -1678,12 +1677,12 @@ EOF
 	    echo "urpmi 32-bit media repository not needed"
 	fi
 
-	# update urpmi medias
+# Update urpmi medias
 	echo "Updating urpmi repositories"
 	$SUDO urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
     fi # noclean
 
-    # get back to real /etc/resolv.conf
+# Get back to real /etc/resolv.conf
     $SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
     if [ "`cat $CHROOTNAME/etc/release | grep -o 2014.0`" == "2014.0" ]; then
 	$SUDO ln -sf /run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
@@ -1691,51 +1690,52 @@ EOF
 	$SUDO ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
     fi
 
-    # ldetect stuff
+# ldetect stuff
     if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
 	$SUDO chroot "$CHROOTNAME" /usr/sbin/update-ldetect-lst
     fi
 
-    # fontconfig cache
+# fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
 	$SUDO chroot "$CHROOTNAME" fc-cache -s -r
     fi
 
-    # rebuild man-db
+# Rebuild man-db
     if [ -x "$CHROOTNAME"/usr/bin/mandb ]; then
     	$SUDO chroot "$CHROOTNAME" /usr/bin/mandb --quiet
     fi
 
-    # rebuild linker cache
+# Rebuild linker cache
     $SUDO chroot "$CHROOTNAME" /sbin/ldconfig -X
 
-    # remove rpm db files to save some space
+# Remove rpm db files to save some space
     $SUDO rm -f "$CHROOTNAME"/var/lib/rpm/__db.*
 
-    # clear tmp
+# Clear tmp
     $SUDO rm -f "$CHROOTNAME"/tmp/*
 
-    # clear urpmi cache
+# Clear urpmi cache
     if [ -f "$CHROOTNAME"/.noclean ]; then
-   #Move contents of rpm cache away so as not to include in iso
-  	$SUDO mv "$CHROOTNAME"/var/cache/urpmi/rpms "$WORKDIR"
+# Move contents of rpm cache away so as not to include in iso
+	$SUDO mv "$CHROOTNAME"/var/cache/urpmi/rpms "$WORKDIR"
 	$SUDO mkdir -m 755 -p  "$CHROOTNAME"/var/cache/urpmi/rpms
-    else	
+    else
     	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
     	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/rpms/*
     fi
-    # generate list of installed rpm packages
+# Generate list of installed rpm packages
     $SUDO chroot "$CHROOTNAME" rpm -qa --queryformat="%{NAME}\n" | sort > /var/lib/rpm/installed-by-default
 }
 
 createSquash() {
+
     echo "Starting squashfs image build."
-	# Before we do anything check if we are a local build
+# Before we do anything check if we are a local build
     if [ -n "$IN_ABF" ]; then
-	# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
-	# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
-	# It's likely that the img will be written to one of the mounted drives so it's unlikely 
-	# that there will be enough diskspace to complete the operation.
+# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
+# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
+# It's likely that the img will be written to one of the mounted drives so it's unlikely 
+# that there will be enough diskspace to complete the operation.
 	if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
 	    $SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
 	    if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
@@ -1750,12 +1750,12 @@ createSquash() {
     fi
 
     mkdir -p "$ISOROOTNAME"/LiveOS
-    # unmout all stuff inside CHROOT to build squashfs image
+# Unmout all stuff inside CHROOT to build squashfs image
     umountAll "$CHROOTNAME"
-    
-    # Here we go with local speed ups
-    # For development only remove all the compression so the squashfs builds quicker.
-    # Give it it's own flag QUICKEN.
+
+# Here we go with local speed ups
+# For development only remove all the compression so the squashfs builds quicker.
+# Give it it's own flag QUICKEN.
     if [ ! -z $QUICKEN ]; then
 	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384 
     else
@@ -1768,9 +1768,10 @@ createSquash() {
 
 }
 
+buildIso() {
 # Usage: buildIso filename.iso rootdir
 # Builds an ISO file from the files in rootdir
-buildIso() {
+
     echo "Starting ISO build."
 
     if [ -n "$IN_ABF" ]; then
@@ -1786,10 +1787,10 @@ buildIso() {
 	errorCatch
     fi
 
-    # Before starting to build remove the old iso. xorriso is much slower to create an iso.
-    # if it is overwriting an earlier copy. Also it's not clear whether this affects the.
-    # contents or structure of the iso (see --append-partition in the man page)
-    # Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
+# Before starting to build remove the old iso. xorriso is much slower to create an iso.
+# if it is overwriting an earlier copy. Also it's not clear whether this affects the.
+# contents or structure of the iso (see --append-partition in the man page)
+# Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
     echo "Removing old iso."
     if [ -z "$IN_ABF" ] && [ -n "$ISOFILE" ]; then
 	$SUDO rm -rf "$ISOFILE"
@@ -1821,12 +1822,12 @@ postBuild() {
     fi
 
     if [ -n "$IN_ABF" ]; then
-    	# We're running in ABF adjust to its directory structure
-	# count checksums
+# We're running in ABF adjust to its directory structure
+# Count checksums
 	echo "Genrating ISO checksums."
 	pushd $WORKDIR
-	    md5sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.md5sum
-	    sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
+	md5sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.md5sum
+	sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
 
 	if [ "$WORKDIR" = "/home/vagrant/iso_builder" ]; then
@@ -1838,13 +1839,13 @@ postBuild() {
 	fi
     fi
 
-    # If .noclean is set move rpms back to the cache directories
+# If .noclean is set move rpms back to the cache directories
     if [ -f "$CHROOTNAME"/.noclean ]; then
 	    rm -R "$CHROOTNAME"/var/cache/urpmi/rpms
 	    $SUDO mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
     fi
 
-    # clean chroot
+# Clean chroot
     umountAll "$CHROOTNAME"
 }
 
@@ -1852,7 +1853,6 @@ postBuild() {
 # START ISO BUILD
 showInfo
 updateSystem
-#getPkgList
 localMd5Change
 createChroot
 createInitrd
