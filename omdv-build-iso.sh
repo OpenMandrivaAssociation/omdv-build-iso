@@ -823,7 +823,7 @@ mkUpdateChroot() {
 # echo "$__install_list" >"$WORKDIR"\checklist
 	if [ ! -z "$REBUILD" ]; then
 	    printf '%s\n' "Reloading saved rpms"
-	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto 
+	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
 # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
 	    #printf '%s' "$__install_list" | parallel -q --verbose --halt now,fail=10 -P 1 --keep-order  "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force
 	fi
@@ -833,11 +833,11 @@ mkUpdateChroot() {
 	    #  echo  "Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility"
 	    #echo "$__install_list" | parallel -q --halt now,fail=10 -j 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --debug --env /home/colin/ubug  
 	    #printf '%s\n' "$__install_list" | parallel -q --halt now,fail=10 -P 1 --verbose "$SUDO"/usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
-	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
+	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
 	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
 	elif [ ! -z "$1" ]; then
 	    echo "We just have the list here"
-	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
+	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
 	else
 	    printf '%s\n' "No rpms need to be installed"
 	    echo " "
