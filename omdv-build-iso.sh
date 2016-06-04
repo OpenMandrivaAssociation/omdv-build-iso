@@ -1317,8 +1317,10 @@ setupGrub2() {
 
     XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
     echo "End grub2."
+
 # Copy SuperGrub iso
-# do not copy it for now
+# disable for now
+#    $SUDO cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$ISOROOTNAME"/boot/grub/sgb.iso
 
     echo "End building Grub2 El-Torito image."
     echo "Installing liveinitrd for grub2"
