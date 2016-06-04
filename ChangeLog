@@ -1,6 +1,238 @@
+2016-06-04 13:05:36 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add one missing thing (HEAD, origin/master, origin/HEAD, master)
+
+2016-06-04 13:01:21 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add back urpmi --debug
+
+2016-06-04 12:59:06 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* clean up this mess
+
+2016-06-04 12:07:27 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add fcitx
+
+2016-06-04 12:05:28 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #4 from OpenMandrivaAssociation/cc_user_ver
+
+2016-06-03 22:49:37 +0100 itchka (Colin Close) 
+
+	* A few fixes after the merge (origin/cc_user_ver)
+
+2016-06-03 20:11:41 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' into cc_user_ver
+
+2016-06-03 15:53:03 +0100 itchka (Colin Close) 
+
+	* Rename lx3 package lists
+
+2016-06-03 15:19:03 +0100 itchka (Colin Close) 
+
+	* Add the omdv to the docker container so we get the package lists
+
+2016-06-03 11:25:35 +0100 itchka (Colin Close) 
+
+	* Fix abf iso building
+
+2016-06-02 22:16:07 +0100 itchka (Colin Close) 
+
+	* Revert "Major upgrade to full user mode. See doc dir" Causes ABF breakage This reverts commit a5d2f17db02984d05adb843bf66b44eec5aece94. (origin/cc_force_fix)
+
+2016-06-02 22:15:25 +0100 itchka (Colin Close) 
+
+	* Revert "Add back a TPG change."
+
+2016-06-02 21:30:22 +0100 itchka (Colin Close) 
+
+	* Add back a TPG change.
+
+2016-06-02 02:51:38 +0100 itchka (Colin Close) 
+
+	* Major upgrade to full user mode. See doc dir
+
+2016-06-02 02:07:47 +0100 itchka (Colin Close) 
+
+	* Revert back to xargs for user mode.
+
+2016-06-01 18:46:44 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* Merge remote-tracking branch 'origin/3.0'
+
+2016-06-01 18:45:43 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add support for fctix
+
+2016-05-31 11:33:53 +0100 itchka (Colin Close) 
+
+	* Fix new 3.0 naming
+
+2016-05-31 09:02:57 +0100 itchka (Colin Close) 
+
+	* Fix Makefile to include lx3 package lists. Fix up change of repo name
+
+2016-05-30 19:05:23 +0100 itchka (Colin Close) 
+
+	* Fix misnamed variable
+
+2016-05-30 11:47:25 +0200 Tomasz Paweł Gajc 
+
+	* add Chinese and Indonesian languages
+
+2016-05-30 11:46:55 +0200 Tomasz Paweł Gajc 
+
+	* add Chinese and Indonesian languages
+
+2016-05-30 11:45:02 +0200 Tomasz Paweł Gajc 
+
+	* add Chinese and Indonesian languages
+
+2016-05-30 09:21:45 +0100 itchka (Colin Close) 
+
+	* Add user files my.add and my.rmv to lx3 pkg lists
+
+2016-05-29 13:57:50 +0100 itchka (Colin Close) 
+
+	* Update Developer_info. Parallels added for user mode only to allow for missing packages.
+
+2016-05-29 13:29:19 +0100 itchka (Colin Close) 
+
+	* Remove old TODO; make sure Developer_Info is actually visible to devs.
+
+2016-05-29 13:18:57 +0100 itchka (Colin Close) 
+
+	* Clean up docs and add --keep flag to usage Point user to docs in omdv-build-iso.sh help
+
+2016-05-28 16:20:36 +0100 itchka (Colin Close) 
+
+	* Update todo list
+
+2016-05-28 16:18:36 +0100 itchka (Colin Close) 
+
+	* Diffing now functional added --keep flag Use parallel for user builds so that rpm installation can fail but continue. Intended for development.
+
+2016-05-23 11:40:06 +0100 itchka (Colin Close) 
+
+	* Add lx3 package lists
+
+2016-05-21 14:54:33 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #1 from OpenMandrivaAssociation/master
+
+2016-05-21 14:53:18 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add lx3 file list
+
+2016-05-18 23:13:40 +0100 itchka (Colin Close) 
+
+	* Deal with zero length files
+
+2016-05-18 23:04:50 +0100 itchka (Colin Close) 
+
+	* Update add docs dir update Makefile add diffutils to spec requires
+
+2016-05-18 22:24:07 +0100 itchka (Colin Close) 
+
+	* Upload new tarball and update abf.yml Create developer overview doc
+
+2016-05-18 20:07:32 +0100 itchka (Colin Close) 
+
+	* Bump version
+
+2016-05-18 18:49:07 +0100 itchka (Colin Close) 
+
+	* Update docs
+
+2016-05-18 17:19:23 +0100 itchka (Colin Close) 
+
+	* Major Upgrade: Package list generation completely revised to allow user spins. Packages may be added and removed to standard spins using two new list files. --noclean function enhanced to save user package lists --rebuild flag now functions allowing rebuilds from rpm cache --quicken New flag to speed up squashfs for local testing --debug flag now does some stuff. Foundation of package list diffing mode Some package lists revision to incorporate cooker changes Usage README
+
+2016-05-16 14:54:01 +0200 Tomasz Paweł Gajc 
+
+	* Fix it
+
+2016-05-16 14:44:49 +0200 Tomasz Paweł Gajc 
+
+	* add proper urpmi debug option
+
+2016-04-28 02:25:47 +0100 itchka (Colin Close) 
+
+	* Update package lists to latest versions
+
+2016-04-28 01:57:08 +0100 itchka (Colin Close) 
+
+	* Add untracked files
+
+2016-04-28 00:48:56 +0100 itchka (Colin Close) 
+
+	* Sort out EFI naming so as to get auto boot in VB
+
+2016-04-28 00:44:47 +0100 itchka (Colin Close) 
+
+	* Update for 2014/15
+
+2016-04-20 17:06:18 +0300 Alexander Khryukin 
+
+	* no reason to install vim-common together with vim-minimal package, because vi (vim-minimal) built with small/tiny features and dont support vimrc files from vim-common, for more info see this https://issues.openmandriva.org/show_bug.cgi?id=1627
+
+2016-04-09 12:32:38 +0100 Crispin Boylan 
+
+	* Add clementine (bug #1619)
+
+2016-04-01 14:09:19 +0200 Tomasz Paweł Gajc 
+
+	* enable oma-welcome
+
+2016-03-28 21:08:32 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* use right direcotry for union
+
+2016-03-28 19:21:38 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* use overlayfs instead of aufs for nwer kernels
+
+2016-03-28 15:48:41 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* get back to kernel-njrQL, add smplayer
+
+2016-03-26 18:26:32 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* drop ext3 from available filesystems
+
+2016-03-26 01:52:58 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* drop ext3
+
+2016-03-22 20:41:07 +0100 Tomasz Paweł Gajc 
+
+	* update kernel
+
+2016-03-21 16:00:25 +0100 Tomasz Paweł Gajc 
+
+	* install kernel-desktop-latest rather than nrjQL
+
+2016-03-14 22:48:31 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* Hawaii is broken, so do not pull it now
+
+2016-03-11 13:54:29 +0000 Crispin Boylan 
+
+	* Drop obsolete stuff from 2014
+
+2016-03-10 20:13:59 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* sync (origin/lx3)
+
+2016-03-10 20:12:31 +0100 tpg (Tomasz Pawe³ Gajc) 
+
+	* generated changelog
+
 2016-03-10 20:12:21 +0100 tpg (Tomasz Pawe³ Gajc) 
 
-	* bump version 0.0.9 (HEAD, origin/master, origin/HEAD, master)
+	* bump version 0.0.9
 
 2016-03-10 20:11:06 +0100 tpg (Tomasz Pawe³ Gajc) 
 
@@ -478,6 +710,10 @@
 
 	* Create sysconfig network file (bug #1265)
 
+2015-07-03 10:03:40 +0100 itchka (Colin Close) 
+
+	* Update to 2014 changes.
+
 2015-06-29 10:52:07 +0400 Tomasz Paweł Gajc 
 
 	* Clean the rpm db files
@@ -502,6 +738,18 @@
 
 	* add dracut-liveiso-generator for systemd 220
 
+2015-06-15 17:21:06 +0100 itchka (Colin Close) 
+
+	* Fix GRUB_UUID variable
+
+2015-06-15 12:27:19 +0100 itchka (Colin Close) 
+
+	* Update version
+
+2015-06-15 12:17:14 +0100 itchka (Colin Close) 
+
+	* Update to latest cooker changes
+
 2015-06-14 17:22:22 +0200 tpg (Tomasz Paweł Gajc) 
 
 	* require omdv_myspell.lst for plasma
@@ -525,6 +773,10 @@
 2015-06-07 14:28:34 +0100 itchka (Colin Close) 
 
 	* Fix mems stick booting Add USB3 modules to drakcut Various user centric mode fixes
+
+2015-06-07 13:04:10 +0100 itchka (Colin Close) 
+
+	* Update to my version 5.5
 
 2015-06-06 22:14:39 +0100 Crispin Boylan 
 
@@ -985,6 +1237,10 @@
 2015-01-27 12:32:05 +0000 Colin Close 
 
 	* Copy grub.cfg to iso EFI dir instead of BOOTX64.cfg
+
+2015-01-27 11:21:08 +0000 Colin Close 
+
+	* User centric version
 
 2015-01-27 00:24:22 +0100 tpg (Tomasz Paweł Gajc) 
 
