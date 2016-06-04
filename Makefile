@@ -1,7 +1,7 @@
 # 2014 Author: tpgxyz@gmail.com
 
 NAME = omdv-build-iso
-VERSION = 0.0.9
+VERSION = 0.1.1
 DATAFILE ?= $(DESTDIR)/usr/share/$(NAME)
 BINFILE ?= $(DESTDIR)/usr/bin
 
@@ -18,13 +18,13 @@ install:
 	-install -d $(DATAFILE)/tools
 	-install -d $(DATAFILE)/iso-pkg-lists-cooker
 	-install -d $(DATAFILE)/iso-pkg-lists-openmandriva2014.0
-	-install -d $(DATAFILE)/iso-pkg-lists-lx3
+	-install -d $(DATAFILE)/iso-pkg-lists-3.0
 	install -m 755 omdv-build-iso.sh $(BINFILE)
 	cp -fr data/* $(DATAFILE)/data/
 	cp -fr dracut/* $(DATAFILE)/dracut/
 	cp -fr grub2/* $(DATAFILE)/grub2/
 	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-cooker/
-	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-lx3/
+	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-3.0/
 	cp -fr iso-pkg-lists-openmandriva2014.0/* $(DATAFILE)/iso-pkg-lists-openmandriva2014.0/
 	cp -fr extraconfig/* $(DATAFILE)/extraconfig/
 	install -m 644 tools/* $(DATAFILE)/tools/
