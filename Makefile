@@ -10,6 +10,7 @@ install:
 	-install -d $(BINFILE)
 	-install -d $(DATAFILE)
 	-install -d $(DATAFILE)/data
+	-install -d $(DATAFILE)/doc
 	-install -d $(DATAFILE)/dracut
 	-install -d $(DATAFILE)/dracut/90liveiso
 	-install -d $(DATAFILE)/extraconfig
@@ -17,11 +18,13 @@ install:
 	-install -d $(DATAFILE)/tools
 	-install -d $(DATAFILE)/iso-pkg-lists-cooker
 	-install -d $(DATAFILE)/iso-pkg-lists-openmandriva2014.0
+	-install -d $(DATAFILE)/iso-pkg-lists-lx3
 	install -m 755 omdv-build-iso.sh $(BINFILE)
 	cp -fr data/* $(DATAFILE)/data/
 	cp -fr dracut/* $(DATAFILE)/dracut/
 	cp -fr grub2/* $(DATAFILE)/grub2/
 	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-cooker/
+	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-lx3/
 	cp -fr iso-pkg-lists-openmandriva2014.0/* $(DATAFILE)/iso-pkg-lists-openmandriva2014.0/
 	cp -fr extraconfig/* $(DATAFILE)/extraconfig/
 	install -m 644 tools/* $(DATAFILE)/tools/
