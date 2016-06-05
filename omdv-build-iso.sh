@@ -352,7 +352,7 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 
 # urpmi debug
 if [ "${DEBUG,,}" == "debug" ]; then
-	URPMI_DEBUG=" --debug "
+    URPMI_DEBUG=" --debug "
 fi
 
 ########################
@@ -731,7 +731,6 @@ mkOmSpin() {
 # Returns a variable "$INSTALL_LIST" containing all rpms 
 # to be installed
 
-    echo "omspin"
     echo "Creating OpenMandriva spin"
     getIncFiles "$FILELISTS" ADDRPMINC
     printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
@@ -992,7 +991,7 @@ createChroot() {
 	fi
 
 	if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
-	    echo "Can not install packages from $FILELISTS";
+	    echo "Can not install packages from $FILELISTS"
 	    errorCatch
 	fi
 
@@ -1002,7 +1001,7 @@ createChroot() {
 #	    parsePkgList "$FILELISTS" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto
 #	    parsePkgList "$FILELISTS" > $WORKDIR/rpmlist
 #	    if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
-#		echo "Can not install packages from $FILELISTS";
+#		echo "Can not install packages from $FILELISTS"
 #		errorCatch
 #	    fi
 #	fi
@@ -1098,7 +1097,6 @@ createInitrd() {
 
 # Building initrd
     $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$KERNEL_ISO.img $KERNEL_ISO
-
     if [[ $? != 0 ]]; then
 	echo "Failed creating initrd. Exiting."
 	errorCatch
@@ -1109,7 +1107,6 @@ createInitrd() {
 # Building boot kernel initrd
         echo "Building initrd-$BOOT_KERNEL_ISO inside chroot"
         $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f /boot/initrd-$BOOT_KERNEL_ISO.img $BOOT_KERNEL_ISO
-
 	if [[ $? != 0 ]]; then
 	    echo "Failed creating boot kernel initrd. Exiting."
 	    errorCatch
@@ -1139,7 +1136,7 @@ createMemDisk () {
 
 #    IMGNME="$ISOROOTNAME"efiboot_img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
-    #Create memdisk directory
+# Create memdisk directory
     if [ -e "$WORKDIR"/boot/grub ]; then
       $SUDO /bin/rm -R "$WORKDIR"/boot/grub
       $SUDO mkdir -p "$WORKDIR"/boot/grub
@@ -1633,55 +1630,39 @@ EOF
 	    if [[ $? != 0 ]]; then
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/main/release
 	    fi
+
+# Add 32-bit main repository for non i586 build
+	    if [ "$EXTARCH" = "x86_64" ]; then
+		echo "Adding 32-bit media repository."
+# Use previous MIRRORLIST declaration but with i586 arch in link name
+		MIRRORLIST2="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST2" 'Main32' 'media/main/release'
+		if [[ $? != 0 ]]; then
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/release
+		    if [[ $? != 0 ]]; then
+			echo "Adding urpmi 32-bit media FAILED. Exiting"
+			errorCatch
+		    fi
+		fi
+	    fi
+
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
 	    if [[ $? != 0 ]]; then
-	      $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/contrib/release 
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/contrib/release
 	    fi
 # This one is needed to grab firmwares
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
 	    if [[ $? != 0 ]]; then
-	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/non-free/release 
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/non-free/release
 	    fi
 	else
-# use hack for our mirrorlist url
-	    if [[ ${TREE,,} =~ ^openmandriva* ]]; then
-	    echo $TREE
-		MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE/openmandriva/openmandriva.}.$EXTARCH.list"
-	    else
-		MIRRORLIST="http://downloads.openmandriva.org/mirrors/$TREE.$EXTARCH.list"
-	    fi
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${VERSION}.$EXTARCH.list"
 	    echo "Using $MIRRORLIST"
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
-	fi
-
-# Add 32-bit medias only for x86_64 arch
-	if [ "$EXTARCH" = "x86_64" ]; then
-	    echo "Adding 32-bit media repository."
-
-# Use previous MIRRORLIST declaration but with i586 arch in link name
-	    MIRRORLIST="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
-	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32' 'media/main/release'
-		if [[ $? != 0 ]]; then
-#		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' 'media/main/release' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/release/main
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/release
-		    if [[ $? != 0 ]]; then
-			echo "Adding urpmi 32-bit media FAILED. Exiting";
-			errorCatch
-		    fi
-		fi
-	    if [ "${TREE,,}" != "cooker" ]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
-		if [[ $? != 0 ]]; then
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget  'Main32Updates' --no-md5sum http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/updates
-		if [[ $? != 0 ]]; then
-		    echo "Adding urpmi 32-bit media FAILED. Exiting";
-		      errorCatch
-		    fi
-		fi
+	    if [[ $? != 0 ]]; then
+		echo "Adding urpmi media FAILED. Exiting"
+		errorCatch
 	    fi
-
-	else
-	    echo "urpmi 32-bit media repository not needed"
 	fi
 
 # Update urpmi medias
