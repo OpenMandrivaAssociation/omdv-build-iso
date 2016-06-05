@@ -320,6 +320,7 @@ fi
 # copy contents of /usr/share/omdv-build-iso to the workdir if required
 if [ -e /usr/share/omdv-build-iso ]; then
     if [ ! -d $WORKDIR/dracut ]; then
+        echo "Copying build lists from `rpm -qi omdv-build-iso`"
 	$SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
 	touch $WORKDIR/.new
 	chown -R $OLDUSER:$OLDUSER $WORKDIR #this doesn't do ISO OR BASE
