@@ -352,7 +352,7 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 
 # urpmi debug
 if [ "${DEBUG,,}" == "debug" ]; then
-	URPMI_DEBUG=" --debug "
+    URPMI_DEBUG=" --debug "
 fi
 
 ########################
@@ -731,7 +731,6 @@ mkOmSpin() {
 # Returns a variable "$INSTALL_LIST" containing all rpms 
 # to be installed
 
-    echo "omspin"
     echo "Creating OpenMandriva spin"
     getIncFiles "$FILELISTS" ADDRPMINC
     printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
@@ -1137,7 +1136,7 @@ createMemDisk () {
 
 #    IMGNME="$ISOROOTNAME"efiboot_img
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
-    #Create memdisk directory
+# Create memdisk directory
     if [ -e "$WORKDIR"/boot/grub ]; then
       $SUDO /bin/rm -R "$WORKDIR"/boot/grub
       $SUDO mkdir -p "$WORKDIR"/boot/grub
