@@ -7,6 +7,7 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
+%include .///omdv_fcitx.lst
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
@@ -20,6 +21,8 @@
 
 # Desktop Specifics
 task-plasma
+fcitx-qt5
+kcm-fcitx
 clementine
 rosa-imagewriter
 quick-usb-formatter
