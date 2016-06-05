@@ -1631,6 +1631,22 @@ EOF
 	    if [[ $? != 0 ]]; then
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/main/release
 	    fi
+
+# Add 32-bit main repository for non i586 build
+	    if [ "$EXTARCH" = "x86_64" ]; then
+		echo "Adding 32-bit media repository."
+# Use previous MIRRORLIST declaration but with i586 arch in link name
+		MIRRORLIST2="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST2" 'Main32' 'media/main/release'
+		if [[ $? != 0 ]]; then
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/release
+		    if [[ $? != 0 ]]; then
+			echo "Adding urpmi 32-bit media FAILED. Exiting"
+			errorCatch
+		    fi
+		fi
+	    fi
+
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
 	    if [[ $? != 0 ]]; then
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/contrib/release
@@ -1648,37 +1664,6 @@ EOF
 		echo "Adding urpmi media FAILED. Exiting"
 		errorCatch
 	    fi
-	fi
-
-# Add 32-bit medias only for x86_64 arch
-	if [ "$EXTARCH" = "x86_64" ]; then
-	    echo "Adding 32-bit media repository."
-
-# Use previous MIRRORLIST declaration but with i586 arch in link name
-	    MIRRORLIST="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
-	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32' 'media/main/release'
-	    if [[ $? != 0 ]]; then
-#		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' 'media/main/release' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/release/main
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/release
-		    if [[ $? != 0 ]]; then
-			echo "Adding urpmi 32-bit media FAILED. Exiting"
-			errorCatch
-		    fi
-	    fi
-
-	    if [ "${TREE,,}" != "cooker" ]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main32Updates' 'media/main/updates'
-		if [[ $? != 0 ]]; then
-		    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget  'Main32Updates' --no-md5sum http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/updates
-		    if [[ $? != 0 ]]; then
-			echo "Adding urpmi 32-bit media FAILED. Exiting"
-			errorCatch
-		    fi
-		fi
-	    fi
-
-	else
-	    echo "urpmi 32-bit media repository not needed"
 	fi
 
 # Update urpmi medias
