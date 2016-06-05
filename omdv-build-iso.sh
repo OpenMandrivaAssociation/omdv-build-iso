@@ -334,7 +334,8 @@ fi
 FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
 if [ ! -e "$FILELISTS" ]; then
     echo "$FILELISTS does not exists. Exiting"
-    errorCatch
+    find $WORKDIR
+    exit 1
 fi
 
 # this is where rpms are installed
