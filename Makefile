@@ -24,7 +24,7 @@ install:
 	cp -fr dracut/* $(DATAFILE)/dracut/
 	cp -fr grub2/* $(DATAFILE)/grub2/
 	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-cooker/
-	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-3.0/
+	cp -fr iso-pkg-lists-3.0/* $(DATAFILE)/iso-pkg-lists-3.0/
 	cp -fr iso-pkg-lists-openmandriva2014.0/* $(DATAFILE)/iso-pkg-lists-openmandriva2014.0/
 	cp -fr extraconfig/* $(DATAFILE)/extraconfig/
 	install -m 644 tools/* $(DATAFILE)/tools/

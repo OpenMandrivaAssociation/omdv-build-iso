@@ -317,25 +317,8 @@ else
     fi
 fi
 
-# copy contents of /usr/share/omdv-build-iso to the workdir if required
-if [ -e /usr/share/omdv-build-iso ]; then
-    if [ ! -d $WORKDIR/dracut ]; then
-	$SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
-	touch $WORKDIR/.new
-	chown -R $OLDUSER:$OLDUSER $WORKDIR #this doesn't do ISO OR BASE
-    else
-	echo "Your build lists have been retained" 	# Files already copied
-    fi
-else
-    echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
-fi
-
-# Assign and check for the config build list
+# Assign the config build list
 FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
-if [ ! -e "$FILELISTS" ]; then
-    echo "$FILELISTS does not exists. Exiting"
-    errorCatch
-fi
 
 # this is where rpms are installed
 CHROOTNAME="$WORKDIR"/BASE
@@ -414,7 +397,7 @@ updateSystem() {
     if [ -n "$IN_ABF" ]; then
 	echo "We are inside ABF (https://abf.openmandriva.org). Updating packages."
 	$SUDO urpmq --list-url
-	$SUDO urpmi.update -ff updates
+	$SUDO urpmi.update -a
 
 	# Inside ABF, lxc-container which is used to run this script is based
 	# on Rosa2012 which does not have cdrtools
@@ -429,6 +412,28 @@ updateSystem() {
 	echo "Rebuilding the user custom environment using saved rpm cache"
 #	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --replacepkgs --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 gptfdisk --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
+
+    # copy contents of /usr/share/omdv-build-iso to the workdir if required
+    if [ -e /usr/share/omdv-build-iso ]; then
+      if [ ! -d $WORKDIR/dracut ]; then
+        echo "Copying build lists from `rpm -q omdv-build-iso`"
+        find $WORKDIR
+        $SUDO cp -r /usr/share/omdv-build-iso/* $WORKDIR
+        touch $WORKDIR/.new
+        chown -R $OLDUSER:$OLDUSER $WORKDIR #this doesn't do ISO OR BASE
+      else
+        echo "Your build lists have been retained"      # Files already copied
+      fi
+    else
+      echo "Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
+    fi
+
+    # check file list exists
+    if [ ! -e "$FILELISTS" ]; then
+      echo "$FILELISTS does not exists. Exiting"
+      errorCatch
+    fi
+
 }
 
 getPkgList() {
