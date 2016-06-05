@@ -1,6 +1,5 @@
 %include .///omdv_iso_minimal.lst
 
-
 alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
