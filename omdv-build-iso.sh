@@ -1642,6 +1642,8 @@ EOF
 	    fi
 	else
 	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${VERSION}.$EXTARCH.list"
+	    echo "Using $MIRRORLIST"
+	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	    if [[ $? != 0 ]]; then
 		echo "Adding urpmi media FAILED. Exiting"
 		errorCatch
