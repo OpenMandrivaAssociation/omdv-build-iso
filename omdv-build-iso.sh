@@ -723,14 +723,14 @@ parsePkgList() {
 
 mkOmSpin() {
 # Usage: mkOMSpin [main install file path} i.e. [path]/omdv-kde4.lst.
-# Returns a variable "$INSTALL_LIST" containing all rpms 
+# Returns a variable "$INSTALL_LIST" containing all rpms
 # to be installed
 
     echo "Creating OpenMandriva spin"
 #    getIncFiles "$FILELISTS" ADDRPMINC
 #    printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
 #    createPkgList "$ADDRPMINC" INSTALL_LIST
-    INSTALL_LIST=`parsePkgList $FILELISTS`	
+    INSTALL_LIST=`parsePkgList $FILELISTS`
     printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
     mkUpdateChroot "$INSTALL_LIST"
 }
