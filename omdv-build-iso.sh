@@ -703,28 +703,28 @@ diffPkgLists() {
     fi
 }
 
-#DEPRECATED
+#UN-DEPRECATED For the time being
 # Usage: parsePkgList xyz.lst
 # Shows the list of packages in the package list file (including any packages
 # mentioned by other package list files being %include-d)
-#parsePkgList() {
-#    LINE=0
-#    cat "$1" | while read r; do
-#	LINE=$((LINE+1))
-#	SANITIZED="`echo $r | sed -e 's,	, ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,'`"
-#	[ -z "$SANITIZED" ] && continue
-#	if [ "`echo $SANITIZED | cut -b1-9`" = "%include " ]; then
-#	    INC="$(dirname "$1")/`echo $SANITIZED | cut -b10- | sed -e 's/^\..*\///g'`"
-#	    if ! [ -e "$INC" ]; then
-#		echo "ERROR: Package list doesn't exist: $INC (included from $1 line $LINE)" >&2
-#		errorCatch
-#	    fi
-#		parsePkgList $(dirname "$1")/"`echo $SANITIZED | cut -b10- | sed -e 's/^\..*\///g'`"
-#		continue
-#	fi
-#	echo $SANITIZED
-#    done
-#}
+parsePkgList() {
+    LINE=0
+    cat "$1" | while read r; do
+	LINE=$((LINE+1))
+	SANITIZED="`echo $r | sed -e 's,	, ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,'`"
+	[ -z "$SANITIZED" ] && continue
+	if [ "`echo $SANITIZED | cut -b1-9`" = "%include " ]; then
+	    INC="$(dirname "$1")/`echo $SANITIZED | cut -b10- | sed -e 's/^\..*\///g'`"
+	    if ! [ -e "$INC" ]; then
+		echo "ERROR: Package list doesn't exist: $INC (included from $1 line $LINE)" >&2
+		errorCatch
+	    fi
+		parsePkgList $(dirname "$1")/"`echo $SANITIZED | cut -b10- | sed -e 's/^\..*\///g'`"
+		continue
+	fi
+	echo $SANITIZED
+    done
+}
 
 mkOmSpin() {
 # Usage: mkOMSpin [main install file path} i.e. [path]/omdv-kde4.lst.
@@ -732,9 +732,10 @@ mkOmSpin() {
 # to be installed
 
     echo "Creating OpenMandriva spin"
-    getIncFiles "$FILELISTS" ADDRPMINC
-    printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
-    createPkgList "$ADDRPMINC" INSTALL_LIST
+#    getIncFiles "$FILELISTS" ADDRPMINC
+#    printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
+#    createPkgList "$ADDRPMINC" INSTALL_LIST
+    INSTALL_LIST=`parsePkgList $FILELISTS`	
     printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
     mkUpdateChroot "$INSTALL_LIST"
 }
