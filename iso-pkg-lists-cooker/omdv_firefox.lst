@@ -1,6 +1,8 @@
 firefox
 firefox-en_GB
 firefox-es_ES
+firefox-ja
+firefox-ko
 firefox-nb_NO
 firefox-nn_NO
 firefox-pl
@@ -11,3 +13,5 @@ firefox-de
 firefox-it
 firefox-fr
 firefox-ro
+firefox-zh_CN
+firefox-zh_TW
