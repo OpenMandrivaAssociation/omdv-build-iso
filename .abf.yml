@@ -1,2 +1,4 @@
-sources:
+removed_sources:
   omdv-build-iso-0.1.1.tar.xz: a2139e20bbdc2457ba81c79f8317c222d4d0b152
+sources:
+  omdv-build-iso-0.1.1.tar.xz: c3f2f10ccd5096cb193a297acfbf6a56413c6e65
