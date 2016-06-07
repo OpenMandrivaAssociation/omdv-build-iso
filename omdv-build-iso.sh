@@ -303,6 +303,10 @@ else
     if [ ! -z "$IN_ABF" ]; then
 	echo "Yes we are inside ABF"
 # Create working directory
+
+# This codes to /usr/bin/ on a local system if you try and test with ABF=1 /usr/bin is rm -rf ed.
+# If it has to be this way then there needs to be some sort of protection/warning if 
+# the build is being run locally.....
 	WORKDIR=$(realpath $(dirname $0))
     else
 	 echo "Workdir not set"
