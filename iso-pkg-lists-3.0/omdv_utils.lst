@@ -33,7 +33,6 @@ nfs-utils-clients #utils
 networkmanager-openvpn #utils
 networkmanager-vpnc #utils
 networkmanager-pptp #utils
-typelib(NetworkManager) #utils
 open #utils
 openldap-clients #utils
 opensc #utils

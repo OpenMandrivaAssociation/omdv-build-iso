@@ -230,11 +230,6 @@ if [ "$ABF" == "1" ]; then
 elif [ ! -z $NOCLEAN ] && [ ! -z $REBUILD ]; then
 	echo "You cannot use --noclean and --rebuild together"
 	exit 1
-
-# hardcode workdir for ABF
-#    ~ this codes out to /usr/bin/ om my system. This has to be wrong 
-    #WORKDIR=$(realpath $(dirname $0))
-    #echo $WORKDIR
 fi
 
 # default definitions
@@ -307,8 +302,12 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 else
     if [ ! -z "$IN_ABF" ]; then
 	echo "Yes we are inside ABF"
-	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
-	# create working directory
+# Create working directory
+
+# This codes to /usr/bin/ on a local system if you try and test with ABF=1 /usr/bin is rm -rf ed.
+# If it has to be this way then there needs to be some sort of protection/warning if 
+# the build is being run locally.....
+	WORKDIR=$(realpath $(dirname $0))
     else
 	 echo "Workdir not set"
 	WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
@@ -591,7 +590,6 @@ getIncFiles() {
 # Define a some local variables
     local __infile=$1   # The main build file
     local __incflist=$2 # Carries returned variable
-    local __addrpminc   # Package list
 
 # Recursively fetch included files
     while read -r  r; do
@@ -600,7 +598,7 @@ getIncFiles() {
 	getIncFiles $(dirname "$1")/"$r" "$2" "$3"
 	continue
 # Avoid sub-shells make sure commented out includes are removed. Dev discipline needed here.
-    done < <(cat "$1" | grep -v '#.*include' | awk -F\./// '{print $2}' | sed '/^\s$/d')
+    done < <(cat "$1" | grep  '.*%include' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
 #  Add the primary file to the list
     __addrpminc+=$'\n'"$1"
     # Sort so the main file is at the top and export
@@ -728,7 +726,7 @@ diffPkgLists() {
 
 mkOmSpin() {
 # Usage: mkOMSpin [main install file path} i.e. [path]/omdv-kde4.lst.
-# Returns a variable "$INSTALL_LIST" containing all rpms 
+# Returns a variable "$INSTALL_LIST" containing all rpms
 # to be installed
 
     echo "Creating OpenMandriva spin"
