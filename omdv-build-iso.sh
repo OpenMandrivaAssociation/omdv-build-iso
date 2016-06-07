@@ -230,11 +230,6 @@ if [ "$ABF" == "1" ]; then
 elif [ ! -z $NOCLEAN ] && [ ! -z $REBUILD ]; then
 	echo "You cannot use --noclean and --rebuild together"
 	exit 1
-
-# hardcode workdir for ABF
-#    ~ this codes out to /usr/bin/ om my system. This has to be wrong 
-    #WORKDIR=$(realpath $(dirname $0))
-    #echo $WORKDIR
 fi
 
 # default definitions
@@ -307,8 +302,8 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 else
     if [ ! -z "$IN_ABF" ]; then
 	echo "Yes we are inside ABF"
-	WORKDIR="`mktemp -d /tmp/isobuildrootXXXXXX`"
-	# create working directory
+# Create working directory
+	WORKDIR=$(realpath $(dirname $0))
     else
 	 echo "Workdir not set"
 	WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
@@ -727,7 +722,7 @@ diffPkgLists() {
 
 mkOmSpin() {
 # Usage: mkOMSpin [main install file path} i.e. [path]/omdv-kde4.lst.
-# Returns a variable "$INSTALL_LIST" containing all rpms 
+# Returns a variable "$INSTALL_LIST" containing all rpms
 # to be installed
 
     echo "Creating OpenMandriva spin"
