@@ -177,7 +177,7 @@ if [ $# -ge 1 ]; then
 		--keep)
                    KEEP=keep
                    shift
-                   ;;   
+                   ;;
         	--help)
         	    usage_help
         	    ;;
