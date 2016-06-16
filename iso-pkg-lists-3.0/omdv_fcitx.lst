@@ -1,5 +1,6 @@
 # support for Asian languages
 fcitx
+fcitx-ui
 fcitx-anthy
 fcitx-chewing
 fcitx-hangul
