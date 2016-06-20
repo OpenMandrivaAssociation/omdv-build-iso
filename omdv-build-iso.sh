@@ -40,7 +40,7 @@ usage_help() {
         echo ""
         echo " general options:"
         echo " --arch= Architecture of packages: i586, x86_64"
-        echo " --tree= Branch of software repository: cooker, openmandriva2014.0"
+        echo " --tree= Branch of software repository: cooker, 3.0, openmandriva2014.0"
         echo " --version= Version for software repository: 2015.0, 2014.1, 2014.0"
         echo " --release_id= Release identifer: alpha, beta, rc, final"
         echo " --type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
@@ -74,24 +74,24 @@ if [ $# -ge 1 ]; then
         	    shift
         	    ;;
 #FIXME?
-    		--tree=*)
-                TREE=${k#*=}
-            case "$TREE" in
-                cooker)
-                BRANCH=cooker
-                ;;
-                lx3)
-                BRANCH=3.0
-                ;;
-                openmandriva2014.0)
-                BRANCH=openmandriva2014.0
-                ;;
-                *)
-                BRANCH="$TREE"
-                ;;
-            esac
-        	    shift
-        	    ;;
+		--tree=*)
+		    TREE=${k#*=}
+			case "$TREE" in
+			    cooker)
+				TREE=cooker
+            		    ;;
+            		    lx3)
+            			TREE=3.0
+            		    ;;
+            		    openmandriva2014.0)
+            			TREE=openmandriva2014.0
+            		    ;;
+            		    *)
+            		    TREE="$TREE"
+            		    ;;
+        		esac
+			shift
+        		;;
 		--version=*)
         	    VERSION=${k#*=}
         	    if [[ "${VERSION,,}" == "cooker" ]]
@@ -196,7 +196,7 @@ fi
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
 SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "BRANCH="$BRANCH"
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -244,16 +244,6 @@ DIST=omdv
 FREE=1
 LOGDIR="."
 UHOME="$HOME"
-
-#FIXME: TREE should probably be renamed to BRANCH. This is unecessary obscurity
-# Moved from getPkgList needs to globally available to other funtions
-#    if [ ${TREE,,} = "cooker" ]; then
-#        BRANCH=cooker
-#    elif [ ${TREE,,} = "lx3" ]; then
-#        BRANCH=3.0
-#    else
-#        BRANCH="$TREE"
-#    fi
 
 if [ "`id -u`" = "0" ]; then
     SUDO=""
@@ -317,7 +307,7 @@ else
 fi
 
 # Assign the config build list
-FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
+FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
 # this is where rpms are installed
 CHROOTNAME="$WORKDIR"/BASE
@@ -437,26 +427,16 @@ updateSystem() {
 
 getPkgList() {
 
-# THIS IS BROKEN. THERE IS ONLY A MASTER PACKAGE LIST ON OM'S ABF
-    # Support for building released isos
-#    if [ ${TREE,,} = "cooker" ]; then
-#        BRANCH=cooker
-#    elif [ ${TREE,,} = "lx3" ]; then
-#      BRANCH=3.0
-#    else
-#        BRANCH="$TREE"
-#    fi
-
     # update iso-pkg-lists from ABF if missing
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
 
-    if [ ! -d $WORKDIR/iso-pkg-lists-$BRANCH ]; then
-	echo "Could not find $WORKDIR/iso-pkg-lists-$BRANCH. Downloading from ABF."
+    if [ ! -d $WORKDIR/iso-pkg-lists-${TREE,,} ]; then
+	echo "Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from ABF."
 	# download iso packages lists from https://abf.openmandriva.org
-	PKGLIST="https://abf.openmandriva.org/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-$BRANCH.tar.gz"
-	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-$BRANCH.tar.gz"` --content-disposition $PKGLIST
-	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-$BRANCH.tar.gz $WORKDIR
+	PKGLIST="https://abf.openmandriva.org/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-${TREE,,}.tar.gz"
+	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-${TREE,,}.tar.gz"` --content-disposition $PKGLIST
+	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-${TREE,,}.tar.gz $WORKDIR
 	$SUDO tar zxfC $WORKDIR/iso-pkg-lists-master.tar.gz $WORKDIR
 	# Why not retain the unique list name it will help when people want their own spins ?
 	$SUDO rm -f iso-pkg-lists-master.tar.gz
@@ -466,7 +446,7 @@ getPkgList() {
     echo "Your ISO has a modified filelist"
 
     # export file list
-    FILELISTS="$WORKDIR/iso-pkg-lists-$BRANCH/${DIST,,}-${TYPE,,}.lst"
+    FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
 
     if [ ! -e "$FILELISTS" ]; then
@@ -482,7 +462,6 @@ showInfo() {
 	echo "Distribution is $DIST"
 	echo "Architecture is $EXTARCH"
 	echo "Tree is $TREE"
-	echo "Branch is $BRANCH"
 	echo "Version is $VERSION"
 	echo "Release ID is $RELEASE_ID"
 	echo "Type is $TYPE"
@@ -862,136 +841,128 @@ createChroot() {
 # Creates a chroot environment with all packages in the packages.lst
 # file and their dependencies in /target/dir
 
-		# path to repository
-#		if [ "${TREE,,}" == "cooker" ]; then
-#		    REPOPATH="http://abf-downloads.openmandriva.org/$TREE/repository/$EXTARCH/"
-#        elif [ "${TREE,,}" == "lx3" ]; then
-#            REPOPATH="http://abf-downloads.openmandriva.org/3.0/repository/$EXTARCH/"
-#		else
-	REPOPATH="http://abf-downloads.openmandriva.org/$BRANCH/repository/$EXTARCH/"
-#		fi
+    REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
 
-	echo "Creating chroot $CHROOTNAME"
+    echo "Creating chroot $CHROOTNAME"
 # Make sure /proc, /sys and friends are mounted so %post scripts can use them
-	$SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
+    $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
 # Do not clean build chroot
-	if [ ! -f "$CHROOTNAME"/.noclean ]; then
-	    if [ ! -z $NOCLEAN ] && [ -d "$CHROOTNAME"/lib/modules ]; then
-		touch "$CHROOTNAME"/.noclean
-	    fi
+    if [ ! -f "$CHROOTNAME"/.noclean ]; then
+	if [ ! -z $NOCLEAN ] && [ -d "$CHROOTNAME"/lib/modules ]; then
+	    touch "$CHROOTNAME"/.noclean
 	fi
+    fi
 
-	if [ ! -z $REBUILD ]; then
-	    ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
-	    if [ -z $ANYRPMS ]; then
-		echo "You must run with --noclean before you use --rebuild"
+    if [ ! -z $REBUILD ]; then
+	ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
+	if [ -z $ANYRPMS ]; then
+	    echo "You must run with --noclean before you use --rebuild"
 	    errorCatch
+	fi
+	echo "The contents of $CHROOTNAME will be DELETED"
+	if [ -d $WORKDIR/sessrec ]; then
+	    echo "Your session diffs will be saved if you have used the --keep flag"
+	    echo "If you have not set the --keep flag and wish to keep them hit abort now and restart with the flag set"
+	    if [ ! -z $KEEP ]; then
+		$SUDO mv $WORKDIR/sessrec $UHOME/
+		echo "Your session diffs have been saved"
 	    fi
-	    echo "The contents of $CHROOTNAME will be DELETED"
-	    if [ -d $WORKDIR/sessrec ]; then
-		echo "Your session diffs will be saved if you have used the --keep flag"
-		echo "If you have not set the --keep flag and wish to keep them hit abort now and restart with the flag set"
-		if [ ! -z $KEEP ]; then
-		    $SUDO mv $WORKDIR/sessrec $UHOME/
-		    echo "Your session diffs have been saved"
-		fi
-		echo "You have been WARNED!"
-		echo "Enter 'y' or 'yes' to continue, any other key to abort"
-		read -r in1
-		echo $in1
-		if [[ $in1 == "yes" || $in1 == "y" ]]; then
-		    echo "Deleting the contents of "$CHROOTNAME""
-		    if [ -d $CHROOTNAME/var/cache/urpmi/rpms ]; then
-			$SUDO mv $CHROOTNAME/var/cache/urpmi/rpms $WORKDIR
-			$SUDO rm -rf $CHROOTNAME/*
+	    echo "You have been WARNED!"
+	    echo "Enter 'y' or 'yes' to continue, any other key to abort"
+	    read -r in1
+	    echo $in1
+	    if [[ $in1 == "yes" || $in1 == "y" ]]; then
+		echo "Deleting the contents of "$CHROOTNAME""
+		if [ -d $CHROOTNAME/var/cache/urpmi/rpms ]; then
+		    $SUDO mv $CHROOTNAME/var/cache/urpmi/rpms $WORKDIR
+		    $SUDO rm -rf $CHROOTNAME/*
 # Recreate the mountpoints for the chroot files
-			$SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
-			$SUDO mkdir -p $CHROOTNAME/var/lib/rpm
-			$SUDO mkdir -p $CHROOTNAME/var/cache/urpmi
-			$SUDO mv $WORKDIR/rpms $CHROOTNAME/var/cache/urpmi/
+		    $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
+		    $SUDO mkdir -p $CHROOTNAME/var/lib/rpm
+		    $SUDO mkdir -p $CHROOTNAME/var/cache/urpmi
+		    $SUDO mv $WORKDIR/rpms $CHROOTNAME/var/cache/urpmi/
 # Restore the .noclean file when complete
-			$SUDO touch $CHROOTNAME/.noclean
+		    $SUDO touch $CHROOTNAME/.noclean
 # Restore the session diffs
-			if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
-			    mv $UHOME/sessrec $WORKDIR/
-			fi
-# Need to update the md5sum too otherwise it will add files again on next running mmm thinking about his one
-		    else
-			echo "rpm cache directory missing"
-			errorCatch
+		    if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
+			mv $UHOME/sessrec $WORKDIR/
 		    fi
+# Need to update the md5sum too otherwise it will add files again on next running mmm thinking about his one
 		else
-		    echo "Aborting"
-		    exit 1
+		    echo "rpm cache directory missing"
+		    errorCatch
 		fi
 	    else
-		    echo "Rebuilding"
+		echo "Aborting"
+		exit 1
+	    fi
+	else
+	    echo "Rebuilding"
+	fi
+    fi
+
+    if [ ! -f "$CHROOTNAME"/.noclean ] || [ ! -z $REBUILD ]; then
+	echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
+	if [ "$FREE" = "0" ]; then
+	    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
+	else
+	    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
+	    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
+# This one is needed to grab firmwares
+	    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
+
+	    if [ "${TREE,,}" != "cooker" ]; then
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
+# This one is needed to grab firmwares
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
 	    fi
 	fi
-
-	if [ ! -f "$CHROOTNAME"/.noclean ] || [ ! -z $REBUILD ]; then
-	    echo "Adding urpmi repository $REPOPATH into $CHROOTNAME"
-	    if [ "$FREE" = "0" ]; then
-		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
-	    else
-		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
-		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
-# This one is needed to grab firmwares
-		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
-
-		if [ "${TREE,,}" != "cooker" ]; then
-		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
-		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
-# This one is needed to grab firmwares
-		    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
-		fi
-	    fi
-	fi
+    fi
 
 # Update media
-	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
-	    if [ "${TREE,,}" != "cooker" ]; then
-		echo "Updating urpmi repositories in $CHROOTNAME"
-		$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
-	    fi
+    $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
+    if [ "${TREE,,}" != "cooker" ]; then
+	echo "Updating urpmi repositories in $CHROOTNAME"
+	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
+    fi
 
-	$SUDO mount --bind /proc "$CHROOTNAME"/proc
-	$SUDO mount --bind /sys "$CHROOTNAME"/sys
-	$SUDO mount --bind /dev "$CHROOTNAME"/dev
-	$SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
-
+    $SUDO mount --bind /proc "$CHROOTNAME"/proc
+    $SUDO mount --bind /sys "$CHROOTNAME"/sys
+    $SUDO mount --bind /dev "$CHROOTNAME"/dev
+    $SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
 # Start rpm packages installation
 # but only if .noclean does not exist and CHGFLAG=0
 # CHGFLAG=1 Indicates a global change in the iso lists
-	if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -Z $debug ]; then
-	    mkOmSpin
-	elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
-	    mkUserSpin $FILELISTS
-	elif [ ! -z $REBUILD ]; then
-	    mkUserSpin $FILELISTS
-	elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ]; then
-	    updateUserSpin "$FILELISTS"
+    if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -Z $debug ]; then
+	mkOmSpin
+    elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
+	mkUserSpin $FILELISTS
+    elif [ ! -z $REBUILD ]; then
+	mkUserSpin $FILELISTS
+    elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ]; then
+	updateUserSpin "$FILELISTS"
 #	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 # Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
-	elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
+    elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
 # This functionality will only update the build if there is a change in files
 # other then my.add and my.rmv. NOT IMPLEMENTED YET
-	    mkOmSpin "$FILELISTS"
-	else
-	    updateUserSpin "$FILELISTS"
-	fi
+	mkOmSpin "$FILELISTS"
+    else
+	updateUserSpin "$FILELISTS"
+    fi
 
-	if [ ! -z $REBUILD ]; then
+    if [ ! -z $REBUILD ]; then
 # Restore the noclean status
-	    $SUDO touch $CHROOTNAME/.noclean
-	fi
+	$SUDO touch $CHROOTNAME/.noclean
+    fi
 
-	if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
-	    echo "Can not install packages from $FILELISTS"
-	    errorCatch
-	fi
+    if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
+	echo "Can not install packages from $FILELISTS"
+	errorCatch
+    fi
 
 #DEPRECATED
 #	if [ ! -f "$CHROOTNAME"/.noclean ]; then
@@ -1005,29 +976,29 @@ createChroot() {
 #	fi
 
 # If --noclean selected mark the chroot
-	if [ ! -z "$NOCLEAN" ]; then
-	    touch "$CHROOTNAME"/.noclean
-	fi
+    if [ ! -z "$NOCLEAN" ]; then
+	touch "$CHROOTNAME"/.noclean
+    fi
 
 # Check CHROOT
-	if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
-	    echo "Broken chroot installation. Exiting"
-	    errorCatch
-	fi
+    if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
+	echo "Broken chroot installation. Exiting"
+	errorCatch
+    fi
 
 # Export installed and boot kernel
-	pushd "$CHROOTNAME"/lib/modules
-	BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
-	export BOOT_KERNEL_ISO
-	if [ -n "$BOOT_KERNEL_TYPE" ]; then
-	    $SUDO echo $BOOT_KERNEL_TYPE > "$CHROOTNAME"/boot_kernel
-	    KERNEL_ISO=`ls -d --sort=time [0-9]* | grep -v $BOOT_KERNEL_TYPE | head -n1 | sed -e 's,/$,,'`
-	else
-	    KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
-	fi
+    pushd "$CHROOTNAME"/lib/modules
+    BOOT_KERNEL_ISO=`ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,'`
+    export BOOT_KERNEL_ISO
+    if [ -n "$BOOT_KERNEL_TYPE" ]; then
+	$SUDO echo $BOOT_KERNEL_TYPE > "$CHROOTNAME"/boot_kernel
+	KERNEL_ISO=`ls -d --sort=time [0-9]* | grep -v $BOOT_KERNEL_TYPE | head -n1 | sed -e 's,/$,,'`
+    else
+	KERNEL_ISO=`ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,'`
+    fi
 
-	export KERNEL_ISO
-	popd
+    export KERNEL_ISO
+    popd
 
 # remove rpm db files which may not match the target chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
@@ -1626,7 +1597,7 @@ EOF
 
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Main' 'media/main/release'
 	    if [[ $? != 0 ]]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/main/release
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/main/release
 	    fi
 
 # Add 32-bit main repository for non i586 build
@@ -1636,7 +1607,7 @@ EOF
 		MIRRORLIST2="`echo $MIRRORLIST | sed -e "s/x86_64/i586/g"`"
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST2" 'Main32' 'media/main/release'
 		if [[ $? != 0 ]]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/i586/main/release
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/release
 		    if [[ $? != 0 ]]; then
 			echo "Adding urpmi 32-bit media FAILED. Exiting"
 			errorCatch
@@ -1646,20 +1617,24 @@ EOF
 
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
 	    if [[ $? != 0 ]]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/contrib/release
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/contrib/release
 	    fi
 # This one is needed to grab firmwares
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
 	    if [[ $? != 0 ]]; then
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${BRANCH,,}"/repository/"${EXTARCH}"/non-free/release
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release
 	    fi
 	else
 	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${VERSION}.$EXTARCH.list"
 	    echo "Using $MIRRORLIST"
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	    if [[ $? != 0 ]]; then
-		echo "Adding urpmi media FAILED. Exiting"
-		errorCatch
+		echo "Adding urpmi media FAILED. Falling back to use ABF."
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/3.0/${TREE,,}.${EXTARCH}.list
+		if [[ $? != 0 ]]; then
+		    echo "Adding urpmi media FAILED. Exiting."
+		    errorCatch
+		fi
 	    fi
 	fi
 
@@ -1743,7 +1718,7 @@ createSquash() {
 # For development only remove all the compression so the squashfs builds quicker.
 # Give it it's own flag QUICKEN.
     if [ ! -z $QUICKEN ]; then
-	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384 
+	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
     else
 	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-exports -no-recovery -b 16384
     fi
