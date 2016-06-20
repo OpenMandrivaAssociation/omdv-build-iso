@@ -31,7 +31,7 @@ Requires:	parallel
 BuildArch:	noarch
 
 %description
-Tool to build OpenMandriva ISO.
+Tool to build OpenMandriva Lx ISO.
 
 %prep
 %setup -q
