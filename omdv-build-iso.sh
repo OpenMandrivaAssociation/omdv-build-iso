@@ -397,13 +397,13 @@ updateSystem() {
 	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx omdv-build-iso"
 
 	echo "-> Installing rpms files"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gdisk --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch ${RPM_LIST} gdisk --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
     elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
 	echo "-> Building in user custom environment will clean rpm cache"
-	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} gptfdisk parallel --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch ${RPM_LIST} gptfdisk parallel --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
     elif  [ ! -z $REBUILD ]; then
 	echo "-> Rebuilding the user custom environment using saved rpm cache"
-#	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --replacepkgs --auto --no-suggests --no-verify-rpm --ignorearch perl-URPM dosfstools grub2 gptfdisk --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
+#	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --replacepkgs --auto --no-suggests --verify-rpm --ignorearch perl-URPM dosfstools grub2 gptfdisk --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
 
     # copy contents of /usr/share/omdv-build-iso to the workdir if required
