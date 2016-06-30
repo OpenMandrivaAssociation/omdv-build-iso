@@ -1207,7 +1207,12 @@ setupGrub2() {
     $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
+    echo -> "Setting GRUB_UUID to ${GRUB_UUID}"
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
+    if [[ $? != 0 ]]; then
+	    echo "-> Failed to set up GRUB_UUID."
+	    errorCatch
+	fi
 
 # Add the themes, locales and fonts to the ISO build firectory
     if [ "${TYPE}" != "minimal" ]; then
