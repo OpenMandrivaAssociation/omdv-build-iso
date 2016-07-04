@@ -1207,7 +1207,12 @@ setupGrub2() {
     $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
+    echo -> "Setting GRUB_UUID to ${GRUB_UUID}"
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
+    if [[ $? != 0 ]]; then
+	    echo "-> Failed to set up GRUB_UUID."
+	    errorCatch
+	fi
 
 # Add the themes, locales and fonts to the ISO build firectory
     if [ "${TYPE}" != "minimal" ]; then
@@ -1608,12 +1613,12 @@ EOF
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release
 	    fi
 	else
-	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${VERSION}.$EXTARCH.list"
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${TREE,,}.$EXTARCH.list"
 	    echo "-> Using $MIRRORLIST"
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	    if [[ $? != 0 ]]; then
 		echo "-> Adding urpmi media FAILED. Falling back to use ABF."
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/3.0/${TREE,,}.${EXTARCH}.list
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/${TREE,,}.${EXTARCH}.list
 		if [[ $? != 0 ]]; then
 		    echo "-> Adding urpmi media FAILED. Exiting."
 		    errorCatch
