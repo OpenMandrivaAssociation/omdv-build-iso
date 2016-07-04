@@ -18,8 +18,8 @@ grub2
 grub2-efi
 gnu-efi
 efibootmgr
-kernel-nrjQL-desktop-latest
-kernel-nrjQL-desktop
+kernel-release-desktop-latest
+kernel-release-desktop
 kernel-firmware
 kernel-firmware-extra
 lvm2
