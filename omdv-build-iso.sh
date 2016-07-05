@@ -1613,7 +1613,7 @@ EOF
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release
 	    fi
 	else
-	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${TREE,,}.$EXTARCH.list"
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/${TREE,,}.$EXTARCH.list"
 	    echo "-> Using $MIRRORLIST"
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	    if [[ $? != 0 ]]; then
