@@ -1011,7 +1011,7 @@ createInitrd() {
     fi
 
 # Fugly hack to get /dev/disk/by-label
-    $SUDO sed -i -e '/KERNEL!="sr*", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
+    $SUDO sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
     if [[ $? != 0 ]]; then
 	echo "-> Failed with editing /lib/udev/rules.d/60-persistent-storage.rules file. Exiting."
 	errorCatch
