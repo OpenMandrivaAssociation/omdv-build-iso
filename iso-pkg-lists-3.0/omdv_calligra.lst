@@ -1,6 +1,6 @@
 calligra
 calligra-core
-calligra-krita
+krita #We use external version of krita now
 calligra-sheets
 calligra-words
 calligra-karbon
