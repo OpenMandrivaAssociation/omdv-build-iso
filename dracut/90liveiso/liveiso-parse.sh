@@ -10,7 +10,7 @@ fi
 
 [ "${liveroot%%:*}" = "live" ] || return 1
 
-modprobe -q iso9600
+modprobe -q iso9660
 modprobe -q loop
 modprobe -q squashfs
 modprobe -q overlay
