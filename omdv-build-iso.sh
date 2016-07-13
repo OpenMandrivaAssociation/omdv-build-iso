@@ -533,8 +533,11 @@ localMd5Change() {
 	    echo "-> References loaded"
 	fi
 	# Generate the references for this run
-	NEW_CHGSENSE=`$SUDO md5sum $WORKDIR/iso-pkg-lists-${TREE}/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
-	NEW_FILESUMS=`$SUDO find  $WORKDIR/iso-pkg-lists-$TREE/*  -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
+	# Need to be careful here; there may be backup files so get the exact files
+	# Order is important (sort?)
+	BASE_LIST=$WORKDIR/iso-pkg-lists-${TREE}
+	NEW_CHGSENSE=`$SUDO md5sum  $BASE_LIST/my.add $BASE_LIST/my.rmv $BASE_LIST/*.lst | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
+	NEW_FILESUMS=`$SUDO find  $BASE_LIST/my.add $BASE_LIST/my.rmv $BASE_LIST/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
 	echo "-> New references created"
 	if [ -f $WORKDIR/sessrec/ref_chgsense ]; then
 	    if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
