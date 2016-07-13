@@ -802,21 +802,19 @@ mkUpdateChroot() {
 # echo "$__install_list" >"$WORKDIR"\checklist
 	if [ ! -z "$REBUILD" ]; then
 	    printf '%s\n' "Reloading saved rpms"
-	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
-# Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
-	    #printf '%s' "$__install_list" | parallel -q --verbose --halt now,fail=10 -P 1 --keep-order  "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force
+	    # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
+	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force ${URPMI_DEBUG}
 	fi
 
 	if [ ! -z "$1" ] && [ ! -z $NOCLEAN ]; then
-# Should be parallel here but an update broke something or changed the syntax not sure which. --dry-run works fine. So using xargs for the time being.
-	    #  echo  "Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility"
-	    #echo "$__install_list" | parallel -q --halt now,fail=10 -j 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --debug --env /home/colin/ubug  
-	    #printf '%s\n' "$__install_list" | parallel -q --halt now,fail=10 -P 1 --verbose "$SUDO"/usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
-	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-	elif [ ! -z "$1" ]; then
-	    echo "-> We just have the list here"
+	elif [ ! -z "$1" ] && [ ! -z $ABF ]; then #Use xargs for ABF just in case of any unexpected interactions
+	    echo -> "Installing packages at ABF"
 	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+    elif [ ! -z "$1" ]; then
+        echo -> "Installing packages locally"
+        printf '%s\n' "$__install_list" | parallel -q v--keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	else
 	    printf '%s\n' "No rpms need to be installed"
 	    echo " "
@@ -832,6 +830,17 @@ mkUpdateChroot() {
 	else
 	    printf '%s\' "No rpms need to be removed"
 	fi
+	if [ -z $ABF ]; then
+        #Make some helpful logs
+        #Create the header 
+        head -1 $WORKDIR/install.log >$WORKDIR/rpm-fail.log
+        head -1 $WORKDIR/install.log >$WORKDIR/rpm-install.log
+        #Append the data
+        cat $WORKDIR/install.log | awk '$7  ~ /1/' >> $WORKDIR/rpm-fail.log
+        cat $WORKDIR/install.log | awk '$7  ~ /0/' >> $WORKDIR/rpm-install.log
+        #Clean-up
+        rm -f $WORKDIR/install.log
+    fi
 }
 
 createChroot() {
@@ -934,7 +943,7 @@ createChroot() {
 # Start rpm packages installation
 # but only if .noclean does not exist and CHGFLAG=0
 # CHGFLAG=1 Indicates a global change in the iso lists
-    if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -Z $debug ]; then
+    if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -z $DEBUG ]; then
 	mkOmSpin
     elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
 	mkUserSpin $FILELISTS
