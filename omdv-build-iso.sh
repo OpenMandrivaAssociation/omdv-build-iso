@@ -593,8 +593,8 @@ getIncFiles() {
 	__addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
 	getIncFiles $(dirname "$1")/"$r" "$2" "$3"
 	continue
-# Avoid sub-shells make sure commented out includes are removed. Dev discipline needed here.
-    done < <(cat "$1" | grep  '.*%include' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
+# Avoid sub-shells make sure commented out includes are removed. 
+    done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
 #  Add the primary file to the list
     __addrpminc+=$'\n'"$1"
     # Sort so the main file is at the top and export
@@ -629,7 +629,9 @@ createPkgList() {
 	__pkgs+=$'\n'`cat "$__pkglst"`
     done < <(printf '%s\n' "$1")
 # sanitise regex compliments of TPG
-    __pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p'`
+    __pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p' | sed 's/ $//'`
+    #The above was getting comments that occured after the package name i.e. vim-minimal #mini-iso9660. but was leaving a trailing space which confused parallels and it failed the install
+    
     eval $__pkglist="'$__pkgs'"
     if [ ! -z $DEBUG ]; then
 	echo $'\n'
