@@ -275,6 +275,14 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	    echo "Your personalised build lists will be retained"
 	    $SUDO rm -rf $WORKDIR/BASE
 	    $SUDO touch $WORKDIR/.new
+	    echo "Do you wish to remove the session records as well?"
+	    echo "Enter 'y' or 'yes' to continue, any other key to continue" 
+        read -r in2
+            if [[ $in2 == "yes" || $in2 == "y" ]]; then
+                echo "Deleting the session diffs"
+                echo $in2
+                $SUDO rm -rf $WORKDIR/sessrec
+            fi
 	fi
     elif [ ! -z $NOCLEAN ]; then
 	$SUDO mkdir -p $WORKDIR
