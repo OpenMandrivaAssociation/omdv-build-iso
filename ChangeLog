@@ -1,6 +1,222 @@
+2016-07-15 19:31:19 +0200 tpg 
+
+	* add krita locales, remove extra configs (HEAD -> master, origin/master, origin/HEAD)
+
+2016-07-13 14:16:48 +0200 Tomasz Paweł Gajc 
+
+	* fix udev lib dir
+
+2016-07-13 12:29:39 +0200 Tomasz Paweł Gajc 
+
+	* update options to handle ACPI and backlight
+
+2016-07-07 21:34:21 +0200 tpg 
+
+	* Merge branch 'master' of ssh://github.com/OpenMandrivaAssociation/omdv-build-iso
+
+2016-07-07 21:33:55 +0200 tpg 
+
+	* fix file list
+
+2016-07-07 15:32:22 +0200 Tomasz Paweł Gajc 
+
+	* fix typo
+
+2016-07-07 15:30:46 +0200 Tomasz Paweł Gajc 
+
+	* update rule
+
+2016-07-07 15:10:14 +0200 Tomasz Paweł Gajc 
+
+	* update module name
+
+2016-07-05 13:19:32 +0200 Tomasz Paweł Gajc 
+
+	* again fix mirrorlist
+
+2016-07-05 12:24:02 +0200 Tomasz Paweł Gajc 
+
+	* fix mirrorlist links
+
+2016-07-05 00:16:50 +0200 tpg 
+
+	* use kernel-release for openmandriva2014.x
+
+2016-07-05 00:01:14 +0200 tpg 
+
+	* use tree rather than version for MIRRORLIST
+
+2016-06-30 12:20:33 +0200 Tomasz Paweł Gajc 
+
+	* add some debug related to GRUB_UUID
+
+2016-06-21 14:24:01 +0200 Tomasz Paweł Gajc 
+
+	* always verify rpms
+
+2016-06-20 23:43:10 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* update source
+
+2016-06-20 22:50:33 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* new version 0.1.2
+
+2016-06-20 22:46:50 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* test pre-commit hook
+
+2016-06-20 22:41:04 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* FIX INDENTAION AGAIN git diff! Add some better formatting for messages
+
+2016-06-20 22:07:56 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix indentation one more time, get rid of doubled variables, add fallback urpmi mirrorlist to ABF
+
+2016-06-16 20:18:40 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add Noto CJK fonts, add fcitx-ui
+
+2016-06-15 22:28:48 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add CJK and Thai fonts
+
+2016-06-08 07:21:56 +0100 Crispin Boylan 
+
+	* bug 1194 - dont set vconsole.keymap during live boot as it overrids correct value in /etc/vconsole.conf
+
+2016-06-08 01:00:34 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add some Asian languages for Libreoffice, Firefox and Plasma
+
+2016-06-08 00:49:28 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add couple of fcitx packages, add Noto fonts
+
+2016-06-07 23:42:09 +0100 itchka (Colin Close) 
+
+	* Update sources
+
+2016-06-07 23:28:39 +0100 itchka (Colin Close) 
+
+	* Add comment about ABF WORKDIR on local system
+
+2016-06-07 23:27:40 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2016-06-07 22:33:51 +0100 itchka (Colin Close) 
+
+	* Update sources
+
+2016-06-07 22:28:46 +0100 itchka (Colin Close) 
+
+	* Remove rougue entry from omdv_utils.lst
+
+2016-06-07 22:27:01 +0100 itchka (Colin Close) 
+
+	* Fix broken function & reverse temporary fix
+
+2016-06-07 00:30:58 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add Noto fonts
+
+2016-06-06 14:30:12 +0200 Tomasz Paweł Gajc 
+
+	* fix workdir in ABF environment
+
+2016-06-06 12:49:33 +0100 itchka (Colin Close) 
+
+	* Push temporary fix for omspin
+
+2016-06-06 00:46:45 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* looks like fcitx were lost in merge
+
+2016-06-05 23:05:12 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add couple of fixes
+
+2016-06-05 22:58:59 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* cosmetics
+
+2016-06-05 22:38:55 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix adding 32-bit media
+
+2016-06-05 22:23:09 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add missing urpmi call
+
+2016-06-05 21:47:35 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* fix adding urpmi medias
+
+2016-06-05 12:02:43 +0100 Crispin Boylan 
+
+	* Update source
+
+2016-06-05 12:02:12 +0100 Crispin Boylan 
+
+	* Sync
+
+2016-06-05 11:56:09 +0100 Crispin Boylan 
+
+	* Ensure omdv-build-iso is up to date in abf before copying build lists
+
+2016-06-05 11:32:45 +0100 Crispin Boylan 
+
+	* trace
+
+2016-06-05 11:28:54 +0100 Crispin Boylan 
+
+	* Fix
+
+2016-06-05 11:27:54 +0100 Crispin Boylan 
+
+	* Add more info
+
+2016-06-05 11:17:16 +0100 Crispin Boylan 
+
+	* Trace
+
+2016-06-05 10:14:20 +0100 Crispin Boylan 
+
+	* Fish not actually required
+
+2016-06-05 08:40:33 +0100 itchka (Colin Close) 
+
+	* Fix requires
+
+2016-06-05 08:36:29 +0100 itchka (Colin Close) 
+
+	* Update for lx3 list renaming
+
+2016-06-04 23:43:25 +0100 itchka (Colin Close) 
+
+	* Bump Release
+
+2016-06-04 23:38:22 +0100 itchka (Colin Close) 
+
+	* Update tarball to reflect latest code.
+
+2016-06-04 13:10:49 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #5 from OpenMandrivaAssociation/master
+
+2016-06-04 13:10:07 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* sync changelog, minor changes
+
+2016-06-04 13:07:34 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* generated changelog
+
 2016-06-04 13:05:36 +0200 tpg (Tomasz Pawe³ Gajc) 
 
-	* add one missing thing (HEAD, origin/master, origin/HEAD, master)
+	* add one missing thing
 
 2016-06-04 13:01:21 +0200 tpg (Tomasz Pawe³ Gajc) 
 
@@ -20,7 +236,7 @@
 
 2016-06-03 22:49:37 +0100 itchka (Colin Close) 
 
-	* A few fixes after the merge (origin/cc_user_ver)
+	* A few fixes after the merge
 
 2016-06-03 20:11:41 +0100 itchka (Colin Close) 
 
@@ -40,7 +256,7 @@
 
 2016-06-02 22:16:07 +0100 itchka (Colin Close) 
 
-	* Revert "Major upgrade to full user mode. See doc dir" Causes ABF breakage This reverts commit a5d2f17db02984d05adb843bf66b44eec5aece94. (origin/cc_force_fix)
+	* Revert "Major upgrade to full user mode. See doc dir" Causes ABF breakage This reverts commit a5d2f17db02984d05adb843bf66b44eec5aece94.
 
 2016-06-02 22:15:25 +0100 itchka (Colin Close) 
 
@@ -57,6 +273,10 @@
 2016-06-02 02:07:47 +0100 itchka (Colin Close) 
 
 	* Revert back to xargs for user mode.
+
+2016-06-01 18:47:15 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #2 from OpenMandrivaAssociation/master
 
 2016-06-01 18:46:44 +0200 tpg (Tomasz Pawe³ Gajc) 
 
@@ -224,7 +444,7 @@
 
 2016-03-10 20:13:59 +0100 tpg (Tomasz Pawe³ Gajc) 
 
-	* sync (origin/lx3)
+	* sync
 
 2016-03-10 20:12:31 +0100 tpg (Tomasz Pawe³ Gajc) 
 

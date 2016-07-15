@@ -13,4 +13,4 @@ for bus in $BUSES; do
 echo -n $bus | tee /sys/bus/pci/drivers/ehci_hcd/bind
 done
 ;;
-esac 
+esac
