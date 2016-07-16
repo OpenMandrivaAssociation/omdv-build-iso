@@ -1646,7 +1646,7 @@ EOF
 
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
-	$SUDO chroot "$CHROOTNAME" fc-cache -s -r
+	$SUDO chroot "$CHROOTNAME" fc-cache -r
     fi
 
 # Rebuild man-db
