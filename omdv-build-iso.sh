@@ -1401,10 +1401,6 @@ EOF
     $SUDO cp -f "$WORKDIR"/data/account-user "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
     $SUDO cp -f "$WORKDIR"/data/account-icon "$CHROOTNAME"/var/lib/AccountsService/icons/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" /var/lib/AccountsService/users/${live_user}
-# (tpg) regenerate font cache for live user
-    if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
-	$SUDO chroot --userspec=${live_user}:${live_user} "$CHROOTNAME" /usr/bin/fc-cache -r
-    fi
 
 # KDE4 related settings
     if [ "${TYPE,,}" = "kde4" ] || [ "${TYPE,,}" = "plasma" ]; then
@@ -1651,6 +1647,8 @@ EOF
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
 	$SUDO chroot "$CHROOTNAME" fc-cache -r
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /root/.fontconfig /home/${live_user}/.fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.fontconfig
     fi
 
 # Rebuild man-db
