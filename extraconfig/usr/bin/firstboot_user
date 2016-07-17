@@ -1,7 +1,0 @@
-#!/bin/sh 
-rm ~/.kde4/Autostart/firstboot.sh
-amixer set Master 33%
-
-#(users | grep live) && akonadictl stop && sed -i -e "s/StartServer=true/StartServer=false/" ~/.config/akonadi/akonadiserverrc
-
-#(users | grep -v live) && zenity --question --title "Отключение сервиса индексации akonadi" --text "Вы хотите отключить сервис индексации akonadi ?" && akonadictl stop && sed -i -e "s/StartServer=true/StartServer=false/" ~/.config/akonadi/akonadiserverrc
