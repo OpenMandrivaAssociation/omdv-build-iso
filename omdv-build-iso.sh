@@ -1388,7 +1388,7 @@ EOF
 
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
-    $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}/Desktop
     $SUDO cp -rfT "$WORKDIR"/extraconfig/etc/skel "$CHROOTNAME"/home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}/.cache
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
@@ -1650,8 +1650,11 @@ EOF
 
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
-	$SUDO chroot "$CHROOTNAME" fc-cache -r -v
-	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /root/.fontconfig /home/${live_user}/.fontconfig/
+	$SUDO chroot "$CHROOTNAME" fc-cache -r
+	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /root/.fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /home/${live_user}/.fontconfig/
 	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.fontconfig
     fi
 
@@ -1661,7 +1664,7 @@ EOF
     fi
 
 # Rebuild linker cache
-    $SUDO chroot "$CHROOTNAME" /sbin/ldconfig -X
+    $SUDO chroot "$CHROOTNAME" /sbin/ldconfig
 
 # Clear tmp
     $SUDO rm -rf "$CHROOTNAME"/tmp/*
