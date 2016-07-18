@@ -1650,7 +1650,7 @@ EOF
 
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
-	$SUDO chroot "$CHROOTNAME" fc-cache -r
+	$SUDO chroot "$CHROOTNAME" fc-cache -rf
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.cache/fontconfig/
 	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /root/.cache/fontconfig/
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.cache/fontconfig/
