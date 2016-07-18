@@ -1651,11 +1651,11 @@ EOF
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
 	$SUDO chroot "$CHROOTNAME" fc-cache -r
-	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /root/.fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /home/${live_user}/.fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.fontconfig
+	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /root/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /home/${live_user}/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.cache/fontconfig
     fi
 
 # Rebuild man-db
