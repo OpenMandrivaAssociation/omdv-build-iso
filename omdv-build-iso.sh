@@ -1229,7 +1229,12 @@ setupGrub2() {
     $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
+    echo -> "Setting GRUB_UUID to ${GRUB_UUID}"
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
+    if [[ $? != 0 ]]; then
+	    echo "-> Failed to set up GRUB_UUID."
+	    errorCatch
+	fi
 
 # Add the themes, locales and fonts to the ISO build firectory
     if [ "${TYPE}" != "minimal" ]; then
@@ -1405,7 +1410,7 @@ EOF
 
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
     $SUDO chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
-    $SUDO chroot "$CHROOTNAME" /bin/mkdir /home/${live_user}/Desktop
+    $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}/Desktop
     $SUDO cp -rfT "$WORKDIR"/extraconfig/etc/skel "$CHROOTNAME"/home/${live_user}/
     $SUDO chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}/.cache
     $SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
@@ -1444,6 +1449,10 @@ EOF
 		    ;;
 		"sddm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+		    if [ "${TYPE,,}" = "lxqt" ]; then
+# (tpg) use maldives theme on LXQt desktop
+			$SUDO chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
+		    fi
 		    ;;
 		"gdm")
 		    $SUDO chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
@@ -1630,12 +1639,12 @@ EOF
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release
 	    fi
 	else
-	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${VERSION}.$EXTARCH.list"
+	    MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${TREE##openmandriva}.$EXTARCH.list"
 	    echo "-> Using $MIRRORLIST"
 	    $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
 	    if [[ $? != 0 ]]; then
 		echo "-> Adding urpmi media FAILED. Falling back to use ABF."
-		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/3.0/${TREE,,}.${EXTARCH}.list
+		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/${TREE##openmandriva}.${EXTARCH}.list
 		if [[ $? != 0 ]]; then
 		    echo "-> Adding urpmi media FAILED. Exiting."
 		    errorCatch
@@ -1663,7 +1672,12 @@ EOF
 
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
-	$SUDO chroot "$CHROOTNAME" fc-cache -s -r
+	$SUDO chroot "$CHROOTNAME" fc-cache -rf
+	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /root/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /home/${live_user}/.cache/fontconfig/
+	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.cache/fontconfig
     fi
 
 # Rebuild man-db
@@ -1672,7 +1686,7 @@ EOF
     fi
 
 # Rebuild linker cache
-    $SUDO chroot "$CHROOTNAME" /sbin/ldconfig -X
+    $SUDO chroot "$CHROOTNAME" /sbin/ldconfig
 
 # Clear tmp
     $SUDO rm -rf "$CHROOTNAME"/tmp/*
