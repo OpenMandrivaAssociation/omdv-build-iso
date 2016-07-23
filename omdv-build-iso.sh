@@ -823,9 +823,10 @@ mkUpdateChroot() {
 	if [ ! -z "$2" ]; then
 	    echo "-> Removing user specified rpms and orphans"
 # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+#	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+	    printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1  $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
 # This exposed a bug in urpme
-	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto-orphans
+	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
 	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME" 
 	else
 	    printf '%s\' "No rpms need to be removed"
@@ -1248,6 +1249,10 @@ setupGrub2() {
 	    echo "-> Failed to update Grub2 theme."
 	    errorCatch
 	fi
+    fi
+# Fix up 2014.0 grub installer line...We don't have Calamares in 2014.
+    if [ $VERSION == OPENMANDRIVA2014.0 ]; then
+    $SUDO sed -i -e "s/.*systemd\.unit=calamares\.target/ install/g" "$ISOROOTNAME"/boot/grub/start_cfg
     fi
 
     echo "-> Building Grub2 El-Torito image and an embedded image."
