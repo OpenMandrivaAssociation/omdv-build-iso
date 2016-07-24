@@ -42,8 +42,6 @@ mtools #iso
 ntfsprogs
 pcmciautils
 plymouth-system-theme
-pm-fallback-policy #iso
-pm-utils #iso
 python-curl
 quota #iso
 reiserfsprogs
@@ -59,6 +57,7 @@ sudo
 task-x11
 testdisk
 tmpwatch #iso
+tuned
 unionfs-utils #iso
 upower #iso
 usbmuxd #iso
