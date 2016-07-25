@@ -1251,7 +1251,7 @@ setupGrub2() {
 	fi
     fi
 # Fix up 2014.0 grub installer line...We don't have Calamares in 2014.
-    if [ $VERSION == OPENMANDRIVA2014.0 ]; then
+    if [ "${VERSION,,}" == openmandriva2014.0 ]; then
     $SUDO sed -i -e "s/.*systemd\.unit=calamares\.target/ install/g" "$ISOROOTNAME"/boot/grub/start_cfg
     fi
 
