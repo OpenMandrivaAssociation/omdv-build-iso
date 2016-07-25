@@ -36,14 +36,15 @@ mount -n -t tmpfs -o mode=755 /run/initramfs/tmpfs /run/initramfs/tmpfs
 mkdir -m 0755 -p /run/initramfs/tmpfs/work
 mkdir -m 0755 -p /run/initramfs/tmpfs/memory
 # mount overlayfs as new root
-echo "overlay /run/initramfs/union overlay defaults 0 0" >> /etc/fstab
+echo "overlay  /run/initramfs/union overlay noauto,x-systemd.automount,lowerdir=/run/initramfs/image,upperdir=/run/initramfs/tmpfs/memory,workdir=/run/initramfs/tmpfs/work 0 0" >> /etc/fstab
+
 mount -n -t overlay overlay -o lowerdir=/run/initramfs/image,upperdir=/run/initramfs/tmpfs/memory,workdir=/run/initramfs/tmpfs/work /run/initramfs/union
 
 ln -s /run/initramfs/union /dev/root
 
-if [ -z "$DRACUT_SYSTEMD" ]; then
+#if [ -z "$DRACUT_SYSTEMD" ]; then #Not quite sure what this is for as it breaks 2014.2
     printf '/bin/mount --rbind /run/initramfs/union %s\n' "$NEWROOT" > $hookdir/mount/01-$$-live.sh
-fi
+#fi
 
 need_shutdown
 
