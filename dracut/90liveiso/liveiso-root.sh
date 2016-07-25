@@ -42,9 +42,7 @@ mount -n -t overlay overlay -o lowerdir=/run/initramfs/image,upperdir=/run/initr
 
 ln -s /run/initramfs/union /dev/root
 
-#if [ -z "$DRACUT_SYSTEMD" ]; then #Not quite sure what this is for as it breaks 2014.2
-    printf '/bin/mount --rbind /run/initramfs/union %s\n' "$NEWROOT" > $hookdir/mount/01-$$-live.sh
-#fi
+printf '/bin/mount --rbind /run/initramfs/union %s\n' "$NEWROOT" > $hookdir/mount/01-$$-live.sh
 
 need_shutdown
 
