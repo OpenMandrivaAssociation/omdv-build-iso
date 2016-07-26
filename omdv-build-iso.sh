@@ -275,6 +275,14 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	    echo "Your personalised build lists will be retained"
 	    $SUDO rm -rf $WORKDIR/BASE
 	    $SUDO touch $WORKDIR/.new
+	    echo "Do you wish to remove the session records as well?"
+	    echo "Enter 'y' or 'yes' to continue, any other key to continue" 
+        read -r in2
+            if [[ $in2 == "yes" || $in2 == "y" ]]; then
+                echo "Deleting the session diffs"
+                echo $in2
+                $SUDO rm -rf $WORKDIR/sessrec
+            fi
 	fi
     elif [ ! -z $NOCLEAN ]; then
 	$SUDO mkdir -p $WORKDIR
@@ -525,8 +533,11 @@ localMd5Change() {
 	    echo "-> References loaded"
 	fi
 	# Generate the references for this run
-	NEW_CHGSENSE=`$SUDO md5sum $WORKDIR/iso-pkg-lists-${TREE}/* | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
-	NEW_FILESUMS=`$SUDO find  $WORKDIR/iso-pkg-lists-$TREE/*  -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
+	# Need to be careful here; there may be backup files so get the exact files
+	# Order is important (sort?)
+	BASE_LIST=$WORKDIR/iso-pkg-lists-${TREE}
+	NEW_CHGSENSE=`$SUDO md5sum  $BASE_LIST/my.add $BASE_LIST/my.rmv $BASE_LIST/*.lst | colrm 33 | md5sum | tee "$WORKDIR"/sessrec/new_chgsense`
+	NEW_FILESUMS=`$SUDO find  $BASE_LIST/my.add $BASE_LIST/my.rmv $BASE_LIST/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums`
 	echo "-> New references created"
 	if [ -f $WORKDIR/sessrec/ref_chgsense ]; then
 	    if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
@@ -582,8 +593,8 @@ getIncFiles() {
 	__addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
 	getIncFiles $(dirname "$1")/"$r" "$2" "$3"
 	continue
-# Avoid sub-shells make sure commented out includes are removed. Dev discipline needed here.
-    done < <(cat "$1" | grep  '.*%include' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
+# Avoid sub-shells make sure commented out includes are removed. 
+    done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
 #  Add the primary file to the list
     __addrpminc+=$'\n'"$1"
     # Sort so the main file is at the top and export
@@ -618,7 +629,9 @@ createPkgList() {
 	__pkgs+=$'\n'`cat "$__pkglst"`
     done < <(printf '%s\n' "$1")
 # sanitise regex compliments of TPG
-    __pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p'`
+    __pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p' | sed 's/ $//'`
+    #The above was getting comments that occured after the package name i.e. vim-minimal #mini-iso9660. but was leaving a trailing space which confused parallels and it failed the install
+    
     eval $__pkglist="'$__pkgs'"
     if [ ! -z $DEBUG ]; then
 	echo $'\n'
@@ -789,21 +802,19 @@ mkUpdateChroot() {
 # echo "$__install_list" >"$WORKDIR"\checklist
 	if [ ! -z "$REBUILD" ]; then
 	    printf '%s\n' "Reloading saved rpms"
-	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
-# Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility
-	    #printf '%s' "$__install_list" | parallel -q --verbose --halt now,fail=10 -P 1 --keep-order  "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force
+	    # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
+	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force ${URPMI_DEBUG}
 	fi
 
 	if [ ! -z "$1" ] && [ ! -z $NOCLEAN ]; then
-# Should be parallel here but an update broke something or changed the syntax not sure which. --dry-run works fine. So using xargs for the time being.
-	    #  echo  "Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility"
-	    #echo "$__install_list" | parallel -q --halt now,fail=10 -j 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --debug --env /home/colin/ubug  
-	    #printf '%s\n' "$__install_list" | parallel -q --halt now,fail=10 -P 1 --verbose "$SUDO"/usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto 
-	    printf '%s\n' "$__install_list" | xargs $SUDO urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-	elif [ ! -z "$1" ]; then
-	    echo "-> We just have the list here"
+	elif [ ! -z "$1" ] && [ ! -z $ABF ]; then #Use xargs for ABF just in case of any unexpected interactions
+	    echo -> "Installing packages at ABF"
 	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+    elif [ ! -z "$1" ]; then
+        echo -> "Installing packages locally"
+        printf '%s\n' "$__install_list" | parallel -q v--keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	else
 	    printf '%s\n' "No rpms need to be installed"
 	    echo " "
@@ -812,13 +823,25 @@ mkUpdateChroot() {
 	if [ ! -z "$2" ]; then
 	    echo "-> Removing user specified rpms and orphans"
 # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+#	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+	    printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1  $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
 # This exposed a bug in urpme
-	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto-orphans
+	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
 	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME" 
 	else
 	    printf '%s\' "No rpms need to be removed"
 	fi
+	if [ -z $ABF ]; then
+        #Make some helpful logs
+        #Create the header 
+        head -1 $WORKDIR/install.log >$WORKDIR/rpm-fail.log
+        head -1 $WORKDIR/install.log >$WORKDIR/rpm-install.log
+        #Append the data
+        cat $WORKDIR/install.log | awk '$7  ~ /1/' >> $WORKDIR/rpm-fail.log
+        cat $WORKDIR/install.log | awk '$7  ~ /0/' >> $WORKDIR/rpm-install.log
+        #Clean-up
+        rm -f $WORKDIR/install.log
+    fi
 }
 
 createChroot() {
@@ -921,7 +944,7 @@ createChroot() {
 # Start rpm packages installation
 # but only if .noclean does not exist and CHGFLAG=0
 # CHGFLAG=1 Indicates a global change in the iso lists
-    if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -Z $debug ]; then
+    if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -z $DEBUG ]; then
 	mkOmSpin
     elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
 	mkUserSpin $FILELISTS
@@ -1226,6 +1249,10 @@ setupGrub2() {
 	    echo "-> Failed to update Grub2 theme."
 	    errorCatch
 	fi
+    fi
+# Fix up 2014.0 grub installer line...We don't have Calamares in 2014.
+    if [ "${VERSION,,}" == openmandriva2014.0 ]; then
+    $SUDO sed -i -e "s/.*systemd\.unit=calamares\.target/ install/g" "$ISOROOTNAME"/boot/grub/start_cfg
     fi
 
     echo "-> Building Grub2 El-Torito image and an embedded image."
