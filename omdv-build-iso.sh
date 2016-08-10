@@ -799,22 +799,25 @@ mkUpdateChroot() {
 	echo "-> Updating chroot"
 	local __install_list="$1"
 	local __removelist="$2"
-# echo "$__install_list" >"$WORKDIR"\checklist
+#echo "$__install_list" >"$WORKDIR"/checklist
+
 	if [ ! -z "$REBUILD" ]; then
 	    printf '%s\n' "Reloading saved rpms"
 	    # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
 	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force ${URPMI_DEBUG}
 	fi
 
-	if [ ! -z "$1" ] && [ ! -z $NOCLEAN ]; then
+
+	if [ ! -z "$1" ] && [ ! -z "$NOCLEAN" ]; then
+            echo -> "Slambui"
 	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-	elif [ ! -z "$1" ] && [ ! -z $ABF ]; then #Use xargs for ABF just in case of any unexpected interactions
+	elif [ ! -z "$1" ] && [ ! -z "$ABF" ]; then #Use xargs for ABF just in case of any unexpected interactions
 	    echo -> "Installing packages at ABF"
 	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
     elif [ ! -z "$1" ]; then
         echo -> "Installing packages locally"
-        printf '%s\n' "$__install_list" | parallel -q v--keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
+        printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	else
 	    printf '%s\n' "No rpms need to be installed"
 	    echo " "
@@ -1677,12 +1680,15 @@ EOF
 
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
+        # set the timestamp on the directories to be a whole second
+        # fc-cache looks at the nano second portion which will otherwise be
+        # non-zero as we are on ext4, but then it will compare against the stamps
+        # on the squashfs live image, squashfs only has second level timestamp resolution
+        FCTIME=$(date +%Y%m%d%H%M.%S)
+        $SUDO chroot "$CHROOTNAME" find /usr/share/fonts -type d -exec touch -t $FCTIME {} \;
 	$SUDO chroot "$CHROOTNAME" fc-cache -rf
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.cache/fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /root/.cache/fontconfig/
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.cache/fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/cp -rfT /var/cache/fontconfig /home/${live_user}/.cache/fontconfig/
-	$SUDO chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.cache/fontconfig
     fi
 
 # Rebuild man-db
@@ -1710,6 +1716,10 @@ EOF
 
 # Remove rpm db files to save some space
     $SUDO rm -rf "$CHROOTNAME"/var/lib/rpm/__db.*
+# 
+ $SUDO echo 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
+    | tee "$CHROOTNAME"/etc/.updated >"$CHROOTNAME"/var/.updated
+
 }
 
 createSquash() {
