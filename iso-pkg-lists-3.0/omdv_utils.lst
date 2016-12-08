@@ -16,6 +16,7 @@ dvbsnoop #utils
 dvbtune #utils
 dvd+rw-tools #utils
 freerdp #utils
+fuse-exfat #utils
 gnupg #utils
 html2text #utils
 htop #utils
