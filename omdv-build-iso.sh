@@ -1557,6 +1557,9 @@ EOF
 	fi
     done
 
+# mask systemd-journald-audit.socket to stop polluting journal with audit spam
+    [[ ! -e "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket ]] && ln -sf /dev/null "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket
+
 # ATTENTION getty@.service must be always disabled
     [[ -e "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service ]] && rm -rf "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service
 
