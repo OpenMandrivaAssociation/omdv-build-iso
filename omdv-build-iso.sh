@@ -1129,7 +1129,7 @@ createMemDisk () {
     fi
 
 # Create a memdisk img called memdisk_img
-    cd "$WORKDIR"
+    cd "$WORKDIR" || exit
     tar cvf $CHROOTNAME/memdisk_img boot
 
 # Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
