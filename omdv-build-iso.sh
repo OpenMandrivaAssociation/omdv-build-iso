@@ -573,7 +573,6 @@ localMd5Change() {
     fi
 }
 
-
 getIncFiles() {
 # Usage: getIncFiles [filename] xyz.* $"[name of variable to return] [package list file. my.add || my.rmv || {main config pkgs}]
 # Function: Gets all the include lines for the specified package file
@@ -947,7 +946,7 @@ createChroot() {
 # Start rpm packages installation
 # but only if .noclean does not exist and CHGFLAG=0
 # CHGFLAG=1 Indicates a global change in the iso lists
-    if [  -z $NOCLEAN ] && [  -z $REBUILD ] && [  -z $DEBUG ]; then
+    if [ -z $NOCLEAN ] && [ -z $REBUILD ] && [ -z $DEBUG ]; then
 	mkOmSpin
     elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
 	mkUserSpin $FILELISTS
@@ -957,10 +956,10 @@ createChroot() {
 	updateUserSpin "$FILELISTS"
 #	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 # Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
-    elif [ $CHGFLAG = 1 ] && [ ! -z $DEBUG ]; then
+    elif [ -z $IN_ABF ] && [ -n $DEBUG ]; then
 # This functionality will only update the build if there is a change in files
 # other then my.add and my.rmv. NOT IMPLEMENTED YET
-	mkOmSpin "$FILELISTS"
+	[ $CHFLAG == 1 ] && mkOmSpin "$FILELISTS"
     else
 	updateUserSpin "$FILELISTS"
     fi
