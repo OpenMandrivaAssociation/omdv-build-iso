@@ -957,7 +957,7 @@ createChroot() {
 	updateUserSpin "$FILELISTS"
 #	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 # Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
-    elif [ $CHGFLAG = 1 ] && [  -n $DEBUG ]; then
+    elif [ $CHGFLAG == 1 ] && [  -n $DEBUG ]; then
 # This functionality will only update the build if there is a change in files
 # other then my.add and my.rmv. NOT IMPLEMENTED YET
 	mkOmSpin "$FILELISTS"
