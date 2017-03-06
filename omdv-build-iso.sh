@@ -1190,10 +1190,14 @@ createUEFI() {
     echo "-> Creating EFI image with size $EFIDISKSIZE"
 
 # mkfs.vfat can create the image and filesystem directly
-    touch $IMGNME
     $SUDO mkfs.vfat -C -F 16 -s 1 -S 512 -M 0xFF $IMGNME $EFIDISKSIZE
 # Loopback mount the image
     $SUDO losetup -f $IMGNME
+    if [[ $? != 0 ]]; then
+	echo "-> Failed to mount loopback image. Exiting."
+	errorCatch
+    fi
+
     sleep 1
     $SUDO mount -t vfat $IMGNME /mnt
     if [[ $? != 0 ]]; then
