@@ -946,13 +946,13 @@ createChroot() {
 # Start rpm packages installation
 # but only if .noclean does not exist and CHGFLAG=0
 # CHGFLAG=1 Indicates a global change in the iso lists
-    if [ -z $NOCLEAN ] && [ -z $REBUILD ] && [ -z $DEBUG ]; then
+    if [ -z $NOCLEAN ] && [ -z $REBUILD ]; then
 	mkOmSpin
     elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
 	mkUserSpin $FILELISTS
     elif [ -n "$REBUILD" ]; then
 	mkUserSpin $FILELISTS
-    elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ] && [ -z $IN_ABF ] ; then
+    elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ] && [ -z $IN_ABF ]; then
 	updateUserSpin "$FILELISTS"
 #	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 # Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
