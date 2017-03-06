@@ -415,7 +415,7 @@ updateSystem() {
     fi
 
     # copy contents of /usr/share/omdv-build-iso to the workdir if required
-    if [ -e /usr/share/omdv-build-iso ]; then
+    if [ -e /usr/share/omdv-build-iso ] && [ -z "$IN_ABF" ]; then
 	if [ ! -d $WORKDIR/dracut ]; then
 	    echo "-> Copying build lists from `rpm -q omdv-build-iso`"
 	    find $WORKDIR
@@ -423,9 +423,9 @@ updateSystem() {
 	    touch $WORKDIR/.new
 	    chown -R $OLDUSER:$OLDUSER $WORKDIR #this doesn't do ISO OR BASE
 	else
-	    echo "-> Your build lists have been retained"      # Files already copied
+	    echo "-> Your build lists have been retained" # Files already copied
 	fi
-    else
+    elif [ -z "$IN_ABF" ]; then
 	echo "-> Directory /usr/share/omdv-build-iso does not exist. Please install omdv-build-iso"
     fi
 
