@@ -199,7 +199,7 @@ SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEA
 if [ "`id -u`" != "0" ]; then
     # We need to be root for umount and friends to work...
     # NOTE the following command will only work on OMDV for the first registered user
-    # this user is a member of the wheel group and has root privelidges 
+    # this user is a member of the wheel group and has root privelidges
 
     exec sudo -E `echo $SUDOVAR` $0 "$@"
     echo $'\n'
@@ -260,14 +260,14 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	$SUDO touch $WORKDIR/.new
 	echo "The work directory is "$WORKDIR""
     elif [ ! -z $NOCLEAN ] && [ -d $WORKDIR ]; then
-#	     if [ -d $WORKDIR/sessrec ]; then 
-	echo "You have chosen not to clean the base installation" 
+#	     if [ -d $WORKDIR/sessrec ]; then
+	echo "You have chosen not to clean the base installation"
 	echo "If your installation has become corrupted and you want"
 	echo "to take advantage of the 'rebuild' option you may wish to "
 	echo "delete the corrupted files and build a new 'noclean'"
 	echo "base installation"
 	echo "If you wish to do this then"
-	echo "Enter 'y' or 'yes' to continue, any other key to continue" 
+	echo "Enter 'y' or 'yes' to continue, any other key to continue"
 	read -r in1
 	echo $in1
 	if [[ $in1 == "yes" || $in1 == "y" ]]; then
@@ -276,7 +276,7 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	    $SUDO rm -rf $WORKDIR/BASE
 	    $SUDO touch $WORKDIR/.new
 	    echo "Do you wish to remove the session records as well?"
-	    echo "Enter 'y' or 'yes' to continue, any other key to continue" 
+	    echo "Enter 'y' or 'yes' to continue, any other key to continue"
         read -r in2
             if [[ $in2 == "yes" || $in2 == "y" ]]; then
                 echo "Deleting the session diffs"
@@ -303,7 +303,7 @@ else
 # Create working directory
 
 # This codes to /usr/bin/ on a local system if you try and test with ABF=1 /usr/bin is rm -rf ed.
-# If it has to be this way then there needs to be some sort of protection/warning if 
+# If it has to be this way then there needs to be some sort of protection/warning if
 # the build is being run locally.....
 	WORKDIR=$(realpath $(dirname $0))
     else
@@ -378,7 +378,7 @@ if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
 # for some reason the next line deletes irrespective of flags
 #    $SUDO rm -rf $(dirname "$FILELISTS")
     umountAll "$CHROOTNAME"
-    $SUDO rm -rf "$CROOTNAME"
+    $SUDO rm -rf "$CHROOTNAME"
 else
     umountAll "$CHROOTNAME"
 fi
@@ -487,9 +487,9 @@ showInfo() {
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
 	echo "Working directory is $WORKDIR"
-	if  [ ! -z $REBUILD ]; then 
-	    echo "All rpms will be re-installed" 
-	elif [ ! -z $NOCLEAN ]; then 
+	if  [ ! -z $REBUILD ]; then
+	    echo "All rpms will be re-installed"
+	elif [ ! -z $NOCLEAN ]; then
 	    echo "Installed rpms will be updated"
 	fi
 	if [ ! -z $DEBUG ]; then
@@ -507,11 +507,11 @@ showInfo() {
 localMd5Change() {
 # Usage: userMd5Change [VARNAME] {Name of variable to contain diff list}
 # Function:
-# Creates md5sums current iso package list directory and store to file if file does not already exist. 
-# Three files are created "$WORKDIR/filesums", "/tmp/filesums" and $WORKDIR/chngsense 
+# Creates md5sums current iso package list directory and store to file if file does not already exist.
+# Three files are created "$WORKDIR/filesums", "/tmp/filesums" and $WORKDIR/chngsense
 # The first two contain file md5's for the original set and the current set, the last contains the checksum for the entire directory.
 # On each run the directory md5sums are compared if there has been a change a flag is set triggering modification of the chroot.
-# If the flag is set the md5s for the files are compared and a named variable containing the changed files is emmitted. 
+# If the flag is set the md5s for the files are compared and a named variable containing the changed files is emmitted.
 # This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
 
     if [ -z $IN_ABF ]; then
@@ -553,9 +553,9 @@ localMd5Change() {
 
 # Create a list of changed files by diffing checksums
 # In these circumstances awk does a better job than diff
-# This looks complicated but all it does is to put the two fields in each file into independent arrays, 
+# This looks complicated but all it does is to put the two fields in each file into independent arrays,
 # compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-	USERMOD=`awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' $WORKDIR/sessrec/ref_filesums $WORKDIR/sessrec/new_filesums` 
+	USERMOD=`awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' $WORKDIR/sessrec/ref_filesums $WORKDIR/sessrec/new_filesums`
 	if [ -z "$USERMOD" ]; then
 	    echo "-> No Changes"
 	else
@@ -592,7 +592,7 @@ getIncFiles() {
 	__addrpminc+="$__addrpminic"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
 	getIncFiles $(dirname "$1")/"$r" "$2" "$3"
 	continue
-# Avoid sub-shells make sure commented out includes are removed. 
+# Avoid sub-shells make sure commented out includes are removed.
     done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
 #  Add the primary file to the list
     __addrpminc+=$'\n'"$1"
@@ -605,8 +605,8 @@ getIncFiles() {
 }
 
 createPkgList() {
-# Usage: createPkgList  "$VAR" VARNAME 
-# Function: Creates lists of packages from package lists 
+# Usage: createPkgList  "$VAR" VARNAME
+# Function: Creates lists of packages from package lists
 # VAR: A variable containing a list of package lists
 # VARNAME: A variable name to identify the returned list of packages.
 # Intent Can be used to generate named variables
@@ -630,7 +630,7 @@ createPkgList() {
 # sanitise regex compliments of TPG
     __pkgs=`printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p' | sed 's/ $//'`
     #The above was getting comments that occured after the package name i.e. vim-minimal #mini-iso9660. but was leaving a trailing space which confused parallels and it failed the install
-    
+
     eval $__pkglist="'$__pkgs'"
     if [ ! -z $DEBUG ]; then
 	echo $'\n'
@@ -649,10 +649,10 @@ diffPkgLists() {
 # The "LIST VARIABLE" contains a 'side by side' list of filenames to be diffed.
 # Compares the users set of rpm lists with the shipped set
 # Intent. Used to determine whether changes have occurred in the users set of rpm lists.
-# Diffs are numbered sequentially each time the script is run with --noclean or --rebuild set 
-# The primary name of the diff is derived from the $WORKDIR thus the diffs remain in context with the session. 
+# Diffs are numbered sequentially each time the script is run with --noclean or --rebuild set
+# The primary name of the diff is derived from the $WORKDIR thus the diffs remain in context with the session.
 # The diffs generated are culmulative which means that each diff is the sum of all the previous diffs
-# thus each diff created contains the entire record of the session. 
+# thus each diff created contains the entire record of the session.
 # Running without --noclean --noclean set destroys the $WORKDIR and thus the diffs.
 # Below not yet implemented
 # Adding the --keep flag will move the diffs to the users home directory. They will be moved back at
@@ -727,9 +727,9 @@ updateUserSpin() {
 # re-assign just for consistancy
     ALLRPMINC=`echo "$UADDRPMINC"`
     getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
-# "Remove any duplicate includes" 
+# "Remove any duplicate includes"
     RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
-    createPkgList "$ALLRPMINC" INSTALL_LIST 
+    createPkgList "$ALLRPMINC" INSTALL_LIST
     createPkgList "$RMRPMINC" PRE_REMOVE_LIST
     if [ ! -z $DEBUG ]; then
 	echo "-> This is the include incfile list"
@@ -780,17 +780,17 @@ mkUserSpin() {
 mkUpdateChroot() {
 # Usage: mkUpdateChroot [Install variable] [remove variable] [update type]
 # Function:      If the --noclean option is set and a full chroot has been built
-#               (presence of .noclean in the chroot directory) then this function will be 
+#               (presence of .noclean in the chroot directory) then this function will be
 #               called when a change is detected in the users iso-build-lists.
-#               If the rebuild flag is set the entire chroot will be rebuilt using 
+#               If the rebuild flag is set the entire chroot will be rebuilt using
 #               the main and user created configurations lists.
-#               It will first add any specified packages to the current chroot 
-#               and then remove the specified packages using the auto-orphan option 
+#               It will first add any specified packages to the current chroot
+#               and then remove the specified packages using the auto-orphan option
 #               if the variable is not empty.
-#               As a minimum the INSTALL_LIST must exist in the environment. 
+#               As a minimum the INSTALL_LIST must exist in the environment.
 #               The optional REMOVE_LIST  can also be supplied.
 #               These variables must contain lists of newline
-#               separated package names for installation or removal. 
+#               separated package names for installation or removal.
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
 #set -x
@@ -829,13 +829,13 @@ mkUpdateChroot() {
 	    printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1  $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
 # This exposed a bug in urpme
 	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
-	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME" 
+	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
 	else
 	    printf '%s\' "No rpms need to be removed"
 	fi
 	if [ -z $ABF ]; then
         #Make some helpful logs
-        #Create the header 
+        #Create the header
         head -1 $WORKDIR/install.log >$WORKDIR/rpm-fail.log
         head -1 $WORKDIR/install.log >$WORKDIR/rpm-install.log
         #Append the data
@@ -956,7 +956,7 @@ createChroot() {
 	updateUserSpin "$FILELISTS"
 #	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 # Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
-    elif [ -z $IN_ABF ] && [ -n $DEBUG ]; then
+    elif [ -z $IN_ABF ] && [ -n "$DEBUG" ]; then
 # This functionality will only update the build if there is a change in files
 # other then my.add and my.rmv. NOT IMPLEMENTED YET
 	[ $CHFLAG == 1 ] && mkOmSpin "$FILELISTS"
@@ -1129,7 +1129,7 @@ createMemDisk () {
     fi
 
 # Create a memdisk img called memdisk_img
-    cd "$WORKDIR"
+    cd "$WORKDIR" || exit
     tar cvf $CHROOTNAME/memdisk_img boot
 
 # Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
@@ -1189,7 +1189,8 @@ createUEFI() {
 # Create the image.
     echo "-> Creating EFI image with size $EFIDISKSIZE"
 
-# mkfs.vfat can create the image and filesystem directly    
+# mkfs.vfat can create the image and filesystem directly
+    touch $IMGNME
     $SUDO mkfs.vfat -C -F 16 -s 1 -S 512 -M 0xFF $IMGNME $EFIDISKSIZE
 # Loopback mount the image
     $SUDO losetup -f $IMGNME
@@ -1216,7 +1217,7 @@ createUEFI() {
 }
 
 setupGrub2() {
-# Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>) 
+# Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>)
 # Sets up grub2 to boot /target/dir
 
     if [ ! -e "$CHROOTNAME"/usr/bin/grub2-mkimage ]; then
@@ -1276,7 +1277,7 @@ setupGrub2() {
 # It requires that all the files needed to build the image must be within the chroot directory when the chroot command is invoked.
 # Also we cannot write outside of the chroot so the images generated will remain in the chroot directory and will need to be removed before the squashfs is built
 # these will be in /tmp and they are only small so leave them for the time being.
-# If the entire ~/ISO director is copied to the chroot we do do have to worry too much about hacking the existing script to work 
+# If the entire ~/ISO director is copied to the chroot we do do have to worry too much about hacking the existing script to work
 # with new paths we can simple add the $CHROOTNAME to the $ISOCHROOTNAME to get get the new path.
 # So the quickest and easiest method is to mv the $ISOROOTNAME this avoids having two copies and is simple to understand
 # First thoughmake sure we actually build new images
@@ -1718,7 +1719,7 @@ EOF
 
 # Remove rpm db files to save some space
     $SUDO rm -rf "$CHROOTNAME"/var/lib/rpm/__db.*
-# 
+#
  $SUDO echo 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
     | tee "$CHROOTNAME"/etc/.updated >"$CHROOTNAME"/var/.updated
 
@@ -1730,8 +1731,8 @@ createSquash() {
 # Before we do anything check if we are a local build
     if [ -n "$IN_ABF" ]; then
 # We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
-# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives 
-# It's likely that the img will be written to one of the mounted drives so it's unlikely 
+# If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives
+# It's likely that the img will be written to one of the mounted drives so it's unlikely
 # that there will be enough diskspace to complete the operation.
 	if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
 	    $SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
