@@ -226,7 +226,7 @@ if [ "$ABF" == "1" ]; then
 	echo "-> You cannot use --keep inside ABF (https://abf.openmandriva.org)"
 	exit 1
     fi
-elif [ ! -z $NOCLEAN ] && [ ! -z $REBUILD ]; then
+elif [ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
     echo "-> You cannot use --noclean and --rebuild together"
     exit 1
 fi
@@ -251,7 +251,7 @@ else
 fi
 
 # set up main working directory if it was not set up
-if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
+if [ -z $IN_ABF ] && [ -n "$WORKDIR" ]; then
     if [ -d $WORKDIR ] && [ -z $NOCLEAN ] && [ -z $REBUILD ]; then
 	echo $'\n'
 	echo "-> Creating working directory"
@@ -259,7 +259,7 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
 	$SUDO mkdir -p $WORKDIR
 	$SUDO touch $WORKDIR/.new
 	echo "The work directory is "$WORKDIR""
-    elif [ ! -z $NOCLEAN ] && [ -d $WORKDIR ]; then
+    elif [ -n "$NOCLEAN" ] && [ -d $WORKDIR ]; then
 #	     if [ -d $WORKDIR/sessrec ]; then
 	echo "You have chosen not to clean the base installation"
 	echo "If your installation has become corrupted and you want"
@@ -284,20 +284,20 @@ if [ -z $IN_ABF ] && [ ! -z $WORKDIR ]; then
                 $SUDO rm -rf $WORKDIR/sessrec
             fi
 	fi
-    elif [ ! -z $NOCLEAN ]; then
+    elif [ -n "$NOCLEAN" ]; then
 	$SUDO mkdir -p $WORKDIR
 	$SUDO touch $WORKDIR/.new
-	if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
+	if [ -n "$KEEP" ] && [ -d $UHOME/sessrec ]; then
 	    mv $UHOME/sessrec $WORKDIR/
 	fi
     else
 	$SUDO mkdir -p $WORKDIR
-	if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
+	if [ -n "$KEEP" ] && [ -d $UHOME/sessrec ]; then
 	    mv $UHOME/sessrec $WORKDIR/
 	fi
     fi
 else
-    if [ ! -z "$IN_ABF" ]; then
+    if [ -n "$IN_ABF" ]; then
 	echo $'\n'
 	echo "-> Yes we are inside ABF."
 # Create working directory
@@ -409,7 +409,7 @@ updateSystem() {
     elif  [ ! -f "$CHROOTNAME"/.noclean ]; then
 	echo "-> Building in user custom environment will clean rpm cache"
 	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch ${RPM_LIST} gptfdisk parallel --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-    elif  [ ! -z $REBUILD ]; then
+    elif  [ -n "$REBUILD" ]; then
 	echo "-> Rebuilding the user custom environment using saved rpm cache"
 #	$SUDO urpmi --noclean --downloader wget --wget-options --auth-no-challenge --replacepkgs --auto --no-suggests --verify-rpm --ignorearch perl-URPM dosfstools grub2 gptfdisk --prefer /distro-theme-OpenMandriva-grub/ --prefer /distro-release-OpenMandriva/ --auto
     fi
@@ -487,18 +487,18 @@ showInfo() {
 	echo "ISO label is $LABEL"
 	echo "Build ID is $BUILD_ID"
 	echo "Working directory is $WORKDIR"
-	if  [ ! -z $REBUILD ]; then
+	if  [ -n "$REBUILD" ]; then
 	    echo "All rpms will be re-installed"
-	elif [ ! -z $NOCLEAN ]; then
+	elif [ -n "$NOCLEAN" ]; then
 	    echo "Installed rpms will be updated"
 	fi
-	if [ ! -z $DEBUG ]; then
+	if [ -n "$DEBUG" ]; then
 	    echo "Debugging enabled"
 	fi
-	if [ ! -z $QUICKEN ]; then
+	if [ -n "$QUICKEN" ]; then
 	    echo "Squashfs compression disabled"
 	fi
-	if [ ! -z $KEEP ]; then
+	if [ -n "$KEEP" ]; then
 	    echo "The session diffs will be retained"
 	fi
 	echo $'###\n'
@@ -563,7 +563,7 @@ localMd5Change() {
 	fi
 	DEVMOD=`printf '%s' "$USERMOD" grep -v 'my.add\|my.rmv'`
 # This list is intended for Developers
-	if [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
+	if [ $CHGFLAG == 1 ] && [ -n "$DEBUG" ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
 # Create a developer diff ommitting my.add and my.rmv
 	    diffPkgLists "$DEVMOD"
 	elif [ $CHGFLAG == 1 ]; then
@@ -632,7 +632,7 @@ createPkgList() {
     #The above was getting comments that occured after the package name i.e. vim-minimal #mini-iso9660. but was leaving a trailing space which confused parallels and it failed the install
 
     eval $__pkglist="'$__pkgs'"
-    if [ ! -z $DEBUG ]; then
+    if [ -n "$DEBUG" ]; then
 	echo $'\n'
 	echo "-> This is the $2 package list"
 	echo "$__pkgs"
@@ -731,7 +731,7 @@ updateUserSpin() {
     RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
     createPkgList "$ALLRPMINC" INSTALL_LIST
     createPkgList "$RMRPMINC" PRE_REMOVE_LIST
-    if [ ! -z $DEBUG ]; then
+    if [ -n "$DEBUG" ]; then
 	echo "-> This is the include incfile list"
 	echo "$ALLRPMINC"
 	$SUDO printf '%s\n' "$ALLRPMINC" >$WORKDIR/add_incfile.list
@@ -743,7 +743,7 @@ updateUserSpin() {
 
 # "Remove any packages that occur in both lists"
     REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
-    if [ ! -z DEBUG ]; then
+    if [ -n "$DEBUG" ]; then
 	$SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_update_add_rpmlist"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_update_rm_rpmlist"
     fi
@@ -770,7 +770,7 @@ mkUserSpin() {
     createPkgList "$RMRPMINC" REMOVE_LIST
 # Then to be sure remove the common lines from the remove package lists
     REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
-    if [ ! -z DEBUG ]; then
+    if [ -n "$DEBUG" ]; then
 	$SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_add_rpmlist"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_rm_rpmlist"
     fi
@@ -800,21 +800,21 @@ mkUpdateChroot() {
 	local __removelist="$2"
 #echo "$__install_list" >"$WORKDIR"/checklist
 
-	if [ ! -z "$REBUILD" ]; then
+	if [ -n "$REBUILD" ]; then
 	    printf '%s\n' "Reloading saved rpms"
 	    # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
 	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force ${URPMI_DEBUG}
 	fi
 
 
-	if [ ! -z "$1" ] && [ ! -z "$NOCLEAN" ]; then
+	if [ -n "$1" ] && [ -n "$NOCLEAN" ]; then
             echo -> "Slambui"
 	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-	elif [ ! -z "$1" ] && [ ! -z "$ABF" ]; then #Use xargs for ABF just in case of any unexpected interactions
+	elif [ -n "$1" ] && [ -n "$ABF" ]; then #Use xargs for ABF just in case of any unexpected interactions
 	    echo -> "Installing packages at ABF"
 	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
-    elif [ ! -z "$1" ]; then
+    elif [ -n "$1" ]; then
         echo -> "Installing packages locally"
         printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
 	else
@@ -822,7 +822,7 @@ mkUpdateChroot() {
 	    echo " "
 	fi
 
-	if [ ! -z "$2" ]; then
+	if [ -n "$2" ]; then
 	    echo "-> Removing user specified rpms and orphans"
 # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
 #	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
@@ -858,12 +858,12 @@ createChroot() {
     $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
 # Do not clean build chroot
     if [ ! -f "$CHROOTNAME"/.noclean ]; then
-	if [ ! -z $NOCLEAN ] && [ -d "$CHROOTNAME"/lib/modules ]; then
+	if [ -n "$NOCLEAN" ] && [ -d "$CHROOTNAME"/lib/modules ]; then
 	    touch "$CHROOTNAME"/.noclean
 	fi
     fi
 
-    if [ ! -z $REBUILD ]; then
+    if [ -n "$REBUILD" ]; then
 	ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
 	if [ -z $ANYRPMS ]; then
 	    echo "-> You must run with --noclean before you use --rebuild"
@@ -873,7 +873,7 @@ createChroot() {
 	if [ -d $WORKDIR/sessrec ]; then
 	    echo "-> Your session diffs will be saved if you have used the --keep flag"
 	    echo "-> If you have not set the --keep flag and wish to keep them hit abort now and restart with the flag set"
-	    if [ ! -z $KEEP ]; then
+	    if [ -n "$KEEP" ]; then
 		$SUDO mv $WORKDIR/sessrec $UHOME/
 		echo "-> Your session diffs have been saved"
 	    fi
@@ -894,7 +894,7 @@ createChroot() {
 # Restore the .noclean file when complete
 		    $SUDO touch $CHROOTNAME/.noclean
 # Restore the session diffs
-		    if [ ! -z $KEEP ] && [ -d $UHOME/sessrec ]; then
+		    if [ -n "$KEEP" ] && [ -d $UHOME/sessrec ]; then
 			mv $UHOME/sessrec $WORKDIR/
 		    fi
 # Need to update the md5sum too otherwise it will add files again on next running mmm thinking about his one
@@ -911,7 +911,7 @@ createChroot() {
 	fi
     fi
 
-    if [ ! -f "$CHROOTNAME"/.noclean ] || [ ! -z $REBUILD ]; then
+    if [ ! -f "$CHROOTNAME"/.noclean ] || [ -n "$REBUILD" ]; then
 	echo "-> Adding urpmi repository $REPOPATH into $CHROOTNAME"
 	if [ "$FREE" = "0" ]; then
 	    $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
@@ -948,11 +948,11 @@ createChroot() {
 # CHGFLAG=1 Indicates a global change in the iso lists
     if [ -z $NOCLEAN ] && [ -z $REBUILD ] && [ -z $DEBUG ]; then
 	mkOmSpin
-    elif [ ! -z $NOCLEAN ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
+    elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z $DEBUG ]; then
 	mkUserSpin $FILELISTS
-    elif [ ! -z $REBUILD ]; then
+    elif [ -n "$REBUILD" ]; then
 	mkUserSpin $FILELISTS
-    elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ]; then
+    elif [ -f "$CHROOTNAME"/.noclean ] && [ $CHGFLAG == 1 ] && [ -z $IN_ABF ] ; then
 	updateUserSpin "$FILELISTS"
 #	elif [ $CHGFLAG == 1 ] && [ ! -z $DEBUG ] && [ -z $DEVMOD ]; then
 # Need to reset the change flag if there's a failure for the above to work. Needs Implementing.
@@ -964,7 +964,7 @@ createChroot() {
 	updateUserSpin "$FILELISTS"
     fi
 
-    if [ ! -z $REBUILD ]; then
+    if [ -n "$REBUILD" ]; then
 # Restore the noclean status
 	$SUDO touch $CHROOTNAME/.noclean
     fi
@@ -975,7 +975,7 @@ createChroot() {
     fi
 
 # If --noclean selected mark the chroot
-    if [ ! -z "$NOCLEAN" ]; then
+    if [ -n "$NOCLEAN" ]; then
 	touch "$CHROOTNAME"/.noclean
     fi
 
@@ -1754,7 +1754,7 @@ createSquash() {
 # Here we go with local speed ups
 # For development only remove all the compression so the squashfs builds quicker.
 # Give it it's own flag QUICKEN.
-    if [ ! -z $QUICKEN ]; then
+    if [ -n "$QUICKEN" ]; then
 	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
     else
 	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-exports -no-recovery -b 16384
