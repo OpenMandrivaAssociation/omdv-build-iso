@@ -126,21 +126,3 @@ samba-server #server
 
 # special featured software
 oma-welcome
-
-# More i18n to take care of the translations we usually provide
-kde-l10n-de
-kde-l10n-en_GB
-kde-l10n-es
-kde-l10n-fr
-kde-l10n-it
-kde-l10n-ja
-kde-l10n-ko
-kde-l10n-nb
-kde-l10n-nl
-kde-l10n-nn
-kde-l10n-pl
-kde-l10n-pt_BR
-kde-l10n-ro
-kde-l10n-ru
-kde-l10n-zh_CN
-kde-l10n-zh_TW
