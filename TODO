@@ -16,4 +16,7 @@ This is a TODO list.
 12; Make update chroot repos into a separate function
 11: Add the ability to definitively call abf-downloads for the package lists.  (Perhaps a debug function)
 12: Add flag to set the number of acceptable rpm installation failures for parallels only for user mode
-   Perhaps combined with apper and packagit
+    Perhaps combined with apper and packagit
+13: Improve and consolidate logging 
+14. Move functions to separate file sources from the main one.
+15. Try to build a multi-arch i686 EFI spin 
