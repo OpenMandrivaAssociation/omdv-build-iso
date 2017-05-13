@@ -266,7 +266,7 @@ fi
 # There is no way currently of telling whether the script is running in an ABF instance so it is almost impossible to protect against 
 # improper use of ABF=1. The best that can be done is to ensure that the WORKDIR does not get set to /usr/bin if the script is started
 # by a normal non-root user.
-
+printf "$WHO
 if [ "$IN_ABF" == "1" ] && [ "$WHO" != "no login name" ] && [ -z "$DEBUG" ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
