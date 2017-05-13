@@ -267,7 +267,7 @@ fi
 # improper use of ABF=1. The best that can be done is to ensure that the WORKDIR does not get set to /usr/bin if the script is started
 # by a normal non-root user.
 
-if [ "$IN_ABF" == "1" ] && [ "$WHO" != "root" ] && [ -z "$DEBUG" ]; then
+if [ "$IN_ABF" == "1" ] && [ "$WHO" != "no login name" ] && [ -z "$DEBUG" ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
 elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root" ]; then
