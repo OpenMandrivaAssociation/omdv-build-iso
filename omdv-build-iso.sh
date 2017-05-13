@@ -201,7 +201,9 @@ echo $ABF
 # run only when root
 # Try another way.
 WHO=`id -nu`
-printf %s\n $WHO %s\n
+printf "%s\n $WHO %s\n"
+WHO_WORKDIR=$(realpath $(dirname $0))
+printf "%s\n $WHO_WORKDIR %s\n"
 
 if [ "`id -u`" != "0" ]; then
     # We need to be root for umount and friends to work...
