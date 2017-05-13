@@ -596,7 +596,7 @@ localMd5Change() {
 		CHGFLAG=1
 	    fi
 	fi
-	if [ $CHGFLAG == 1 ]; then
+	if [ "$CHGFLAG" == "1" ]; then
 	    printf "%s\n -> Your build files have changed"
 	fi
 
