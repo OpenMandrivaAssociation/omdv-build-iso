@@ -278,7 +278,7 @@ printf "%s\n Debugging ABF build locally"
 #Here we are with ABF=1 and in DEBUG mode,  running on a local system.
 # Avoid setting the usual ABF WORKDIR
 # if WORKDIR is not defined then set a default'
-    if [ -z "$WORKDIR" ]; then
+    if [ "$IN_ABF" == "0" ] && [ -z "$WORKDIR" ]; then
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
     elif [ "$IN_ABF" == "1" ] && [ "$WHO" = "root" ] && [ -z "$DEBUG" ]; then
     # Hopefully we really are in ABF
@@ -287,11 +287,11 @@ printf "%s\n Debugging ABF build locally"
 fi
 
     
-if [ "$IN_ABF" == "0" ]; then
-    if [ -z "$WORKDIR" ]; then
-    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-    fi
-fi
+#if [ "$IN_ABF" == "0" ]; then
+#    if [ -z "$WORKDIR" ]; then
+#    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+#    fi
+#fi
 
 printf "%s ->The work directory is "$WORKDIR" %s\n"
 # Define these earlier so that files can be moved easily for the various save options
