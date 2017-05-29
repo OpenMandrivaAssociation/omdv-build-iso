@@ -22,6 +22,7 @@ html2text #utils
 htop #utils
 hw-probe #utils
 krb5-workstation #utils
+lame #utils
 lftp #utils
 libgphoto-common #utils
 libmtp-utils #utils
