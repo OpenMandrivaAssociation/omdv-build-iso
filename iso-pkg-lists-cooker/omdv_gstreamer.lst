@@ -8,3 +8,7 @@ gstreamer1.0-plugins-bad
 gstreamer1.0-pulse
 gstreamer1.0-soup
 gstreamer1.0-vp8
+gstreamer1.0-lame
+gstreamer1.0-cdio
+gstreamer1.0-a52dec
+gstreamer1.0-flac
