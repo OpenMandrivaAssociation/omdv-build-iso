@@ -1,18 +1,6 @@
 calligra
 calligra-core
-krita #We use external version of krita now
 calligra-sheets
 calligra-words
 calligra-karbon
 calligra-stage
-
-calligra-l10n-de
-calligra-l10n-es
-calligra-l10n-fr
-calligra-l10n-it
-calligra-l10n-nb
-calligra-l10n-nl
-calligra-l10n-pl
-calligra-l10n-pt_BR
-calligra-l10n-ru
-
