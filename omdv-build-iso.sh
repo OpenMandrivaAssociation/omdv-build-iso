@@ -162,23 +162,24 @@ if [ $# -ge 1 ]; then
         	    NOCLEAN=noclean
         	    shift
         	    ;;
-		--rebuild)
+            --rebuild)
                    REBUILD=rebuild
                    shift
                    ;;
-		--quicken)
+             --quicken)
                    QUICKEN=squashfs
                    shift
                    ;;
-		--keep)
+             --keep)
                    KEEP=keep
                    shift
                    ;;
-         --testrepo)
+             --testrepo)
             	    TESTREPO=testrepo
-                   ;;
-        	--help)
+                    ;;
+             --help)
         	    usage_help
+        	    shift
         	    ;;
     		*)
 		    usage_help
@@ -810,12 +811,12 @@ mkUserSpin() {
 #printf "%s $CHGFLAG %s\n"
 #    echo $'\n'
     printf "%s -> Making a user spin"
-    if [ "CHGFLAG" == "0" ]; then
+    if [ "$CHGFLAG" == "0" ]; then
     getIncFiles "$FILELISTS" ADDRPMINC $TYPE
     else
     getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
     ALLRPMINC=`echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u`
-#    printf "%s\n $ALLRPMINC %s\n"
+    printf "%s\n $ALLRPMINC %s\n" > "$WORKDIR/primary.list"
     getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
     printf "%s\n -> Remove the common include lines for the remove package includes %s\n"
     RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
@@ -870,7 +871,7 @@ mkUpdateChroot() {
 	    printf "$__install_list" | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
     elif [ -n "$1" ] && [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ] && [ "$IN_ABF" == "0" ]; then
         printf "%s\n -> Installing packages locally %s\n"
-        printf "%s\n $__install_list" | parallel -q --keep-order -d '\n' --joblog "$WORKDIR/install.log"  --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 
+        printf '%s\n' $__install_list | parallel -q --keep-order -d '\n' --joblog "$WORKDIR/install.log"  --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 
 	else
 	    printf "%s\n No rpms need to be installed %s\n" 
 	fi
@@ -987,7 +988,7 @@ printf "%s\n Done Mounting proc and friends %s\n"
     printf  "%s\n -> Rebuilding. %s\n"
 	mkUserSpin $FILELISTS
     elif [ -f "$CHROOTNAME"/.noclean ] && [ "$CHGFLAG" == "1" ] && [ "$IN_ABF" == "0" ] && [ -n "$USERMOD" ]; then
-	updateUserSpin "$FILELISTS"
+    updateUserSpin "$FILELISTS"
 	# This functionality will only update the build if there is a change in files
     # other then my.add and my.rmv
 	elif [ "$CHGFLAG" == "1" ] && [ -n "$DEBUG" ] && [ "$IN_ABF" == "0" ] && [ -n "$DEVMOD" ]; then
