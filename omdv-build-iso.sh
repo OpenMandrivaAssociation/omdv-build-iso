@@ -52,7 +52,6 @@ usage_help() {
         printf "%s --testrepo Includes the main testing repo in the iso build"
         printf "%s"
         printf "%sFor example:"
-        printf "%somdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
         printf "%sFor detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
         printf "%sExiting."
 	exit 1
@@ -176,7 +175,6 @@ if [ $# -ge 1 ]; then
                    ;;
              --testrepo)
             	    TESTREPO=testrepo
-                    ;;
              --help)
         	    usage_help
         	    shift
@@ -951,8 +949,9 @@ printf "%s $REPOPATH"
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
     # This one is needed to grab firmwares
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
-            if [ -n "$TESTREPO" ]; then
-            $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+		if [ -n "$TESTREPO" ]; then
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+		fi
             fi
         fi
 	fi
