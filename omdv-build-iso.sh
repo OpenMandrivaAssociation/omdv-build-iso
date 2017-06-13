@@ -52,6 +52,7 @@ usage_help() {
         printf "%s --testrepo Includes the main testing repo in the iso build"
         printf "%s"
         printf "%sFor example:"
+        printf "%somdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
         printf "%sFor detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
         printf "%sExiting."
 	exit 1
@@ -175,6 +176,16 @@ if [ $# -ge 1 ]; then
                    ;;
              --testrepo)
             	    TESTREPO=testrepo
+            	    shift
+                   ;;
+             --devmode)
+                    DEVMODE=devmode
+                    shift
+                    ;;
+             --enable-skip-list)
+                    ENSKPLST=enskplst
+                    shift
+                    ;;
              --help)
         	    usage_help
         	    shift
@@ -191,15 +202,14 @@ fi
 
 # We lose our cli variables when we invoke sudo so we save them
 # and pass them to sudo when it is started. Also the user name is needed.
+WHO="$SUDO_USER"
+SUDOVAR=""UHOME="/home/$WHO "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WHO="$WHO "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
 
-OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
-SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "
-echo $ABF
 # WHO=`logname` # If the user is not root at the start then likely we are in ABF ISO builder. 
 # run only when root
 # Try another way.
-WHO=`id -nu`
+#WHO=`id -nu`
 
 if [ "`id -u`" != "0" ]; then
     # We need to be root for umount and friends to work...
@@ -210,7 +220,8 @@ if [ "`id -u`" != "0" ]; then
     printf "%s -> Run me as root."
     exit 1
 fi
-
+export $SUDOVAR
+#echo "These are the sudo variables $SUDOVAR"
 # Check whether script is executed inside ABF (https://abf.openmandriva.org)
 if [ "$ABF" == "1" ]; then
     IN_ABF=1
@@ -254,34 +265,33 @@ DIST=omdv
 # always build free ISO
 FREE=1
 LOGDIR="."
-UHOME="$HOME"
 
-if [ "`id -u`" = "0" ]; then
-    SUDO=""
-else
-    SUDO="sudo -E"
-fi
+echo "In abf = $IN_ABF"
 
 # Set the $WORKDIR
-# If ABF=1 then $WORKDIR codes to /usr/bin/ on a local system so if you try and test with ABF=1 /usr/bin is rm -rf ed.
+# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
 # To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
-# There is no way currently of telling whether the script is running in an ABF instance so it is almost impossible to protect against 
-# improper use of ABF=1. The best that can be done is to ensure that the WORKDIR does not get set to /usr/bin if the script is started
-# by a normal non-root user.
-if [ "$IN_ABF" == "1" ] && [ "$WHO" != "root" ] && [ -z "$DEBUG" ]; then
+# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abfm and
+# for further security we check that the script is being run by a non-root user. 
+# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
+
+TESTWORKDIR=$(realpath $(dirname $0))
+
+if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z "$DEBUG" ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
-elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root" ]; then
+elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ -n "$WHO"  ]; then
 printf "%s\n Debugging ABF build locally"
 #Here we are with ABF=1 and in DEBUG mode,  running on a local system.
 # Avoid setting the usual ABF WORKDIR
 # if WORKDIR is not defined then set a default'
     if [ -z "$WORKDIR" ]; then
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+    printf '%s\n' "The build directory is $WORKDIR"
     fi
 fi
 
-if [ "$IN_ABF" == "1" ] && [ "$WHO" == "root" ]; then
+if [ "$IN_ABF" == "1" ] && [ -z "$WHO" ]; then
     # Hopefully we really are in ABF
     WORKDIR=$(realpath $(dirname $0))
 fi
@@ -293,12 +303,12 @@ if [ "$IN_ABF" == "0" ]; then
     fi
 fi
 
-printf "%s ->The work directory is "$WORKDIR" %s\n"
+printf "%s ->The work directory is $WORKDIR %s\n"
 # Define these earlier so that files can be moved easily for the various save options
 # this is where rpms are installed
-CHROOTNAME="$WORKDIR"/BASE
+CHROOTNAME="$WORKDIR/BASE"
 # this is where ISO files are created
-ISOROOTNAME="$WORKDIR"/ISO
+ISOROOTNAME="$WORKDIR/ISO"
 
 # User mode allows three modes of operation.
 # All user modes rely on the script being run with no user options to generate  the initial chroot.
@@ -312,14 +322,14 @@ ISOROOTNAME="$WORKDIR"/ISO
 # User mode also generates a series of diffs as a record of the multiple sessiona. 
 # The --keep option allow these to be retained for subsequent sessions
 # The option is disallowed when the build takes place in ABF.
-if [ "$IN_ABF" == "0" ] && [ -n "$KEEP" ] && [ -d $WORKDIR/sessrec ]; then
+if [ "$IN_ABF" == "0" ] && [ -n "$KEEP" ] && [ -d "$WORKDIR/sessrec" ]; then
 $SUDO mv "$WORKDIR/sessrec" "$UHOME"
 printf "%s Retaining your session records"
 else
 printf "%s\n -> No session records exist you must run the script to create them"
 fi
 
-if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root" ]; then
+if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ -n "$WHO" ]; then
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
 #elif [ "$IN_ABF" == "0" ] && [ -z "$NOCLEAN ]; then
@@ -359,19 +369,6 @@ else
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
 fi
-
-
-#if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
-#	     if [ -d $WORKDIR/sessrec ]; then
-#printf "%s\n You have chosen not to clean the base installation %s\n If your build chroot becomes corrupted you may want %s\n to take advantage of the 'rebuild' option to delete the corrupted files %s\n and build a new base installation. %s\n This will be faster than dowloading the rpm packages again"
-
-# Note need to clean out grub uuid files here and maybe others
-#elif  [ -n "$NOCLEAN" ] && [ ! -d "$WORKDIR" ]; then
-#printf "%s\n No base chroot exists...creating one"
-#else
-#$SUDO mkdir -p "$WORKDIR"
-#$SUDO touch "$WORKDIR/.new"
-#fi
 
 # Assign the config build list
 FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
@@ -464,7 +461,7 @@ printf "%s $WORKDIR"
 	    printf "%s -> Copying build lists from `rpm -q omdv-build-iso`"
 	    $SUDO cp -r /usr/share/omdv-build-iso/* "$WORKDIR"
 	    touch "$WORKDIR/.new"
-	    chown -R "$OLDUSER":"$OLDUSER" "$WORKDIR" #this doesn't do ISO OR BASE
+	    chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
 	else
 	    printf "%s\n -> Your build lists have been retained" # Files already copied
 	fi
@@ -540,6 +537,9 @@ showInfo() {
 	if [ -n "$KEEP" ]; then
 	    printf "%s\n The session diffs will be retained"
 	fi
+	if [ -n "$ENSKPLST" ]; then
+        printf "%\n urpmi skip list enabled"
+    fi
 	printf "%s\n ### %s\n"
 }
 
@@ -755,7 +755,7 @@ mkOmSpin() {
     printf "%s -> Creating OpenMandriva spin from $FILELISTS %s\n Which includes %s\n"
     printf  "$ADDRPMINC" | grep -v "$FILELISTS"  
     createPkgList "$ADDRPMINC" INSTALL_LIST
-    if [ -n "$DEBUG" ]; then
+    if [ -n "$DEVMODE" ]; then
     printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
     fi
     mkUpdateChroot "$INSTALL_LIST"
@@ -782,7 +782,7 @@ updateUserSpin() {
 	printf "%s/n $ALLRPMINC"
 	printf "%s\n\n -> This is the remove incfile list %s\n"
 	printf "%s $RMRPMINC"
-	if [ -n "DEBUG" ]; then
+	if [ -n "$DEVMODE" ]; then
 	$SUDO printf '%s\n' "$ALLRPMINC" >$WORKDIR/add_incfile.list
 	#	printf '%s\n\n' " "
 	$SUDO printf '%s\n' "$RMRPMINC" >$WORKDIR/remove_incfile.list
@@ -790,7 +790,7 @@ updateUserSpin() {
 # "Remove any packages that occur in both lists"
 #    REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
 printf "$REMOVE_LIST"
-    if [ -n "$DEBUG" ]; then
+    if [ -n "$DEVMODE" ]; then
 	$SUDO printf '%s\n' "$INSTALL_LIST" >"$WORKDIR/user_update_add_rpmlist"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_update_rm_rpmlist"
     fi
@@ -826,7 +826,7 @@ mkUserSpin() {
     createPkgList "$RMRPMINC" REMOVE_LIST
 # Then to be sure remove the common lines from the remove package lists
     #REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
-    if [ -n "$DEBUG" ]; then
+    if [ -n "$DEVMODE" ]; then
 	$SUDO printf '%s\n' "$INSTALL_LIST" >"$WORKDIR/user_add_rpmlist"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_rm_rpmlist"
     fi
@@ -863,7 +863,7 @@ mkUpdateChroot() {
 	    $SUDO printf '%s\n' "$__install_list" >"$WORKDIR/RPMLIST.txt"
     elif [ -n "$1" ] && [ "$IN_ABF" == "1" ]; then #Use xargs for ABF just in case of any unexpected interactions
 	    printf "%s\n -> Installing packages at ABF %s\n"
-	    printf "$__install_list %s\n"
+	    #printf "$__install_list %s\n"
 	    #Strip the newlines
 	    #printf "$__install_list" | tr '\n' ' ' | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
 	    printf "$__install_list" | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
@@ -954,15 +954,21 @@ printf "%s $REPOPATH"
 		fi
             fi
         fi
-	fi
 
 # Update media
+
+    SKIPLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/skip.lst"
+    echo "This is the skip list $SKIPLISTS"
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
 	printf "%s -> Updating urpmi repositories in $CHROOTNAME"
 	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
     fi
-
+    if [ -n "$ENSKPLST" ]; then
+    $SUDO cp "$SKIPLISTS" "$CHROOTNAME/etc/urpmi/"
+    printf "%s\n Installing urpmi skip.list"
+    fi
+    errorCatch
     $SUDO mount --bind /proc "$CHROOTNAME"/proc
     $SUDO mount --bind /sys "$CHROOTNAME"/sys
     $SUDO mount --bind /dev "$CHROOTNAME"/dev
@@ -976,22 +982,26 @@ printf "%s\n Done Mounting proc and friends %s\n"
 # if --rebuild is set then make a spin with the user filelists
 # If --noclean is set and a change in the filelists has been detected and we are not in_abf 
 # then update the  user spin with the users modified filelists.
+echo "$DEVMODE"
     if [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ]; then
     printf "%s\n Creating chroot %s\n"
 	mkOmSpin
-    elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -z "$DEBUG" ]; then
+    elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -v "$DEBUG" ] && [ -v "$DEVMODE" ]; then
     mkOmSpin
-    elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ] && [ -z "$DEBUG" ]; then
+    elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ] && [ -v "$DEBUG" ] && [ -v "$DEVMODE" ]; then
     mkUserSpin $FILELISTS
     elif [ -n "$REBUILD" ]; then
     printf  "%s\n -> Rebuilding. %s\n"
-	mkUserSpin $FILELISTS
-    elif [ -f "$CHROOTNAME"/.noclean ] && [ "$CHGFLAG" == "1" ] && [ "$IN_ABF" == "0" ] && [ -n "$USERMOD" ]; then
+    mkUserSpin $FILELISTS
+    elif [ -f "$CHROOTNAME"/.noclean ] && [ "$CHGFLAG" == "1" ] && [ "$IN_ABF" == "0" ] && [ -n "$USERMODE" ]; then
     updateUserSpin "$FILELISTS"
 	# This functionality will only update the build if there is a change in files
     # other then my.add and my.rmv
-	elif [ "$CHGFLAG" == "1" ] && [ -n "$DEBUG" ] && [ "$IN_ABF" == "0" ] && [ -n "$DEVMOD" ]; then
-    updateUserSpin "$FILELISTS"
+	elif [ "$CHGFLAG" == "1" ] && [ "$IN_ABF" == "0" ] && [ -n "$USERMODE" ]; then
+        mkUserSpin $FILELISTS
+    #Allow an unconditional update irrespective of CHNGFLAG or NOCLEAN state.
+   	elif [ "$IN_ABF" == "0" ] && [ -n "$DEVMODE" ]; then
+   	mkOmSpin $FILELISTS
     fi
     if [ -n "$REBUILD" ]; then
     # Restore the noclean status
@@ -1788,7 +1798,7 @@ buildIso() {
     if [ -n "$IN_ABF" ]; then
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
-	ISOFILE="/home/$OLDUSER/$PRODUCT_ID.$EXTARCH.iso"
+	ISOFILE="/home/$WHO/$PRODUCT_ID.$EXTARCH.iso"
     else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
     fi
