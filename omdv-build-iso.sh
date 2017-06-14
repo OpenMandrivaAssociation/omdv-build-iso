@@ -274,7 +274,6 @@ echo "In abf = $IN_ABF"
 # To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abfm and
 # for further security we check that the script is being run by a non-root user. 
 # To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
-set -x
 TESTWORKDIR=$(realpath $(dirname $0))
 echo $TESTWORKDIR
 if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
@@ -302,7 +301,6 @@ if [ "$IN_ABF" == "0" ]; then
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
     fi
 fi
-set +x
 printf "%s ->The work directory is $WORKDIR %s\n"
 # Define these earlier so that files can be moved easily for the various save options
 # this is where rpms are installed
@@ -554,7 +552,7 @@ localMd5Change() {
 # If the flag is set the md5s for the files are compared and a named variable containing the changed files is emmitted.
 # This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
 	BASE_LIST=$WORKDIR/iso-pkg-lists-${TREE}
-    if [ "$IN_ABF" == "0" ]; then
+#    if [ "$IN_ABF" == "0" ]; then
 	local __dodiff='diff --suppress-common-lines --unchanged-group-format=\"\" --changed-group-format=\""%>\""'
 	local __difflist
         if [ ! -d "$WORKDIR/sessrec" ]; then
@@ -574,7 +572,7 @@ localMd5Change() {
         REF_CHGSENSE=`cat "$WORKDIR"/sessrec/ref_chgsense`
 	    REF_FILESUMS=`cat "$WORKDIR"/sessrec/ref_filesums`
 	    printf "%s\n -> References loaded"
-        fi
+#        fi
 	# Generate the references for this run
 	# Need to be careful here; there may be backup files so get the exact files
 	# Order is important (sort?)
@@ -588,14 +586,15 @@ localMd5Change() {
     printf "%s\n New Directory Reference checksum $NEW_CHGSENSE %s\n"
     printf "%s\n New Filesums %s\n$NEW_FILESUMS%s\n"
     fi
+    
     if [ -f "$WORKDIR/sessrec/ref_chgsense" ]; then
-	    if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
-		CHGFLAG=0
-	    else
-		$SUDO echo "$NEW_CHGSENSE" >"$WORKDIR"/sessrec/ref_chgsense
-		CHGFLAG=1
-	    fi
-	fi
+        if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
+        CHGFLAG=0
+        else
+        $SUDO echo "$NEW_CHGSENSE" >"$WORKDIR"/sessrec/ref_chgsense
+        CHGFLAG=1
+        fi
+    fi
 	if [ "$CHGFLAG" == "1" ]; then
 	    printf "%s\n -> Your build files have changed"
 	fi
@@ -604,25 +603,25 @@ localMd5Change() {
 # In these circumstances awk does a better job than diff
 # This looks complicated but all it does is to put the two fields in each file into independent arrays,
 # compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-	MODFILES=`awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums"`
+    MODFILES=`awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums"`
     USERMOD=`printf '%s' "$MODFILES" | grep 'my.add\|my.rmv'`
-	if [ -z "$USERMOD" ]; then
-	    printf "%s\n -> No Changes"
-	else
-	    printf "%s\n $USERMOD"
-	fi
-	# Here just the standard files are diffed ommitting my.add and my.remove
-	# Intended for developers creating new compilations only active if --debug is passed 
-	DEVMOD=`printf '%s' "$MODFILES" | grep -v 'my.add\|my.rmv'`
+    if [ -z "$USERMOD" ]; then
+        printf "%s\n -> No Changes"
+    else
+        printf "%s\n $USERMOD"
+    fi
+    # Here just the standard files are diffed ommitting my.add and my.remove
+    # Intended for developers creating new compilations only active if --debug is passed 
+    DEVMOD=`printf '%s' "$MODFILES" | grep -v 'my.add\|my.rmv'`
 # This list is intended for Developers
-	if [ "$CHGFLAG" == "1" ] && [ -n "$DEBUG" ] && [ -n "$DEVMOD" ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
+    if [ "$CHGFLAG" == "1" ] && [ -n "$DEBUG" ] && [ -n "$DEVMOD" ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
 # Create a developer diff ommitting my.add and my.rmv
-	    diffPkgLists "$DEVMOD"
+        diffPkgLists "$DEVMOD"
     elif [ "$CHGFLAG" == "1" ]; then
 # Create a diff for the users reference
-	    diffPkgLists "$USERMOD"
-	fi
-}
+        diffPkgLists "$USERMOD"
+    fi
+ }
 
 getIncFiles() {
 # Usage: getIncFiles [filename] xyz.* $"[name of variable to return] [package list file. my.add || my.rmv || {main config pkgs}]
@@ -950,26 +949,29 @@ printf "%s $REPOPATH"
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
     # This one is needed to grab firmwares
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
-		if [ -n "$TESTREPO" ]; then
-		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-		fi
+            if [ -n "$TESTREPO" ]; then
+            $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
             fi
         fi
+	fi
 
 # Update media
 
     SKIPLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/skip.lst"
     echo "This is the skip list $SKIPLISTS"
+ 
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
 	printf "%s -> Updating urpmi repositories in $CHROOTNAME"
 	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
     fi
     if [ -n "$ENSKPLST" ]; then
+    SKIPLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/skip.lst"
+    echo "This is the skip list $SKIPLISTS"
     $SUDO cp "$SKIPLISTS" "$CHROOTNAME/etc/urpmi/"
     printf "%s\n Installing urpmi skip.list"
     fi
-    errorCatch
+
     $SUDO mount --bind /proc "$CHROOTNAME"/proc
     $SUDO mount --bind /sys "$CHROOTNAME"/sys
     $SUDO mount --bind /dev "$CHROOTNAME"/dev
@@ -1035,6 +1037,7 @@ echo "$DEVMODE"
     popd
 # remove rpm db files which may not match the target chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+set +x
 }
 
 createInitrd() {
@@ -1875,7 +1878,9 @@ postBuild() {
 # START ISO BUILD
 showInfo
 updateSystem
+if [ "$IN_ABF" == "0" ]; then
 localMd5Change
+fi
 createChroot
 createInitrd
 createMemDisk
