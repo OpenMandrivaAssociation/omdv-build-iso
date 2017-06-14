@@ -277,7 +277,7 @@ echo "In abf = $IN_ABF"
 
 TESTWORKDIR=$(realpath $(dirname $0))
 echo $TESTWORKDIR
-if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z "$DEBUG" ]; then
+if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
 elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ -n "$WHO"  ]; then
@@ -291,7 +291,7 @@ printf "%s\n Debugging ABF build locally"
     fi
 fi
 
-if [ "$IN_ABF" == "1" ] && [ -z "$WHO" ]; then
+if [ "$IN_ABF" == "1" ] && [ -z $WHO ]; then
     # Hopefully we really are in ABF
     WORKDIR=$(realpath $(dirname $0))
 fi
