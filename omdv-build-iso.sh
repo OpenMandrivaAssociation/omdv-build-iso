@@ -280,7 +280,7 @@ echo $TESTWORKDIR
 if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
-elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ -n "$WHO"  ]; then
+elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv"  ]; then
 printf "%s\n Debugging ABF build locally"
 #Here we are with ABF=1 and in DEBUG mode,  running on a local system.
 # Avoid setting the usual ABF WORKDIR
@@ -291,7 +291,7 @@ printf "%s\n Debugging ABF build locally"
     fi
 fi
 
-if [ "$IN_ABF" == "1" ] && [ -z $WHO ]; then
+if [ "$IN_ABF" == "1" ] && [ "$WHO" == "omv" ]; then
     # Hopefully we really are in ABF
     WORKDIR=$(realpath $(dirname $0))
 fi
@@ -329,7 +329,7 @@ else
 printf "%s\n -> No session records exist you must run the script to create them"
 fi
 
-if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ -n "$WHO" ]; then
+if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv" ]; then
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
 #elif [ "$IN_ABF" == "0" ] && [ -z "$NOCLEAN ]; then
