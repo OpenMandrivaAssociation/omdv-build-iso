@@ -274,7 +274,7 @@ echo "In abf = $IN_ABF"
 # To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abfm and
 # for further security we check that the script is being run by a non-root user. 
 # To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
-
+set -x
 TESTWORKDIR=$(realpath $(dirname $0))
 echo $TESTWORKDIR
 if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
@@ -302,7 +302,7 @@ if [ "$IN_ABF" == "0" ]; then
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
     fi
 fi
-
+set +x
 printf "%s ->The work directory is $WORKDIR %s\n"
 # Define these earlier so that files can be moved easily for the various save options
 # this is where rpms are installed
