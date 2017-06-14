@@ -276,7 +276,7 @@ echo "In abf = $IN_ABF"
 # To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
 
 TESTWORKDIR=$(realpath $(dirname $0))
-
+echo $TESTWORKDIR
 if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z "$DEBUG" ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
