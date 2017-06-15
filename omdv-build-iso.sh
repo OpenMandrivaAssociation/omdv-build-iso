@@ -222,7 +222,7 @@ if [ "`id -u`" != "0" ]; then
     exit 1
 fi
 #WHO=""
-echo "$WHO"
+echo "$SUDOVAR"
 #echo "$SUDO_USER"
 export $SUDOVAR $WHO
 #echo "These are the sudo variables $SUDOVAR"
