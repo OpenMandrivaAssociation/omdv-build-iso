@@ -204,8 +204,8 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 #WHO="$SUDO_USER"
 WHO=`id -un`
-SUDOVAR=""UHOME="/home/$WHO "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WHO="$WHO "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
+SUDOVAR=""WHO="$WHO "UHOME="/home/$WHO "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
 
 # WHO=`logname` # If the user is not root at the start then likely we are in ABF ISO builder. 
 # run only when root
@@ -224,7 +224,7 @@ fi
 #WHO=""
 echo "$WHO"
 #echo "$SUDO_USER"
-export $SUDOVAR $SUDO_USER
+export $SUDOVAR $WHO
 #echo "These are the sudo variables $SUDOVAR"
 # Check whether script is executed inside ABF (https://abf.openmandriva.org)
 if [ "$ABF" == "1" ]; then
