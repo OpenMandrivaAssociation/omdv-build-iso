@@ -294,7 +294,7 @@ printf "%s\n Debugging ABF build locally"
     fi
 fi
 
-if [ "$IN_ABF" == "1" ] && [ "$WHO" == "omv" ]; then
+if [ "$IN_ABF" == "1" ] && [ "$WHO" == "root" ]; then
     # Hopefully we really are in ABF
     WORKDIR=$(realpath $(dirname $0))
 fi
@@ -331,7 +331,7 @@ else
 printf "%s\n -> No session records exist you must run the script to create them"
 fi
 
-if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv" ]; then
+if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root" ]; then
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
 #elif [ "$IN_ABF" == "0" ] && [ -z "$NOCLEAN ]; then
