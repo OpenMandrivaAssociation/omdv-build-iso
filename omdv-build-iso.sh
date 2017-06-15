@@ -221,7 +221,7 @@ if [ "`id -u`" != "0" ]; then
     printf "%s -> Run me as root."
     exit 1
 fi
-WHO=""
+#WHO=""
 echo "$WHO"
 #echo "$SUDO_USER"
 export $SUDOVAR $SUDO_USER
