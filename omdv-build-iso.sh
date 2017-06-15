@@ -283,7 +283,7 @@ echo $TESTWORKDIR
 if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
-elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv"  ]; then
+elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root"  ]; then
 printf "%s\n Debugging ABF build locally"
 #Here we are with ABF=1 and in DEBUG mode,  running on a local system.
 # Avoid setting the usual ABF WORKDIR
@@ -367,9 +367,9 @@ elif [ "$IN_ABF" == "0" ] && [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NO
         $SUDO mkdir -p "$WORKDIR"
         $SUDO touch "$WORKDIR/.new"
         fi
-else
-$SUDO rm -rf "$WORKDIR"
-$SUDO mkdir -p "$WORKDIR"
+#else
+#$SUDO rm -rf "$WORKDIR"
+#$SUDO mkdir -p "$WORKDIR"
 fi
 
 # Assign the config build list
