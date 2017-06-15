@@ -220,7 +220,9 @@ if [ "`id -u`" != "0" ]; then
     printf "%s -> Run me as root."
     exit 1
 fi
-export $SUDOVAR
+WHO="SUDO_USER"
+echo "$SUDO_USER"
+export $SUDOVAR $SUDO_USER
 #echo "These are the sudo variables $SUDOVAR"
 # Check whether script is executed inside ABF (https://abf.openmandriva.org)
 if [ "$ABF" == "1" ]; then
