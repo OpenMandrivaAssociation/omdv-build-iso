@@ -402,7 +402,7 @@ fi
 ########################
 
 umountAll() {
-    printf "%s\n -> Unounting all. %s\n"
+    printf "%s\n -> Unmounting all. %s\n"
     unset KERNEL_ISO
     $SUDO umount -l "$1"/proc 2> /dev/null || :
     $SUDO umount -l "$1"/sys 2> /dev/null || :
