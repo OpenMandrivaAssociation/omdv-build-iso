@@ -1213,7 +1213,6 @@ createUEFI() {
     $SUDO mkfs.vfat -C -F 16 -s 1 -S 512 -M 0xFF $IMGNME $EFIDISKSIZE
 # Loopback mount the image
     $SUDO losetup -f $IMGNME
-    sleep 2
     if [[ $? != 0 ]]; then
 	printf "%s\n -> Failed to mount loopback image. Exiting."
 	errorCatch
