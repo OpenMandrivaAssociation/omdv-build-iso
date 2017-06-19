@@ -441,23 +441,24 @@ printf "%s $WORKDIR"
 	# Inside ABF, lxc-container which is used to run this script is based
 	# on Rosa2012 which does not have cdrtools
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel omdv-build-iso"
+	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n -> Installing rpm files %s\n"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
 
     # copy contents of /usr/share/omdv-build-iso to the workdir if required
+    if [ "$IN_ABF" = "0" ]; then
 	if [ ! -d $WORKDIR/dracut ]; then
 	    printf "%s -> Copying build lists from `rpm -q omdv-build-iso`"
 	    find $WORKDIR
 	    $SUDO cp -r /usr/share/omdv-build-iso/* "$WORKDIR"
 	    touch "$WORKDIR/.new"
 	    chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
-	else
+    	else
 	    printf "%s\n -> Your build lists have been retained" # Files already copied
 	fi
-
-    # check file list exists
+    fi
+        # check file list exists
     if [ ! -e "$FILELISTS" ]; then
 #	echo $'\n'
 	printf "%s\n -> $FILELISTS does not exist. Exiting"
