@@ -221,13 +221,10 @@ if [ "`id -u`" != "0" ]; then
     printf "%s -> Run me as root."
     exit 1
 fi
-#WHO=""
-echo "$SUDOVAR"
-#echo "$SUDO_USER"
-export $SUDOVAR $WHO
-#echo "These are the sudo variables $SUDOVAR"
+export $SUDOVAR
+TSTWORKDIR=$(realpath $(dirname $0))
 # Check whether script is executed inside ABF (https://abf.openmandriva.org)
-if [ "$ABF" == "1" ]; then
+if [ "$ABF" == "1" ] && [ "$TSTWORKDIR" == "/home/omv/build_iso" ]; then
     IN_ABF=1
     printf "%s\n ->We are in ABF (https://abf.openmandriva.org) environment"
     if [ -n "$NOCLEAN" ]; then
@@ -235,24 +232,23 @@ if [ "$ABF" == "1" ]; then
 	exit 1
     fi
 # Allow the use of --workdir if in debug mode
-    if  [ -n "$WORKDIR" ] && [ -n  "$DEBUG" ]; then
+    if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n  "$DEBUG" ]; then
     printf "%s\n -> using --workdir inside ABF DEBUG instance"
     elif  [ -n  "$WORKDIR" ]; then
 	printf "%s\n -> You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
 	exit 1
     fi
-    
     if [ -n "$KEEP" ]; then
 	printf "%s\n -> You cannot use --keep inside ABF (https://abf.openmandriva.org)"
 	exit 1
     fi
-    if [ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
-    printf "%s\n -> You cannot use --noclean and --rebuild together"
-    exit 1
+    if	[ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
+	printf "%s\n -> You cannot use --noclean and --rebuild together"
+	exit 1
     fi
-    if [ -n "$REBUILD" ]; then
-    printf "%s\n -> You cannot use --rebuild inside ABF (https://abf.openmandriva.org)"
-    exit 1
+    if	[ -n "$REBUILD" ]; then
+	printf "%s\n -> You cannot use --rebuild inside ABF (https://abf.openmandriva.org)"
+	exit 1
     fi
 else
     IN_ABF=0
@@ -278,8 +274,8 @@ echo "In abf = $IN_ABF"
 # To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abfm and
 # for further security we check that the script is being run by a non-root user. 
 # To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
-TESTWORKDIR=$(realpath $(dirname $0))
-echo $TESTWORKDIR
+#TESTWORKDIR=$(realpath $(dirname $0))
+#echo $TESTWORKDIR
 if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
@@ -294,12 +290,10 @@ printf "%s\n Debugging ABF build locally"
     fi
 fi
 
-if [ "$IN_ABF" == "1" ] && [ "$WHO" == "root" ]; then
-    # Hopefully we really are in ABF
+if [ "$IN_ABF" == "1" ] && [ "$TSTWORKDIR" == "/home/omv/iso_builder" ]; then
+    # We really are in ABF
     WORKDIR=$(realpath $(dirname $0))
 fi
-
-    
 if [ "$IN_ABF" == "0" ]; then
     if [ -z "$WORKDIR" ]; then
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
@@ -315,36 +309,33 @@ ISOROOTNAME="$WORKDIR/ISO"
 # User mode allows three modes of operation.
 # All user modes rely on the script being run with no user options to generate  the initial chroot.
 # The options are:-
-# --noclean Where the chroot (once generated) is reused. 
+# --noclean Where the chroot (once generated) is reused
 # --rebuild. Where the chroot/BASE is rebuilt from the initial rpm downloads
 # Run without either option and with --workdir pointing to the chroot 
 # the script will delete the existing chroot and create a new one.
 
 # For all modes any changes made to the pkg lists are implemented and recorded
-# User mode also generates a series of diffs as a record of the multiple sessiona. 
+# User mode also generates a series of diffs as a record of the multiple sessions.
 # The --keep option allow these to be retained for subsequent sessions
 # The option is disallowed when the build takes place in ABF.
 if [ "$IN_ABF" == "0" ] && [ -n "$KEEP" ] && [ -d "$WORKDIR/sessrec" ]; then
 $SUDO mv "$WORKDIR/sessrec" "$UHOME"
 printf "%s Retaining your session records"
-else
-printf "%s\n -> No session records exist you must run the script to create them"
 fi
 
-if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root" ]; then
+if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "TSTWORKDIR" != "/bin" ]; then
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
-#elif [ "$IN_ABF" == "0" ] && [ -z "$NOCLEAN ]; then
 elif [ "$IN_ABF" == "0" ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
-printf "%s\n $CHROOTNAME"
 $SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR"
 $SUDO rm -rf "$WORKDIR/BASE/"
 $SUDO rm -rf "$WORKDIR/missing"
 $SUDO rm -rf "$WORKDIR/Setting*"
 $SUDO rm -rf "$WORKDIR/*.log"
-$SUDO rm -rf "$WORKDIR/sessreq"
     if [ -n "$KEEP" ]; then
     $SUDO mv "$UHOME/sessrec" "$WORKDIR"
+    else
+    $SUDO rm -rf "$WORKDIR/sessreq"
     fi
 #Remake needed directories
 $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
@@ -358,7 +349,7 @@ $SUDO mv  "$WORKDIR/rpms" "$CHROOTNAME/var/cache/urpmi/rpms"
     NOCLEAN=noclean
     fi
 elif [ "$IN_ABF" == "0" ] && [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
-	    if [ -d $WORKDIR/sessrec ]; then
+	if [ -d $WORKDIR/sessrec ]; then
         printf "%s\n You have chosen not to clean the base installation %s\n If your build chroot becomes corrupted you may want %s\n to take advantage of the 'rebuild' option to delete the corrupted files %s\n and build a new base installation. %s\n This will be faster than dowloading the rpm packages again" 
         fi
         # Note need to clean out grub uuid files here and maybe others
@@ -367,9 +358,6 @@ elif [ "$IN_ABF" == "0" ] && [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NO
         $SUDO mkdir -p "$WORKDIR"
         $SUDO touch "$WORKDIR/.new"
         fi
-#else
-#$SUDO rm -rf "$WORKDIR"
-#$SUDO mkdir -p "$WORKDIR"
 fi
 
 # Assign the config build list
@@ -453,7 +441,7 @@ printf "%s $WORKDIR"
 	# Inside ABF, lxc-container which is used to run this script is based
 	# on Rosa2012 which does not have cdrtools
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx omdv-build-iso gdisk gptfdisk parallel"
+	RPM_LIST="perl-URPM dosfstools grub2 xorriso syslinux squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel util-linux"
 
 	printf "%s\n -> Installing rpm files %s\n"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
@@ -590,7 +578,7 @@ localMd5Change() {
     printf "%s\n New Directory Reference checksum $NEW_CHGSENSE %s\n"
     printf "%s\n New Filesums %s\n$NEW_FILESUMS%s\n"
     fi
-    
+
     if [ -f "$WORKDIR/sessrec/ref_chgsense" ]; then
         if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
         CHGFLAG=0
