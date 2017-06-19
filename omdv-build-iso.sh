@@ -223,6 +223,7 @@ if [ "`id -u`" != "0" ]; then
 fi
 export $SUDOVAR
 TSTWORKDIR=$(realpath $(dirname $0))
+echo "$TSTWORKDIR"
 # Check whether script is executed inside ABF (https://abf.openmandriva.org)
 if [ "$ABF" == "1" ] && [ "$TSTWORKDIR" == "/home/omv/build_iso" ]; then
     IN_ABF=1
@@ -276,7 +277,7 @@ echo "In abf = $IN_ABF"
 # To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
 #TESTWORKDIR=$(realpath $(dirname $0))
 #echo $TESTWORKDIR
-if [ "$IN_ABF" == "1" ] && [ "$TESTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
+if [ "$IN_ABF" == "1" ] && [ "$TSTWORKDIR" != "/home/omv/iso_builder" ] && [ -z $DEBUG ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
 elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root"  ]; then
