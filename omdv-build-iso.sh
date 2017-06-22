@@ -1751,8 +1751,8 @@ EOF
 createSquash() {
     printf "%s\n -> Starting squashfs image build."
 # Before we do anything check if we are a local build
-    if [ -n "$IN_ABF" ]; then
-# We so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
+    if [ "$IN_ABF" == "0" ]; then
+# We are so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
 # If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives
 # It's likely that the img will be written to one of the mounted drives so it's unlikely
 # that there will be enough diskspace to complete the operation.
@@ -1794,7 +1794,7 @@ buildIso() {
 
     printf "%s\n -> Starting ISO build. %s\n"
 
-    if [ -n "$IN_ABF" ]; then
+    if [ "$IN_ABF" == "0" ]; then
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
     elif [ -z "$OUTPUTDIR" ]; then
 	ISOFILE="/home/$WHO/$PRODUCT_ID.$EXTARCH.iso"
@@ -1811,7 +1811,7 @@ buildIso() {
 # if it is overwriting an earlier copy. Also it's not clear whether this affects the.
 # contents or structure of the iso (see --append-partition in the man page)
 # Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
-    if [ -z "$IN_ABF" ] && [ -n "$ISOFILE" ]; then
+    if [ "$IN_ABF" == "0" ] && [ -n "$ISOFILE" ]; then
 	printf "%s -> Removing old iso."
 	$SUDO rm -rf "$ISOFILE"
     fi
@@ -1841,7 +1841,7 @@ postBuild() {
 	errorCatch
     fi
 
-    if [ -n "$IN_ABF" ]; then
+    if [ "$IN_ABF" == "1" ]; then
 # We're running in ABF adjust to its directory structure
 # Count checksums
 	printf "%s\n -> Generating ISO checksums."
