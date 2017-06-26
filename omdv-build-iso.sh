@@ -1846,10 +1846,10 @@ set -x
 	if [ "$WORKDIR" = "/home/omv/iso_builder" ]; then
 	    $SUDO mkdir -p /home/omv/results /home/omv/archives
 	    $SUOD mv $WORKDIR/*.iso* /home/omv/results/
-	else
-	    $SUDO mkdir -p $WORKDIR/results $WORKDIR/archives
-	    $SUDO mv $WORKDIR/*.iso* $WORKDIR/results/
-	fi
+	fi    
+    else
+	$SUDO mkdir -p $WORKDIR/results $WORKDIR/archives
+	$SUDO mv $WORKDIR/*.iso* $WORKDIR/results/
     fi
 
 # If .noclean is set move rpms back to the cache directories
