@@ -448,7 +448,7 @@ printf "%s $WORKDIR"
 
 	printf "%s\n -> Installing rpm files %s\n"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-	$SUD0 urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch xorriso --auto
+#	$SUD0 urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch xorriso --auto
     # copy contents of /usr/share/omdv-build-iso to the workdir if required
     if [ "$IN_ABF" = "0" ]; then
 	if [ ! -d $WORKDIR/dracut ]; then
