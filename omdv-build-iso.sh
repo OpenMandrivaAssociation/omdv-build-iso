@@ -419,6 +419,7 @@ errorCatch() {
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
+    $SUDO umount -l /mnt
     $SUDO losetup -D
 if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
 # for some reason the next line deletes irrespective of flags
@@ -1227,6 +1228,8 @@ createUEFI() {
 
 # Unmout the filesystem with EFI image
     $SUDO umount /mnt
+# Be sure to delete the loop device
+    $SUDO losetup -D 
 # Make sure that the image is copied to the ISOROOT
     $SUDO cp -f  "$IMGNME" "$ISOROOTNAME"
 # Clean up
