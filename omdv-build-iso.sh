@@ -443,11 +443,11 @@ printf "%s $WORKDIR"
 
 	$SUDO urpmq --list-url
 	$SUDO urpmi.update -a
-	
+
 	# Inside ABF, lxc-container which is used to run this script is based
 	# on Rosa2012 which does not have cdrtools
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
+	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n -> Installing rpm files %s\n"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
