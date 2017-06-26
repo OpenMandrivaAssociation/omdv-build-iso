@@ -202,8 +202,6 @@ fi
 
 # We lose our cli variables when we invoke sudo so we save them
 # and pass them to sudo when it is started. Also the user name is needed.
-#WHO="$SUDO_USER"
-set -x
 if [ -d /home/omv ]; then 
 WHO=omv
 else WHO=`id -un`
@@ -627,7 +625,6 @@ getIncFiles() {
 # Set 'lastpipe' options so as not to lose variable in sub-shells.
     set +m
     shopt -s lastpipe
-#set -x
 # Define a some local variables
     local __infile=$1   # The main build file
     local __incflist=$2 # Carries returned variable
@@ -663,7 +660,6 @@ createPkgList() {
 # This requires that job control be disabled.
     set +m
     shopt -s lastpipe
-#set -x
 # Define a local variable to hold user VAR
     local __pkglist=$2 # Carries returned variable name
 # other locals not needed outside routine
@@ -801,9 +797,6 @@ mkUserSpin() {
 # $INSTALL_LIST = All list files to be installed
 # $REMOVE_LIST = All list files to be removed
 # This function includes all the user adds and removes.
-#set -x
-#printf "%s $CHGFLAG %s\n"
-#    echo $'\n'
     printf "%s -> Making a user spin"
     if [ "$CHGFLAG" == "0" ]; then
     getIncFiles "$FILELISTS" ADDRPMINC $TYPE
@@ -1183,7 +1176,6 @@ createUEFI() {
 # Usage: createEFI $EXTARCH $ISOCHROOTNAME
 # Creates a fat formatted file in filesystem image which will boot an UEFI system.
 # PLEASE NOTE THAT THE ISO DIRECTORY IS TEMPORARILY MOVED TO THE CHROOT DIRECTORY FOR THE PURPOSE OF GENERATING THE GRUB IMAGE.
-#set -x
     if [ $EXTARCH = "x86_64" ]; then
 	ARCHFMT=x86_64-efi
 	ARCHPFX=X64
@@ -1836,7 +1828,7 @@ buildIso() {
 }
 
 postBuild() {
-
+set -x
     if [ ! -f $ISOFILE ]; then
 	umountAll "$CHROOTNAME"
 	errorCatch
