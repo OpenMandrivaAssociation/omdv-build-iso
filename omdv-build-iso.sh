@@ -203,6 +203,7 @@ fi
 # We lose our cli variables when we invoke sudo so we save them
 # and pass them to sudo when it is started. Also the user name is needed.
 #WHO="$SUDO_USER"
+set -x
 WHO=`id -un`
 SUDOVAR=""WHO="$WHO "UHOME="/home/$WHO "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
@@ -435,7 +436,6 @@ fi
 trap errorCatch ERR SIGHUP SIGINT SIGTERM
 
 updateSystem() {
-set -x
 printf "%s $WORKDIR"
 
 	$SUDO urpmq --list-url
@@ -448,7 +448,6 @@ printf "%s $WORKDIR"
 
 	printf "%s\n -> Installing rpm files %s\n"
 	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-#	$SUD0 urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch xorriso --auto
     # copy contents of /usr/share/omdv-build-iso to the workdir if required
     if [ "$IN_ABF" = "0" ]; then
 	if [ ! -d $WORKDIR/dracut ]; then
@@ -463,11 +462,9 @@ printf "%s $WORKDIR"
     fi
         # check file list exists
     if [ ! -e "$FILELISTS" ]; then
-#	echo $'\n'
 	printf "%s\n -> $FILELISTS does not exist. Exiting"
 	errorCatch
     fi
-set +x
 }
 
 getPkgList() {
@@ -1851,9 +1848,9 @@ postBuild() {
 	sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
 
-	if [ "$WORKDIR" = "/home/vagrant/iso_builder" ]; then
-	    $SUDO mkdir -p /home/vagrant/results /home/vagrant/archives
-	    $SUOD mv $WORKDIR/*.iso* /home/vagrant/results/
+	if [ "$WORKDIR" = "/home/omv/iso_builder" ]; then
+	    $SUDO mkdir -p /home/omv/results /home/omv/archives
+	    $SUOD mv $WORKDIR/*.iso* /home/omv/results/
 	else
 	    $SUDO mkdir -p $WORKDIR/results $WORKDIR/archives
 	    $SUDO mv $WORKDIR/*.iso* $WORKDIR/results/
@@ -1861,9 +1858,11 @@ postBuild() {
     fi
 
 # If .noclean is set move rpms back to the cache directories
-    if [ -f "$CHROOTNAME"/.noclean ]; then
-	rm -R "$CHROOTNAME"/var/cache/urpmi/rpms
-	$SUDO mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
+    if [ "$IN_ABF" == "0" ]; then
+	if [ -f "$CHROOTNAME"/.noclean ]; then
+	    rm -R "$CHROOTNAME"/var/cache/urpmi/rpms
+	    $SUDO mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
+	fi
     fi
 
 # Clean chroot
