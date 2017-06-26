@@ -1787,12 +1787,14 @@ buildIso() {
 
     printf "%s\n -> Starting ISO build. %s\n"
 
-    if [ "$IN_ABF" == "0" ]; then
+    if [ "$IN_ABF" == "1" ]; then
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
-    elif [ -z "$OUTPUTDIR" ]; then
-	ISOFILE="/home/$WHO/$PRODUCT_ID.$EXTARCH.iso"
     else
+	if [ -z "$OUTPUTDIR" ]; then
+	ISOFILE="/home/$WHO/$PRODUCT_ID.$EXTARCH.iso"
+	else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
+	fi
     fi
 
     if [ ! -x /usr/bin/xorriso ]; then
