@@ -435,6 +435,7 @@ fi
 trap errorCatch ERR SIGHUP SIGINT SIGTERM
 
 updateSystem() {
+set -x
 printf "%s $WORKDIR"
 
 	$SUDO urpmq --list-url
@@ -466,10 +467,10 @@ printf "%s $WORKDIR"
 	printf "%s\n -> $FILELISTS does not exist. Exiting"
 	errorCatch
     fi
+set +x
 }
 
 getPkgList() {
-set -x
     # update iso-pkg-lists from ABF if missing
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
@@ -497,7 +498,6 @@ set -x
 	printf "%s\n -> $FILELISTS does not exist. Exiting"
 	errorCatch
     fi
-set +x
 }
 
 showInfo() {
