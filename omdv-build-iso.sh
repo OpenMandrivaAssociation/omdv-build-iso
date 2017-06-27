@@ -202,17 +202,14 @@ fi
 
 # We lose our cli variables when we invoke sudo so we save them
 # and pass them to sudo when it is started. Also the user name is needed.
-if [ -d /home/omv ]; then 
+if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then 
 WHO=omv
 else WHO=`id -un`
 fi
 SUDOVAR=""WHO="$WHO "UHOME="/home/$WHO "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
 
-# WHO=`logname` # If the user is not root at the start then likely we are in ABF ISO builder. 
 # run only when root
-# Try another way.
-#WHO=`id -nu`
 
 if [ "`id -u`" != "0" ]; then
     # We need to be root for umount and friends to work...
@@ -224,10 +221,7 @@ if [ "`id -u`" != "0" ]; then
     exit 1
 fi
 export $SUDOVAR
-TSTWORKDIR=
-echo "$TSTWORKDIR"
-# Check whether script is executed inside ABF (https://abf.openmandriva.org)
-#if [ "$ABF" == "1" ] && [ "$TSTWORKDIR" == "/home/omv/build_iso" ]; then
+
 if [ "$ABF" == "1" ] && [ -d '/home/omv/docker-iso-worker' ]; then
     IN_ABF=1
     printf "%s\n ->We are in ABF (https://abf.openmandriva.org) environment"
@@ -283,7 +277,7 @@ echo "In abf = $IN_ABF"
 if [ "$IN_ABF" == "1" ] && [ ! -d '/home/omv/docker-iso-worker' ] && [ -z $DEBUG ]; then
 printf "%s\n DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 exit 1
-elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "root"  ]; then
+elif [  "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv"  ]; then
 printf "%s\n Debugging ABF build locally"
 #Here we are with ABF=1 and in DEBUG mode,  running on a local system.
 # Avoid setting the usual ABF WORKDIR
@@ -327,7 +321,7 @@ $SUDO mv "$WORKDIR/sessrec" "$UHOME"
 printf "%s Retaining your session records"
 fi
 
-if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "TSTWORKDIR" != "/bin" ]; then
+if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv" ]; then
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
 elif [ "$IN_ABF" == "0" ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
@@ -746,7 +740,7 @@ mkOmSpin() {
     getIncFiles "$FILELISTS" ADDRPMINC
     printf '%s' "$ADDRPMINC" >"$WORKDIR/inclist"
     printf "%s -> Creating OpenMandriva spin from $FILELISTS %s\n Which includes %s\n"
-    printf  "$ADDRPMINC" | grep -v "$FILELISTS"  
+    printf '%s' "$ADDRPMINC" | grep -v "$FILELISTS"  
     createPkgList "$ADDRPMINC" INSTALL_LIST
     if [ -n "$DEVMODE" ]; then
     printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
@@ -788,7 +782,7 @@ printf "$REMOVE_LIST"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_update_rm_rpmlist"
     fi
 #    mkUpdateChroot  "$INSTALL_LIST" "$REMOVE_LIST"
-        printf "%s\n "$INSTALL_LIST" %s\n $REMOVE_LIST"
+        printf "%s\n $INSTALL_LIST %s\n $REMOVE_LIST"
         errorCatch
 }
 
@@ -800,15 +794,15 @@ mkUserSpin() {
 # This function includes all the user adds and removes.
     printf "%s -> Making a user spin"
     if [ "$CHGFLAG" == "0" ]; then
-    getIncFiles "$FILELISTS" ADDRPMINC $TYPE
+    getIncFiles "$FILELISTS" ADDRPMINC "$TYPE"
     else
-    getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.add UADDRPMINC my.add
+    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC my.add
     ALLRPMINC=`echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u`
     printf "%s\n $ALLRPMINC %s\n" > "$WORKDIR/primary.list"
-    getIncFiles $WORKDIR/iso-pkg-lists-$TREE/my.rmv PRE_RMRPMINC  my.rmv
+    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" PRE_RMRPMINC  my.rmv
     printf "%s\n -> Remove the common include lines for the remove package includes %s\n"
     RMRPMINC=`comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort)`
-    printf "%s -> Creating $WHO's OpenMandriva spin from $FILELISTS %s\n Which includes"
+    printf "%s -> Creating "$WHO\'s" OpenMandriva spin from "$FILELISTS" %s\n Which includes"
     printf '%s\n' "$ALLRPMINC" | grep -v "$FILELISTS"
     fi
     # Create the package lists
@@ -856,7 +850,7 @@ mkUpdateChroot() {
 	    #printf "$__install_list %s\n"
 	    #Strip the newlines
 	    #printf "$__install_list" | tr '\n' ' ' | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
-	    printf "$__install_list" | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
+	    printf '%s' "$__install_list" | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
     elif [ -n "$1" ] && [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ] && [ "$IN_ABF" == "0" ]; then
         printf "%s\n -> Installing packages locally %s\n"
         printf '%s\n' $__install_list | parallel -q --keep-order -d '\n' --joblog "$WORKDIR/install.log"  --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 
@@ -892,7 +886,7 @@ createChroot() {
 # Creates a chroot environment with all packages in the packages.lst
 # file and their dependencies in /target/dir
 
-if [ "CHGFLAG" != "1" ]; then
+if [ "$CHGFLAG" != "1" ]; then
     REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
     echo $'\n'
     if [ -f "$CHROOTNAME"/.noclean ] && [ ! -d "$CHROOTNAME/lib/modules" ] || [ -n "$REBUILD" ]; then 
@@ -1752,9 +1746,9 @@ createSquash() {
 # If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives
 # It's likely that the img will be written to one of the mounted drives so it's unlikely
 # that there will be enough diskspace to complete the operation.
-	if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
+	if [ -f "$ISOROOTNAME"/run/os-prober/dev/* ]; then
 	    $SUDO umount -l `echo "$ISOCHROOTNAME"/run/os-prober/dev/*`
-	    if [ -f "$ISOCHROOTNAME"/run/os-prober/dev/* ]; then
+	    if [ -f "$ISOROOTNAME"/run/os-prober/dev/* ]; then
 		printf "%s\n -> Cannot unount os-prober mounts aborting."
 		errorCatch
 	    fi
