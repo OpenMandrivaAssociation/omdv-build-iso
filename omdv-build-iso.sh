@@ -1848,14 +1848,14 @@ set -x
 	sha1sum $PRODUCT_ID.$EXTARCH.iso > $PRODUCT_ID.$EXTARCH.iso.sha1sum
 	popd
 
-	if [ "$WORKDIR" = "/home/omv/iso_builder" ]; then
-	    $SUDO mkdir -p /home/omv/iso_builder/results /home/omv/iso_builder/archives
-	    $SUDO mv $WORKDIR/*.iso* /home/omv/results/
-	fi
-    else
+#	if [ "$WORKDIR" = "/home/omv/iso_builder" ]; then
+#	    $SUDO mkdir -p /home/omv/iso_builder/results /home/omv/iso_builder/archives
+#	    $SUDO mv $WORKDIR/*.iso* /home/omv/results/
+#	fi
+#    else
 	$SUDO mkdir -p $WORKDIR/results $WORKDIR/archives
 	$SUDO mv $WORKDIR/*.iso* $WORKDIR/results/
-    fi
+#    fi
 
 # If .noclean is set move rpms back to the cache directories
     if [ "$IN_ABF" == "0" ]; then
