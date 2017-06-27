@@ -1850,7 +1850,7 @@ set -x
 
 	if [ "$WORKDIR" = "/home/omv/iso_builder" ]; then
 	    $SUDO mkdir -p /home/omv/results /home/omv/archives
-	    $SUOD mv $WORKDIR/*.iso* /home/omv/results/
+	    $SUDO mv $WORKDIR/*.iso* /home/omv/results/
 	fi    
     else
 	$SUDO mkdir -p $WORKDIR/results $WORKDIR/archives
