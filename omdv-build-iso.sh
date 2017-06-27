@@ -1839,7 +1839,7 @@ set -x
 	errorCatch
     fi
 
-    if [ "$IN_ABF" == "1" ]; then
+#    if [ "$IN_ABF" == "1" ]; then
 # We're running in ABF adjust to its directory structure
 # Count checksums
 	printf "%s\n -> Generating ISO checksums."
