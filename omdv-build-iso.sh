@@ -1849,9 +1849,9 @@ set -x
 	popd
 
 	if [ "$WORKDIR" = "/home/omv/iso_builder" ]; then
-	    $SUDO mkdir -p /home/omv/results /home/omv/archives
+	    $SUDO mkdir -p /home/omv/iso_builder/results /home/omv/iso_builder/archives
 	    $SUDO mv $WORKDIR/*.iso* /home/omv/results/
-	fi    
+	fi
     else
 	$SUDO mkdir -p $WORKDIR/results $WORKDIR/archives
 	$SUDO mv $WORKDIR/*.iso* $WORKDIR/results/
