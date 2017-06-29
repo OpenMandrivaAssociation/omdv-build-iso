@@ -51,6 +51,7 @@ usage_help() {
         echo " --debug Enables some developer aids see the README"
         echo " --quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
         echo " --keep Use this if you want to be sure to preserve the diffs of your session."
+        echo " --testrepo Includes the main testing repo in the iso build"
         echo ""
         echo "For example:"
         echo "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
@@ -175,6 +176,9 @@ if [ $# -ge 1 ]; then
                    KEEP=keep
                    shift
                    ;;
+                --testrepo)
+            	    TESTREPO=testrepo
+    		   ;;
         	--help)
         	    usage_help
         	    ;;
@@ -193,7 +197,7 @@ fi
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
 SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -923,10 +927,12 @@ createChroot() {
 
 	    if [ "${TREE,,}" != "cooker" ]; then
 		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
-		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
 # This one is needed to grab firmwares
 		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
+		if [ -n "$TESTREPO" ]; then
+		$SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+		fi
 	    fi
 	fi
     fi
