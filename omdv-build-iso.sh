@@ -547,77 +547,80 @@ localMd5Change() {
 # If the flag is set the md5s for the files are compared and a named variable containing the changed files is emmitted.
 # This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
 # This function is not used when the script is run on ABF.
-	BASE_LIST=$WORKDIR/iso-pkg-lists-${TREE}
 
-#	local __dodiff
-#	__dodiff='diff --suppress-common-lines --unchanged-group-format=\"\" --changed-group-format=\""%>\""'
-	local __difflist
-        if [ ! -d "$WORKDIR/sessrec" ]; then
-        mkdir -p "$WORKDIR/sessrec"
-    #		if [ -f $WORKDIR/.new ]; then
-        printf "%s\n" "-> Making directory reference sum"
-	REF_CHGSENSE=$("$SUDO" md5sum "${BASE_LIST}/*" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
+
+	if [ "$IN_ABF" == "1" ] && [ -z "$DEBUG" ]; then
+        return 0
+    fi
+   	local __difflist
+    BASE_LIST=$WORKDIR/sessrec/base_lists/iso-pkg-lists-${TREE}
+    WORKING_LIST=$WORKDIR/iso-pkg-lists-${TREE}
+       	
+    if [ -f $WORKDIR/.new ]; then
         printf "%s\n" "-> Making reference file sums"
-	REF_FILESUMS=$("$SUDO" find "${BASE_LIST}/*"  -type f   -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
-            if [ -n "$DEBUG" ]; then
+        REF_FILESUMS=$($SUDO find ${BASE_LIST}/my.add ${BASE_LIST}/my.rmv ${BASE_LIST}/*.lst -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
+        printf "%s\n" "-> Making directory reference sum"
+        REF_CHGSENSE=$(cat "$WORKDIR/sessrec/ref_filesums" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
+        printf "%s\n" "$BUILD_ID" > "$WORKDIR/sessrec/.build_id"
+        printf "%s\n" "Recording build identifier"
+        rm -rf $WORKDIR/.new
+    else
+        if [ -n "$DEBUG" ]; then
             printf "%s\n" "$REF_CHGSENSE"
             printf "%s\n" "$REF_FILESUMS"
-            fi
-        else
-		REF_CHGSENSE=$(cat "$WORKDIR"/sessrec/ref_chgsense)
-		REF_FILESUMS=$(cat "$WORKDIR"/sessrec/ref_filesums)
-	    printf "%s\n" "-> References loaded"
-#        fi
+        fi
+    fi
+    REF_CHGSENSE=$(cat "$WORKDIR/sessrec/ref_chgsense")
+    REF_FILESUMS=$(cat "$WORKDIR/sessrec/ref_filesums")
+    printf "%s\n" "-> References loaded"
+    
 	# Generate the references for this run
 	# Need to be careful here; there may be backup files so get the exact files
-	# Order is important (sort?)
-	NEW_CHGSENSE=$("$SUDO" md5sum  "$BASE_LIST/my.add" "$BASE_LIST/my.rmv" "$BASE_LIST/*.lst" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/new_chgsense")
-	NEW_FILESUMS=$("$SUDO" find "${BASE_LIST}/*" -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/new_filesums")
-	printf "%s\n" "-> New references created %s\n"
-	fi
+    # Order is important (sort?)
+    NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/tmp_new_filesums)
+    NEW_CHGSENSE=$(printf "$NEW_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/new_chgsense")
+    printf "%s\n" "-> New references created %s\n"
     if [ -n "$DEBUG" ]; then
-    printf "%s\n" "Directory Reference checksum $REF_CHGSENSE %s\n"
-    printf "%s\n" "Reference Filesums %s\n$REF_FILESUMS %s\n"
-    printf "%s\n" "New Directory Reference checksum $NEW_CHGSENSE %s\n"
-    printf "%s\n" "New Filesums %s\n$NEW_FILESUMS%s\n"
+        printf "%s\n" "Directory Reference checksum" "$REF_CHGSENSE" "%s\n"
+        printf "%s\n" "Reference Filesums" "%s\n" "$REF_FILESUMS" 
+        printf "%s\n" "New Directory Reference checksum" "$NEW_CHGSENSE" 
+        printf "%s\n" "New Filesums"  "$NEW_FILESUMS" 
     fi
-
-    if [ -f "$WORKDIR/sessrec/ref_chgsense" ]; then
         if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
         CHGFLAG=0
         else
-        $SUDO echo "$NEW_CHGSENSE" >"$WORKDIR"/sessrec/ref_chgsense
+        $SUDO printf "%s\n" "$NEW_CHGSENSE" >"$WORKDIR"/sessrec/ref_chgsense
         CHGFLAG=1
         fi
-    fi
 	if [ "$CHGFLAG" == "1" ]; then
 	    printf "%s\n" "-> Your build files have changed"
-	fi
-
-# Create a list of changed files by diffing checksums
-# In these circumstances awk does a better job than diff
-# This looks complicated but all it does is to put the two fields in each file into independent arrays,
-# compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-MODFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums")
-USERMOD=$(printf '%s' "$MODFILES" | grep 'my.add\|my.rmv')
-    if [ -z "$USERMOD" ]; then
-        printf "%s\n" "-> No Changes"
-    else
-        printf "%s\n" "$USERMOD"
-    fi
-# FIX ME
+	# Create a list of changed files by diffing checksums
+    # In these circumstances awk does a better job than diff
+    # This looks complicated but all it does is to put the two fields in each file into independent arrays,
+    # compares the first field from each file and if they are not equal then print the second field (filename) from each file.
+        DIFFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/new_filesums" "$WORKDIR/sessrec/tmp_new_filesums") 
+        # This gets messy because of corner cases.
+        MODFILES=$(printf "$DIFFILES" | sed 's|/iso-pkg|\/base_lists/iso-pkg|2') 
+        printf "$MODFILES"
+         if [ -n "$DEBUG" ]; then 
+        printf "%s\n" "$MODFILES"
+        fi
+        $SUDO mv "$WORKDIR/sessrec/tmp_new_filesums" "$WORKDIR/sessrec/new_filesums"
+        USERMOD=$(printf '%s' "$MODFILES" | grep 'my.add\|my.rmv')
+        if [ -z "$USERMOD" ]; then
+            printf "%s\n" "-> No Changes"
+        fi
     # Here just the standard files are diffed ommitting my.add and my.remove
-    # Intended for developers creating new compilations only active if --debug is passed 
+    # Intended for developers creating new compilations. Only active if DEVMOD is set in the env.
+    # This list is intended for Developers
     DEVMOD=$(printf '%s' "$MODFILES" | grep -v 'my.add\|my.rmv')
-# This list is intended for Developers
-    if [ "$CHGFLAG" == "1" ] && [ -n "$DEBUG" ] && [ -n "$DEVMOD" ]; then #&& DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
-# Create a developer diff ommitting my.add and my.rmv
-        diffPkgLists "$DEVMOD"
-    elif [ "$CHGFLAG" == "1" ]; then
-# Create a diff for the users reference
+    # Create a diff for the users reference
         diffPkgLists "$USERMOD"
-    fi
- }
+    elif [[ -n "$DEBUG"  && ( -n "$DEVMOD" || -n "$DEVMOD" ) ]]; then #DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
+    # Create a developer diff ommitting my.add and my.rmv
+    diffPkgLists "$DEVMOD"
+    fi 
+}
 
 getIncFiles() {
 # Usage: getIncFiles [filename] xyz.* $"[name of variable to return] [package list file. my.add || my.rmv || {main config pkgs}]
@@ -699,48 +702,35 @@ diffPkgLists() {
 # Running without --noclean set destroys the $WORKDIR and thus the diffs.
 # Adding the --keep flag will move the diffs to the users home directory. They will be moved back at
 # the start of each new session if the --keep flag is set and --noclean or --rebuild are selected.
-    if [ "$IN_ABF" == "0" ]; then
-	local __difflist=$1
+set -x
+    local __difflist="$1"
+	local __newdiffname
 	local dodiff="/usr/bin/diff -Naur"
-
-	if [ -f "$WORKDIR/sessrec/.seqnum" ]; then
-		SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
-	else
-	    SEQNUM=1
-	    "$SUDO" echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-	fi
-# Here a combined diff is created
+	
+	# Here a combined diff is created
 	while read -r DIFF ; do
-		ALL+=$(eval  "$dodiff" "$DIFF")$'\n'
+	ALL+=$(eval  "$dodiff" "$DIFF")$'\n'
 	done < <(printf '%s\n' "$__difflist")
-
-	if [ -d "$WORKDIR/sessrec" ]; then
-# Here the old diff is compared with the new if it exists
-	    local __lastdiffname
-	    __lastdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
-	    if [ -s "$__lastdiffname" ]; then
-		diff -y <(printf %s "$ALL")  "$WORKDIR"/sessrec/"$__lastdiffname"
-		local __same=$?
-# Here we save the diff but only if it's different from the previous one
-		if [ $__same -eq 1 ]; then
-			SEQNUM="$((SEQNUM+1))"
-		    local __newdiffname
-		    __newdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
-		    $SUDO echo "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
-		    $SUDO echo "$SEQNUM" >"$WORKDIR"/sessrec/.seqnum
-		elif [ $__same -eq 2 ]; then
-	    printf  "%s\n" "-> Diff has reported an error %s\n -> Your files may be corrupted %s\n"
-		fi
-	    else
-# Here no previous diff existed; so write the first one
-		local __newdiffname
-		__newdiffname=$(basename "$WORKDIR")"$SEQNUM".diff
-		$SUDO echo "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
-		SEQNUM=$((SEQNUM+1))
-		$SUDO echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-	    fi
-	fi
+	
+	if [ -n "$__difflist" ]; then
+	# BUILD_ID and SEQNUM are used to label diffs
+        if [ -f "$WORKDIR/sessrec/.build_id" ]; then
+                SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
+        else
+            SESSNO=${BUILD_ID}
+        fi
+        if [ -f "$WORKDIR/sessrec/.seqnum" ]; then
+            SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
+        else
+            SEQNUM=1
+            $SUDO echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
+        fi
+        __newdiffname="${SESSNO}_${SEQNUM}.diff"
+        $SUDO printf "%s" "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
+        SEQNUM=$((SEQNUM+1))
+        $SUDO printf "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
     fi
+    set +x
 }
 
 mkOmSpin() {
