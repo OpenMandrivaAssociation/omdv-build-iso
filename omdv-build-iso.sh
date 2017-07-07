@@ -912,20 +912,13 @@ createChroot() {
 # file and their dependencies in /target/dir
 
 if [ "$CHGFLAG" != "1" ]; then
-    REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
-    echo $'\n'
     if [ -f "$CHROOTNAME"/.noclean ] && [ ! -d "$CHROOTNAME/lib/modules" ] || [ -n "$REBUILD" ]; then 
-    printf "%s\n" "-> Creating chroot $CHROOTNAME" "%s\n"
+        printf "%s\n" "-> Creating chroot $CHROOTNAME" "%s\n"
     else 
-    printf "%s\n" "-> Updating existing chroot $CHROOTNAME" "%s\n"
+        printf "%s\n" "-> Updating existing chroot $CHROOTNAME" "%s\n"
     fi
 # Make sure /proc, /sys and friends are mounted so %post scripts can use them
     $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
-#    exit
-# Do not clean build chroot
-    if [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME/.noclean" ]; then
-        touch "$CHROOTNAME/.noclean"
-	fi
 
     if [ -n "$REBUILD" ] && [ -z "$NOCLEAN" ]; then
 	    ANYRPMS=$(find "$CHROOTNAME/var/cache/urpmi/rpms/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
@@ -941,10 +934,11 @@ fi
 # If chroot exists and if we have --noclean then the repo files are not needed with exception of the
 # first time run with --noclean when they must be installed. If --rebuild is called they will have been
 # deleted so reinstall them. 
-printf "%s" "$REPOPATH"
+    REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
+    printf "%s" "$REPOPATH"
 # If the kernel hasn't been installed then it's a new chroot or a rebuild
     if [ ! -d "$CHROOTNAME"/lib/modules ] || [ -n "$REBUILD" ]; then
-	printf "%s" "-> Adding urpmi repository $REPOPATH into $CHROOTNAME"
+	printf "%s\n" "-> Adding urpmi repository $REPOPATH into $CHROOTNAME" " "
         if [ "$FREE" = "0" ]; then
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
         else
@@ -965,68 +959,68 @@ printf "%s" "$REPOPATH"
 	fi
 
 # Update media
-
-    SKIPLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/skip.lst"
-    echo "This is the skip list $SKIPLISTS"
- 
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
 	printf "%s -> Updating urpmi repositories in $CHROOTNAME"
 	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
-    fi
-    if [ -n "$ENSKPLST" ]; then
-    SKIPLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/skip.lst"
-    echo "This is the skip list $SKIPLISTS"
-    $SUDO cp "$SKIPLISTS" "$CHROOTNAME/etc/urpmi/"
-    printf "%s\n" "Installing urpmi skip.list"
     fi
 
     $SUDO mount --bind /proc "$CHROOTNAME"/proc
     $SUDO mount --bind /sys "$CHROOTNAME"/sys
     $SUDO mount --bind /dev "$CHROOTNAME"/dev
     $SUDO mount --bind /dev/pts "$CHROOTNAME"/dev/pts
-printf "%s\n" "Done Mounting proc and friends %s\n"
-# Start rpm packages installation but only if .noclean does not exist and CHGFLAG=0
+
+# Start rpm packages installation 
 # CHGFLAG=1 Indicates a global change in the iso lists
-# If we are IN_ABF and neither --noclean or --rebuild are set then build a standard iso without the uses package lists.
-# If --noclean is set and debug is not set and its the first time --noclean is run 
-# i.e. (.noclean file in chroot does not exist) then make a spin including the user filelists.
-# if --rebuild is set then make a spin with the user filelists
-# If --noclean is set and a change in the filelists has been detected and we are not in_abf 
-# then update the  user spin with the users modified filelists.
-echo "$DEVMODE"
+
+# If we are IN_ABF=1 then build a standard iso
+# If we are IN_ABF=1 and DEBUG is set then we are running the ABF mode locally. 
+# In this mode the NOCLEAN flag is allowed. 
+# If set this will build a standard iso initially once built subsequent runs 
+# with NOCLEAN set will update the chroot with any changed file entries.
+
+# If the NOCLEAN flag is set this will build an iso using the standard files 
+# plus the contents of the two user files my.add and my.rmv. 
+# Once built subsequent runs with NOCLEAN set will update the chroot with 
+# any changed entries in the user files only. 
+# if --rebuild is set then rebuild the chroot using the standard and user file lists. 
+# This uses the preserved rpm cache to speed up the rebuild. 
+# Files that were added to the user files will be downloaded.
+
+    # Build from scratch
     if [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ]; then
-    printf "%s\n" "Creating chroot" "%s\n"
-    mkOmSpin
-    elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME"/.noclean ] && [ -v "$DEBUG" ] && [ -v "$DEVMODE" ]; then
-    mkOmSpin
-    elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ] && [ -v "$DEBUG" ] && [ -v "$DEVMODE" ]; then
-    mkUserSpin "$FILELISTS"
+        printf "%s\n" "Creating chroot" "%s\n"
+        mkOmSpin
+     # Build the initial noclean chroot this is user mode only and will include the two user files my.add and my.rmv
+    elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME/.noclean" ] && [ "$IN_ABF" == "0" ]; then 
+        printf "%s\n" "Creating an user chroot"
+        mkUserSpin
+     # Build the initial noclean chroot in ABF test mode and will use just the base lists   
+    elif [ -n "$NOCLEAN" ] && [ ! -f "$CHROOTNAME/.noclean" ] && [ "$IN_ABF" == "1" ] && [ -n "$DEBUG" ]; then
+        printf "%s\n" "Creating chroot in ABF developer mode"
+        mkOmSpin
+    # Update a noclean chroot with the contents of the user files my.add and my.rmv 
+    elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME/.noclean" ] && [ "$IN_ABF" == "0" ]; then
+        updateUserSpin
+        printf "%s\n" "Updating user spin"
+    # Rebuild the users chroot from cached rpms
     elif [ -n "$REBUILD" ]; then
-    printf  "%s\n" "-> Rebuilding." "%s\n"
-    mkUserSpin "$FILELISTS"
-    elif [ -f "$CHROOTNAME/.noclean" ] && [ "$CHGFLAG" == "1" ] && [ "$IN_ABF" == "0" ] && [ -n "$USERMODE" ]; then
-    updateUserSpin "$FILELISTS"
-	# This functionality will only update the build if there is a change in files
-    # other then my.add and my.rmv
-	elif [ "$CHGFLAG" == "1" ] && [ "$IN_ABF" == "0" ] && [ -n "$USERMODE" ]; then
+        printf  "%s\n" "-> Rebuilding." "%s\n"
         mkUserSpin "$FILELISTS"
-    #Allow an unconditional update irrespective of CHNGFLAG or NOCLEAN state.
-   	elif [ "$IN_ABF" == "0" ] && [ -n "$DEVMODE" ]; then
-   	mkOmSpin "$FILELISTS"
+    fi
+    if [ -n "$NOCLEAN" ]; then
+	touch "$CHROOTNAME"/.noclean
     fi
     if [ -n "$REBUILD" ]; then
     # Restore the noclean status
 	$SUDO touch "$CHROOTNAME/.noclean"
     fi
+    
     if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
 	printf "%s\n" "-> Can not install packages from $FILELISTS"
 	errorCatch
     fi
-    # If --noclean selected mark the chroot
-    if [ -n "$NOCLEAN" ]; then
-	touch "$CHROOTNAME"/.noclean
-    fi
+
 # Check CHROOT
     if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
 	printf "%s\n" "-> Broken chroot installation. Exiting" "%s\n"
@@ -1034,7 +1028,7 @@ echo "$DEVMODE"
     fi
 # Export installed and boot kernel
     pushd "$CHROOTNAME"/lib/modules
-    BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]*-"${BOOT_KERNEL_TYPE}*" | head -n1 | sed -e 's,/$,,')"
+    BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,')"
     export BOOT_KERNEL_ISO
     if [ -n "$BOOT_KERNEL_TYPE" ]; then
 	"$SUDO" echo "$BOOT_KERNEL_TYPE" > "$CHROOTNAME/boot_kernel"
@@ -1046,7 +1040,6 @@ echo "$DEVMODE"
     popd
 # remove rpm db files which may not match the target chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
-set +x
 }
 
 createInitrd() {
