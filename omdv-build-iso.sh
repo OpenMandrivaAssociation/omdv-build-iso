@@ -468,30 +468,34 @@ printf "%s\n" "$WORKDIR"
 }
 
 getPkgList() {
-    # update iso-pkg-lists from ABF if missing
+    # update iso-pkg-lists from GitHub if required
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
-
-    if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-	printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from ABF."
-	# download iso packages lists from https://abf.openmandriva.org
-	PKGLIST="https://abf.openmandriva.org/openmandriva/iso-pkg-lists/archive/iso-pkg-lists-${TREE,,}.tar.gz"
-	$SUDO  wget --tries=10 -O `echo "$WORKDIR/iso-pkg-lists-${TREE,,}.tar.gz"` --content-disposition $PKGLIST
-	$SUDO tar zxfC "$WORKDIR/iso-pkg-lists-${TREE,,}.tar.gz" "$WORKDIR"
-	$SUDO tar zxfC "$WORKDIR/iso-pkg-lists-master.tar.gz" "$WORKDIR"
-	# Why not retain the unique list name it will help when people want their own spins ?
-	$SUDO rm -f iso-pkg-lists-master.tar.gz
-	# Finally get an md5checksum for the package list dir so it can be conditionally re-processed on local builds
-    fi
-    printf "%s\n" "-> Your ISO has a modified filelist"
-
-    # export file list
-    FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
-
-
-    if [ ! -e "$FILELISTS" ]; then
-	printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-	errorCatch
+    if [ "$IN_ABF" == "1" ] && [ -n "$DEBUG" ] || [ "$IN_ABF" == "0" ]; then
+        if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
+            mkdir -p "$WORKDIR/sessrec/base_lists/"
+        fi                
+        if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+            printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+            # download iso packages lists from https://github.com
+            # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+            if [ ${TREE,,} == "cooker" ]; then
+                ISO_VER=master
+            else 
+                ISO_VER=${TREE,,}
+            fi
+            EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
+            wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd "$WORKDIR"   --strip-components 1 -xvf -
+            cd $WORKDIR || exit;
+            $SUDO rm -rf ${EXCLUDE_LIST}
+            cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
+	        # export file list
+            FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
+        fi
+        if [ ! -e "$FILELISTS" ]; then
+        printf "%s\n" "-> $FILELISTS does not exist. Exiting"
+        errorCatch
+        fi
     fi
 }
 
