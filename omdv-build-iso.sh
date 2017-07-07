@@ -854,37 +854,33 @@ mkUpdateChroot() {
 	local __install_list="$1"
 	local __removelist="$2"
 
-	if [ -n "$REBUILD" ]; then
-	    printf "%s\n" "Reloading saved rpms" "%s\n"
-	    # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
-	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto "${URPMI_DEBUG}"
-	elif [ "$CHGFLAG" == "1" ] && [ -d "$CHROOTNAME/lib/modules" ] && [ -n "$1" ] && [ -n "$NOCLEAN" ]; then
-        printf "%s\n" "-> Installing user package selection" "%s\n"
-	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto "${URPMI_DEBUG}" 2>"$WORKDIR/missing"
-	    $SUDO printf '%s\n' "$__install_list" >"$WORKDIR/RPMLIST.txt"
-    elif [ -n "$1" ] && [ "$IN_ABF" == "1" ]; then #Use xargs for ABF just in case of any unexpected interactions
-	    printf "%s\n" "-> Installing packages at ABF" "%s\n"
-	    #printf "$__install_list %s\n"
-	    #Strip the newlines
-	    #printf "$__install_list" | tr '\n' ' ' | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
-	    printf '%s' "$__install_list" | xargs -n 1 "$SUDO" /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto "${URPMI_DEBUG}" >  "$WORKDIR/xargs_debug"
-    elif [ -n "$1" ] && [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ] && [ "$IN_ABF" == "0" ]; then
-        printf "%s\n" "-> Installing packages locally" "%s\n"
-        printf '%s\n' "$__install_list" | parallel -q --keep-order -d '\n' --joblog "$WORKDIR/install.log"  --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto "${URPMI_DEBUG}" 
-	else
+    if [ "$IN_ABF" == "0" ]; then
+        # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
+        if [ -n "$__install_list" ]; then 
+            printf "%s\n" "-> Installing user package selection" "%s\n"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>"$WORKDIR/missing"
+            $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
+        fi
+        if [ -z "$__install_list" ] && [ -n "$__remove_list" ]; then
+            printf "%s" "-> Removing user specified rpms and orphans" "%s\n"
+            # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
+            printf '%s\n' "$__remove_list" | parallel --tty --halt now,fail=10 -P 1 $SUDO rpm -e -v --nodeps --noscripts --root "$CHROOTNAME"
+            #--dbpath "$CHROOTNAME/var/lib/rpm"       
+            # This exposed a bug in urpme
+            $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
+            #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
+        else
+            printf "%s\n" "No rpms need to be removed" "%s\n"
+        fi
+    elif [ "$IN_ABF" == "1" ] && [ -n "$1" ] && [ -z "$NOCLEAN" ]; then 
+        #Use xargs for ABF just in case of any unexpected interactions
+        printf "%s\n" "-> Installing packages at ABF" "%s\n"
+        printf "$__install_list %s\n"
+        #Strip the newlines
+        printf "$__install_list" | tr '\n' ' ' | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
+    else
 	    printf "%s\n" "No rpms need to be installed" "%s\n" 
-	fi
-
-	if [ "$CHGFLAG" == "1" ] && [ -d "$CHROOTNAME/lib/modules" ] && [ -n "$2" ] && [ -n "$NOCLEAN" ]; then
-	printf "%s" "-> Removing user specified rpms and orphans" "%s\n"
-# rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-	    printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1 "$SUDO" rpm -e -v --nodeps --noscripts --dbpath "$CHROOTNAME/var/lib/rpm"
-# This exposed a bug in urpme
-	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
-	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
-	else
-	    printf "%s\n" "No rpms need to be removed" "%s\n"
-	fi
+    fi
 	if [ "$IN_ABF" == "0" ] && [ -f "$WORKDIR/install.log" ]; then
         #Make some helpful logs
         #Create the header
@@ -1083,7 +1079,7 @@ createInitrd() {
     fi
 
 # Building liveinitrd
-    "$SUDO" chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
 
     if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	printf "%s\n" "-> File $CHROOTNAME/boot/liveinitrd.img does not exist. Exiting." "%s\n"
@@ -1117,7 +1113,7 @@ createInitrd() {
 	fi
     fi
 
-    "$SUDO" ln -sf "/boot/initrd-$KERNEL_ISO.img" "$CHROOTNAME/boot/initrd0.img"
+    $SUDO ln -sf "/boot/initrd-$KERNEL_ISO.img" "$CHROOTNAME/boot/initrd0.img"
 
 }
 
@@ -1140,11 +1136,11 @@ createMemDisk () {
 # Create memdisk directory
     if [ -e "$WORKDIR"/boot/grub ]; then
 	$SUDO /bin/rm -R "$WORKDIR"/boot/grub
-	$SUDO mkdir -p "$WORKDIR"/boot/grub
+	$SUDO mkdir -p "$WORKDIR"/boot/grub2
     else
-	$SUDO mkdir -p "$WORKDIR"/boot/grub
+	$SUDO mkdir -p "$WORKDIR"/boot/grub2
     fi
-    MEMDISKDIR=$WORKDIR/boot/grub
+    MEMDISKDIR=$WORKDIR/boot/grub2
 
 # Copy the grub config file to the chroot dir for UEFI support
 # Also set the uuid
@@ -1172,11 +1168,11 @@ createMemDisk () {
      search search_fs_uuid search_fs_file search_label sleep tftp video xfs lua loopback regexp
 
 # Move back the ISO filesystem after building the EFI image.
-    "$SUDO" mv -f "$CHROOTNAME/ISO/" "$ISOROOTNAME"
+    $SUDO mv -f "$CHROOTNAME/ISO/" "$ISOROOTNAME"
 
 # Ensure the ISO image is clear
     if [ -e "$CHROOTNAME/memdisk.img" ]; then
-	"$SUDO" rm -f "$CHROOTNAME/memdisk_img"
+	$SUDO rm -f "$CHROOTNAME/memdisk_img"
     fi
 }
 
