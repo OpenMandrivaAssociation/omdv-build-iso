@@ -775,17 +775,17 @@ updateUserSpin() {
 # It is used to add user updates after the main chroot
 # has been created with mkUserSpin.
     printf "%s\n" "-> Updating user spin %s\n"
-    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC my.add
+    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
 # re-assign just for consistancy
     ALLRPMINC="$UADDRPMINC"
-    getIncFiles "$WORKDIR/so-pkg-lists-$TREE/my.rmv" PRE_RMRPMINC  my.rmv
+    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 # "Remove any duplicate includes"
-RMRPMINC=$(comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort))
+RMRPMINC=$(comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$RMRPMINC" | sort))
     createPkgList "$ALLRPMINC" INSTALL_LIST
     createPkgList "$RMRPMINC" REMOVE_LIST
-	printf "%s/n" "-> This is the include list %s\n"
+	printf "%s/n" "-> This is the user list %s\n"
 	printf "%s/n" "$ALLRPMINC"
-	printf "%s\n\n" "-> This is the remove incfile list" "%s\n"
+	printf "%s\n\n" "-> This is the remove list" "%s\n"
 	printf "%s $RMRPMINC"
 	if [ -n "$DEVMODE" ]; then
 	$SUDO printf '%s\n' "$ALLRPMINC" >"$WORKDIR/add_incfile.list"
@@ -801,7 +801,6 @@ printf "%s\n" "$REMOVE_LIST"
     fi
     mkUpdateChroot  "$INSTALL_LIST" "$REMOVE_LIST"
         printf "%s\n" "$INSTALL_LIST" "$REMOVE_LIST"
-        errorCatch
 }
 
 mkUserSpin() {
@@ -811,23 +810,23 @@ mkUserSpin() {
 # $REMOVE_LIST = All list files to be removed
 # This function includes all the user adds and removes.
     printf "%s\n" "-> Making a user spin"
-    if [ "$CHGFLAG" == "0" ]; then
-    getIncFiles "$FILELISTS" ADDRPMINC "$TYPE"
-    else
-    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC my.add
+    printf "%s\n" "Change Flag = $CHGFLAG"
+
+    getIncFiles "$FILELISTS" ADDRPMINC 
+    #"$TYPE"
+    printf "%s\n" "$ADDRPMINC" > "$WORKDIR/prime.list"
+    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
     ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
     printf "%s\n" "$ALLRPMINC" > "$WORKDIR/primary.list"
-    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" PRE_RMRPMINC  my.rmv
+    getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
     printf "%s\n" "-> Remove the common include lines for the remove package includes" "%s\n"
-    RMRPMINC=$(comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$PRE_RMRPMINC" | sort))
+    RMRPMINC=$(comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$RMRPMINC" | sort))
     printf "%s" "-> Creating $WHO\'s OpenMandriva spin from $FILELISTS" "%s\n" "Which includes"
     printf "%s\n" "$ALLRPMINC" | grep -v "$FILELISTS"
-    fi
     # Create the package lists
     createPkgList "$ALLRPMINC" INSTALL_LIST
     createPkgList "$RMRPMINC" REMOVE_LIST
-# Then to be sure remove the common lines from the remove package lists
-    #REMOVE_LIST=`comm -1 -3 --nocheck-order <(printf '%s\n' "$INSTALL_LIST" | sort) <(printf '%s\n' "$PRE_REMOVE_LIST" | sort)`
+
     if [ -n "$DEVMODE" ]; then
 	$SUDO printf '%s\n' "$INSTALL_LIST" >"$WORKDIR/user_add_rpmlist"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_rm_rpmlist"
