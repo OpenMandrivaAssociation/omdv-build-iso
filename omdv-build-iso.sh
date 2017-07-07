@@ -1811,7 +1811,7 @@ buildIso() {
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
     else
 	if [ -z "$OUTPUTDIR" ]; then
-	ISOFILE="/home/$WHO/$PRODUCT_ID.$EXTARCH.iso"
+	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
 	else
 	ISOFILE="$OUTPUTDIR/$PRODUCT_ID.$EXTARCH.iso"
 	fi
@@ -1836,7 +1836,7 @@ buildIso() {
 	-graft-points -iso-level 3 -full-iso9660-filenames \
 	--modification-date="${ISO_DATE}" \
 	-omit-version-number -disable-deep-relocation \
-	"${XORRISO_OPTIONS}" \
+	${XORRISO_OPTIONS} \
 	-publisher "OpenMandriva Association" \
 	-preparer "OpenMandriva Association" \
 	-volid "$LABEL" -o "$ISOFILE" "$ISOROOTNAME" --sort-weight 0 / --sort-weight 1 /boot
@@ -1857,13 +1857,25 @@ postBuild() {
 
 # Count checksums
 	printf "%s\n" "-> Generating ISO checksums."
-	pushd "$WORKDIR"
-	md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
-	sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
-	popd
-
+	if [ -n "$OUTPUTDIR" ]; then
+        $SUDO cd "$OUTPUTDIR"
+        md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
+        sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
+        else
+        pushd "$WORKDIR"
+        md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
+        sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
+        popd
+    fi
 	$SUDO mkdir -p "$WORKDIR/results" "$WORKDIR/archives"
-	$SUDO mv "$WORKDIR/*.iso*" "$WORKDIR/results/"
+	if [ -n "$OUTPUTDIR" ]; then
+        $SUDO mv "$OUTPUTDIR"/*.iso* "$WORKDIR/results/"
+	else
+        $SUDO mv "$WORKDIR"/*.iso* "$WORKDIR/results/"
+	fi
+	if [[ "$IN_ABF" == "0"  || ( "$IN_ABF" == "1" && -n "$DEBUG" && -n "$DEVMOD" ) ]]; then
+	$SUDO cp -r "$WORKDIR"/sessrec/ "$WORKDIR/archives/"
+	fi
 
 
 # If .noclean is set move rpms back to the cache directories
