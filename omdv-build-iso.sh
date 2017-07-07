@@ -637,16 +637,16 @@ getIncFiles() {
 # Recursively fetch included files
     while read -r  r; do
 	[ -z "$r" ] && continue
-	__addrpminc+="$__addrpminc"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
+	# Dont delete the space in fromt of $__addrpminc otherwise filtering will fail.
+	__addrpminc+=" $__addrpminc"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
 	getIncFiles "$(dirname "$1")/$r $2 $3"
-	continue
 # Avoid sub-shells make sure commented out includes are removed.
     done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
 #  Add the primary file to the list
     __addrpminc+=$'\n'"$1"
-    # Sort so the main file is at the top and export
+    # Sort and remove blank lines and export
     # Note this functionality allows us to combine package lists that may contain duplicates
-    __addrpminc=$(echo "$__addrpminc" | sort -u | sed -n '/^$/!p')
+    __addrpminc=$(echo "$__addrpminc" | awk '{print $1}' | sort -u | sed -n '/^$/!p')
     eval $__incflist="'$__addrpminc'"
     shopt -u lastpipe
     set -m
