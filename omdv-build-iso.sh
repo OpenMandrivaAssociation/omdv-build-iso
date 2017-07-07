@@ -1193,7 +1193,6 @@ createUEFI() {
 
     IMGNME="$ISOROOTNAME/boot/grub/$EFINAME"
     GRB2FLS="$ISOROOTNAME"/EFI/BOOT
-set -x
     printf "%s\n" "-> Building GRUB's EFI image." "%s\n"
     if [ -e "$IMGNME" ]; then
 	"$SUDO" rm -rf "$IMGNME"
@@ -1207,16 +1206,31 @@ set -x
     printf "%s\n" "-> Creating EFI image with size $EFIDISKSIZE" "%s\n"
 
 # mkfs.vfat can create the image and filesystem directly
-    "$SUDO" mkfs.vfat -n "OPENMDVASS" -C -F 16 -s 1 -S 512 -M 0xFF -i 22222222 "$IMGNME" "$EFIDISKSIZE"
+    $SUDO mkfs.vfat -n "OPENMDVASS" -C -F 16 -s 1 -S 512 -M 0xFF -i 22222222 "$IMGNME" "$EFIDISKSIZE"
 # Loopback mount the image
-    "$SUDO" losetup -f "$IMGNME"
+# IMPORTANT NOTE: In OMDV 4.x.x series kernels the loop driver is compiled as a module
+# This causes problems when building in an ABF iso container.
+# When the container is started if the the main kernel has not started the loop driver then
+# no loop devices will be created in the docker isobuilder instance so the module must be loaded before 
+# running losetup this is achieved by running "losetup -f" with no arguments.
+# A further side effect is that if the module is loaded from inside docker when an image is mounted 
+# on the docker loop device it is also mounted on ALL the available device names in the host OS thus
+# making the loop devices unavailable to the main kernel though additional devices may be used in the docker instance.
+# Yet another side effect is that the host OS automounts all the loop devices which then makes it impossible 
+# to unmount them from inside the container. This problem can be overcome by adding the following rule to the docker-80.rules file
+
+# The indentifiers in the files system image are used to ensure that the rule is unique to this script
+
+    $SUDO losetup -f
+    # Make sure loop device is loaded
+    sleep 1
+    $SUDO losetup -f "$IMGNME"
     if [[ $? != 0 ]]; then
 	printf "%s\n" "-> Failed to mount loopback image. Exiting."
 	errorCatch
     fi
-
     sleep 1
-    "$SUDO" mount -t vfat "$IMGNME" /mnt
+    $SUDO mount -t vfat "$IMGNME" /mnt
     if [[ $? != 0 ]]; then
 	printf "%s\n" "-> Failed to mount UEFI image. Exiting."
 	errorCatch
@@ -1303,7 +1317,7 @@ setupGrub2() {
 # If the entire ~/ISO director is copied to the chroot we do do have to worry too much about hacking the existing script to work
 # with new paths we can simple add the $CHROOTNAME to the $ISOCHROOTNAME to get get the new path.
 # So the quickest and easiest method is to mv the $ISOROOTNAME this avoids having two copies and is simple to understand
-# First thoughmake sure we actually build new images
+# First though make sure we actually build new images
     if [ -e "$ISOROOTNAME/boot/grub/grub-eltorito.img" -o -e "$ISOROOTNAME/boot/grub/grub2-embed_img" ]; then
 	$SUDO rm -rf "$ISOROOTNAME/boot/grub/{grub-eltorito,grub-embedded}.img"
     fi
@@ -1352,7 +1366,7 @@ setupGrub2() {
     fi
 
     XORRISO_OPTIONS="$XORRISO_OPTIONS1 $XORRISO_OPTIONS2"
-    "$SUDO" rm -rf "$GRUB_IMG"
+    $SUDO rm -rf "$GRUB_IMG"
 }
 
 
