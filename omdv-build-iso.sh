@@ -338,8 +338,8 @@ ISOROOTNAME="$WORKDIR/ISO"
 # The --keep option allow these to be retained for subsequent sessions
 # The option is disallowed when the build takes place in ABF.
 if [ "$IN_ABF" == "0" ] && [ -n "$KEEP" ] && [ -d "$WORKDIR/sessrec" ]; then
-$SUDO mv "$WORKDIR/sessrec" "$UHOME"
-printf "%s\n" "Retaining your session records"
+    $SUDO mv "$WORKDIR/sessrec" "$UHOME"
+    printf "%s\n" "Retaining your session records"
 fi
 
 if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv" ] && [ -z "$NOCLEAN" ]; then
@@ -439,8 +439,8 @@ errorCatch() {
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
-    "$SUDO" umount -l /mnt
-    "$SUDO" losetup -D
+    $SUDO umount -l /mnt
+    $SUDO losetup -D
 if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
 # for some reason the next line deletes irrespective of flags
 #    $SUDO rm -rf $(dirname "$FILELISTS")
@@ -463,30 +463,26 @@ printf "%s\n" "$WORKDIR"
 	$SUDO urpmq --list-url
 	$SUDO urpmi.update -a
 
-	# Inside ABF, lxc-container which is used to run this script is based
-	# on Rosa2012 which does not have cdrtools
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n" "-> Installing rpm files %s\n"
-	$SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch "${RPM_LIST}" --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-    # copy 'contents of /usr/share/omdv-build-iso to the workdir if required
+    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+
     if [ "$IN_ABF" = "0" ]; then
-	if [ ! -d "$WORKDIR/dracut" ]; then
-		printf "%s" "-> Copying build lists from $(rpm -q omdv-build-iso)"
-	    find "$WORKDIR"
-	    $SUDO cp -r /usr/share/omdv-build-iso/* "$WORKDIR"
-	    touch "$WORKDIR/.new"
-	    chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
-    	else
-	    printf "%s\n" "-> Your build lists have been retained" # Files already copied
+        if [ ! -d "$WORKDIR/dracut" ]; then
+            find "$WORKDIR"
+            touch "$WORKDIR/.new"
+            chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
+            else
+            printf "%s\n" "-> Your build lists have been retained" # Files already copied
+        fi
 	fi
-    fi
-        # check file list exists
-    if [ ! -e "$FILELISTS" ]; then
-	printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-	errorCatch
-    fi
+	
+	# Make our directory writeable by current sudo user
+	$SUDO chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
+    
+
 }
 
 getPkgList() {
@@ -703,8 +699,8 @@ __pkgs=$(printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,        , ,g;s
     eval $__pkglist="'$__pkgs'"
     if [ -n "$DEBUG" ]; then
 	printf  "%s\n" "-> This is the $2 package list"
-	printf "%s\n $__pkgs"
-	"$SUDO" printf "%s" "$__pkgs" >"$WORKDIR/$2.list"
+	printf "%s\n" "$__pkgs"
+	$SUDO printf "%s" "$__pkgs" >"$WORKDIR/$2.list"
     fi
 
     shopt -u lastpipe
