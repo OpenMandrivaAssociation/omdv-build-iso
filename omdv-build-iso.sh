@@ -1196,14 +1196,31 @@ createUEFI() {
     echo "-> Creating EFI image with size $EFIDISKSIZE"
 
 # mkfs.vfat can create the image and filesystem directly
-    $SUDO mkfs.vfat -C -F 16 -s 1 -S 512 -M 0xFF $IMGNME $EFIDISKSIZE
+    $SUDO mkfs.vfat -n "OPENMDVASS" -C -F 16 -s 1 -S 512 -M 0xFF -i 22222222 "$IMGNME" "$EFIDISKSIZE"
 # Loopback mount the image
+# IMPORTANT NOTE: In OMDV 4.x.x series kernels the loop driver is compiled as a module
+# This causes problems when building in an ABF iso container.
+# When the container is started if the the main kernel has not started the loop driver then
+# no loop devices will be created in the docker isobuilder instance so the module must be loaded before 
+# running losetup this is achieved by running "losetup -f" with no arguments.
+# A further side effect is that if the module is loaded from inside docker when an image is mounted 
+# on the docker loop device it is also mounted on ALL the available device names in the host OS thus
+# making the loop devices unavailable to the main kernel though additional devices may be used in the docker instance.
+# Yet another side effect is that the host OS automounts all the loop devices which then makes it impossible 
+# to unmount them from inside the container. This problem can be overcome by adding the following rule to the docker-80.rules file
+# Without this rule a maximum of 8 isos can be build before all loop devices are used at which point the container does not work
+# The indentifiers in the files system image are used to ensure that the rule is unique to this script
+# Here is the rule for /lib/udev/rules.d/80-docker.rules 
+# SUBSYSTEM=="block", DEVPATH=="/devices/virtual/block/loop*", ENV{ID_FS_UUID}="2222-2222", ENV{UDISKS_PRESENTATION_HIDE}="1", ENV{UDISKS_IGNORE}="1"
+
+    $SUDO losetup -f
+    # Make sure loop device is loaded
+    sleep 1
     $SUDO losetup -f $IMGNME
     if [[ $? != 0 ]]; then
 	echo "-> Failed to mount loopback image. Exiting."
 	errorCatch
     fi
-
     sleep 1
     $SUDO mount -t vfat $IMGNME /mnt
     if [[ $? != 0 ]]; then
