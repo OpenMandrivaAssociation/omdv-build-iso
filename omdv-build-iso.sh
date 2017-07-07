@@ -266,26 +266,6 @@ else
     IN_ABF=0
 fi
 
-# default definitions
-DIST=omdv
-[ -z "$EXTARCH" ] && EXTARCH="$(uname -m)"
-[ -z "${TREE}" ] && TREE=cooker
-[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
-[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-if [ "$IN_ABF" == "1" ] && [ -n "$DEBUG" ] || [ "$IN_ABF" == "0" ]; then
-    if [ -z "$NOCLEAN" ]; then
-    [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
-    # The build_id gets written to file when the use makes the first change
-    else
-    #The BUILD_ID has already been saved. Used to identify user diffs.
-    BUILD_ID=$(cat "$WORKDIR/sessrec/.build_id")
-    fi
-fi
-
-# always build free ISO
-FREE=1
-LOGDIR="."
-
 printf  "%s\n" "In abf = $IN_ABF"
 
 # Set the $WORKDIR
@@ -324,6 +304,26 @@ printf "%s\n" "->The work directory is $WORKDIR"
 CHROOTNAME="$WORKDIR/BASE"
 # this is where ISO files are created
 ISOROOTNAME="$WORKDIR/ISO"
+
+# default definitions
+DIST=omdv
+[ -z "$EXTARCH" ] && EXTARCH="$(uname -m)"
+[ -z "${TREE}" ] && TREE=cooker
+[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
+[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
+if [[ ( "$IN_ABF" == "1"  &&  -n "$DEBUG" )  ||  "$IN_ABF" == "0" ]]; then
+    if [ -z "$NOCLEAN" ]; then
+    [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
+    # The build_id gets written to file when the use makes the first change
+    else
+    #The BUILD_ID has already been saved. Used to identify user diffs.
+    BUILD_ID=$(cat "$WORKDIR"/sessrec/.build_id)
+    fi
+fi
+
+# always build free ISO
+FREE=1
+LOGDIR="."
 
 # User mode allows three modes of operation.
 # All user modes rely on the script being run with no user options to generate  the initial chroot.
