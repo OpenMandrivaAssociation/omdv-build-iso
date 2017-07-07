@@ -221,8 +221,7 @@ if [ "$(id -u)" != "0" ]; then
     # We need to be root for umount and friends to work...
     # NOTE the following command will only work on OMDV for the first registered user
     # this user is a member of the wheel group and has root privelidges
-    exec sudo -E $(echo "$SUDOVAR") "$0" "$@"
-    printf "%s $SUDOVAR %s\n"
+    exec sudo -E `echo ${SUDOVAR}` $0 "$@"
     printf "%s\n" "-> Run me as root."
     exit 1
 fi
@@ -304,6 +303,7 @@ printf "%s\n" "Debugging ABF build locally"
 # Avoid setting the usual ABF WORKDIR
 # if WORKDIR is not defined then set a default'
     if [ -z "$WORKDIR" ]; then
+    echo $SUDOVAR
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
     printf "%s\n" "The build directory is $WORKDIR"
     fi
@@ -426,12 +426,12 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 umountAll() {
     printf "%s\n" "-> Unmounting all. %s\n"
     unset KERNEL_ISO
-    "$SUDO" umount -l "$1"/proc 2> /dev/null || :
-    "$SUDO" umount -l "$1"/sys 2> /dev/null || :
-    "$SUDO" umount -l "$1"/dev/pts 2> /dev/null || :
-    "$SUDO" umount -l "$1"/dev 2> /dev/null || :
-    "$SUDO" umount -l "$1"/run/os-prober/dev/* 2> /dev/null || :
-    "$SUDO" umount -l "$IMGNME" 2> /dev/null || :
+    $SUDO umount -l "$1"/proc 2> /dev/null || :
+    $SUDO umount -l "$1"/sys 2> /dev/null || :
+    $SUDO umount -l "$1"/dev/pts 2> /dev/null || :
+    $SUDO umount -l "$1"/dev 2> /dev/null || :
+    $SUDO umount -l "$1"/run/os-prober/dev/* 2> /dev/null || :
+    $SUDO umount -l "$IMGNME" 2> /dev/null || :
 }
 
 errorCatch() {
@@ -689,7 +689,6 @@ createPkgList() {
     local __pkgs # The list of packages
     local __pkglst # The current package list
     while read -r __pkglst; do
-	#__pkgs+=$'\n'`cat "$__pkglst"`
 	__pkgs+=$'\n'$(cat "$__pkglst" 2> /dev/null)
     done < <(printf '%s\n' "$1") 
 # sanitise regex compliments of TPG
@@ -835,7 +834,7 @@ mkUserSpin() {
 }
 
 mkUpdateChroot() {
-# Usage: mkUpdateChroot [Install variable] [remove variable] [update type]
+# Usage: mkUpdateChroot [Install variable] [remove variable]
 # Function:      If the --noclean option is set and a full chroot has been built
 #               (presence of .noclean in the chroot directory) then this function will be
 #               called when a change is detected in the users iso-build-lists.
@@ -852,7 +851,7 @@ mkUpdateChroot() {
 #               are mandatory.
 	printf "%s\n" "-> Updating chroot" "%s\n"
 	local __install_list="$1"
-	local __removelist="$2"
+	local __remove_list="$2"
 
     if [ "$IN_ABF" == "0" ]; then
         # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
@@ -887,14 +886,14 @@ mkUpdateChroot() {
         head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-fail.log"
         head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-install.log"
         #Append the data
-	awk '$7  ~ /1/' "$WORKDIR/install.log" >> "$WORKDIR/rpm-fail.log"
-        awk '$7  ~ /0/' "$WORKDIR/install.log" >> "$WORKDIR/rpm-install.log"
+#	awk '$7  ~ /1/' "$WORKDIR/install.log" >> "$WORKDIR/rpm-fail.log"
+#        awk '$7  ~ /0/' "$WORKDIR/install.log" >> "$WORKDIR/rpm-install.log"
 
-#        cat "$WORKDIR/install.log" | awk '$7  ~ /1/' >> "$WORKDIR/rpm-fail.log"
-#        cat "$WORKDIR/install.log" | awk '$7  ~ /0/' >> "$WORKDIR/rpm-install.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /1/' >> "$WORKDIR/rpm-fail.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /0/' >> "$WORKDIR/rpm-install.log"
         #Clean-up
         rm -f "$WORKDIR/install.log"
-    fi
+   fi
 }
 
 createChroot() {
@@ -952,8 +951,8 @@ fi
 # Update media
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
-	printf "%s -> Updating urpmi repositories in $CHROOTNAME"
-	$SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
+        printf "%s -> Updating urpmi repositories in $CHROOTNAME"
+        $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
     fi
 
     $SUDO mount --bind /proc "$CHROOTNAME"/proc
@@ -1894,9 +1893,8 @@ postBuild() {
 # START ISO BUILD
 showInfo
 updateSystem
-if [ "$IN_ABF" == "0" ]; then
+getPkgList
 localMd5Change
-fi
 createChroot
 createInitrd
 createMemDisk
