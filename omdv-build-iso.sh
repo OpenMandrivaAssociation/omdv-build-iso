@@ -147,17 +147,24 @@ if [ $# -ge 1 ]; then
         	    shift
         	    ;;
         	--workdir=*)
-        	    WORKDIR=${k#*=}
+        	    WORK=${k#*=}
+        	    # Expand the tilde
+        	    WORKDIR=${WORK/#\~/$HOME}
         	    shift
         	    ;;
         	--outputdir=*)
-        	    OUTPUTDIR=${k#*=}
+        	    OUTPUT=${k#*=}
+        	    OUTPUTDIR=${OUTPUT/#\~/$HOME}
         	    shift
         	    ;;
     		--debug)
         	    DEBUG=debug
         	    shift
         	    ;;
+            --urpmi-debug)
+                URPMI_DEBUG=debug
+                shift
+                ;;
         	--noclean)
         	    NOCLEAN=noclean
         	    shift
