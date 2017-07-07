@@ -211,15 +211,10 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 # The abf isobuilder docker instance is created with a single working directory /home/omv/iso_builder. This directory must not be deleted as it contains important (but hidden) config files.
 # A support directory /home/omv/docker-iso-worker is also created this should not be touched.
-# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These filed are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are nit displayed. 
+# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These filed are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
 
-if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then 
-WHO=omv
-else WHO=$(id -un)
-fi
-SUDOVAR=""WHO="$WHO "UHOME="/home/$WHO "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
+SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
-
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -231,12 +226,21 @@ if [ "$(id -u)" != "0" ]; then
     printf "%s\n" "-> Run me as root."
     exit 1
 fi
-export "$SUDOVAR"
+# Set the local build prefix
+if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then 
+WHO=omv
+else
+WHO="$SUDO_USER"
+UHOME=/home/"$WHO"
+fi
 
-if [ "$ABF" == "1" ] && [ -d '/home/omv/docker-iso-worker' ]; then
+
+if [ "$ABF" == "1" ]; then
     IN_ABF=1
     printf "%s\n" "->We are in ABF (https://abf.openmandriva.org) environment"
-    if [ -n "$NOCLEAN" ]; then
+    if [ -n "$NOCLEAN" ] && [ -n  "$DEBUG" ]; then
+    printf "%s\n" "-> using --noclean inside ABF DEBUG instance"
+    elif [ -n "$NOCLEAN" ]; then
 	printf "%s\n" "-> You cannot use --noclean inside ABF (https://abf.openmandriva.org)"
 	exit 1
     fi
@@ -269,7 +273,15 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-[ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
+if [ "$IN_ABF" == "1" ] && [ -n "$DEBUG" ] || [ "$IN_ABF" == "0" ]; then
+    if [ -z "$NOCLEAN" ]; then
+    [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
+    # The build_id gets written to file when the use makes the first change
+    else
+    #The BUILD_ID has already been saved. Used to identify user diffs.
+    BUILD_ID=$(cat "$WORKDIR/sessrec/.build_id")
+    fi
+fi
 
 # always build free ISO
 FREE=1
@@ -330,41 +342,51 @@ $SUDO mv "$WORKDIR/sessrec" "$UHOME"
 printf "%s\n" "Retaining your session records"
 fi
 
-if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv" ]; then
-$SUDO rm -rf "$WORKDIR"
-$SUDO mkdir -p "$WORKDIR"
-elif [ "$IN_ABF" == "0" ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
-$SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR"
-$SUDO rm -rf "$WORKDIR/BASE/"
-$SUDO rm -rf "$WORKDIR/missing"
-$SUDO rm -rf "$WORKDIR/Setting*"
-$SUDO rm -rf "$WORKDIR/*.log"
+if [ "$IN_ABF" == "1" ]  && [ -n "$DEBUG" ] && [ "$WHO" != "omv" ] && [ -z "$NOCLEAN" ]; then
+    $SUDO rm -rf "$WORKDIR"
+    $SUDO mkdir -p "$WORKDIR"
+    touch "$WORKDIR/.new" 
+elif [ "$IN_ABF" == "0" ] && [ -z "$NOCLEAN" ]; then
+    $SUDO rm -rf "$WORKDIR"
+    $SUDO mkdir -p "$WORKDIR"
+    touch "$WORKDIR/.new" 
+fi
+
+if [ "$IN_ABF" == "0" ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
+    $SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR"
+    $SUDO rm -rf "$WORKDIR/BASE/"
+    $SUDO rm -rf "$WORKDIR/missing"
+    $SUDO rm -rf "$WORKDIR/Setting*"
+    $SUDO rm -rf "$WORKDIR/*.log"
     if [ -n "$KEEP" ]; then
-    $SUDO mv "$UHOME/sessrec" "$WORKDIR"
-    else
-    $SUDO rm -rf "$WORKDIR/sessreq"
+        $SUDO mv "$WORKDIR/sessrec" "$UHOME/" 
+    elif [ -d "$UHOME/sessreq" ]; then
+        $SUDO rm -rf "$UHOME/sessreq"
+        touch $WORKDIR/.new
     fi
 #Remake needed directories
-$SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
-$SUDO mkdir -p "$CHROOTNAME/var/lib/rpm"
-$SUDO mkdir -p "$CHROOTNAME/var/cache/urpmi"
-$SUDO mv  "$WORKDIR/rpms" "$CHROOTNAME/var/cache/urpmi/rpms"
-    if [ -n "$REBUILD" ] && [ ! -d "$WORKDIR" ]; then
-    printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." 
-    printf "%s\n" "-> Creating a new noclean build which may be used for rebuilding."
-    $SUDO mkdir -p "$WORKDIR"
-    NOCLEAN=noclean
+    $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
+    $SUDO mkdir -p "$CHROOTNAME/var/lib/rpm"
+    $SUDO mkdir -p "$CHROOTNAME/var/cache/urpmi"
+    $SUDO mv  "$WORKDIR/rpms" "$CHROOTNAME/var/cache/urpmi/rpms"
+    if [ -n "$KEEP" ]; then
+        $SUDO mv "$UHOME/sessrec" "$WORKDIR"
     fi
-elif [ "$IN_ABF" == "0" ] && [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
+    
+else 
+    printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." 
+    printf "%s\n" "-> You must run  your command with the --noclean option set to create something to rebuild."
+fi
+
+if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
 	if [ -d "$WORKDIR/sessrec" ]; then
-        printf "%s\n" "You have chosen not to clean the base installation" "If your build chroot becomes corrupted you may want" "to take advantage of the 'rebuild' option to delete the corrupted files" "and build a new base installation." "This will be faster than dowloading the rpm packages again" 
-        fi
-        # Note need to clean out grub uuid files here and maybe others
-        if  [ -n "$NOCLEAN" ] && [ ! -d "$WORKDIR" ]; then
+        printf "%s\n" "You have chosen not to clean the base installation" "If your build chroot becomes corrupted you may want" "to take advantage of the 'rebuild' option to delete the corrupted files" "and build a new base installation." "This will be faster than dowloading the rpm packages again"
+    fi
+    # Note need to clean out grub uuid files here and maybe others
+elif  [ -n "$NOCLEAN" ]; then
         printf "%s\n" "No base chroot exists...creating one"
         $SUDO mkdir -p "$WORKDIR"
         $SUDO touch "$WORKDIR/.new"
-        fi
 fi
 
 # Assign the config build list
