@@ -162,7 +162,7 @@ if [ $# -ge 1 ]; then
         	    shift
         	    ;;
             --urpmi-debug)
-                URPMI_DEBUG=debug
+                URPMI_DEBUG=--debug
                 shift
                 ;;
         	--noclean)
@@ -394,11 +394,6 @@ fi
 LABEL="$PRODUCT_ID.$EXTARCH"
 [ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
 [ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
-
-# urpmi debug
-if [ "${DEBUG,,}" == "debug" ]; then
-    URPMI_DEBUG=" --debug "
-fi
 
 
 
