@@ -660,14 +660,19 @@ getIncFiles() {
     local __incflist=$2 # Carries returned variable
 
 # Recursively fetch included files
+nextIncFile () {
     while read -r  r; do
 	[ -z "$r" ] && continue
 	# Dont delete the space in fromt of $__addrpminc otherwise filtering will fail.
-	__addrpminc+=" $__addrpminc"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r"
-	getIncFiles "$(dirname "$1")/$r"
+	__addrpminc+=" $__addrpminc"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r" #> /dev/null 2>&1
+	#getIncFiles "$(dirname "$1")/$r"
+	nextIncFile printf "%s\n" "$1"
 # Avoid sub-shells make sure commented out includes are removed.
-    done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
-#  Add the primary file to the list
+    done #< <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
+}
+
+nextIncFile < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
+    #  Add the primary file to the list
     __addrpminc+=$'\n'"$__infile"
     # Sort and remove blank lines and export
     # Note this functionality allows us to combine package lists that may contain duplicates
@@ -761,9 +766,9 @@ mkOmSpin() {
 # Returns a variable "$INSTALL_LIST" containing all rpms
 # to be installed
     getIncFiles "$FILELISTS" ADDRPMINC
-    printf '%s' "$ADDRPMINC" > "$WORKDIR/inclist"
-    printf "%s -> Creating OpenMandriva spin from $FILELISTS" "Which includes"
-    printf '%s' "$ADDRPMINC" | grep -v "$FILELISTS"  
+    printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
+    printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" "Which includes"
+    printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"  
     createPkgList "$ADDRPMINC" INSTALL_LIST
     if [ -n "$DEVMODE" ]; then
     printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
