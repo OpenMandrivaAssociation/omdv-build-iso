@@ -189,6 +189,10 @@ if [ $# -ge 1 ]; then
                     DEVMODE=devmode
                     shift
                     ;;
+             --auto-update)
+		    AUTO_UPDATE=1
+		    shift
+		    ;;
              --enable-skip-list)
                     ENSKPLST=enskplst
                     shift
@@ -1014,6 +1018,10 @@ fi
     if [ -n "$REBUILD" ]; then
     # Restore the noclean status
 	$SUDO touch "$CHROOTNAME/.noclean"
+    fi
+    if [[ -n "$AUTO_UPDATE" && -e "$CHROOTNAME/.noclean" ]]; then
+       $SUDO chroot "$CHROOTNAME"
+       $SUDO urpmi --auto-update
     fi
     
     if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then

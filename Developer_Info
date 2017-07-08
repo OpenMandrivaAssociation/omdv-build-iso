@@ -4,12 +4,12 @@ MAJOR FIXES 2017
 Some parts of omdv-build-iso-shell have been completely re-written to allow the introdution of a true user mode where packages may be conveniently 
 added and removed to pair of package lists (my.add and my.remove)
 In order to do this it was necessary to generate two separate package lists. Although not strictly necessary the package lists 
-are generated as a two stage process. Two Function are involved getIncFiles() and creatPkgList() both of these function can return 
+are generated as a two stage process. Two Function are involved getIncFiles() and creatPkgList() both of these functions can return 
 their  data in a pre-named variable. For example calling getIncFiles with omdv-kde4.list ADDRPMINC  will return a variable named 
 $ADDRPMINC containing all the (recursive) includes for the top level package file. This make it much easier to identify and manipulate 
 the data required from the lists. This has the advantage that packages can be assembled from various sources and conveniently named 
-for identifications purposes. Note that these function require a change in shell options to work properly.
-The build process is managed by three additional functions. These functions all have a similar structure thir purpose being to 
+for identifications purposes. Note that these functions require a change in shell options to work properly.
+The build process is managed by three additional functions. These functions all have a similar structure their purpose being to 
 first assemble the build lists into two major variables the $INSTALL_LIST and the $REMOVE_LIST. The content of these lists vary 
 with the primary function invoked. The OmSpin function for example generates just an INSTALL_LIST for building a release iso 
 whereas the mkUserSpin function generates the $INSTALL_LIST AND $REMOVE_LIST from the chosen top level file say omdv-kde4.list 
