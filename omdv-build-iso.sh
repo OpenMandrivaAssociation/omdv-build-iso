@@ -992,15 +992,15 @@ fi
         printf "%s\n" "Creating chroot" 
         mkOmSpin
      # Build the initial noclean chroot this is user mode only and will include the two user files my.add and my.rmv
-    elif [[ -n "$NOCLEAN" && ! -f "$CHROOTNAME/.noclean" && "$IN_ABF" == "0" ]]; then 
+    elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then 
         printf "%s\n" "Creating an user chroot"
         mkUserSpin
      # Build the initial noclean chroot in ABF test mode and will use just the base lists   
-    elif [[ -n "$NOCLEAN" && ! -f "$CHROOTNAME/.noclean" && "$IN_ABF" == "1" && -n "$DEBUG" ]]; then
+    elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "1" && -n "$DEBUG" ]]; then
         printf "%s\n" "Creating chroot in ABF developer mode"
         mkOmSpin
     # Update a noclean chroot with the contents of the user files my.add and my.rmv 
-    elif [[ -n "$NOCLEAN" && -f "$CHROOTNAME/.noclean" &&  "$IN_ABF" == "0" ]]; then
+    elif [[ -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean &&  "$IN_ABF" == "0" ]]; then
         updateUserSpin
         printf "%s\n" "Updating user spin"
     # Rebuild the users chroot from cached rpms
@@ -1280,7 +1280,7 @@ setupGrub2() {
     $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
-    printf "%s\n" "-> Setting GRUB_UUID to ${GRUB_UUID}" "%s\n"
+    printf "%s\n" "-> Setting GRUB_UUID to ${GRUB_UUID}"
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
     if [[ $? != 0 ]]; then
 	    printf "%s\n" "-> Failed to set up GRUB_UUID."
@@ -1327,7 +1327,7 @@ setupGrub2() {
 # If the entire ~/ISO director is copied to the chroot we do do have to worry too much about hacking the existing script to work
 # with new paths we can simple add the $CHROOTNAME to the $ISOCHROOTNAME to get get the new path.
 # So the quickest and easiest method is to mv the $ISOROOTNAME this avoids having two copies and is simple to understand
-# First though make sure we actually build new images
+# First thoughmake sure we actually build new images
     if [ -e "$ISOROOTNAME/boot/grub/grub-eltorito.img" -o -e "$ISOROOTNAME/boot/grub/grub2-embed_img" ]; then
 	$SUDO rm -rf "$ISOROOTNAME/boot/grub/{grub-eltorito,grub-embedded}.img"
     fi
@@ -1341,7 +1341,7 @@ setupGrub2() {
 # Create bootable hard disk image
     $SUDO cat "$CHROOTNAME/$GRUB_LIB/boot.img" "$CHROOTNAME/$GRUB_IMG" > "$ISOROOTNAME/boot/grub/grub2-embed_img"
     if [[ $? != 0 ]]; then
-	printf "%s\n" "-> Failed to create Grub2 El-Torito image. Exiting."
+	printf "%s\n" "-> Failed to create Grub2 El-Torito image." "Exiting."
 	errorCatch
     fi
 # Create bootable cdimage
@@ -1563,14 +1563,14 @@ EOF
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 	    if [ -e "$CHROOTNAME/lib/systemd/system/$i" ]; then
-		printf "%s\n" "-> Enabling $i" "%s\n"
+		printf "%s\n" "-> Enabling $i"
 		ln -sf "/lib/systemd/system/$i" "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i"
 	    else
-		printf "%s\n" "-> Special service $i does not exist. Skipping." "%s\n"
+		printf "%s\n" "-> Special service $i does not exist. Skipping."
 		fi
 	elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 	    if [ -e "$CHROOTNAME/lib/systemd/system/$i.service" ]; then
-		printf "%s\n" "-> Enabling $i.service" "%s\n"
+		printf "%s\n" "-> Enabling $i.service"
 		ln -sf "/lib/systemd/system/$i.service" "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i.service"
 	    else
 		printf "%s\n" "-> Service $i does not exist. Skipping."
@@ -1586,14 +1586,14 @@ EOF
     for i in "${SERVICES_DISABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 	    if [ -e "$CHROOTNAME/lib/systemd/system/$i" ]; then
-		printf "%s\n" "-> Disabling $i" "%s\n"
+		printf "%s\n" "-> Disabling $i"
 		$SUDO rm -rf "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i"
 	    else
-		printf "%s\n" "-> Special service $i does not exist. Skipping." "%s\n"
+		printf "%s\n" "-> Special service $i does not exist. Skipping."
 	    fi
 	elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
 	    if [ -e "$CHROOTNAME/lib/systemd/system/$i.service" ]; then
-		printf "%s\n" "-> Disabling $i.service" "%s\n"
+		printf "%s\n" "-> Disabling $i.service"
 		$SUDO rm -rf "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i.service"
 	    else
 		printf "%s\n" "-> Service $i does not exist. Skipping."
@@ -1672,7 +1672,7 @@ EOF
 
 # Add 32-bit main repository for non i586 build
 	    if [ "$EXTARCH" = "x86_64" ]; then
-		printf "%s\n" "-> Adding 32-bit media repository." "%s\n"
+		printf "%s\n" "-> Adding 32-bit media repository."
 # Use previous MIRRORLIST declaration but with i586 arch in link name
 MIRRORLIST2="$(echo "$MIRRORLIST" | sed -e "s/x86_64/i586/g")"
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST2" 'Main32' 'media/main/release'
