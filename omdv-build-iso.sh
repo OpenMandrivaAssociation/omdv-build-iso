@@ -581,7 +581,7 @@ localMd5Change() {
         printf "%s\n" "-> Making reference file sums"
         REF_FILESUMS=$($SUDO find ${BASE_LIST}/my.add ${BASE_LIST}/my.rmv ${BASE_LIST}/*.lst -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
         printf "%s\n" "-> Making directory reference sum"
-        REF_CHGSENSE=$(cat "$WORKDIR/sessrec/ref_filesums" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
+        REF_CHGSENSE=$(printf "%s" "$REF_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
         printf "%s\n" "$BUILD_ID" > "$WORKDIR/sessrec/.build_id"
         printf "%s\n" "Recording build identifier"
         rm -rf "$WORKDIR/.new"
@@ -598,12 +598,17 @@ localMd5Change() {
 	# Generate the references for this run
 	# Need to be careful here; there may be backup files so get the exact files
     # Order is important (sort?)
-    NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/tmp_new_filesums)
+    if [[ -f "$WORKDIR/sessrec/new_filesums" && -f "$WORKDIR/sessrec/tmp_new_filesums" ]]; then
+        NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/tmp_new_filesums)
+    else
+        NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/tmp_new_filesums)
+        NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums)
+    fi
     NEW_CHGSENSE=$(printf "%s" "$NEW_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/new_chgsense")
     printf "%s\n" "-> New references created %s\n"
     if [ -n "$DEBUG" ]; then
         printf "%s\n" "Directory Reference checksum" "$REF_CHGSENSE"
-        printf "%s\n" "Reference Filesums" "%s\n" "$REF_FILESUMS" 
+        printf "%s\n" "Reference Filesums" "$REF_FILESUMS" 
         printf "%s\n" "New Directory Reference checksum" "$NEW_CHGSENSE" 
         printf "%s\n" "New Filesums"  "$NEW_FILESUMS" 
     fi
