@@ -10,8 +10,9 @@ LOCAL USE:
 For local and developer use there are some changes which allow the build to be customised different requirments.
 There are three flags controlling this func
 
-Two new configuration files have been added to the package lists then are "my.add and "my.rmv" these files may be used 
-to add and remove packages to and from the standard builds.
+Three new configuration files have been added to the package lists then are "my.add and "my.rmv" these files may be used 
+to add and remove packages to and from the standard builds and skip.list, a user created skip.list that can be enabled 
+by a command line flag to support the filtering of files when the testrepo and autoupdate flags are used.
 These two file support the same syntax as the other files in that the %include .///directive [pkg list name] may be used.
 The script is so designed that it will remove duplicates pulled in by other lists. 
 It is possible then to build an iso that contains say KDE Plasma and xfce in the same iso without the need to comment out files 
@@ -30,15 +31,15 @@ but on the whole it works. Sometimes the unistall scripts do not remove certain 
 
 When building chroots there are occasions where debugging may be appropriate and sometimes messing about in the chroot 
 this can result in some corruption or some other muddle.
-For those with slow connections this can be a real pain as the packages for the complete chroot have to be downloaded again 
-and this can be try oners patience. To help with these frustrations two special flags are provided.
+Remaking a chroot from the full package can take considerable time as all the packages have to be downloaded 
+everytime the chroot is remade. To help with this difficulty two special flags are provided.
 
---noclean
-Passing this flag will build the chroot but on subsequant runs the chroot will be retained and files will only be added 
-or removed as required this saves much time as far less has to be downloaded, added and removed.
-The --noclean flag also triggers a rebuild mode which is available for those circumstances where the chroot get corrupted. 
-If you answer yes to the on-screen question then chroot will be removed but all the package list directories will be preserved. 
-The chroot will be re-created by re-downloading all the files but using you local package lists. 
+--rebuild
+Passing this flag either when the chroot is built or after an inital build is made preserve the chroot on subsequent builds 
+and files will be added and removed from the existing build.
+The --rebuild flag triggers a rebuild mode which is available for those circumstances where the chroot gets corrupted or you 
+wish to clean out the leftovers from removed pa ckages. Run with this flag  will cause the chroot to be removed but all the 
+previously downloaded rpms will be preserved. The chroot will be re-created by using the rpms that were previously downloaded.
 You are advised to back up your local package lists from time to time.
 
 --rebuild
@@ -64,6 +65,13 @@ The debug flag enables the printing (and in some cases saving) of various lists 
 In addition a list file diffing system in incorporated to allow review of changes to the iso's package lists. 
 This part of the package is still under development though some of the functionality is already available. See the developer docs
 for further information.
+
+--keep
+--urpmi-debug
+--auto-update
+--devmode
+--testrepo
+--enable-skiplist
 
 Extras: There is a simple utility in the tool directory which will allow you to mount your chroot providing you have named it 
 and it resides in your personal /home directory.
