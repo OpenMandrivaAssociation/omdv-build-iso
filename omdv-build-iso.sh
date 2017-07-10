@@ -653,38 +653,33 @@ localMd5Change() {
 }
 
 getIncFiles() {
-# Usage: getIncFiles [filename] xyz.* $"[name of variable to return] [package list file. my.add || my.rmv || {main config pkgs}]
+# Usage: getIncFiles [filename] xyz.* $"[name of variable to return] 
+# Returns a sorted list of include files
 # Function: Gets all the include lines for the specified package file
 # The full path to the package list must be supplied
-# Set 'lastpipe' options so as not to lose variable in sub-shells.
-    set +m
-    shopt -s lastpipe
+
 # Define a some local variables
     local __infile=$1   # The main build file
     local __incflist=$2 # Carries returned variable
-
-# Recursively fetch included files
-nextIncFile () {
-    while read -r  r; do
-	[ -z "$r" ] && continue
-	# Dont delete the space in fromt of $__addrpminc otherwise filtering will fail.
-	__addrpminc+=" $__addrpminc"$'\n'"$WORKDIR"/iso-pkg-lists-"$TREE"/"$r" #> /dev/null 2>&1
-	#getIncFiles "$(dirname "$1")/$r"
-	nextIncFile printf "%s\n" "$1"
+getEntrys() {
+    # Recursively fetch included files
+    while read r; do 
+     echo "$r"
+	[ -z "$r" ] && continue 
+	# $'\n' nothing else works just don't go there.
+	__addrpminc+=$'\n'"$WORKDIR/iso-pkg-lists-$TREE/$r" 
+	getEntrys "$WORKDIR/iso-pkg-lists-$TREE/$r" 
 # Avoid sub-shells make sure commented out includes are removed.
-    done #< <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
+    done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d') > /dev/null 2>&1
 }
-
-nextIncFile < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d')
-    #  Add the primary file to the list
-    __addrpminc+=$'\n'"$__infile"
-    # Sort and remove blank lines and export
-    # Note this functionality allows us to combine package lists that may contain duplicates
-    __addrpminc=$(echo "$__addrpminc" | awk '{print $1}' | sort -u | sed -n '/^$/!p')
+     getEntrys "$1"
+   # Add the primary file to the list
+   	__addrpminc+=$'\n'"$__infile"
+    # Sort and remove dupes.
+   	__addrpminc=$(printf "%s" "$__addrpminc" | sort -u | uniq -u) 
+   	# Export
     eval $__incflist="'$__addrpminc'"
-    shopt -u lastpipe
-    set -m
-}
+} 
 
 createPkgList() {
 # Usage: createPkgList  "$VAR" VARNAME
