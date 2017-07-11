@@ -60,8 +60,15 @@ silicon-plugin-system-tray
 silicon-plugin-udisks
 trojita
 
+# Themes and icons
+oxygen-icons
+breeze-gtk
+oxygen-gtk
+
+
 # Needed Task/Meta Packages
 task-pulseaudio
+
 
 task-printing
 # printing
