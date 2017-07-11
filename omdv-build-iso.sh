@@ -154,6 +154,7 @@ if [ $# -ge 1 ]; then
         	    ;;
         	--outputdir=*)
         	    OUTPUT=${k#*=}
+        	    # Expand the tilde
         	    OUTPUTDIR=${OUTPUT/#\~/$HOME}
         	    shift
         	    ;;
@@ -218,7 +219,8 @@ fi
 # When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These filed are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO \
+"AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -340,7 +342,7 @@ LOGDIR="."
 # For all modes any changes made to the pkg lists are implemented and recorded
 # User mode also generates a series of diffs as a record of the multiple sessions.
 # The --keep option allow these to be retained for subsequent sessions
-# The option is disallowed when the build takes place in ABF.
+
 if [[ "$IN_ABF" == "0" && -n "$KEEP" && -d "$WORKDIR/sessrec" ]]; then
     $SUDO mv "$WORKDIR/sessrec" "$UHOME"
     printf "%s\n" "Retaining your session records"
@@ -350,10 +352,15 @@ if [[ "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" && -z "$NOCLEAN" ]]; th
     $SUDO rm -rf "$WORKDIR"
     $SUDO mkdir -p "$WORKDIR"
     touch "$WORKDIR/.new" 
-elif [[ "$IN_ABF" == "0" && -z "$NOCLEAN" ]]; then
+elif [[ "$IN_ABF" == "0" && -z "$NOCLEAN" && -z "$REBUILD" && -d "$WORKDIR" ]]; then
     $SUDO rm -rf "$WORKDIR"
     $SUDO mkdir -p "$WORKDIR"
+# This file indicates to the session record system that a new set of reference filesums must be created
     touch "$WORKDIR/.new" 
+    else
+     printf "%s\n" "No base chroot exists...creating one"
+     $SUDO mkdir -p "$WORKDIR"
+     $SUDO touch "$WORKDIR/.new"
 fi
 
 if [[ "$IN_ABF" == "0" && -n "$REBUILD" && -d "$WORKDIR" ]]; then
@@ -376,9 +383,10 @@ if [[ "$IN_ABF" == "0" && -n "$REBUILD" && -d "$WORKDIR" ]]; then
     if [ -n "$KEEP" ]; then
         $SUDO mv "$UHOME/sessrec" "$WORKDIR"
     fi
-elif [ ! -d "$WORKDIR" ]; then
+    if [ ! -d "$WORKDIR" ]; then
     printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
     "-> You must run  your command with the --noclean option set to create something to rebuild."
+    fi
 fi
 
 if [[ -n "$NOCLEAN" && -d "$WORKDIR" ]]; then #if NOCLEAN option selected then retain the chroot.
@@ -390,10 +398,6 @@ if [[ -n "$NOCLEAN" && -d "$WORKDIR" ]]; then #if NOCLEAN option selected then r
         "This will be faster than dowloading the rpm packages again"
     fi
     # Note need to clean out grub uuid files here and maybe others
-elif  [ -n "$NOCLEAN" ]; then
-        printf "%s\n" "No base chroot exists...creating one"
-        $SUDO mkdir -p "$WORKDIR"
-        $SUDO touch "$WORKDIR/.new"
 fi
 
 # Assign the config build list
@@ -641,12 +645,12 @@ localMd5Change() {
             printf "%s\n" "-> No Changes"
         fi
     # Here just the standard files are diffed ommitting my.add and my.remove
-    # Intended for developers creating new compilations. Only active if DEVMOD is set in the env.
+    # Intended for developers creating new compilations. Only active if DEVMODE is set in the env.
     # This list is intended for Developers
-    DEVMOD=$(printf '%s' "$MODFILES" | grep -v 'my.add\|my.rmv')
+    DEVMODE=$(printf '%s' "$MODFILES" | grep -v 'my.add\|my.rmv')
     # Create a diff for the users reference
         diffPkgLists "$USERMOD"
-    elif [[ -n "$DEBUG"  && ( -n "$DEVMOD" || -n "$DEVMOD" ) ]]; then #DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
+    elif [[ -n "$DEBUG"  && ( -n "$DEVMOD" || -n "$DEVMODE" ) ]]; then #DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
     # Create a developer diff ommitting my.add and my.rmv
     diffPkgLists "$DEVMOD"
     fi 
@@ -766,7 +770,7 @@ mkOmSpin() {
 # to be installed
     getIncFiles "$FILELISTS" ADDRPMINC
     printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
-    printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" "Which includes"
+    printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" "Which includes" " "
     printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"  
     createPkgList "$ADDRPMINC" INSTALL_LIST
     if [ -n "$DEVMODE" ]; then
@@ -951,13 +955,13 @@ fi
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
     # This one is needed to grab firmwares
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
-            if [ -n "$TESTREPO" ]; then
-            $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-            fi
         fi
 	fi
 
 # Update media
+     if [ -n "$TESTREPO" ]; then
+        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+     fi
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
         printf "%s -> Updating urpmi repositories in $CHROOTNAME"
@@ -999,7 +1003,11 @@ fi
         printf "%s\n" "Creating chroot in ABF developer mode"
         mkOmSpin
     # Update a noclean chroot with the contents of the user files my.add and my.rmv 
-    elif [[ -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean &&  "$IN_ABF" == "0" ]]; then
+    elif [[ -n "$AUTO_UPDATE" && -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
+        #$SUDO chroot "$CHROOTNAME"
+       $SUDO /usr/sbin/urpmi --auto-update --force --urpmi-root "$CHROOTNAME"
+    elif 
+    [[ -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
         updateUserSpin
         printf "%s\n" "Updating user spin"
     # Rebuild the users chroot from cached rpms
@@ -1014,11 +1022,7 @@ fi
     # Restore the noclean status
 	$SUDO touch "$CHROOTNAME/.noclean"
     fi
-    if [[ -n "$AUTO_UPDATE" && -e "$CHROOTNAME/.noclean" ]]; then
-       $SUDO chroot "$CHROOTNAME"
-       $SUDO urpmi --auto-update
-    fi
-    
+
     if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
 	printf "%s\n" "-> Can not install packages from $FILELISTS"
 	errorCatch
@@ -1677,7 +1681,7 @@ EOF
 	    if [ "$EXTARCH" = "x86_64" ]; then
 		printf "%s\n" "-> Adding 32-bit media repository."
 # Use previous MIRRORLIST declaration but with i586 arch in link name
-MIRRORLIST2="$(echo "$MIRRORLIST" | sed -e "s/x86_64/i586/g")"
+        MIRRORLIST2="$(echo "$MIRRORLIST" | sed -e "s/x86_64/i586/g")"
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST2" 'Main32' 'media/main/release'
 		if [[ $? != 0 ]]; then
 		$SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Main32' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/i586/main/release
@@ -1755,9 +1759,10 @@ MIRRORLIST2="$(echo "$MIRRORLIST" | sed -e "s/x86_64/i586/g")"
     $SUDO rm -rf "$CHROOTNAME"/tmp/*
 
 # Clear urpmi cache
-    if [ -f "$CHROOTNAME"/.noclean ]; then
+    if [[ ("$IN_ABF" == "0" || ( "$IN_ABF" == "1" && -n "$DEBUG" )) ]]; then
 # Move contents of rpm cache away so as not to include in iso
-	$SUDO mv "$CHROOTNAME"/var/cache/urpmi/rpms "$WORKDIR"
+	$SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR/rpms"
+# Remake original directory	
 	$SUDO mkdir -m 755 -p  "$CHROOTNAME"/var/cache/urpmi/rpms
     else
     	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
@@ -1891,12 +1896,9 @@ postBuild() {
 	fi
 
 
-# If .noclean is set move rpms back to the cache directories
-    if [ "$IN_ABF" == "0" ]; then
-	if [ -f "$CHROOTNAME"/.noclean ]; then
-	    rm -R "$CHROOTNAME"/var/cache/urpmi/rpms
-	    $SUDO mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
-	fi
+# If not in ABF move rpms back to the cache directories
+    if [[ ("$IN_ABF" == "0" || ( "$IN_ABF" == "1" && -n "$DEBUG" )) ]]; then
+        $SUDO mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
     fi
 
 # Clean chroot
