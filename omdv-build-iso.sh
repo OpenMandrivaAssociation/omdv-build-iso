@@ -109,6 +109,9 @@ if [ $# -ge 1 ]; then
 			    minimal)
 				TYPE=minimal
 				;;
+				user)
+				TYPE=my.add
+				;;
 			    *)
 				printf "%s\n" "$TYPE is not supported."
 				usage_help
@@ -169,7 +172,7 @@ if [ $# -ge 1 ]; then
 		    shift
 		    ;;
              --enable-skip-list)
-                    ENSKPLST=enskplst
+                    ENSKPLST=enskplst #prolly should be a symlink
                     shift
                     ;;
              --help)
@@ -193,7 +196,7 @@ fi
 # When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These filed are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO \
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO \
 "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
 # run only when root
 
@@ -308,7 +311,17 @@ fi
 
 
 # Assign the config build list
+if [ "$TYPE" == "my.add" ]; then
+FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${TYPE,,}"
+printf "%s\n" " " "-> You are creating a user build" \
+"This build will use the the omdv_minimal_iso.lst to create a basic iso" \
+"Additional packages or files to be included may be added to the file my.add" \
+"Packages or files that you wish to be removed may be added to the file my.rmv"
+userISONme
+else
 FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
+fi
+
 
 # Create the ISO directory
 $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
@@ -317,23 +330,31 @@ $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
 
 # UUID Generation. xorriso needs a string of 16 asci digits.
 # grub2 needs dashes to separate the fields..
-GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
-ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
+#GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
+#ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
 # in case when i386 is passed, fall back to i586
-[ "$EXTARCH" = "i386" ] && EXTARCH=i586
+#[ "$EXTARCH" = "i386" ] && EXTARCH=i586
+# Check if user build
+#if [ "$TYPE" = "my.add" ]; then 
 # ISO name logic
-if [ "${RELEASE_ID,,}" == "final" ]; then
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
-else
-    if [[ "${RELEASE_ID,,}" == "alpha" ]]; then
-	    RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)"
-    fi
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
-fi
+#    if [ "${RELEASE_ID,,}" == "final" ]; then
+#        PRODUCT_ID="OpenMandrivaLx.$VERSION-$UISONAME"
+#    elif [ "${RELEASE_ID,,}" == "alpha" ]]; then
+#        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$UISONAME"
+#    fi
+#    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
+#else
+#    if [ "${RELEASE_ID,,}" == "final" ]; then
+#        PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
+#    elif [ "${RELEASE_ID,,}" == "alpha" ]]; then
+#        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$TYPE"
+#    fi
+#    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
+#fi
 
-LABEL="$PRODUCT_ID.$EXTARCH"
-[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
-[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
+#LABEL="$PRODUCT_ID.$EXTARCH"
+#[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
+#[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
 
 
 
@@ -606,10 +627,13 @@ getPkgList() {
             printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
             # download iso packages lists from https://github.com
             # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-            if [ ${TREE,,} == "cooker" ]; then
+            if [ "$TYPE" == "my.add" ]; then
+                ISO_VER=cc_user_ver
+            elif [ ${TREE,,} == "cooker" ]; then
                     ISO_VER=master
             else 
                 ISO_VER=${TREE,,}
+                # ISO_VER defaults to user entry
             fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
         wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd "$WORKDIR"  --strip-components 1 -xvf -
@@ -633,9 +657,15 @@ showInfo() {
 	printf "%s\n" "Tree is $TREE"
 	printf "%s\n" "Version is $VERSION"
 	printf "%s\n" "Release ID is $RELEASE_ID"
+	if [ "${TYPE,,}" == "my.add" ]; then
+        printf "%s\n" "TYPE is user"
+    else    
 	printf "%s\n" "Type is $TYPE"
-	if [ "${TYPE,,}" = "minimal" ]; then
-	    printf "%s\n" "No display manager for minimal ISO."
+	fi
+	if [ "${TYPE,,}" == "minimal" ]; then
+	    printf "%s\n" "-> No display manager for minimal ISO."
+    elif [ "${TYPE,,}" == "my.add" ] && [ -z "$DISPLAYMANAGER" ]; then
+        printf "%s\n" "-> No display manager for user ISO."
 	else
 	    printf "%s\n" "Display Manager is $DISPLAYMANAGER"
 	fi
@@ -1393,7 +1423,7 @@ setupGrub2() {
 	$SUDO cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
 	$SUDO cp -a -f "$CHROOTNAME"/boot/grub2/locale "$ISOROOTNAME"/boot/grub/
 	$SUDO cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
-	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
+	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt > /dev/null 2>&1
 
 	if [[ $? != 0 ]]; then
 	    printf "%s\n" "-> WARNING Failed to update Grub2 theme." "Please add a grub theme to my.add if needed."
@@ -1515,7 +1545,7 @@ setupISOenv() {
     $SUDO echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 # Set up displaymanager
-    if [ "${TYPE,,}" != "minimal" ] && [ "${DISPLAYMANAGER,,}" != "none" ]; then
+    if [[ ( ${TYPE,,} != "minimal" || ${TYPE,,} != "my.add" ) && ! -z ${DISPLAYMANAGER,,} ]]; then
 	if [ ! -e "$CHROOTNAME/lib/systemd/system/${DISPLAYMANAGER,,}.service" ]; then
 	    printf "%s\n" "-> File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 	    errorCatch
