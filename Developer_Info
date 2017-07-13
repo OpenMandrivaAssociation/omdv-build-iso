@@ -43,7 +43,16 @@ to the rest of the build system that the files in the chroot require updating. O
 checksums will be used to determine and create a list of the files that have changed.
 A second function takes these file names and presents and generates a diff to serve as a permanent record (if required) of the chroots
 life. This can be extremely useful when trying to create new spins in an on the fly manner as new file lists can be contructed 
-from the diffs. This functionality is not yet complete.
+from the diffs.
 
 Would be developers should be aware of the very useful errorCatch function which can be called at various points to limit how far
-execution proceeds. Use this instead of exit otherwise you will be forever unmounting /proc /sys and friends.
+execution proceeds. Use this instead of exit when debugging otherwise you will be forever unmounting /proc /sys and friends.
+
+July 2017
+
+The latest set of changes bring a restored function to fetch the standard set of iso build package lists from the GitHub repository.
+This makes the script version independent. Currently the function follows the release version when used with abf.
+The function and control logic are all enclosed in a mail function which is invoked from the nd of the file thus all functions are read
+prior to executing the script this simplifies the control login snd makes understanding the execution of the program easier to grasp.
+The diff recording function now operates correctly. Urpmi debugging has been seperated from normal debugging 
+It is now possible to run in ABF mode for testing and if necessary fixing to do this requires the --debug option to be passed to the ecript.

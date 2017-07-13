@@ -13,14 +13,14 @@ There are three flags controlling this func
 Three new configuration files have been added to the package lists then are "my.add and "my.rmv" these files may be used 
 to add and remove packages to and from the standard builds and skip.list, a user created skip.list that can be enabled 
 by a command line flag to support the filtering of files when the testrepo and autoupdate flags are used.
+
 These two file support the same syntax as the other files in that the %include .///directive [pkg list name] may be used.
 The script is so designed that it will remove duplicates pulled in by other lists. 
+
 It is possible then to build an iso that contains say KDE Plasma and xfce in the same iso without the need to comment out files 
-from one or other of the lists.
-Rpm names added to my.add will be added, names in my.rmv will be removed.
-In theory it should be possible to add file names or directory names to these lists though this has not been tested due to 
-time contraints but it is the intention to provide this functionality. 
-If this does not work see the --rebuild section for a temporary work around.
+from one or other of the lists. Rpm names added to my.add will be added, names in my.rmv will be removed.
+In theory it should be possible to add file names or directory names to these lists though this has not been enabled yet 
+it is the intention to provide this functionality. 
 
 The program senses whether there has been a change and will update the build chroot with the changes when run.
 File removal attempts try to take into account the previous setup. As an example if you start by adding 
@@ -30,15 +30,16 @@ to the pre-add state. This is not however guarateed as sometime configuration fi
 but on the whole it works. Sometimes the unistall scripts do not remove certain settings. You should report these as bugs.
 
 When building chroots there are occasions where debugging may be appropriate and sometimes messing about in the chroot 
-this can result in some corruption or some other muddle.
+can result in some corruption or some other muddle.
 Remaking a chroot from the full package can take considerable time as all the packages have to be downloaded 
 everytime the chroot is remade. To help with this difficulty two special flags are provided.
 
---rebuild
-Passing this flag either when the chroot is built or after an inital build is made preserve the chroot on subsequent builds 
+--noclean
+Passing this flag either when the chroot is built or after an initial build is made preserves the chroot on subsequent builds 
 and files will be added and removed from the existing build.
+
 The --rebuild flag triggers a rebuild mode which is available for those circumstances where the chroot gets corrupted or you 
-wish to clean out the leftovers from removed pa ckages. Run with this flag  will cause the chroot to be removed but all the 
+wish to clean out the leftovers from removed packages. Run with this flag will cause the chroot to be removed but all the 
 previously downloaded rpms will be preserved. The chroot will be re-created by using the rpms that were previously downloaded.
 You are advised to back up your local package lists from time to time.
 
