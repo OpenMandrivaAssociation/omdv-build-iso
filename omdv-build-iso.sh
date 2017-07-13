@@ -328,39 +328,9 @@ $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
 # and the grub diectory
 $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
 
-# UUID Generation. xorriso needs a string of 16 asci digits.
-# grub2 needs dashes to separate the fields..
-#GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
-#ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
-# in case when i386 is passed, fall back to i586
-#[ "$EXTARCH" = "i386" ] && EXTARCH=i586
-# Check if user build
-#if [ "$TYPE" = "my.add" ]; then 
-# ISO name logic
-#    if [ "${RELEASE_ID,,}" == "final" ]; then
-#        PRODUCT_ID="OpenMandrivaLx.$VERSION-$UISONAME"
-#    elif [ "${RELEASE_ID,,}" == "alpha" ]]; then
-#        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$UISONAME"
-#    fi
-#    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
-#else
-#    if [ "${RELEASE_ID,,}" == "final" ]; then
-#        PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
-#    elif [ "${RELEASE_ID,,}" == "alpha" ]]; then
-#        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$TYPE"
-#    fi
-#    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
-#fi
-
-#LABEL="$PRODUCT_ID.$EXTARCH"
-#[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
-#[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
-
-
-
 # START ISO BUILD
 
-mkISOName
+mkISOLabel
 showInfo
 updateSystem
 getPkgList
@@ -550,7 +520,8 @@ userISONme
 fi
 }
 
-mkISOName() {
+mkISOLabel() {
+set -x
 # Create the ISO directory
 $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
 # and the grub diectory
@@ -566,9 +537,9 @@ ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
 if [ "$TYPE" = "my.add" ]; then 
 # ISO name logic
     if [ "${RELEASE_ID,,}" == "final" ]; then
-        PRODUCT_ID="OpenMandrivaLx.$VERSION-$UISONAME"
+        PRODUCT_ID="OpenMandrivaLx.$VERSION"
     elif [ "${RELEASE_ID,,}" == "alpha" ]; then
-        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$UISONAME"
+        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)"
     fi
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
 else
@@ -718,12 +689,18 @@ localMd5Change() {
         printf "%s\n" "$BUILD_ID" > "$WORKDIR/sessrec/.build_id"
         printf "%s\n" "-> Recording build identifier"
         $SUDO rm -rf "$WORKDIR/.new"
-    else
+    elif [ -n "$NOCLEAN" ]; then
+        # Regenerate the references for the next run
+        REF_FILESUMS=$($SUDO find ${BASE_LIST}/my.add ${BASE_LIST}/my.rmv ${BASE_LIST}/*.lst -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
+        printf "%s\n" "-> Making reference file sums"
+        REF_CHGSENSE=$(printf "%s" "$REF_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
+        printf "%s\n" "-> Making directory reference sum"
+    fi
         if [ -n "$DEBUG" ]; then
             printf "%s\n" "$REF_CHGSENSE"
             printf "%s\n" "$REF_FILESUMS"
         fi
-    fi
+    
     REF_CHGSENSE=$(cat "$WORKDIR/sessrec/ref_chgsense")
     REF_FILESUMS=$(cat "$WORKDIR/sessrec/ref_filesums")
     printf "%s\n" "-> References loaded"
@@ -731,12 +708,7 @@ localMd5Change() {
 	# Generate the references for this run
 	# Need to be careful here; there may be backup files so get the exact files
     # Order is important (sort?)
-    if [[ -f "$WORKDIR/sessrec/new_filesums" && -f "$WORKDIR/sessrec/tmp_new_filesums" ]]; then
-        NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/tmp_new_filesums)
-    else
-        NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/tmp_new_filesums)
         NEW_FILESUMS=$($SUDO find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums)
-    fi
     NEW_CHGSENSE=$(printf "%s" "$NEW_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/new_chgsense")
     printf "%s\n" "-> New references created" 
     if [ -n "$DEBUG" ]; then
@@ -757,14 +729,13 @@ localMd5Change() {
     # In these circumstances awk does a better job than diff
     # This looks complicated but all it does is to put the two fields in each file into independent arrays,
     # compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-        DIFFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/new_filesums" "$WORKDIR/sessrec/tmp_new_filesums") 
-        # This gets messy because of corner cases.
-        MODFILES=$(printf "%s" "$DIFFILES" | sed 's|/iso-pkg|/sessrec/base_lists/iso-pkg|1') 
+        DIFFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums") 
+        MODFILES="${DIFFILES}"
         if [ -n "$DEBUG" ]; then 
             printf "%s\n" "$MODFILES"
         fi
-        $SUDO mv "$WORKDIR/sessrec/tmp_new_filesums" "$WORKDIR/sessrec/new_filesums"
-        USERMOD=$(printf '%s' "$MODFILES" | grep 'my.add\|my.rmv')
+        #$SUDO mv "$WORKDIR/sessrec/tmp_new_filesums" "$WORKDIR/sessrec/new_filesums"
+        USERMOD=$(printf '%s' "$DIFFILES" | grep 'my.add\|my.rmv')
         if [ -z "$USERMOD" ]; then
             printf "%s\n" "-> No Changes"
             return 0
@@ -772,10 +743,10 @@ localMd5Change() {
     # Here just the standard files are diffed ommitting my.add and my.remove
     # Intended for developers creating new compilations. Only active if DEVMODE is set in the env.
     # This list is intended for Developers
-    DEVMOD=$(printf '%s' "$MODFILES" | grep -v 'my.add\|my.rmv')
+    DEVMOD=$(printf '%s' "$DIFFILES" | grep -v 'my.add\|my.rmv')
     # Create a diff for the users reference
         diffPkgLists "$USERMOD"
-    elif [[ -n "$DEBUG"  && ( -n "$DEVMOD" || -n "$DEVMODE" ) ]]; then #DEVMOD NOT EMPTY THEN RUN A FULL UPDATE NOT JUST ADD AND REMOVE
+    elif [[ -n "$DEBUG"  && ( -n "$DEVMOD" || -n "$DEVMODE" ) ]]; then #DEVMOD not empty so run a full update.
     # Create a developer diff ommitting my.add and my.rmv
     diffPkgLists "$DEVMOD"
     fi
@@ -1142,9 +1113,9 @@ fi
         printf  "%s\n" "-> Rebuilding." 
         mkUserSpin "$FILELISTS"
     fi
- #   if [ -n "$NOCLEAN" ]; then
+ 
 	$SUDO touch "$CHROOTNAME/.noclean"
-    fi
+ 
 
     if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
 	printf "%s\n" "-> Can not install packages from $FILELISTS"
