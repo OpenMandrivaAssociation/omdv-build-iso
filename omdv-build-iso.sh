@@ -27,40 +27,15 @@
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
-usage_help() {
-
-    if [[ -z "$EXTARCH" && -z "$TREE" && -z "$VERSION" && -z "$RELEASE_ID" && -z "$TYPE" && -z "$DISPLAYMANAGER" ]]; then
-	printf "%s\n" "Please run script with arguments"
-	printf "%s\n" "usage $0 [options]"
-        printf "%s\n" "general options:"
-        printf "%s\n" "--arch= Architecture of packages: i586, x86_64"
-        printf "%s\n" "--tree= Branch of software repository: cooker, 3.0, openmandriva2014.0"
-        printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
-        printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
-        printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
-        printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
-        printf "%s\n" "--workdir= Set directory where ISO will be build"
-        printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
-        printf "%s\n" "--debug Enable debug output"
-        printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms"
-        printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm"
-        printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
-        printf "%s\n" "--debug Enables some developer aids see the README"
-        printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
-        printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session."
-        printf "%s\n" "--testrepo Includes the main testing repo in the iso build"
-        printf "%s\n" " "
-        printf "%s\n" "For example:"
-        printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
-        printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
-        printf "%s\n" "Exiting."
-	exit 1
-    else
-	return 0
-    fi
-}
 
 # use only allowed arguments
+
+main() {
+
+# This function which starts at the top of the file is executed first from the end of file 
+# to ensure that all functions are read before the body of the script is run.
+# All global variables need to be inside the curly braces of this function.
+
 if [ $# -ge 1 ]; then
     for k in "$@"; do
 	case "$k" in
@@ -238,77 +213,8 @@ WHO="$SUDO_USER"
 UHOME=/home/"$WHO"
 fi
 
-
-if [ "$ABF" == "1" ]; then
-    IN_ABF=1
-    printf "%s\n" "->We are in ABF (https://abf.openmandriva.org) environment"
-    if [ -n "$NOCLEAN" ] && [ -n  "$DEBUG" ]; then
-    printf "%s\n" "-> using --noclean inside ABF DEBUG instance"
-    elif [ -n "$NOCLEAN" ]; then
-	printf "%s\n" "-> You cannot use --noclean inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-# Allow the use of --workdir if in debug mode
-    if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n  "$DEBUG" ]; then
-    printf "%s\n" "-> using --workdir inside ABF DEBUG instance"
-    elif  [ -n  "$WORKDIR" ]; then
-	printf "%s\n" "-> You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-    if [ -n "$KEEP" ]; then
-	printf "%s\n" "-> You cannot use --keep inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-    if	[ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
-	printf "%s\n" "-> You cannot use --noclean and --rebuild together"
-	exit 1
-    fi
-    if	[ -n "$REBUILD" ]; then
-	printf "%s\n" "-> You cannot use --rebuild inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-else
-    IN_ABF=0
-fi
-
-printf  "%s\n" "In abf = $IN_ABF"
-
-# Set the $WORKDIR
-# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
-# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
-# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and 
-# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
-
-if [[ "$IN_ABF" == "1"  &&  ! -d '/home/omv/docker-iso-worker'  &&  -z "$DEBUG" ]]; then
-printf "%s\n" "DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
-exit 1
-elif [[  "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" ]]; then
-printf "%s\n" "Debugging ABF build locally"
-#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
-# Avoid setting the usual ABF WORKDIR
-# if WORKDIR is not defined then set a default'
-    if [ -z "$WORKDIR" ]; then
-    echo "$SUDOVAR"
-    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-    printf "%s\n" "The build directory is $WORKDIR"
-    fi
-fi
-
-if [[ "$IN_ABF" == "1" && -d '/home/omv/docker-iso-worker' ]]; then
-    # We really are in ABF
-    WORKDIR=$(realpath "$(dirname "$0")")
-fi
-if [ "$IN_ABF" == "0" ]; then
-    if [ -z "$WORKDIR" ]; then
-    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-    fi
-fi
-printf "%s\n" "->The work directory is $WORKDIR"
-# Define these earlier so that files can be moved easily for the various save options
-# this is where rpms are installed
-CHROOTNAME="$WORKDIR/BASE"
-# this is where ISO files are created
-ISOROOTNAME="$WORKDIR/ISO"
+allowedOptions
+setWorkdir
 
 # default definitions
 DIST=omdv
@@ -431,9 +337,140 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 
 
 
+# START ISO BUILD
+
+mkISOName
+showInfo
+updateSystem
+getPkgList
+localMd5Change #Calls doDiff
+createChroot
+createInitrd
+createMemDisk
+createUEFI
+setupGrub2
+setupISOenv
+createSquash
+buildIso
+postBuild
+
+#END
+}
+
 ########################
 #   Start functions    #
 ########################
+
+setWorkdir() {
+# Set the $WORKDIR
+# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
+# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
+# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and 
+# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
+
+if [[ "$IN_ABF" == "1"  &&  ! -d '/home/omv/docker-iso-worker'  &&  -z "$DEBUG" ]]; then
+printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
+exit 1
+elif [[  "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" ]]; then
+printf "%s\n" "-> Debugging ABF build locally"
+#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
+# Avoid setting the usual ABF WORKDIR
+# if WORKDIR is not defined then set a default'
+    if [ -z "$WORKDIR" ]; then
+    echo "$SUDOVAR"
+    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+    printf "%s\n" "-> The build directory is $WORKDIR"
+    fi
+fi
+
+if [[ "$IN_ABF" == "1" && -d '/home/omv/docker-iso-worker' ]]; then
+    # We really are in ABF
+    WORKDIR=$(realpath "$(dirname "$0")")
+fi
+if [ "$IN_ABF" == "0" ]; then
+    if [ -z "$WORKDIR" ]; then
+    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+    fi
+fi
+printf "%s\n" "-> The work directory is $WORKDIR"
+# Define these earlier so that files can be moved easily for the various save options
+# this is where rpms are installed
+CHROOTNAME="$WORKDIR/BASE"
+# this is where ISO files are created
+ISOROOTNAME="$WORKDIR/ISO"
+}
+
+allowedOptions() {
+if [ "$ABF" == "1" ]; then
+    IN_ABF=1
+    printf "%s\n" "-> We are in ABF (https://abf.openmandriva.org) environment"
+    if [ -n "$NOCLEAN" ] && [ -n  "$DEBUG" ]; then
+    printf "%s\n" "-> using --noclean inside ABF DEBUG instance"
+    elif [ -n "$NOCLEAN" ]; then
+	printf "%s\n" "-> You cannot use --noclean inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+# Allow the use of --workdir if in debug mode
+    if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n  "$DEBUG" ]; then
+    printf "%s\n" "-> using --workdir inside ABF DEBUG instance"
+    elif  [ -n  "$WORKDIR" ]; then
+	printf "%s\n" "-> You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+    if [ -n "$KEEP" ]; then
+	printf "%s\n" "-> You cannot use --keep inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+    if	[ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
+	printf "%s\n" "-> You cannot use --noclean and --rebuild together"
+	exit 1
+    fi
+    if	[ -n "$REBUILD" ]; then
+	printf "%s\n" "-> You cannot use --rebuild inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+else
+    IN_ABF=0
+fi
+printf  "%s\n" "In abf = $IN_ABF"
+}
+
+usage_help() {
+
+    if [[ -z "$EXTARCH" && -z "$TREE" && -z "$VERSION" && -z "$RELEASE_ID" && -z "$TYPE" && -z "$DISPLAYMANAGER" ]]; then
+	printf "%s\n" "Please run script with arguments"
+	printf "%s\n" "usage $0 [options]"
+        printf "%s\n" "general options:"
+        printf "%s\n" "--arch= Architecture of packages: i586, x86_64"
+        printf "%s\n" "--tree= Branch of software repository: cooker, 3.0, openmandriva2014.0"
+        printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
+        printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
+        printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
+        printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
+        printf "%s\n" "--workdir= Set directory where ISO will be build"
+        printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
+        printf "%s\n" "--debug Enable debug output"
+        printf "%s\n" "--urpmi-debug Enable urpmi debugging output"
+        printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
+        printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
+        printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
+        printf "%s\n" "--devmode Enables some developer aids see the README"
+        printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
+        printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
+        printf "%s\n" "--testrepo Includes the main testing repo in the iso build"
+        printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
+        printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
+        printf "%s\n" " "
+        printf "%s\n" "For example:"
+        printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
+        printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
+        printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
+        printf "%s\n" "Exiting."
+	exit 1
+    else
+	return 0
+    fi
+}
 
 umountAll() {
     printf "%s\n" "-> Unmounting all."
@@ -468,6 +505,65 @@ fi
 
 # Don't leave potentially dangerous stuff if we had to error out...
 trap errorCatch ERR SIGHUP SIGINT SIGTERM
+
+userISONme() {
+printf "%s\n" "Please give a name to your iso e.g Enlight"
+read -r in1
+echo "$in1"
+if [ -n "$in1" ]; then
+printf "%s\n" "The isoname will be $in1" "Is this correct y or n ?"
+cfrmISONme 
+fi
+printf "%s\n" "Your iso's name will be $UISONAME"
+}
+
+cfrmISONme() {    
+read -r in2
+echo $in2
+if [[ $in2 == "yes" || $in2 == "y" ]]; then
+UISONAME="$in1"
+return 0
+fi
+if [[ $in2 == "no" || $in2 == "n" ]]; then
+userISONme
+fi
+}
+
+mkISOName() {
+# Create the ISO directory
+$SUDO mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
+# and the grub diectory
+$SUDO mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
+
+# UUID Generation. xorriso needs a string of 16 asci digits.
+# grub2 needs dashes to separate the fields..
+GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
+ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
+# in case when i386 is passed, fall back to i586
+[ "$EXTARCH" = "i386" ] && EXTARCH=i586
+# Check if user build if true fixup name logic
+if [ "$TYPE" = "my.add" ]; then 
+# ISO name logic
+    if [ "${RELEASE_ID,,}" == "final" ]; then
+        PRODUCT_ID="OpenMandrivaLx.$VERSION-$UISONAME"
+    elif [ "${RELEASE_ID,,}" == "alpha" ]; then
+        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$UISONAME"
+    fi
+    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
+else
+# As it was done before
+    if [ "${RELEASE_ID,,}" == "final" ]; then
+        PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
+    elif [ "${RELEASE_ID,,}" == "alpha" ]; then
+        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$TYPE"
+    fi
+    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
+fi
+
+LABEL="$PRODUCT_ID.$EXTARCH"
+[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
+[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
+}
 
 updateSystem() {
 printf "%s\n" "$WORKDIR"
@@ -1300,8 +1396,8 @@ setupGrub2() {
 	sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt
 
 	if [[ $? != 0 ]]; then
-	    printf "%s\n" "-> Failed to update Grub2 theme."
-	    errorCatch
+	    printf "%s\n" "-> WARNING Failed to update Grub2 theme." "Please add a grub theme to my.add if needed."
+#	    errorCatch
 	fi
     fi
 # Fix up 2014.0 grub installer line...We don't have Calamares in 2014.
@@ -1522,7 +1618,7 @@ EOF
 	esac
     fi
 
-    $SUDO pushd "$CHROOTNAME"/etc/sysconfig/network-scripts
+    $SUDO pushd "$CHROOTNAME"/etc/sysconfig/network-scripts > /dev/null 2>&1
     for iface in eth0 wlan0; do
 	cat > ifcfg-$iface << EOF
 DEVICE=$iface
@@ -1531,7 +1627,7 @@ NM_CONTROLLED=yes
 BOOTPROTO=dhcp
 EOF
     done
-    $SUDO popd
+    $SUDO popd > /dev/null 2>&1
 
     printf "%s\n" "-> Starting services setup."
 
@@ -1745,7 +1841,7 @@ EOF
 
 # Rebuild man-db
     if [ -x "$CHROOTNAME"/usr/bin/mandb ]; then
-    printf "%s\n" "Please wait...rebuilding man page database"
+    printf "%s\n" "-> Please wait...rebuilding man page database"
     	$SUDO chroot "$CHROOTNAME" /usr/bin/mandb --quiet
     fi
 
@@ -1877,10 +1973,10 @@ postBuild() {
         md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
         sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
         else
-        pushd "$WORKDIR"
+        pushd "$WORKDIR" > /dev/null 2>&1
         md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
         sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
-        popd
+        popd > /dev/null 2>&1
     fi
 	$SUDO mkdir -p "$WORKDIR/results" "$WORKDIR/archives"
 	if [ -n "$OUTPUTDIR" ]; then
@@ -1888,7 +1984,7 @@ postBuild() {
 	else
         $SUDO mv "$WORKDIR"/*.iso* "$WORKDIR/results/"
 	fi
-	if [[ "$IN_ABF" == "0"  || ( "$IN_ABF" == "1" && -n "$DEBUG" && -n "$DEVMOD" ) ]]; then
+	if [[ "$IN_ABF" == "0"  || ( "$IN_ABF" == "1" && -n "$DEBUG" && -n "$DEVMODE" ) ]]; then
 	$SUDO cp -r "$WORKDIR"/sessrec/ "$WORKDIR/archives/"
 	fi
 
@@ -1902,20 +1998,7 @@ postBuild() {
     umountAll "$CHROOTNAME"
 }
 
+main "$@"
 
-# START ISO BUILD
-showInfo
-updateSystem
-getPkgList
-localMd5Change
-createChroot
-createInitrd
-createMemDisk
-createUEFI
-setupGrub2
-setupISOenv
-createSquash
-buildIso
-postBuild
 
-#END
+
