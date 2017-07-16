@@ -521,7 +521,6 @@ fi
 }
 
 mkISOLabel() {
-set -x
 # Create the ISO directory
 $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
 # and the grub diectory
@@ -533,24 +532,21 @@ GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
 ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
+
+
+if [ "${RELEASE_ID,,}" == "final" ]; then
+    PRODUCT_ID="OpenMandrivaLx.$VERSION"
+elif [ "${RELEASE_ID,,}" == "alpha" ]; then
+    RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)"
+fi
 # Check if user build if true fixup name logic
-if [ "$TYPE" = "my.add" ]; then 
-# ISO name logic
-    if [ "${RELEASE_ID,,}" == "final" ]; then
-        PRODUCT_ID="OpenMandrivaLx.$VERSION"
-    elif [ "${RELEASE_ID,,}" == "alpha" ]; then
-        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)"
-    fi
-    PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
+if [ "$TYPE" = "my.add" ]; then
+PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
 else
-# As it was done before
-    if [ "${RELEASE_ID,,}" == "final" ]; then
-        PRODUCT_ID="OpenMandrivaLx.$VERSION-$TYPE"
-    elif [ "${RELEASE_ID,,}" == "alpha" ]; then
-        RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)-$TYPE"
-    fi
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
 fi
+printf "%s" "$PRODUCT_ID"
+
 
 LABEL="$PRODUCT_ID.$EXTARCH"
 [ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
@@ -1246,11 +1242,11 @@ createMemDisk () {
 # Create memdisk directory
     if [ -e "$WORKDIR/boot/grub" ]; then
 	$SUDO /bin/rm -R "$WORKDIR/boot/grub"
-	$SUDO mkdir -p "$WORKDIR/boot/grub2"
+	$SUDO mkdir -p "$WORKDIR/boot/grub"
     else
-	$SUDO mkdir -p "$WORKDIR/boot/grub2"
+	$SUDO mkdir -p "$WORKDIR/boot/grub"
     fi
-    MEMDISKDIR="$WORKDIR/boot/grub2"
+    MEMDISKDIR="$WORKDIR/boot/grub"
 
 # Copy the grub config file to the chroot dir for UEFI support
 # Also set the uuid
@@ -1281,7 +1277,7 @@ createMemDisk () {
     $SUDO mv -f "$CHROOTNAME/ISO/" "$ISOROOTNAME"
 
 # Ensure the ISO image is clear
-    if [ -e "$CHROOTNAME/memdisk.img" ]; then
+    if [ -e "$CHROOTNAME/memdisk_img" ]; then
 	$SUDO rm -f "$CHROOTNAME/memdisk_img"
     fi
 }
@@ -1311,7 +1307,7 @@ createUEFI() {
     FILESIZE=$(du -s --block-size=512 "$ISOROOTNAME"/EFI | awk '{print $1}')
     EFIFILESIZE=$(( FILESIZE * 2 ))
     PARTTABLESIZE=$(( (2*17408)/512 ))
-    EFIDISKSIZE=$((  "$EFIFILESIZE" + "$PARTTABLESIZE" + 1 ))
+    EFIDISKSIZE=$((  $EFIFILESIZE + $PARTTABLESIZE + 1 ))
 
 # Create the image.
     printf "%s\n" "-> Creating EFI image with size $EFIDISKSIZE" 
