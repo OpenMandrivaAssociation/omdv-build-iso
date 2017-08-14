@@ -4,7 +4,7 @@ Name:		omdv-build-iso
 # make dist
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
-Version:	0.1.3
+Version:	0.1.4
 Release:	1
 License:	GPL
 Group:		System/Libraries
@@ -14,7 +14,7 @@ Requires:	bash
 Requires:	bc
 Requires:	dosfstools
 Requires:	urpmi
-Requires:	squashfs-tools
+Requires:	squashfs-tools >= 4.3-9
 Requires:	xorriso
 Requires:	wget
 Requires:	tar

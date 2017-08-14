@@ -1782,9 +1782,9 @@ createSquash() {
 # For development only remove all the compression so the squashfs builds quicker.
 # Give it it's own flag QUICKEN.
     if [ -n "$QUICKEN" ]; then
-	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
+	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp zstd -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
     else
-	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-exports -no-recovery -b 16384
+	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp zstd -no-progress -no-exports -no-recovery -b 16384
     fi
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	echo "-> Failed to create squashfs. Exiting."
