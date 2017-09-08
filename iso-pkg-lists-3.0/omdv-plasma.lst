@@ -22,6 +22,7 @@
 
 # Desktop Specifics
 task-plasma
+phonon4qt5-gstreamer
 fcitx-qt5
 kcm-fcitx
 clementine
