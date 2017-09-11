@@ -865,12 +865,11 @@ createChroot() {
     if [ ! -f "$CHROOTNAME"/.noclean ]; then
 	if [ -n "$NOCLEAN" ] && [ -d "$CHROOTNAME"/lib/modules ]; then
 	    touch "$CHROOTNAME"/.noclean
-	fi
 	elif [ -z "$NOCLEAN" ] && [-e "$CHROOTNAME" ]; then
     		echo $'\n'
     		echo "-> Cleaning existing chroot $CHROOTNAME"	
 		$SUDO rm -rf "$CHROOTNAME"
-	else
+	fi
     fi
 
 # Make sure /proc, /sys and friends are mounted so %post scripts can use them
