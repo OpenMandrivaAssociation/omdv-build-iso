@@ -860,15 +860,22 @@ createChroot() {
     REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
     echo $'\n'
     echo "-> Creating chroot $CHROOTNAME"
-# Make sure /proc, /sys and friends are mounted so %post scripts can use them
-    $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
+
 # Do not clean build chroot
     if [ ! -f "$CHROOTNAME"/.noclean ]; then
 	if [ -n "$NOCLEAN" ] && [ -d "$CHROOTNAME"/lib/modules ]; then
 	    touch "$CHROOTNAME"/.noclean
 	fi
+	elif [ -z "$NOCLEAN" ] && [-e "$CHROOTNAME" ]; then
+    		echo $'\n'
+    		echo "-> Cleaning existing chroot $CHROOTNAME"	
+		$SUDO rm -rf "$CHROOTNAME"
+	else
     fi
 
+# Make sure /proc, /sys and friends are mounted so %post scripts can use them
+    $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
+    
     if [ -n "$REBUILD" ]; then
 	ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
 	if [ -z $ANYRPMS ]; then
