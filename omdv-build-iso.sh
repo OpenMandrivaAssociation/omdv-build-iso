@@ -865,7 +865,7 @@ createChroot() {
     if [ ! -f "$CHROOTNAME"/.noclean ]; then
 	if [ -n "$NOCLEAN" ] && [ -d "$CHROOTNAME"/lib/modules ]; then
 	    touch "$CHROOTNAME"/.noclean
-	elif [ -z "$NOCLEAN" ] && [-e "$CHROOTNAME" ]; then
+	elif [ -z "$NOCLEAN" ] && [ -e "$CHROOTNAME" ]; then
     		echo $'\n'
     		echo "-> Cleaning existing chroot $CHROOTNAME"	
 		$SUDO rm -rf "$CHROOTNAME"
