@@ -799,7 +799,7 @@ mkUpdateChroot() {
 #               separated package names for installation or removal.
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
-#set -x
+set -x
 	echo $'\n'
 	echo "-> Updating chroot"
 	local __install_list="$1"
