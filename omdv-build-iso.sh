@@ -281,12 +281,12 @@ if [ -z $IN_ABF ] && [ -n "$WORKDIR" ]; then
 	    $SUDO touch $WORKDIR/.new
 	    echo "Do you wish to remove the session records as well?"
 	    echo "Enter 'y' or 'yes' to continue, any other key to continue"
-        read -r in2
-            if [[ $in2 == "yes" || $in2 == "y" ]]; then
-                echo "Deleting the session diffs"
-                echo $in2
-                $SUDO rm -rf $WORKDIR/sessrec
-            fi
+	    read -r in2
+	    if [[ $in2 == "yes" || $in2 == "y" ]]; then
+		echo "Deleting the session diffs"
+		echo $in2
+		$SUDO rm -rf $WORKDIR/sessrec
+	    fi
 	fi
     elif [ -n "$NOCLEAN" ]; then
 	$SUDO mkdir -p $WORKDIR
@@ -753,7 +753,7 @@ updateUserSpin() {
 	$SUDO printf '%s\n' "$INSTALL_LIST" >""$WORKDIR"/user_update_add_rpmlist"
 	$SUDO printf '%s\n' "$REMOVE_LIST" >""$WORKDIR"/user_update_rm_rpmlist"
     fi
-    mkUpdateChroot  "$INSTALL_LIST" "$REMOVE_LIST"
+    mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
 mkUserSpin() {
@@ -799,56 +799,57 @@ mkUpdateChroot() {
 #               separated package names for installation or removal.
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
-set -x
-	echo $'\n'
-	echo "-> Updating chroot"
-	local __install_list="$1"
-	local __removelist="$2"
+#set -x
+    echo $'\n'
+    echo "-> Getting packages list."
+    local __install_list="$1"
+    local __removelist="$2"
 #echo "$__install_list" >"$WORKDIR"/checklist
 
-	if [ -n "$REBUILD" ]; then
-	    printf '%s\n' "Reloading saved rpms"
-	    # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
-	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force ${URPMI_DEBUG}
-	fi
+    if [ -n "$REBUILD" ]; then
+	printf '%s\n' "Reloading saved rpms"
+# Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
+	printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --no-suggests --fastunsafe --ignoresize --nolock --auto --allow-force --force ${URPMI_DEBUG}
+    fi
 
 
-	if [ -n "$1" ] && [ -n "$NOCLEAN" ]; then
-            echo -> "Slambui"
-	    printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
-	    $SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-	elif [ -n "$1" ] && [ -n "$ABF" ]; then #Use xargs for ABF just in case of any unexpected interactions
-	    echo -> "Installing packages at ABF"
-	    printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+    if [ -n "$1" ] && [ -n "$NOCLEAN" ]; then
+	echo "-> Slambui"
+	printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
+	$SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
+    elif [ -n "$1" ] && [ -n "$ABF" ]; then #Use xargs for ABF just in case of any unexpected interactions
+	echo "-> Installing packages at ABF"
+	printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
     elif [ -n "$1" ]; then
-        echo -> "Installing packages locally"
-        printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
-	else
-	    printf '%s\n' "No rpms need to be installed"
-	    echo " "
-	fi
+	echo "-> Installing packages locally"
+	printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
+    else
+	printf '%s\n' "No rpms need to be installed"
+	echo " "
+    fi
 
-	if [ -n "$2" ]; then
-	    echo "-> Removing user specified rpms and orphans"
+    if [ -n "$2" ]; then
+	echo "-> Removing user specified rpms and orphans"
 # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
 #	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
-	    printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1  $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+	printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1  $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
 # This exposed a bug in urpme
-	    $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
-	    #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
-	else
-	    printf '%s\' "No rpms need to be removed"
-	fi
-	if [ -z $ABF ]; then
-        #Make some helpful logs
-        #Create the header
-        head -1 $WORKDIR/install.log >$WORKDIR/rpm-fail.log
-        head -1 $WORKDIR/install.log >$WORKDIR/rpm-install.log
-        #Append the data
-        cat $WORKDIR/install.log | awk '$7  ~ /1/' >> $WORKDIR/rpm-fail.log
-        cat $WORKDIR/install.log | awk '$7  ~ /0/' >> $WORKDIR/rpm-install.log
-        #Clean-up
-        rm -f $WORKDIR/install.log
+	$SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
+#printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
+    else
+	printf '%s\' "No rpms need to be removed"
+    fi
+
+    if [ -z $ABF ]; then
+# Make some helpful logs
+# Create the header
+	head -1 $WORKDIR/install.log >$WORKDIR/rpm-fail.log
+	head -1 $WORKDIR/install.log >$WORKDIR/rpm-install.log
+# Append the data
+	cat $WORKDIR/install.log | awk '$7  ~ /1/' >> $WORKDIR/rpm-fail.log
+	cat $WORKDIR/install.log | awk '$7  ~ /0/' >> $WORKDIR/rpm-install.log
+# Clean-up
+	rm -f $WORKDIR/install.log
     fi
 }
 
@@ -866,15 +867,15 @@ createChroot() {
 	if [ -n "$NOCLEAN" ] && [ -d "$CHROOTNAME"/lib/modules ]; then
 	    touch "$CHROOTNAME"/.noclean
 	elif [ -z "$NOCLEAN" ] && [ -e "$CHROOTNAME" ]; then
-    		echo $'\n'
-    		echo "-> Cleaning existing chroot $CHROOTNAME"	
-		$SUDO rm -rf "$CHROOTNAME"
+	    echo $'\n'
+	    echo "-> Cleaning existing chroot $CHROOTNAME"
+	    $SUDO rm -rf "$CHROOTNAME"
 	fi
     fi
 
 # Make sure /proc, /sys and friends are mounted so %post scripts can use them
     $SUDO mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
-    
+
     if [ -n "$REBUILD" ]; then
 	ANYRPMS=`find "$CHROOTNAME"/var/cache/urpmi/rpms/basesystem-minimal*.rpm  -type f  -printf 1`
 	if [ -z $ANYRPMS ]; then
@@ -1268,7 +1269,7 @@ setupGrub2() {
     $SUDO cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
     $SUDO cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
-    echo -> "Setting GRUB_UUID to ${GRUB_UUID}"
+    echo "-> Setting GRUB_UUID to ${GRUB_UUID}"
     $SUDO sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
     if [[ $? != 0 ]]; then
 	    echo "-> Failed to set up GRUB_UUID."
