@@ -18,7 +18,7 @@ mkdir -m 0755 -p /run/initramfs/union
 # fix udev isohybrid LABEL issues (mga #3334)
 # by reading the device we get, stripping away partition number,
 # and mount the resulting device
-realdev=$(echo $livedev |sed 's,\(/dev/sd[a-z]\)[1-9],\1,g')
+realdev=$(echo $livedev |sed 's,\(/dev/sd[a-z]\)1,\1,g')
 
 # mount the live media
 getargbool 0 UEFI && liveuefi="yes"
