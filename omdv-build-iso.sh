@@ -155,6 +155,10 @@ if [ $# -ge 1 ]; then
                    QUICKEN=squashfs
                    shift
                    ;;
+             --compressor=*)
+            	   COMPTYPE=${k#*=}
+            	   shift
+            	   ;;
              --keep)
                    KEEP=keep
                    shift
@@ -196,8 +200,8 @@ fi
 # When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These filed are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO \
-"AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -225,6 +229,7 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
+[ -z "${COMPTYPE}" ] && COMPTYPE=zstd
 if [[ ( "$IN_ABF" == "1"  &&  -n "$DEBUG" )  ||  "$IN_ABF" == "0" ]]; then
     if [ -z "$NOCLEAN" ]; then
     [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
@@ -597,13 +602,13 @@ getPkgList() {
             if [ "$TYPE" == "my.add" ]; then
                 ISO_VER=cc_user_ver
             elif [ ${TREE,,} == "cooker" ]; then
-                    ISO_VER=master
+                ISO_VER=master
             else 
                 ISO_VER=${TREE,,}
                 # ISO_VER defaults to user entry
             fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
-        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd "$WORKDIR"  --strip-components 1 -xvf -
+        echo "wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd "$WORKDIR"  --strip-components 1 -xvf -"
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
@@ -649,6 +654,9 @@ showInfo() {
 	fi
 	if [ -n "$QUICKEN" ]; then
 	    printf "%s\n" "-> Squashfs compression disabled"
+	fi
+	if [ -n "$COMPTYPE" ]; then
+	    printf "%s\n" "-> Using ${COMPTYPE} for Squashfs compression"
 	fi
 	if [ -n "$KEEP" ]; then
 	    printf "%s\n" "-> The session diffs will be retained"
@@ -938,6 +946,32 @@ mkUserSpin() {
     mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
+# The MyAdd and MyRmv finctionsCan't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility.. Add some logging too.
+
+MyAdd() {
+# Usage: MyAdd
+        if [ -n "$__install_list" ]; then 
+            printf "%s\n" "-> Installing user package selection" " "
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>"$WORKDIR/missing"
+            $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
+        fi
+}
+
+MyRmv() {
+# Usage: MyRmv 
+        if [ -n "$__remove_list" ]; then
+            printf "%s" "-> Removing user specified rpms and orphans"
+            # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
+            printf '%s\n' "$__remove_list" | parallel --tty --halt now,fail=10 -P 1 $SUDO rpm -e -v --nodeps --noscripts --root "$CHROOTNAME"
+            #--dbpath "$CHROOTNAME/var/lib/rpm"       
+            # This exposed a bug in urpme
+            $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
+            #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
+        else
+            printf "%s\n" " " "-> No rpms need to be removed"
+        fi
+}
+ 
 mkUpdateChroot() {
 # Usage: mkUpdateChroot [Install variable] [remove variable]
 # Function:      If the --noclean option is set and a full chroot has been built
@@ -959,32 +993,20 @@ mkUpdateChroot() {
 	local __remove_list="$2"
 
     if [ "$IN_ABF" == "0" ]; then
-        # Can't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility..Add some logging too
-        if [ -n "$__install_list" ]; then 
-            printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>"$WORKDIR/missing"
-            $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
-        fi
-#        if [[ -z "$__install_list" && -n "$__remove_list" ]]; then
-        if [ -n "$__remove_list" ]; then
-            printf "%s" "-> Removing user specified rpms and orphans"
-            # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-            printf '%s\n' "$__remove_list" | parallel --tty --halt now,fail=10 -P 1 $SUDO rpm -e -v --nodeps --noscripts --root "$CHROOTNAME"
-            #--dbpath "$CHROOTNAME/var/lib/rpm"       
-            # This exposed a bug in urpme
-            $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
-            #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
+        
+        # Sometimes the order of add and remove are critical for example if a package needs to be replaced with the same package the package needs to be removed first thus the remove list needs to be run first
+        # If the same package exists in both add and remove lists then remove list needs to be run first but there no point in running a remove list first if there's no rpms to remove because 
+        # they haven't been installed yet. So removing rpms only needs to be invoked first if the NOCLEAN flag is set indicating a built chroot. The problem is that the replacepkgs flag does not install 
+        # that are already there so the package has to be removed first otherwise parts of the install list will fail. A replace list could be provided
+        # A simple fix for the moment turn both operations into functions and call then through logic which determines whether --noclean has been invoked.
+        # Needs more work though as --noclean can be invoke without an existing chroot so need to check for this exception
+        if [ -n "$NOCLEAN" ]; then
+            MyRmv
+            MyAdd
         else
-            printf "%s\n" " " "-> No rpms need to be removed"
+            MyAdd
+            Myrmv
         fi
-    elif [[ "$IN_ABF" == "1" && -n "$1" && -z "$NOCLEAN" ]]; then 
-        #Use xargs for ABF just in case of any unexpected interactions
-        printf "%s\n" "-> Installing packages at ABF" 
-        printf "%s\n" "$__install_list"
-        #Strip the newlines
-        printf "%s" "$__install_list" | tr '\n' ' ' | xargs -n 1 $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} >  "$WORKDIR/xargs_debug"
-    else
-	    printf "%s\n" "No rpms need to be installed" 
     fi
 	if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
         printf "%s\n" "-> Make some helpful logs"
@@ -1898,9 +1920,9 @@ createSquash() {
 # For development only remove all the compression so the squashfs builds quicker.
 # Give it it's own flag QUICKEN.
     if [ -n "$QUICKEN" ]; then
-	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
+	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp ${COMPTYPE} -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
     else
-	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp xz -no-progress -no-exports -no-recovery -b 16384
+	$SUDO mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp ${COMPTYPE}  -no-progress -no-exports -no-recovery -b 16384
     fi
     if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 	printf "%s\n" "-> Failed to create squashfs." "Exiting."
