@@ -1677,7 +1677,7 @@ EOF
 
 
 # Enable services on demand
-    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind)
+    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
