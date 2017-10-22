@@ -608,7 +608,7 @@ getPkgList() {
                 # ISO_VER defaults to user entry
             fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
-        echo "wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd "$WORKDIR"  --strip-components 1 -xvf -"
+        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
