@@ -988,6 +988,7 @@ mkUpdateChroot() {
 #               separated package names for installation or removal.
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
+set -x
 	printf "%s\n\n" "-> Updating chroot"
 	local __install_list="$1"
 	local __remove_list="$2"
@@ -996,32 +997,32 @@ mkUpdateChroot() {
         
         # Sometimes the order of add and remove are critical for example if a package needs to be replaced with the same package the package needs to be removed first thus the remove list needs to be run first
         # If the same package exists in both add and remove lists then remove list needs to be run first but there no point in running a remove list first if there's no rpms to remove because 
-        # they haven't been installed yet. So removing rpms only needs to be invoked first if the NOCLEAN flag is set indicating a built chroot. The problem is that the replacepkgs flag does not install 
+        # they haven't been installed yet. So removing rpms only needs to be invoked first if the NOCLEAN flag is set indicating a built chroot. The problem is that the replacepkgs flag does not install if the package has not been installed
         # that are already there so the package has to be removed first otherwise parts of the install list will fail. A replace list could be provided
         # A simple fix for the moment turn both operations into functions and call then through logic which determines whether --noclean has been invoked.
-        # Needs more work though as --noclean can be invoke without an existing chroot so need to check for this exception
+        # Needs more work though as --noclean can be invoked without an existing chroot so need to check for this exception
         if [ -n "$NOCLEAN" ]; then
             MyRmv
             MyAdd
         else
             MyAdd
-            Myrmv
+            MyRmv
         fi
-    fi
-	if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
+    elif [ "$IN_ABF" == "1" ]; then
+         echo "-> Installing packages at ABF"
+         printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+    fi       
+    if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
         printf "%s\n" "-> Make some helpful logs"
         #Create the header
         head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-fail.log"
         head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-install.log"
         #Append the data
-#	awk '$7  ~ /1/' "$WORKDIR/install.log" >> "$WORKDIR/rpm-fail.log"
-#        awk '$7  ~ /0/' "$WORKDIR/install.log" >> "$WORKDIR/rpm-install.log"
-
         cat "$WORKDIR/install.log" | awk '$7  ~ /1/' >> "$WORKDIR/rpm-fail.log"
         cat "$WORKDIR/install.log" | awk '$7  ~ /0/' >> "$WORKDIR/rpm-install.log"
         #Clean-up
         rm -f "$WORKDIR/install.log"
-   fi
+    fi
 }
 
 createChroot() {
@@ -1116,6 +1117,7 @@ fi
         mkUserSpin
      # Build the initial noclean chroot in ABF test mode and will use just the base lists   
     elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "1" && -n "$DEBUG" ]]; then
+#    elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "1" ]]; then    
         printf "%s\n" "Creating chroot in ABF developer mode"
         mkOmSpin
     # Update a noclean chroot with the contents of the user files my.add and my.rmv 
