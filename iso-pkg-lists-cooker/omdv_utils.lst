@@ -27,7 +27,7 @@ lftp #utils
 libgphoto-common #utils
 libmtp-utils #utils
 lvm2 #utils
-microcode #utils old
+microcode-intel #utils
 nail #utils
 ndiswrapper #utils
 nfs-utils #utils
@@ -47,6 +47,8 @@ rsnapshot #utils
 rsync #utils
 samba-client #utils
 samba-winbind #utils
+saned
+sane-backends
 sane-backends-iscan #utils
 sash #utils
 sscape_ctl #utils old
