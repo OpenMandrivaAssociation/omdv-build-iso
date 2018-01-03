@@ -1529,7 +1529,7 @@ EOF
 		    SANITIZED="${line#*enable}"
 		    for s_file in `find $UNIT_DIR -type f -name $SANITIZED`; do
 			DEST=`grep -o 'WantedBy=.*' $s_file  | cut -f2- -d'='`
-			if [ -n "$DEST" ] && [ -d "$CHROOTNAME"/etc/systemd/system ] && [ ! -e "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/} ] ; then
+			if [ -n "$DEST" ] && [ -d "$CHROOTNAME"/etc/systemd/system ] && [[ ! -e "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/} ]] ; then
 			    [[ ! -d /etc/systemd/system/$DEST.wants ]] && mkdir -p "$CHROOTNAME"/etc/systemd/system/$DEST.wants
 			    echo "-> Enabling ${s_file#$UNIT_DIR/}"
 			    #/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
@@ -1544,7 +1544,6 @@ EOF
 	errorCatch
     fi
 
-
 # Enable services on demand
     SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
 
@@ -1557,9 +1556,9 @@ EOF
 		echo "-> Special service $i does not exist. Skipping."
 	    fi
 	elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
-	    if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
-		echo "-> Enabling $i.service"
-		ln -sf /lib/systemd/system/$i.service "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
+	    if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
+		echo "-> Enabling $i"
+		ln -sf /lib/systemd/system/$i "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 	    else
 		echo "-> Service $i does not exist. Skipping."
 	    fi
@@ -1581,9 +1580,9 @@ EOF
 		echo "-> Special service $i does not exist. Skipping."
 	    fi
 	elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
-	    if [ -e "$CHROOTNAME"/lib/systemd/system/$i.service ]; then
-		echo "-> Disabling $i.service"
-		$SUDO rm -rf "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i.service
+	    if [ -e "$CHROOTNAME"/lib/systemd/system/$i ]; then
+		echo "-> Disabling $i"
+		$SUDO rm -rf "$CHROOTNAME"/etc/systemd/system/multi-user.target.wants/$i
 	    else
 		echo "-> Service $i does not exist. Skipping."
 	    fi
@@ -1719,12 +1718,12 @@ EOF
 
 # fontconfig cache
     if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
-        # set the timestamp on the directories to be a whole second
-        # fc-cache looks at the nano second portion which will otherwise be
-        # non-zero as we are on ext4, but then it will compare against the stamps
-        # on the squashfs live image, squashfs only has second level timestamp resolution
-        FCTIME=$(date +%Y%m%d%H%M.%S)
-        $SUDO chroot "$CHROOTNAME" find /usr/share/fonts -type d -exec touch -t $FCTIME {} \;
+	# set the timestamp on the directories to be a whole second
+	# fc-cache looks at the nano second portion which will otherwise be
+	# non-zero as we are on ext4, but then it will compare against the stamps
+	# on the squashfs live image, squashfs only has second level timestamp resolution
+	FCTIME=$(date +%Y%m%d%H%M.%S)
+	$SUDO chroot "$CHROOTNAME" find /usr/share/fonts -type d -exec touch -t $FCTIME {} \;
 	$SUDO chroot "$CHROOTNAME" fc-cache -rf
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /root/.cache/fontconfig/
 	$SUDO chroot "$CHROOTNAME" /bin/mkdir -p /${live_user}/.cache/fontconfig/
@@ -1732,7 +1731,7 @@ EOF
 
 # Rebuild man-db
     if [ -x "$CHROOTNAME"/usr/bin/mandb ]; then
-    	$SUDO chroot "$CHROOTNAME" /usr/bin/mandb --quiet
+	$SUDO chroot "$CHROOTNAME" /usr/bin/mandb --quiet
     fi
 
 # Rebuild linker cache
@@ -1747,8 +1746,8 @@ EOF
 	$SUDO mv "$CHROOTNAME"/var/cache/urpmi/rpms "$WORKDIR"
 	$SUDO mkdir -m 755 -p  "$CHROOTNAME"/var/cache/urpmi/rpms
     else
-    	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
-    	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/rpms/*
+	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
+	$SUDO rm -rf "$CHROOTNAME"/var/cache/urpmi/rpms/*
     fi
 # Generate list of installed rpm packages
     $SUDO chroot "$CHROOTNAME" rpm -qa --queryformat="%{NAME}\n" | sort > /var/lib/rpm/installed-by-default
