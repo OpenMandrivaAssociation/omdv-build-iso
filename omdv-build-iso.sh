@@ -1528,9 +1528,9 @@ EOF
 		if [[ -n "$line" && "$line" != [[:blank:]#]* && "${line,,}" = [[:blank:]enable]* ]]; then
 		    SANITIZED="${line#*enable}"
 		    for s_file in `find $UNIT_DIR -type f -name $SANITIZED`; do
-			DEST=`grep -o 'WantedBy=.*' $s_file  | cut -f2- -d'='`
+			DEST=`grep -o '^WantedBy=.*' $s_file  | cut -f2- -d'='`
 			if [ -n "$DEST" ] && [ -d "$CHROOTNAME"/etc/systemd/system ] && [[ ! -e "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/} ]] ; then
-			    [[ ! -d /etc/systemd/system/$DEST.wants ]] && mkdir -p "$CHROOTNAME"/etc/systemd/system/$DEST.wants
+			    [[ ! -d /etc/systemd/system/$DEST.wants ]] && mkdir -p "$CHROOTNAME"/etc/systemd/system/"$DEST".wants
 			    echo "-> Enabling ${s_file#$UNIT_DIR/}"
 			    #/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
 			    ln -sf /${s_file#$CHROOTNAME/} "$CHROOTNAME"/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}
