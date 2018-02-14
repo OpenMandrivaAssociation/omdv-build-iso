@@ -8,6 +8,7 @@
 # Modified on 2016 by: Tomasz Pawe³½ Gajc <tpgxyz@gmail.com>
 # Modified on 2016 by: Colin Close <itchka@compuserve.com>
 # Modified on 2017 by: Colin Close <itchka@compuserve.com>
+# Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -179,6 +180,10 @@ if [ $# -ge 1 ]; then
                     ENSKPLST=enskplst #prolly should be a symlink
                     shift
                     ;;
+             --enable-skip-list)
+                    USRBUILD=usrbuild #allow fresh build without destroying user files
+                    shift
+                    ;;
              --help)
         	    usage_help
         	    shift
@@ -197,11 +202,11 @@ fi
 # and pass them to sudo when it is started. Also the user name is needed.
 # The abf isobuilder docker instance is created with a single working directory /home/omv/iso_builder. This directory must not be deleted as it contains important (but hidden) config files.
 # A support directory /home/omv/docker-iso-worker is also created this should not be touched.
-# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These filed are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
+# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST"
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -256,51 +261,38 @@ LOGDIR="."
 # User mode also generates a series of diffs as a record of the multiple sessions.
 # The --keep option allow these to be retained for subsequent sessions
 
-if [[ "$IN_ABF" == "0" && -n "$KEEP" && -d "$WORKDIR/sessrec" ]]; then
-    $SUDO mv "$WORKDIR/sessrec" "$UHOME"
-    printf "%s\n" "-> Retaining your session records"
-fi
+#if [[ "$IN_ABF" == "0" && -n "$KEEP" && -d "$WORKDIR/sessrec" ]]; then
+#    $SUDO mv "$WORKDIR/sessrec" "$UHOME"
+#    printf "%s\n" "-> Retaining your session records"
+#fi
+
+
+# MIGHT BE A GOOD IDEA TO CREATE A FUNCTION "SAVE DATA" TO MAKE BELOW MOR MANAGABLE.
 
 if [[ "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" && -z "$NOCLEAN" ]]; then
-    $SUDO rm -rf "$WORKDIR"
-    $SUDO mkdir -p "$WORKDIR"
-    touch "$WORKDIR/.new" 
+RemkWorkDir
 elif [[ "$IN_ABF" == "0" && -z "$NOCLEAN" && -z "$REBUILD" && -d "$WORKDIR" ]]; then
-    $SUDO rm -rf "$WORKDIR"
-    $SUDO mkdir -p "$WORKDIR"
-# This file indicates to the session record system that a new set of reference filesums must be created
-    touch "$WORKDIR/.new" 
+    if [ -n "$KEEP" ]; then
+    SaveDaTa
+    RestoreDaTa
+    # RestoreDaTa also cleans and recreates the $WORKDIR
     else
      printf "%s\n" "-> No base chroot exists...creating one"
-     $SUDO mkdir -p "$WORKDIR"
-     $SUDO touch "$WORKDIR/.new"
+     RemkWorkDir
+    fi
 fi
 
 if [[ "$IN_ABF" == "0" && -n "$REBUILD" && -d "$WORKDIR" ]]; then
-    $SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR"
-    $SUDO rm -rf "$WORKDIR/BASE/"
-    $SUDO rm -rf "$WORKDIR/missing"
-    $SUDO rm -rf "$WORKDIR/Setting*"
-    $SUDO rm -rf "$WORKDIR/*.log"
     if [ -n "$KEEP" ]; then
-        $SUDO mv "$WORKDIR/sessrec" "$UHOME/" 
-    elif [ -d "$UHOME/sessreq" ]; then
-        $SUDO rm -rf "$UHOME/sessreq"
-        touch "$WORKDIR/.new"
+    SaveDaTa
+    RestoreDaTa    
     fi
 #Remake needed directories
-    $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
-    $SUDO mkdir -p "$CHROOTNAME/var/lib/rpm"
-    $SUDO mkdir -p "$CHROOTNAME/var/cache/urpmi"
-    $SUDO mv  "$WORKDIR/rpms" "$CHROOTNAME/var/cache/urpmi/rpms"
-    if [ -n "$KEEP" ]; then
-        $SUDO mv "$UHOME/sessrec" "$WORKDIR"
-    fi
-    if [ ! -d "$WORKDIR" ]; then
-    printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
-    "-> You must run  your command with the --noclean option set to create something to rebuild."
-    exit 1
-    fi
+fi
+if [ ! -d "$WORKDIR" ]; then
+  printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
+   "-> You must run  your command with the --noclean option set to create something to rebuild."
+  exit 1
 fi
 
 if [[ -n "$NOCLEAN" && -d "$WORKDIR" ]]; then #if NOCLEAN option selected then retain the chroot.
@@ -314,7 +306,6 @@ if [[ -n "$NOCLEAN" && -d "$WORKDIR" ]]; then #if NOCLEAN option selected then r
     # Note need to clean out grub uuid files here and maybe others
 fi
 
-
 # Assign the config build list
 if [ "$TYPE" == "my.add" ]; then
 FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${TYPE,,}"
@@ -326,7 +317,6 @@ userISONme
 else
 FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 fi
-
 
 # Create the ISO directory
 $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
@@ -356,6 +346,56 @@ postBuild
 ########################
 #   Start functions    #
 ########################
+
+SaveDaTa() {
+printf %s\n "Saving config data"
+if [ -n "$KEEP" ]; then
+mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$UHOME/iso-pkg-lists-${TREE,,}"
+mv "$WORKDIR/sessrec" "$UHOME/sessrec"
+fi
+mv "$WORKDIR/dracut" "$UHOME/dracut"
+mv "$WORKDIR/grub2" "$UHOME/grub2"
+mv "$WORKDIR/boot" "$UHOME/boot"
+if [ -n "$REBUILD" ]; then
+printf %s\n "-> Saving rpms for rebuild"
+$SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$UHOME/RPMS"
+fi
+}
+
+RestoreDaTa() {
+printf %s\n  "->    Cleaning WORKDIR"
+# Re-creates the WORKDIR and populates it with saved data
+# In the case of a rebuild the $CHRROTNAME dir is recreated and the saved rpm cache is restored to it..
+$SUDO rm -rf "$WORKDIR"
+$SUDO mkdir -p "$WORKDIR"
+if [ -n "$KEEP" ]; then
+printf %s\n "-> Restoring package lists and the session records"
+mv "$UHOME/iso-pkg-lists-${TREE,,}" "$WORKDIR/iso-pkg-lists-${TREE,,}"
+mv "$UHOME/sessrec" "$WORKDIR/sessrec"
+fi
+mv "$UHOME/dracut" "$WORKDIR/dracut"
+mv "$UHOME/grub2" "$WORKDIR/grub2"
+mv "$UHOME/boot" "$WORKDIR/boot"
+if [ -n "$REBUILD" ]; then
+printf %s\n "-> Restoring rpms for new build"
+#Remake needed directories
+$SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
+$SUDO mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
+$SUDO mkdir -p "$CHROOTNAME/var/cache/urpmi"
+$SUDO mv "$UHOME/RPMS" "$CHROOTNAME/var/cache/urpmi/rpms"
+fi
+$SUDO touch "$WORKDIR/.new"
+}
+
+RemkWorkDir() {
+echo "Remake dirs"
+$SUDO rm -rf "$WORKDIR"
+$SUDO mkdir -p "$WORKDIR"
+if [ "$IN_ABF" == "0" ]; then
+$SUDO touch "$WORKDIR/.new"
+fi
+}
+
 
 setWorkdir() {
 # Set the $WORKDIR
@@ -494,7 +534,6 @@ if [[ -z "$DEBUG" || -z "$NOCLEAN" || -z "$REBUILD" ]]; then
 else
     umountAll "$CHROOTNAME"
 fi
-
 #if $1 is set - clean exit
     exit 1
 }
@@ -538,7 +577,6 @@ ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
 # in case when i386 is passed, fall back to i586
 [ "$EXTARCH" = "i386" ] && EXTARCH=i586
 
-
 if [ "${RELEASE_ID,,}" == "final" ]; then
     PRODUCT_ID="OpenMandrivaLx.$VERSION"
 elif [ "${RELEASE_ID,,}" == "alpha" ]; then
@@ -551,7 +589,6 @@ else
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
 fi
 printf "%s" "$PRODUCT_ID"
-
 
 LABEL="$PRODUCT_ID.$EXTARCH"
 [ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
@@ -579,11 +616,8 @@ printf "%s\n" "$WORKDIR"
             printf "%s\n" "-> Your build lists have been retained" # Files already copied
         fi
 	fi
-	
 	# Make our directory writeable by current sudo user
 	$SUDO chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
-    
-
 }
 
 getPkgList() {
@@ -879,6 +913,12 @@ mkOmSpin() {
     mkUpdateChroot "$INSTALL_LIST"
 }
 
+#mkRpmDb() {
+#Use $INSTALL_LIST to create db from synthesis hdlist.
+
+
+
+
 updateUserSpin() {
 # updateUserSpin [main install file path] i.e. path/omdv-kde4.lst
 # Sets two variables
@@ -988,7 +1028,7 @@ mkUpdateChroot() {
 #               separated package names for installation or removal.
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
-set -x
+#set -x
 	printf "%s\n\n" "-> Updating chroot"
 	local __install_list="$1"
 	local __remove_list="$2"
@@ -1037,6 +1077,7 @@ if [ "$CHGFLAG" != "1" ]; then
         printf "%s\n" "-> Updating existing chroot $CHROOTNAME"
     fi
 # Make sure /proc, /sys and friends are mounted so %post scripts can use them
+# Note that below mkdir -p creates $WORKDIR/BASE 
     $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
     if [[ -n "$REBUILD" && -z "$NOCLEAN" ]]; then
@@ -1057,6 +1098,7 @@ fi
     printf "%s" "$REPOPATH"
 # If the kernel hasn't been installed then it's a new chroot or a rebuild
     if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
+#    if [[ -n "$NOCLEAN" || -n "$REBUILD" ]]; then
 	printf "%s\n" "-> Adding urpmi repository $REPOPATH into $CHROOTNAME" " "
         if [ "$FREE" = "0" ]; then
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
@@ -1065,12 +1107,16 @@ fi
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
         # This one is needed to grab firmwares
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
+            # and this one for the users local stuff 
+#        $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "local" file://home/colin/Development/fixuprepo
         fi
         if [ "${TREE,,}" != "cooker" ]; then
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
     # This one is needed to grab firmwares
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
+    # and this one for the users local stuff 
+#        $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "local" file://home/colin/Development/fixuprepo
 
         fi
 	fi
@@ -1502,7 +1548,7 @@ setupGrub2() {
 
 
 setupISOenv() {
-
+set -x
 # Set up default timezone
     printf "%s\n" "-> Setting default timezone"
     $SUDO ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME/etc/localtime"
