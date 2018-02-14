@@ -7,15 +7,64 @@ The use for ABf is unchanged and the script will work as previously in ABF if th
 invoking environment.
 
 LOCAL USE:
-For local and developer use there are some changes which allow the build to be customised different requirments.
+For local and developer use there are some changes which allow the built ISO to be customised different requirments.
 There are three flags controlling this func
 
-Three new configuration files have been added to the package lists then are "my.add and "my.rmv" these files may be used 
-to add and remove packages to and from the standard builds and skip.list, a user created skip.list that can be enabled 
-by a command line flag to support the filtering of files when the testrepo and autoupdate flags are used.
+The contents of the ISO are controlled by a series build lists grouped under OMA release.
+There are currently three sets of files collected under the follwing directories.
+/iso-pkg-lists-3.0
+/iso-pkg-lists-cooker
+/iso-pkg-lists-openmandriva2014.0
 
-These two file support the same syntax as the other files in that the %include .///directive [pkg list name] may be used.
-The script is so designed that it will remove duplicates pulled in by other lists. 
+A typical directory structure will be.
+./iso-pkg-lists-3.0
+├── my.add
+├── my.rmv
+├── omdv_aspell.lst
+├── omdv_calligra.lst
+├── omdv_control.lst
+├── omdv_core.lst
+├── omdv_desktop.lst
+├── omdv_devel.lst
+├── omdv_drivers.lst
+├── omdv_fcitx.lst
+├── omdv_firefox.lst
+├── omdv_fonts.lst
+├── omdv_gstreamer.lst
+├── omdv-icewm.lst
+├── omdv_iso.lst
+├── omdv_iso_minimal.lst
+├── omdv_kde4_apps.lst
+├── omdv-kde4.lst
+├── omdv_krita.lst
+├── omdv_libreoffice.lst
+├── omdv_locales.lst
+├── omdv-lxqt.lst
+├── omdv_man-pages.lst
+├── omdv-mate.lst
+├── omdv-minimal.lst
+├── omdv_myspell.lst
+├── omdv-plasma.lst
+├── omdv_ppp.lst
+├── omdv_pulseaudio.lst
+├── omdv_small_but_stuffed.lst
+├── omdv_smplayer.lst
+├── omdv_thunderbird.lst
+├── omdv_utils.lst
+├── omdv_vlc.lst
+├── omdv-weston.lst
+├── omdv_x11_extra.lst
+└── omdv-xfce4.lst
+
+
+
+
+The files "my.add and "my.rmv" may be used to add and remove packages to and from the standard builds; In addition a user created skip.list may be enabled 
+by a command line flag to support the exclusion of files from the build when the testrepo and auto-update flags are used.
+This useful when you may wish to update you iso to newer package versions but to exclude some packages which may be broken.
+
+The my.add and my.rmv  files require the same syntax as the other iso package lists in that the %include .///directive [pkg list name] may be used.
+The script is so designed that it will remove duplicates pulled in by other lists. Its is also possible to insert pathnames to individual rpms
 
 It is possible then to build an iso that contains say KDE Plasma and xfce in the same iso without the need to comment out files 
 from one or other of the lists. Rpm names added to my.add will be added, names in my.rmv will be removed.
