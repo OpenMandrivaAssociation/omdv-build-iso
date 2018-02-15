@@ -1050,7 +1050,8 @@ mkUpdateChroot() {
         fi
     elif [ "$IN_ABF" == "1" ]; then
          echo "-> Installing packages at ABF"
-         printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+ #        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+     printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --
     fi       
     if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
         printf "%s\n" "-> Make some helpful logs"
