@@ -1055,7 +1055,8 @@ mkUpdateChroot() {
     fi       
     if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
     FilterLogs
-    elif [[ "IN_ABF" = "1" && -f "$WORKDIR/install.log" ]]; then
+    fi
+    if [[ "IN_ABF" = "1" && -f "$WORKDIR/install.log" ]]; then
     FilterLogs
     sed -e 'G;G;G;G;G' /home/omv/output/iso_build.log
     cat "$WORKDIR/rpm-fail.log"  
