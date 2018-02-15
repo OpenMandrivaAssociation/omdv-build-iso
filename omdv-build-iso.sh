@@ -1054,6 +1054,17 @@ mkUpdateChroot() {
      printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --
     fi       
     if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
+    FilterLogs
+    elif [[ "IN_ABF" = "1" && -f "$WORKDIR/install.log" ]]; then
+    FilterLogs
+    sed -e 'G;G;G;G;G' /home/omv/output/iso_build.log
+    cat "$WORKDIR/rpm-fail.log"  
+    sed -e 'G;G;G;G;G' /home/omv/output/iso_build.log
+    cat "$WORKDIR/rpm-install.log" 
+    fi
+}
+
+FilterLogs() {
         printf "%s\n" "-> Make some helpful logs"
         #Create the header
         head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-fail.log"
@@ -1063,7 +1074,6 @@ mkUpdateChroot() {
         cat "$WORKDIR/install.log" | awk '$7  ~ /0/' >> "$WORKDIR/rpm-install.log"
         #Clean-up
         rm -f "$WORKDIR/install.log"
-    fi
 }
 
 createChroot() {
