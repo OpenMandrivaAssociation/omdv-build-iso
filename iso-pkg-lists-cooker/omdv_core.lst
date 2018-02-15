@@ -1,7 +1,7 @@
 basesystem-minimal
 distro-release-common
 distro-release-OpenMandriva
-distro-theme-OpenMandriva--grub2
+distro-theme-OpenMandriva-grub2
 locales
 locales-en
 meta-task
