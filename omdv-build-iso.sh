@@ -30,9 +30,9 @@
 
 
 # use only allowed arguments
-TODO:
-;Add user controlled variable for setting number of failures tolerated
-;Add choice of xargs or parallel for ABF builds
+# TODO:
+# Add user controlled variable for setting number of failures tolerated
+# Add choice of xargs or parallel for ABF builds
 
 main() {
 
