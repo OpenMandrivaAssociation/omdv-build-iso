@@ -331,6 +331,7 @@ updateSystem
 getPkgList
 localMd5Change #Calls doDiff
 createChroot
+FilterLogs
 createInitrd
 createMemDisk
 createUEFI
@@ -1052,27 +1053,26 @@ mkUpdateChroot() {
          echo "-> Installing packages at ABF"
  #        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
      printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto  --
-    fi       
-    if [[ "$IN_ABF" == "0" && -f "$WORKDIR/install.log" ]]; then
-    FilterLogs
-    fi
-    if [[ "IN_ABF" = "1" && -f "$WORKDIR/install.log" ]]; then
-    FilterLogs
-    sed -e 'G;G;G;G;G' /home/omv/output/iso_build.log
-    cat "$WORKDIR/rpm-fail.log"  
-    sed -e 'G;G;G;G;G' /home/omv/output/iso_build.log
-    cat "$WORKDIR/rpm-install.log" 
-    fi
+
+   fi
 }
 
-FilterLogs() {
+    FilterLogs() {
         printf "%s\n" "-> Make some helpful logs"
         #Create the header
-        head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-fail.log"
-        head -1 "$WORKDIR/install.log" >"$WORKDIR/rpm-install.log"
+        printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
+        head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
+        printf "%s\n" "" "" "RPM Install Failues" " " >"$WORKDIR/rpm-fail.log" 
+        head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}' >>"$WORKDIR/rpm-fail.log" 
+        cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}'
         #Append the data
-        cat "$WORKDIR/install.log" | awk '$7  ~ /1/' >> "$WORKDIR/rpm-fail.log"
-        cat "$WORKDIR/install.log" | awk '$7  ~ /0/' >> "$WORKDIR/rpm-install.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$19}'>> "$WORKDIR/rpm-fail.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$19}' >> "$WORKDIR/rpm-install.log"
+        if [[ "$IN_ABF" == "1" && -f "$WORKDIR/install.log" ]]; then
+#        $SUDO touch /home/colin/output/iso_build.log
+         cat "$WORKDIR/rpm-fail.log"  
+         cat "$WORKDIR/rpm-install.log" 
+        fi
         #Clean-up
         rm -f "$WORKDIR/install.log"
 }
