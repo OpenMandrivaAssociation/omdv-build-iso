@@ -30,6 +30,9 @@
 
 
 # use only allowed arguments
+TODO:
+;Add user controlled variable for setting number of failures tolerated
+;Add choice of xargs or parallel for ABF builds
 
 main() {
 
@@ -522,6 +525,7 @@ umountAll() {
 
 errorCatch() {
     printf "%s\n" "-> Something went wrong." "Exiting"
+    FilterLogs
     unset KERNEL_ISO
     unset UEFI
     unset MIRRORLIST
