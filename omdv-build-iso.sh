@@ -33,6 +33,9 @@
 # TODO:
 # Add user controlled variable for setting number of failures tolerated
 # Add choice of xargs or parallel for ABF builds
+# buffer standars out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
+# Move package failure reporting to then end of the program so it appears at the end of the build.log
+# See this url https://unix.stackexchange.com/questions/117501/in-bash-script-how-to-capture-stdout-line-by-line
 
 main() {
 
@@ -171,6 +174,10 @@ if [ $# -ge 1 ]; then
             	    TESTREPO=testrepo
             	    shift
                    ;;
+             --parallel)
+            	    PARALLEL=parallel
+            	    shift
+                   ;; 
              --devmode)
                     DEVMODE=devmode
                     shift
@@ -209,7 +216,7 @@ fi
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD"
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PARALLEL="$PARALLEL"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -334,7 +341,6 @@ updateSystem
 getPkgList
 localMd5Change #Calls doDiff
 createChroot
-FilterLogs
 createInitrd
 createMemDisk
 createUEFI
@@ -343,7 +349,7 @@ setupISOenv
 createSquash
 buildIso
 postBuild
-
+FilterLogs
 #END
 }
 
@@ -997,7 +1003,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>"$WORKDIR/missing"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --  | tee "$WORKDIR/urpmopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1054,10 +1060,12 @@ mkUpdateChroot() {
             MyRmv
         fi
     elif [ "$IN_ABF" == "1" ]; then
-         echo "-> Installing packages at ABF"
- #        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
-     printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto  --
-
+    printf %s\n "-> Installing packages at ABF"
+        if [ -n "$PARALLEL" ]; then
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto   | tee "$WORKDIR/urpmopt.log"
+        else
+        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+        fi
    fi
 }
 
@@ -1066,15 +1074,20 @@ mkUpdateChroot() {
         #Create the header
         printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
         head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
-        printf "%s\n" "" "" "RPM Install Failues" " " >"$WORKDIR/rpm-fail.log" 
+        printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log" 
         head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}' >>"$WORKDIR/rpm-fail.log" 
         cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}'
         #Append the data
         cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$19}'>> "$WORKDIR/rpm-fail.log"
         cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$19}' >> "$WORKDIR/rpm-install.log"
+        # Make a dependency failure log
+        if [ -f "$WORKDIR/urpmopt.log" ]; then
+         grep -hr -A1 'A requested package cannot be installed:' "$WORKDIR/urpmopt.log" | sort -u >depfail.log
+        fi
         if [[ "$IN_ABF" == "1" && -f "$WORKDIR/install.log" ]]; then
-#        $SUDO touch /home/colin/output/iso_build.log
-         cat "$WORKDIR/rpm-fail.log"  
+         cat "$WORKDIR/rpm-fail.log"
+         printf "%s\n" " " "-> DEPENDENCY FAILURES"
+         cat "$WORKDIR/depfail.log"
          cat "$WORKDIR/rpm-install.log" 
         fi
         #Clean-up
@@ -1564,7 +1577,7 @@ setupGrub2() {
 
 
 setupISOenv() {
-set -x
+#set -x
 # Set up default timezone
     printf "%s\n" "-> Setting default timezone"
     $SUDO ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME/etc/localtime"
