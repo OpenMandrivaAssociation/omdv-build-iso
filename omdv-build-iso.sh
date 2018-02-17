@@ -32,10 +32,10 @@
 # use only allowed arguments
 # TODO:
 # Add user controlled variable for setting number of failures tolerated
-# Add choice of xargs or parallel for ABF builds
-# buffer standars out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
-# Move package failure reporting to then end of the program so it appears at the end of the build.log
-# See this url https://unix.stackexchange.com/questions/117501/in-bash-script-how-to-capture-stdout-line-by-line
+
+# DONE Add choice of xargs or parallel for ABF builds
+# DONE buffer standards out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
+
 
 main() {
 
@@ -177,7 +177,11 @@ if [ $# -ge 1 ]; then
              --parallel)
             	    PARALLEL=parallel
             	    shift
-                   ;; 
+                   ;;
+             --displaymanager=*)
+                    MAXERRORS=${k#*=}
+                    shift
+                   ;;
              --devmode)
                     DEVMODE=devmode
                     shift
@@ -216,7 +220,7 @@ fi
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PARALLEL="$PARALLEL"
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PARALLEL="$PARALLEL "MAXERRRORS="$MAXERRORS"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -1062,7 +1066,7 @@ mkUpdateChroot() {
     elif [ "$IN_ABF" == "1" ]; then
     printf %s\n "-> Installing packages at ABF"
         if [ -n "$PARALLEL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto   | tee "$WORKDIR/urpmopt.log"
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto   | tee "$WORKDIR/urpmopt.log"
         else
         printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
         fi
