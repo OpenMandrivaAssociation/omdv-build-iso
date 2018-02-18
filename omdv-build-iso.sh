@@ -175,10 +175,10 @@ if [ $# -ge 1 ]; then
             	    shift
                    ;;
              --parallel)
-            	    PARALLEL=parallel
+            	    PLLL=plll
             	    shift
                    ;;
-             --displaymanager=*)
+             --maxerrors=*)
                     MAXERRORS=${k#*=}
                     shift
                    ;;
@@ -220,7 +220,7 @@ fi
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PARALLEL="$PARALLEL "MAXERRRORS="$MAXERRORS"
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PARALLEL="$PARALLEL "MAXERRORS="$MAXERRORS"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -1007,7 +1007,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=10 -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto --  | tee "$WORKDIR/urpmopt.log"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto  | tee "$WORKDIR/urpmopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1043,7 +1043,6 @@ mkUpdateChroot() {
 #               separated package names for installation or removal.
 #               The variable names are flexible but their content and order on the commandline
 #               are mandatory.
-#set -x
 	printf "%s\n\n" "-> Updating chroot"
 	local __install_list="$1"
 	local __remove_list="$2"
@@ -1064,9 +1063,9 @@ mkUpdateChroot() {
             MyRmv
         fi
     elif [ "$IN_ABF" == "1" ]; then
-    printf %s\n "-> Installing packages at ABF"
-        if [ -n "$PARALLEL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto   | tee "$WORKDIR/urpmopt.log"
+    #printf "%s\n" "-> Installing packages at ABF"
+        if [ -n "$PLLL" ]; then
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto | tee "$WORKDIR/urpmopt.log"
         else
         printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
         fi
