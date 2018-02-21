@@ -220,7 +220,7 @@ fi
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PARALLEL="$PARALLEL "MAXERRORS="$MAXERRORS"
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS"
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -1076,13 +1076,13 @@ mkUpdateChroot() {
         printf "%s\n" "-> Make some helpful logs"
         #Create the header
         printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
-        head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
+        head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$18}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
         printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log" 
-        head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}' >>"$WORKDIR/rpm-fail.log" 
-        cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$19}'
+        head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$18}' >>"$WORKDIR/rpm-fail.log" 
+        cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$18}'
         #Append the data
-        cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$19}'>> "$WORKDIR/rpm-fail.log"
-        cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$19}' >> "$WORKDIR/rpm-install.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$18}'>> "$WORKDIR/rpm-fail.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$18}' >> "$WORKDIR/rpm-install.log"
         # Make a dependency failure log
         if [ -f "$WORKDIR/urpmopt.log" ]; then
          grep -hr -A1 'A requested package cannot be installed:' "$WORKDIR/urpmopt.log" | sort -u >depfail.log
@@ -1094,7 +1094,7 @@ mkUpdateChroot() {
          cat "$WORKDIR/rpm-install.log" 
         fi
         #Clean-up
-        rm -f "$WORKDIR/install.log"
+ #       rm -f "$WORKDIR/install.log"
 }
 
 createChroot() {
