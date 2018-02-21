@@ -22,7 +22,7 @@ task-lxqt
 ark
 #cantata
 lximage-qt
-#meteo-qt
+meteo-qt
 networkmanager-applet
 notepadqq
 owncloudclient
@@ -65,7 +65,7 @@ task-pulseaudio
 
 #task-printing
 # printing
-#task-printing-scanning
+task-printing-scanning
 hplip-gui #printer
 system-config-printer-gui #printer
 
@@ -87,7 +87,7 @@ edidbins
 
 avahi #service
 cagibi #service
-#firewall-applet #service
+firewall-applet #service
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
