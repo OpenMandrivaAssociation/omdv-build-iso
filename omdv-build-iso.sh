@@ -1640,11 +1640,16 @@ EOF
 # Copy some extra config files
     $SUDO cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
     $SUDO cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
-
+    
+    # Add the no passwd group for systemd
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd 
 # Set up live user
     live_user=live
     printf "%s\n" "-> Setting up user ${live_user}"
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel ${live_user}
+#    if [ -n "$NOCLEAN" ]; then
+#    $SUDO chroot "$CHROOTNAME" /usr/sbin/usermod -G wheel,nopasswd ${live_user}
+#    fi
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd ${live_user}
 
 # Clear user passwords
     for username in root $live_user; do
@@ -1757,7 +1762,8 @@ EOF
 
 
 # Enable services on demand
-    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
+#    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
+    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance systemd-timesyncd)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
