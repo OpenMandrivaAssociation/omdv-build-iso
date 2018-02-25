@@ -1433,7 +1433,7 @@ EOF
 # Set up live user
     live_user=live
     echo "-> Setting up user ${live_user}"
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel ${live_user}
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd ${live_user}
 
 # Clear user passwords
     for username in root $live_user; do
