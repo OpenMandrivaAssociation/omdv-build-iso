@@ -124,5 +124,9 @@ sasl-plug-gssapi
 openssh-server #server
 samba-server #server
 
+# Theme for openbox startup Breeze
+breeze-gtk
+
+
 # special featured software
 #oma-welcome

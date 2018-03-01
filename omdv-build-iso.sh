@@ -178,9 +178,20 @@ if [ $# -ge 1 ]; then
                    ;;
                 --testrepo)
             	    TESTREPO=testrepo
+            	    shift
+                   ;;
+             --parallel)
+            	    PLLL=plll
+            	    shift
+                   ;;
+             --maxerrors=*)
+                    MAXERRORS=${k#*=}
+                    shift
+                   ;;
     		   ;;
         	--help)
         	    usage_help
+        	    shift
         	    ;;
     		*)
 		    usage_help
@@ -197,7 +208,8 @@ fi
 
 OLDUSER=`echo ~ | awk 'BEGIN { FS="/" } {print $3}'`
 SUDOVAR=""UHOME="$HOME "EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
-"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO"
+"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "OLDUSER="$OLDUSER "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ABF="$ABF "QUICKEN="$QUICKEN "KEEP="$KEEP "TESTREPO="$TESTREPO" \
+"PLLL="$PLLL "MAXERRORS="$MAXERRORS"
 
 # run only when root
 if [ "`id -u`" != "0" ]; then
@@ -813,44 +825,54 @@ mkUpdateChroot() {
     fi
 
 
-    if [ -n "$1" ] && [ -n "$NOCLEAN" ]; then
-	echo "-> Slambui"
-	printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
-	$SUDO printf '%s\n' "$__install_list" >$WORKDIR/RPMLIST.txt
-    elif [ -n "$1" ] && [ -n "$ABF" ]; then #Use xargs for ABF just in case of any unexpected interactions
-	echo "-> Installing packages at ABF"
-	printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
-    elif [ -n "$1" ]; then
-	echo "-> Installing packages locally"
-	printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG} 2>$WORKDIR/missing
-    else
-	printf '%s\n' "No rpms need to be installed"
-	echo " "
+    if [ -n "$1" ]; then
+        if [ -n "$PLLL" ]; then
+            if [ -z "$MAXERRORS" ]; then
+            MAXERRORS=0
+            fi
+        echo "-> Installing packages at ABF using parallel"
+        printf '%s\n' "$__install_list" | parallel -q --keep-order --joblog $WORKDIR/install.log --tty --halt now,fail=10 -P 1 --verbose /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto | tee "$WORKDIR/urpmopt.log" 
+        else #Use xargs 
+        echo "-> Installing packages at ABF using xargs"
+        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+        fi
+	else
+	printf '%s\n' "No rpms need to be installed" " "
     fi
 
     if [ -n "$2" ]; then
 	echo "-> Removing user specified rpms and orphans"
-# rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-#	    printf '%s\n' "$__removelist" | xargs $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
+    # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
 	printf '%s\n' "$__removelist" | parallel --tty --halt now,fail=10 -P 1  $SUDO rpm -e  --nodeps --noscripts --dbpath "$CHROOTNAME"/var/lib/rpm
-# This exposed a bug in urpme
+    # This exposed a bug in urpme
 	$SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
-#printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
     else
 	printf '%s\' "No rpms need to be removed"
     fi
 
-    if [ -z $ABF ]; then
-# Make some helpful logs
-# Create the header
-	head -1 $WORKDIR/install.log >$WORKDIR/rpm-fail.log
-	head -1 $WORKDIR/install.log >$WORKDIR/rpm-install.log
-# Append the data
-	cat $WORKDIR/install.log | awk '$7  ~ /1/' >> $WORKDIR/rpm-fail.log
-	cat $WORKDIR/install.log | awk '$7  ~ /0/' >> $WORKDIR/rpm-install.log
-# Clean-up
-	rm -f $WORKDIR/install.log
-    fi
+    FilterLogs() {
+        printf "%s\n" "-> Make some helpful logs"
+        #Create the header
+        printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
+        head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$18}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
+        printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log" 
+        head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$18}' >>"$WORKDIR/rpm-fail.log" 
+        cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$18}'
+        #Append the data
+        cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$18}'>> "$WORKDIR/rpm-fail.log"
+        cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$18}' >> "$WORKDIR/rpm-install.log"
+        # Make a dependency failure log
+        if [ -f "$WORKDIR/urpmopt.log" ]; then
+         grep -hr -A1 'A requested package cannot be installed:' "$WORKDIR/urpmopt.log" | sort -u >depfail.log
+        fi
+        if [[ "$IN_ABF" == "1" && -f "$WORKDIR/install.log" ]]; then
+         cat "$WORKDIR/rpm-fail.log"
+         printf "%s\n" " " "-> DEPENDENCY FAILURES"
+         cat "$WORKDIR/depfail.log"
+         cat "$WORKDIR/rpm-install.log" 
+        fi
+        #Clean-up
+ #       rm -f "$WORKDIR/install.log"
 }
 
 createChroot() {
@@ -1896,6 +1918,7 @@ setupGrub2
 setupISOenv
 createSquash
 buildIso
+FilterLogs
 postBuild
 
 #END
