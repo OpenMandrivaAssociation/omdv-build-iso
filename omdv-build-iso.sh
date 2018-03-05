@@ -1642,14 +1642,14 @@ EOF
     $SUDO cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
     
     # Add the no passwd group for systemd
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd 
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf 
 # Set up live user
     live_user=live
     printf "%s\n" "-> Setting up user ${live_user}"
 #    if [ -n "$NOCLEAN" ]; then
-#    $SUDO chroot "$CHROOTNAME" /usr/sbin/usermod -G wheel,nopasswd ${live_user}
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/usermod -G wheel,nopasswd ${live_user}
 #    fi
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd ${live_user}
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd,vboxsf ${live_user}
 
 # Clear user passwords
     for username in root $live_user; do
