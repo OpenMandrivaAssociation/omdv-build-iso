@@ -124,5 +124,9 @@ sasl-plug-gssapi
 openssh-server #server
 samba-server #server
 
+# Add breeze then for openbox startup
+
+breeze-gtk
+
 # special featured software
 #oma-welcome
