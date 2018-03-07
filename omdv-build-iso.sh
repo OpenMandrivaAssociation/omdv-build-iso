@@ -178,18 +178,22 @@ if [ $# -ge 1 ]; then
             	    PLLL=plll
             	    shift
                    ;;
+             --isover=*)
+                    ISO_VER=${k#*=}
+                    shift
+                    ;;
              --maxerrors=*)
                     MAXERRORS=${k#*=}
                     shift
-                   ;;
+                    ;;       
              --devmode)
                     DEVMODE=devmode
                     shift
                     ;;
              --auto-update)
-		    AUTO_UPDATE=1
-		    shift
-		    ;;
+                    AUTO_UPDATE=1
+                    shift
+                    ;;
              --enable-skip-list)
                     ENSKPLST=enskplst #prolly should be a symlink
                     shift
@@ -199,9 +203,9 @@ if [ $# -ge 1 ]; then
                     shift
                     ;;
              --help)
-        	    usage_help
-        	    shift
-        	    ;;
+                    usage_help
+                    shift
+                    ;;
     		*)
 		    usage_help
         	    ;;
@@ -220,7 +224,7 @@ fi
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS"
+"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS " 
 # run only when root
 
 if [ "$(id -u)" != "0" ]; then
@@ -231,6 +235,7 @@ if [ "$(id -u)" != "0" ]; then
     printf "%s\n" "-> Run me as root."
     exit 1
 fi
+
 # Set the local build prefix
 if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then 
 WHO=omv
@@ -648,16 +653,16 @@ getPkgList() {
             printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
             # download iso packages lists from https://github.com
             # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-            if [ "$TYPE" == "my.add" ]; then
-                ISO_VER=cc_user_ver
+            if [ -n "ISO_VER" ]; then
+                GIT_BRNCH="$ISO_VER"
             elif [ ${TREE,,} == "cooker" ]; then
-                ISO_VER=master
+                GIT_BRNCH=master
             else 
-                ISO_VER=${TREE,,}
+                GIT_BRNCH=${TREE,,}
                 # ISO_VER defaults to user entry
             fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
-        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${ISO_VER}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
+        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
@@ -1763,7 +1768,7 @@ EOF
 
 # Enable services on demand
 #    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
-    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance systemd-timesyncd)
+    SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance systemd-timesyncd vboxadd)
 
     for i in "${SERVICES_ENABLE[@]}"; do
 	if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
