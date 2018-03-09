@@ -14,9 +14,13 @@ This is a TODO list.
 10: Diffs for user session Done
 11: Investigate using solvedb as suggested by jbj
 12; Make update chroot repos into a separate function
-11: Add the ability to definitively call abf-downloads for the package lists.  (Perhaps a debug function) Done get them from GitHub
-12: Add flag to set the number of acceptable rpm installation failures for parallels only for user mode
-    Perhaps combined with apper and packagit
-13: Improve and consolidate logging. Mostly done needs review
+11: Add the ability to definitively call git hub  for the package lists.   Done for ABF finish thing so that users can call their own github repo for the lists
+12: Add flag to set the number of acceptable rpm installation failures for parallels only Done
+13: Improve and consolidate logging. Done but some cleanup of old logging implementations may be required
 14. Move functions to separate file sources from the main one. They are stored in the same file but behave as is they are sourced.
-15. Try to build a multi-arch i686 EFI spin 
+15. Add the ability to use a locally stored repo. Tested in principle with urpmi
+16: Generally rationalise repository loading
+17: Work towards using a rpmdb type of install. This would allow a package list complete with dependencies to be generated which could be fed to parallels using rpm -i --nodeps 
+    and would allow the use of multiple instances of rpm to be run thus speeding up iso creation.
+18. Try to build a multi-arch i686 EFI spin 
+19. Provide comprehensive usage instructions for local users.

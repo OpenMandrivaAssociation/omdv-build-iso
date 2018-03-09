@@ -43,6 +43,10 @@ main() {
 # to ensure that all functions are read before the body of the script is run.
 # All global variables need to be inside the curly braces of this function.
 
+# Make sure MAXERRORS gets preset to a real number else parallel will error out. This will be overidden by the users value if given.
+
+MAXERRORS=1
+
 if [ $# -ge 1 ]; then
     for k in "$@"; do
 	case "$k" in
@@ -81,10 +85,10 @@ if [ $# -ge 1 ]; then
         	    RELEASE_ID=${k#*=}
         	    shift
         	    ;;
-                --boot-kernel-type=*)
-                   BOOT_KERNEL_TYPE=${k#*=}
-                  shift
-                  ;;
+            --boot-kernel-type=*)
+                BOOT_KERNEL_TYPE=${k#*=}
+                shift
+                ;;
 		--type=*)
 		    declare -l lc
 		    lc=${k#*=}
@@ -198,7 +202,7 @@ if [ $# -ge 1 ]; then
                     ENSKPLST=enskplst #prolly should be a symlink
                     shift
                     ;;
-             --enable-skip-list)
+             --userbuild)
                     USRBUILD=usrbuild #allow fresh build without destroying user files
                     shift
                     ;;
@@ -219,14 +223,14 @@ fi
 # We lose our cli variables when we invoke sudo so we save them
 # and pass them to sudo when it is started. Also the user name is needed.
 # The abf isobuilder docker instance is created with a single working directory /home/omv/iso_builder. This directory must not be deleted as it contains important (but hidden) config files.
-# A support directory /home/omv/docker-iso-worker is also created this should not be touched.
-# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
+# A support directory /home/omv/docker-iso-worker is also created this should also not be touched.
+# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
 
 SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
 "KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS " 
-# run only when root
 
+# run only when root
 if [ "$(id -u)" != "0" ]; then
     # We need to be root for umount and friends to work...
     # NOTE the following command will only work on OMDV for the first registered user
@@ -355,6 +359,7 @@ createMemDisk
 createUEFI
 setupGrub2
 setupISOenv
+ClnShad
 createSquash
 buildIso
 postBuild
@@ -497,24 +502,28 @@ usage_help() {
 	printf "%s\n" "usage $0 [options]"
         printf "%s\n" "general options:"
         printf "%s\n" "--arch= Architecture of packages: i586, x86_64"
-        printf "%s\n" "--tree= Branch of software repository: cooker, 3.0, openmandriva2014.0"
+        printf "%s\n" "--tree= Branch of software repository: cooker, lx3, openmandriva2014.0"
         printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
         printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
         printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
         printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
         printf "%s\n" "--workdir= Set directory where ISO will be build"
         printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
-        printf "%s\n" "--debug Enable debug output"
+        printf "%s\n" "--debug Enable debug output. This option also allows ABF=1 to be used loacally for testing"
         printf "%s\n" "--urpmi-debug Enable urpmi debugging output"
         printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
         printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
         printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
         printf "%s\n" "--devmode Enables some developer aids see the README"
         printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
+
         printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
-        printf "%s\n" "--testrepo Includes the main testing repo in the iso build"
+        printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
         printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
         printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
+        printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
+        printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given
+        printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
         printf "%s\n" " "
         printf "%s\n" "For example:"
         printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
@@ -661,7 +670,7 @@ getPkgList() {
                 GIT_BRNCH=master
             else 
                 GIT_BRNCH=${TREE,,}
-                # ISO_VER defaults to user entry
+                # ISO_VER defaults to user build entry
             fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
         wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
@@ -1114,16 +1123,16 @@ if [ "$CHGFLAG" != "1" ]; then
         printf "%s\n" "-> Creating chroot $CHROOTNAME" 
     else 
         printf "%s\n" "-> Updating existing chroot $CHROOTNAME"
-	elif [ -z "$NOCLEAN" ] && [ -e "$CHROOTNAME" ]; then
-	    echo $'\n'
-	    echo "-> Cleaning existing chroot $CHROOTNAME"
-	    $SUDO rm -rf "$CHROOTNAME"
+#	elif [ -z "$NOCLEAN" ] && [ -e "$CHROOTNAME" ]; then
+#	    echo $'\n'
+#	    echo "-> Cleaning existing chroot $CHROOTNAME"
+#	    $SUDO rm -rf "$CHROOTNAME"
     fi
 # Make sure /proc, /sys and friends are mounted so %post scripts can use them
 # Note that below mkdir -p creates $WORKDIR/BASE 
     $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
-    if [[ -n "$REBUILD" && -z "$NOCLEAN" ]]; then
+    if [ -n "$REBUILD" ]; then
 	    ANYRPMS=$(find "$CHROOTNAME/var/cache/urpmi/rpms/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
         if [ -z "$ANYRPMS" ]; then
             printf "%s\n" "-> You must run with --noclean before you use --rebuild"
@@ -1137,11 +1146,11 @@ fi
 # If chroot exists and if we have --noclean then the repo files are not needed with exception of the
 # first time run with --noclean when they must be installed. If --rebuild is called they will have been
 # deleted so reinstall them. 
+echo ${TREE,,}
     REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
     printf "%s" "$REPOPATH"
 # If the kernel hasn't been installed then it's a new chroot or a rebuild
     if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
-#    if [[ -n "$NOCLEAN" || -n "$REBUILD" ]]; then
 	printf "%s\n" "-> Adding urpmi repository $REPOPATH into $CHROOTNAME" " "
         if [ "$FREE" = "0" ]; then
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
@@ -1652,14 +1661,17 @@ EOF
 # Copy some extra config files
     $SUDO cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
     $SUDO cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
-    
+    if [ "$TREE" == "3.0" ]; then
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd 
     # Add the no passwd group for systemd
+    fi
+    # Add the VirtualBox folder sharing group
     $SUDO chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf 
 # Set up live user
     live_user=live
     printf "%s\n" "-> Setting up user ${live_user}"
 #    if [ -n "$NOCLEAN" ]; then
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/usermod -G wheel,nopasswd ${live_user}
+#    $SUDO chroot "$CHROOTNAME" /usr/sbin/usermod -G wheel,nopasswd ${live_user}
 #    fi
     $SUDO chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd,vboxsf ${live_user}
 
@@ -1863,12 +1875,6 @@ EOF
 	fi
 
     fi
-#    if [ -e "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf ]; then
-#	echo "Updating calamares settings."
-	# update patch to squashfs
-#	$SUDO sed -i -e "s#source:.*#source: "/media/$LABEL/LiveOS/squashfs.img"#" "$CHROOTNAME"/etc/calamares/modules/unpackfs.conf
-#    fi
-
     #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 # Fix Me This should be a function
@@ -1988,6 +1994,12 @@ EOF
 
 }
 
+ClnShad() {
+# Clean out the backups of passwd, group and shadow
+/bin/rm -f "$CHROOTDIR/etc/passwd- $CHROOTDIR/etc/group- $CHROOTDIR/etc/shadow-"
+}
+
+
 createSquash() {
     printf "%s\n" "-> Starting squashfs image build."
 # Before we do anything check if we are a local build
@@ -1996,13 +2008,13 @@ createSquash() {
 # If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives
 # It's likely that the img will be written to one of the mounted drives so it's unlikely
 # that there will be enough diskspace to complete the operation.
-	if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
-		$SUDO umount -l "$(echo "$ISOROOTNAME/run/os-prober/dev/*")"
-	    if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
-		printf "%s\n" "-> Cannot unount os-prober mounts aborting."
-		errorCatch
-	    fi
-	fi
+        if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
+            $SUDO umount -l "$(echo "$ISOROOTNAME/run/os-prober/dev/*")"
+            if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
+            printf "%s\n" "-> Cannot unount os-prober mounts aborting."
+            errorCatch
+            fi
+        fi
     fi
 
     if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
@@ -2049,7 +2061,7 @@ buildIso() {
 	errorCatch
     fi
 
-# Before starting to build remove the old iso. xorriso is much slower to create an iso.
+# Before starting to build remove the old iso. xorriso is much slower to create an iso
 # if it is overwriting an earlier copy. Also it's not clear whether this affects the.
 # contents or structure of the iso (see --append-partition in the man page)
 # Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
