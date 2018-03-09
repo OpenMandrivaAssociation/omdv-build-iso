@@ -1,22 +1,22 @@
 UPGRADE May 2016                                     Developer Overview
+MAJOR FIXES 2017
 
-
-Some parts of omdn-build-iso-shell have been completely re-written to allow the introdution of a true user mode where packages may be conveniently 
+Some parts of omdv-build-iso-shell have been completely re-written to allow the introdution of a true user mode where packages may be conveniently 
 added and removed to pair of package lists (my.add and my.remove)
 In order to do this it was necessary to generate two separate package lists. Although not strictly necessary the package lists 
-are generated as a two stage process. Two Function are involved getIncFiles() and creatPkgList() both of these function can return 
+are generated as a two stage process. Two Function are involved getIncFiles() and creatPkgList() both of these functions can return 
 their  data in a pre-named variable. For example calling getIncFiles with omdv-kde4.list ADDRPMINC  will return a variable named 
 $ADDRPMINC containing all the (recursive) includes for the top level package file. This make it much easier to identify and manipulate 
 the data required from the lists. This has the advantage that packages can be assembled from various sources and conveniently named 
-for identifications purposes. Note that these function require a change in shell options to work properly.
-The build process is managed by three additional functions. These functions all have a similar structure thir purpose being to 
+for identifications purposes. Note that these functions require a change in shell options to work properly.
+The build process is managed by three additional functions. These functions all have a similar structure their purpose being to 
 first assemble the build lists into two major variables the $INSTALL_LIST and the $REMOVE_LIST. The content of these lists vary 
 with the primary function invoked. The OmSpin function for example generates just an INSTALL_LIST for building a release iso 
-whereas the mkUserSpin function generates the $INSTALL_LIST AND $REMOVE_LIST from the chosen topen level file say omdv-kde4.list 
+whereas the mkUserSpin function generates the $INSTALL_LIST AND $REMOVE_LIST from the chosen top level file say omdv-kde4.list 
 and the users my.add file while the $REMOVE_LIST will derive its data from my.rmv file.
 
 Ultimately these function deliver data to the mkUpdateChroot function. This function takes the $INSTALL_LIST and REMOVE_LIST as its
-input variable (These data are position sensitive) dependent on the contents of the two variable and the external $REBUILD flag
+input variables (These data are position sensitive) dependent on the contents of the two variable and the external $REBUILD flag
 the appropriate command will be selected to add (re-create or remove) packages from the chroot. Note that removal of packages 
 is a special case requiring two commands. urpme will not allow the removal of some important base packages so "rpm -e --nodeps" is
 first used to remove the primary files and then urpme --auto-orphans is used to remove the dependencies. 
@@ -40,10 +40,19 @@ When first run this function generates some reference checksums using the refere
 subsequent operations for the life of the chroot. Two checksums are generated an overall sum and a sum for each of the package lists.
 This data is used for two purposes; the overall sum is used to generate a global change flag $CHGFLAG. When set this flag indicates 
 to the rest of the build system that the files in the chroot require updating. Once the update is complete the second set of 
-checksums will be used to determina and create a list of the f iles that have changed.
+checksums will be used to determine and create a list of the files that have changed.
 A second function takes these file names and presents and generates a diff to serve as a permanent record (if required) of the chroots
 life. This can be extremely useful when trying to create new spins in an on the fly manner as new file lists can be contructed 
-from the diffs. This functionality is not yet complete.
+from the diffs.
 
 Would be developers should be aware of the very useful errorCatch function which can be called at various points to limit how far
-execution proceeds. Use this instead of exit otherwise you will be forever unmounting /proc /sys and friends.
+execution proceeds. Use this instead of exit when debugging otherwise you will be forever unmounting /proc /sys and friends.
+
+July 2017
+
+The latest set of changes bring a restored function to fetch the standard set of iso build package lists from the GitHub repository.
+This makes the script version independent. Currently the function follows the release version when used with abf.
+The function and control logic are all enclosed in a mail function which is invoked from the nd of the file thus all functions are read
+prior to executing the script this simplifies the control login snd makes understanding the execution of the program easier to grasp.
+The diff recording function now operates correctly. Urpmi debugging has been seperated from normal debugging 
+It is now possible to run in ABF mode for testing and if necessary fixing to do this requires the --debug option to be passed to the ecript.

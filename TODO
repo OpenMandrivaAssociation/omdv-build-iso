@@ -2,8 +2,8 @@ This is a TODO list.
 
 1. Add support for overlayfs
 2. Create specific $TYPE settings as external sh script
-3. Add feature to build ISO based on currently used OMV system -> omdv-iso.build.sh myiso name.iso ? Done 
-   but the name can't be chosen yet.
+3. Add feature to build ISO based on currently used OMV system -> omdv-iso.build.sh myiso name.iso ?  
+   but the name can't be chosen yet. You can now choose a name building the current system is not yet possible.
 4. What else ?
 5. Add the ability to retain downloaded rpms so that mods and rebuilds can be done quickly when 
    bandwidth is limited or debugging is required. Done
@@ -14,6 +14,9 @@ This is a TODO list.
 10: Diffs for user session Done
 11: Investigate using solvedb as suggested by jbj
 12; Make update chroot repos into a separate function
-11: Add the ability to definitively call abf-downloads for the package lists.  (Perhaps a debug function)
+11: Add the ability to definitively call abf-downloads for the package lists.  (Perhaps a debug function) Done get them from GitHub
 12: Add flag to set the number of acceptable rpm installation failures for parallels only for user mode
-   Perhaps combined with apper and packagit
+    Perhaps combined with apper and packagit
+13: Improve and consolidate logging. Mostly done needs review
+14. Move functions to separate file sources from the main one. They are stored in the same file but behave as is they are sourced.
+15. Try to build a multi-arch i686 EFI spin 

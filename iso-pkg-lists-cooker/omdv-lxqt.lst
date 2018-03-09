@@ -20,7 +20,7 @@
 # Desktop Specifics
 task-lxqt
 ark
-cantata
+#cantata
 lximage-qt
 meteo-qt
 networkmanager-applet
@@ -63,7 +63,7 @@ trojita
 # Needed Task/Meta Packages
 task-pulseaudio
 
-task-printing
+#task-printing
 # printing
 task-printing-scanning
 hplip-gui #printer
@@ -123,6 +123,10 @@ sasl-plug-gssapi
 
 openssh-server #server
 samba-server #server
+
+# Add breeze then for openbox startup
+
+breeze-gtk
 
 # special featured software
 #oma-welcome
