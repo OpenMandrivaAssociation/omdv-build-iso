@@ -372,7 +372,7 @@ FilterLogs
 ########################
 
 SaveDaTa() {
-printf %s\n "Saving config data"
+printf "%s\n" "Saving config data"
 if [ -n "$KEEP" ]; then
 mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$UHOME/iso-pkg-lists-${TREE,,}"
 mv "$WORKDIR/sessrec" "$UHOME/sessrec"
@@ -381,13 +381,13 @@ mv "$WORKDIR/dracut" "$UHOME/dracut"
 mv "$WORKDIR/grub2" "$UHOME/grub2"
 mv "$WORKDIR/boot" "$UHOME/boot"
 if [ -n "$REBUILD" ]; then
-printf %s\n "-> Saving rpms for rebuild"
+printf "%s\n" "-> Saving rpms for rebuild"
 $SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$UHOME/RPMS"
 fi
 }
 
 RestoreDaTa() {
-printf %s\n  "->    Cleaning WORKDIR"
+printf "%s\n"  "->    Cleaning WORKDIR"
 # Re-creates the WORKDIR and populates it with saved data
 # In the case of a rebuild the $CHRROTNAME dir is recreated and the saved rpm cache is restored to it..
 $SUDO rm -rf "$WORKDIR"
@@ -401,7 +401,7 @@ mv "$UHOME/dracut" "$WORKDIR/dracut"
 mv "$UHOME/grub2" "$WORKDIR/grub2"
 mv "$UHOME/boot" "$WORKDIR/boot"
 if [ -n "$REBUILD" ]; then
-printf %s\n "-> Restoring rpms for new build"
+printf "%s\n" "-> Restoring rpms for new build"
 #Remake needed directories
 $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
 $SUDO mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
@@ -516,13 +516,12 @@ usage_help() {
         printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
         printf "%s\n" "--devmode Enables some developer aids see the README"
         printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
-
         printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
         printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
         printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
         printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
         printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
-        printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given
+        printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given"
         printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
         printf "%s\n" " "
         printf "%s\n" "For example:"
@@ -664,7 +663,7 @@ getPkgList() {
             printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
             # download iso packages lists from https://github.com
             # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-            if [ -n "ISO_VER" ]; then
+            if [ -n "$ISO_VER" ]; then
                 GIT_BRNCH="$ISO_VER"
             elif [ ${TREE,,} == "cooker" ]; then
                 GIT_BRNCH=master
@@ -1762,7 +1761,7 @@ EOF
 # (tpg) enable services based on preset files from systemd and others
     UNIT_DIR="$CHROOTNAME"/lib/systemd/system
     if [ -f "$UNIT_DIR-preset/90-default.preset" ]; then
-	PRESETS=($UNIT_DIR-preset/*.preset)
+	PRESETS=("$UNIT_DIR-preset"/*.preset)
 	for file in "${PRESETS[@]}"; do
 	    while read line; do
 		if [[ -n "$line" && "$line" != [[:blank:]#]* && "${line,,}" = [[:blank:]enable]* ]]; then
