@@ -247,7 +247,6 @@ else
 WHO="$SUDO_USER"
 UHOME=/home/"$WHO"
 fi
-
 allowedOptions
 setWorkdir
 
@@ -1845,7 +1844,7 @@ EOF
 	sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 	if [ "${TYPE,,}" = "plasma" ]; then
-	    sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.con"f
+	    sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 	    sed -i -e "s/.*desktopFile:.*/desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 	fi
 
@@ -2056,7 +2055,7 @@ buildIso() {
     fi
 
     if [ ! -x /usr/bin/xorriso ]; then
-	printf "%s/n" "-> xorriso does not exists. Exiting."
+	printf "%s\n" "-> xorriso does not exists. Exiting."
 	errorCatch
     fi
 
