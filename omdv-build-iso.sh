@@ -9,6 +9,8 @@
 # Modified on 2016 by: Colin Close <itchka@compuserve.com>
 # Modified on 2017 by: Colin Close <itchka@compuserve.com>
 # Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
+# April 2018 Major Revision to support the use of the 
+# dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
 
 # This tool is licensed under GPL license
 #    This program is free software; you can redistribute it and/or modify
@@ -34,7 +36,7 @@
 # Add user controlled variable for setting number of failures tolerated
 
 # DONE Add choice of xargs or parallel for ABF builds
-# DONE buffer standards out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
+# DONE buffer standard out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
 
 
 main() {
@@ -623,18 +625,23 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 }
 
 updateSystem() {
-printf "%s\n" "$WORKDIR"
+# The only way to ensure dnf updates it's metadata seems to be to erase it first
+# So the equivalent to urpmi --auto-update is to run "sudo dnf clean metadata
+# Remember it's the local system we are updateing here not the chroot
+# The next time dnf is run the metadata is update before running the real command/
+    
+	$SUDO dnf clean metadata
 
-	$SUDO urpmq --list-url
-	$SUDO urpmi.update -a
 
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
-    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+#    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+    $SUDO dnf --nogpgcheck ${RPM-LIST}
 	echo "-> Updating rpms files inside system environment"
-	$SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+
+#	$SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
 
     if [ "$IN_ABF" = "0" ]; then
         if [ ! -d "$WORKDIR/dracut" ]; then
@@ -1111,6 +1118,77 @@ mkUpdateChroot() {
  #       rm -f "$WORKDIR/install.log"
 }
 
+InstallRepos() {
+# This function fetches templates frpom the main OpenMandriva GitHub repo and installs it in the chroot. 
+# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. 
+# First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot.
+# Currently the github repo has only a master branch we need to have a master and a release branch. For the time being we will remove the unnecessary files.
+
+if [ $GIT_BRNCH == "master" ]; then
+    EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
+else 
+    EXCLUDE_LIST="cooker-main-repo cooker-extrasect-repo cooker-main.srcrepo cooker-extrasect-srcrepo openmandriva-repos.spec"
+fi
+# If chroot exists and if we have --noclean then the repo files are not needed with exception of the
+# first time run with --noclean when they must be installed. If --rebuild is called they will have been
+# deleted so reinstall them. 
+# If the kernel hasn't been installed then it's a new chroot or a rebuild
+    if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
+	printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
+        if [ "$FREE" = "1" ]; then
+        wget -qO- https://github.com/OpenMandrivaAssociation/openmanriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
+        cd "$WORKDIR" || exit;
+        $SUDO rm -rf ${EXCLUDE_LIST}
+# At this point the repo template source files are in the $WORKDIR
+# There are four of them as shown in the EXCLUDE_LIST above
+# The files have replaceable variables for setting the ARCHES
+# Currently the repo urls point at abf-downloads this is ok for iso builds but what to do when we need mirror lists? 
+# Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
+# Also need to provide for a local repo so...
+
+#for REP in ${TREE,,}-main-repo ${TREE,,}-extrasect-repo ${TREE,,}-main-srcrepo ${TREE,,}-extrasect-srcrepo
+
+if [ "$EXTARCH" == "x86_64" ]; then
+MULTI="x86_64 i686"
+else
+MULTI="$EXTARCH"
+fi
+#if [ ${TREE,,} == "cooker" ]; then
+#REPTYPE=
+
+for A in "$MULTI" ;do
+    for REPTYPE in contrib nonfree restricted main; do
+        if [ $REPTYPE != "main" ] && [ "$A" != "$EXTARCH" ]; then
+            install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$EXTARCH".repo
+            sed -e "s/enabled=1/enabled=0/g" -i %{buildroot}%{_sysconfdir}/yum.repos.d/*%{secondary_distarch}*.repo
+        else
+        install $WORKDIR/${TREE,,}-main-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
+    done
+    sed -e "s/@DIST_ARCH@/${A}/g" -i "$CHROOTDIR"/etc/yum.repos.d/*${A}*.repo
+done
+
+sed -e "s/@DIST_SECTION@/nonfree/g" \
+    -e "s/@DIST_SECTION_NAME@/Nonfree/g" \
+    -i "$CHROOTDIR"/etc/yum.repos.d/*nonfree*${EXTARCH}*.repo
+
+sed -e "s/@DIST_SECTION@/restricted/g" \
+    -e "s/@DIST_SECTION_NAME@/Restricted/g" \
+    -i $CHROOTDIR/etc/yum.repos.d/*restricted*${EXTARCH}*.repo
+
+sed -e "s/@DIST_SECTION@/contrib/g" \
+    -e "s/@DIST_SECTION_NAME@/Contrib/g" \
+    -i "$CHROOTDIR"/etc/yum.repos.d/*contrib*${EXTARCH}*.repo
+
+if [ "$FREE" == "1" ]; then    
+    
+                if [ -n "$TESTREPO" ]; then
+                    install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-testing-"$EXTARCH".repo
+                fi
+        if [ -n "$TESTREPO" ]; then
+        install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-testing-"$EXTARCH".repo
+        fi     
+        
+        
 createChroot() {
 # Usage: createChroot packages.lst /target/dir
 # Creates a chroot environment with all packages in the packages.lst
@@ -1141,6 +1219,11 @@ if [ "$CHGFLAG" != "1" ]; then
 	fi
 fi
 
+#BREAK THIS OUT TO A FUNCTION. GET THE REPO DATA FROM GITHUB DIRECTLY DON'T USE THE RPM
+ EXCLUDE_LIST=""
+        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
+        cd "$WORKDIR" || exit;
+        $SUDO rm -rf ${EXCLUDE_LIST}
 # If chroot exists and if we have --noclean then the repo files are not needed with exception of the
 # first time run with --noclean when they must be installed. If --rebuild is called they will have been
 # deleted so reinstall them. 
@@ -1149,7 +1232,7 @@ echo ${TREE,,}
     printf "%s" "$REPOPATH"
 # If the kernel hasn't been installed then it's a new chroot or a rebuild
     if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
-	printf "%s\n" "-> Adding urpmi repository $REPOPATH into $CHROOTNAME" " "
+	printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
         if [ "$FREE" = "0" ]; then
         $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
         else
