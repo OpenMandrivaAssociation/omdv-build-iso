@@ -1146,8 +1146,6 @@ fi
 # Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
 # Also need to provide for a local repo so...
 
-#for REP in ${TREE,,}-main-repo ${TREE,,}-extrasect-repo ${TREE,,}-main-srcrepo ${TREE,,}-extrasect-srcrepo
-
 if [ "$EXTARCH" == "x86_64" ]; then
 MULTI="x86_64 i686"
 else
@@ -1160,7 +1158,9 @@ for A in "$MULTI" ;do
     for REPTYPE in contrib nonfree restricted main; do
         if [ $REPTYPE != "main" ] && [ "$A" != "$EXTARCH" ]; then
             install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$EXTARCH".repo
-            sed -e "s/enabled=1/enabled=0/g" -i %{buildroot}%{_sysconfdir}/yum.repos.d/*%{secondary_distarch}*.repo
+            if [ "$A" == "i686" ]; then
+            sed -e "s/enabled=1/enabled=0/g" -i "$CHROOTDIR"/etc/yum.repos.d/*"$A"*.repo
+            fi
         else
         install $WORKDIR/${TREE,,}-main-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
     done
@@ -1179,14 +1179,11 @@ sed -e "s/@DIST_SECTION@/contrib/g" \
     -e "s/@DIST_SECTION_NAME@/Contrib/g" \
     -i "$CHROOTDIR"/etc/yum.repos.d/*contrib*${EXTARCH}*.repo
 
-if [ "$FREE" == "1" ]; then    
+#if [ "$FREE" == "1" ]; then    
     
-                if [ -n "$TESTREPO" ]; then
-                    install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-testing-"$EXTARCH".repo
-                fi
-        if [ -n "$TESTREPO" ]; then
-        install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-testing-"$EXTARCH".repo
-        fi     
+if [ -n "$TESTREPO" ]; then
+awk '/Jack/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
+fi     
         
         
 createChroot() {
