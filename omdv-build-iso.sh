@@ -249,8 +249,7 @@ else
 WHO="$SUDO_USER"
 UHOME=/home/"$WHO"
 fi
-allowedOptions
-setWorkdir
+
 
 # default definitions
 DIST=omdv
@@ -259,6 +258,7 @@ DIST=omdv
 [ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
 [ -z "${COMPTYPE}" ] && COMPTYPE=zstd
+[ -z "${MAXERRORS}" ] && MAXERRORS=1
 if [[ ( "$IN_ABF" == "1"  &&  -n "$DEBUG" )  ||  "$IN_ABF" == "0" ]]; then
     if [ -z "$NOCLEAN" ]; then
     [ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
@@ -268,10 +268,12 @@ if [[ ( "$IN_ABF" == "1"  &&  -n "$DEBUG" )  ||  "$IN_ABF" == "0" ]]; then
     BUILD_ID=$(cat "$WORKDIR"/sessrec/.build_id)
     fi
 fi
-
 # always build free ISO
 FREE=1
 LOGDIR="."
+
+allowedOptions
+setWorkdir
 
 # User mode allows three modes of operation.
 # All user modes rely on the script being run with no user options to generate  the initial chroot.
@@ -284,14 +286,6 @@ LOGDIR="."
 # For all modes any changes made to the pkg lists are implemented and recorded
 # User mode also generates a series of diffs as a record of the multiple sessions.
 # The --keep option allow these to be retained for subsequent sessions
-
-#if [[ "$IN_ABF" == "0" && -n "$KEEP" && -d "$WORKDIR/sessrec" ]]; then
-#    $SUDO mv "$WORKDIR/sessrec" "$UHOME"
-#    printf "%s\n" "-> Retaining your session records"
-#fi
-
-
-# MIGHT BE A GOOD IDEA TO CREATE A FUNCTION "SAVE DATA" TO MAKE BELOW MOR MANAGABLE.
 
 if [[ "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" && -z "$NOCLEAN" ]]; then
 RemkWorkDir
@@ -309,11 +303,9 @@ fi
 if [[ "$IN_ABF" == "0" && -n "$REBUILD" && -d "$WORKDIR" ]]; then
     if [ -n "$KEEP" ]; then
     SaveDaTa
-    RestoreDaTa    
+    RestoreDaTa 
     fi
-#Remake needed directories
-fi
-if [ ! -d "$WORKDIR" ]; then
+elif [ ! -d "$WORKDIR" ]; then
   printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
    "-> You must run  your command with the --noclean option set to create something to rebuild."
   exit 1
@@ -371,6 +363,132 @@ FilterLogs
 ########################
 #   Start functions    #
 ########################
+usage_help() {
+
+    if [[ -z "$EXTARCH" && -z "$TREE" && -z "$VERSION" && -z "$RELEASE_ID" && -z "$TYPE" && -z "$DISPLAYMANAGER" ]]; then
+	printf "%s\n" "Please run script with arguments"
+	printf "%s\n" "usage $0 [options]"
+        printf "%s\n" "general options:"
+        printf "%s\n" "--arch= Architecture of packages: i586, x86_64"
+        printf "%s\n" "--tree= Branch of software repository: cooker, lx3, openmandriva2014.0"
+        printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
+        printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
+        printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
+        printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
+        printf "%s\n" "--workdir= Set directory where ISO will be build"
+        printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
+        printf "%s\n" "--debug Enable debug output. This option also allows ABF=1 to be used loacally for testing"
+        printf "%s\n" "--urpmi-debug Enable urpmi debugging output"
+        printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
+        printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
+        printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
+        printf "%s\n" "--devmode Enables some developer aids see the README"
+        printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
+        printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
+        printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
+        printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
+        printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
+        printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
+        printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given"
+        printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
+        printf "%s\n" " "
+        printf "%s\n" "For example:"
+        printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
+        printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
+        printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
+        printf "%s\n" "Exiting."
+	exit 1
+    else
+	return 0
+    fi
+}
+
+allowedOptions() {
+if [ "$ABF" == "1" ]; then
+    IN_ABF=1
+    printf "%s\n" "-> We are in ABF (https://abf.openmandriva.org) environment"
+    if [ -n "$NOCLEAN" ] && [ -n  "$DEBUG" ]; then
+    printf "%s\n" "-> using --noclean inside ABF DEBUG instance"
+    elif [ -n "$NOCLEAN" ]; then
+	printf "%s\n" "-> You cannot use --noclean inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+# Allow the use of --workdir if in debug mode
+    if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n  "$DEBUG" ]; then
+    printf "%s\n" "-> using --workdir inside ABF DEBUG instance"
+    elif  [ -n  "$WORKDIR" ]; then
+	printf "%s\n" "-> You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+    if [ -n "$KEEP" ]; then
+	printf "%s\n" "-> You cannot use --keep inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+    if	[ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
+	printf "%s\n" "-> You cannot use --noclean and --rebuild together"
+	exit 1
+    fi
+    if	[ -n "$REBUILD" ]; then
+	printf "%s\n" "-> You cannot use --rebuild inside ABF (https://abf.openmandriva.org)"
+	exit 1
+    fi
+else
+    IN_ABF=0
+fi
+printf  "%s\n" "In abf = $IN_ABF"
+}
+
+setWorkdir() {
+# Set the $WORKDIR
+# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
+# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
+# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and 
+# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
+
+if [[ "$IN_ABF" == "1"  &&  ! -d '/home/omv/docker-iso-worker'  &&  -z "$DEBUG" ]]; then
+printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
+exit 1
+elif [[  "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" ]]; then
+printf "%s\n" "-> Debugging ABF build locally"
+#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
+# Avoid setting the usual ABF WORKDIR
+# if WORKDIR is not defined then set a default'
+    if [ -z "$WORKDIR" ]; then
+    echo "$SUDOVAR"
+    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+    printf "%s\n" "-> The build directory is $WORKDIR"
+    fi
+fi
+
+if [[ "$IN_ABF" == "1" && -d '/home/omv/docker-iso-worker' ]]; then
+    # We really are in ABF
+    WORKDIR=$(realpath "$(dirname "$0")")
+fi
+if [ "$IN_ABF" == "0" ]; then
+    if [ -z "$WORKDIR" ]; then
+    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+    fi
+fi
+printf "%s\n" "-> The work directory is $WORKDIR"
+# Define these earlier so that files can be moved easily for the various save options
+# this is where rpms are installed
+CHROOTNAME="$WORKDIR/BASE"
+# this is where ISO files are created
+ISOROOTNAME="$WORKDIR/ISO"
+}
+
+RemkWorkDir() {
+echo "Remake dirs"
+$SUDO rm -rf "$WORKDIR"
+$SUDO mkdir -p "$WORKDIR"
+# Create the mount points
+$SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
+#Create the ISO directory
+$SUDO mkdir -p "$ISOROOTNAME"
+if [ "$IN_ABF" == "0" ]; then
+$SUDO touch "$WORKDIR/.new"
+fi
+}
 
 SaveDaTa() {
 printf "%s\n" "Saving config data"
@@ -412,129 +530,13 @@ fi
 $SUDO touch "$WORKDIR/.new"
 }
 
-RemkWorkDir() {
-echo "Remake dirs"
-$SUDO rm -rf "$WORKDIR"
-$SUDO mkdir -p "$WORKDIR"
-if [ "$IN_ABF" == "0" ]; then
-$SUDO touch "$WORKDIR/.new"
-fi
-}
 
 
-setWorkdir() {
-# Set the $WORKDIR
-# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
-# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
-# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and 
-# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
 
-if [[ "$IN_ABF" == "1"  &&  ! -d '/home/omv/docker-iso-worker'  &&  -z "$DEBUG" ]]; then
-printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
-exit 1
-elif [[  "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" ]]; then
-printf "%s\n" "-> Debugging ABF build locally"
-#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
-# Avoid setting the usual ABF WORKDIR
-# if WORKDIR is not defined then set a default'
-    if [ -z "$WORKDIR" ]; then
-    echo "$SUDOVAR"
-    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-    printf "%s\n" "-> The build directory is $WORKDIR"
-    fi
-fi
 
-if [[ "$IN_ABF" == "1" && -d '/home/omv/docker-iso-worker' ]]; then
-    # We really are in ABF
-    WORKDIR=$(realpath "$(dirname "$0")")
-fi
-if [ "$IN_ABF" == "0" ]; then
-    if [ -z "$WORKDIR" ]; then
-    WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-    fi
-fi
-printf "%s\n" "-> The work directory is $WORKDIR"
-# Define these earlier so that files can be moved easily for the various save options
-# this is where rpms are installed
-CHROOTNAME="$WORKDIR/BASE"
-# this is where ISO files are created
-ISOROOTNAME="$WORKDIR/ISO"
-}
 
-allowedOptions() {
-if [ "$ABF" == "1" ]; then
-    IN_ABF=1
-    printf "%s\n" "-> We are in ABF (https://abf.openmandriva.org) environment"
-    if [ -n "$NOCLEAN" ] && [ -n  "$DEBUG" ]; then
-    printf "%s\n" "-> using --noclean inside ABF DEBUG instance"
-    elif [ -n "$NOCLEAN" ]; then
-	printf "%s\n" "-> You cannot use --noclean inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-# Allow the use of --workdir if in debug mode
-    if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n  "$DEBUG" ]; then
-    printf "%s\n" "-> using --workdir inside ABF DEBUG instance"
-    elif  [ -n  "$WORKDIR" ]; then
-	printf "%s\n" "-> You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-    if [ -n "$KEEP" ]; then
-	printf "%s\n" "-> You cannot use --keep inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-    if	[ -n "$NOCLEAN" ] && [ -n "$REBUILD" ]; then
-	printf "%s\n" "-> You cannot use --noclean and --rebuild together"
-	exit 1
-    fi
-    if	[ -n "$REBUILD" ]; then
-	printf "%s\n" "-> You cannot use --rebuild inside ABF (https://abf.openmandriva.org)"
-	exit 1
-    fi
-else
-    IN_ABF=0
-fi
-printf  "%s\n" "In abf = $IN_ABF"
-}
 
-usage_help() {
 
-    if [[ -z "$EXTARCH" && -z "$TREE" && -z "$VERSION" && -z "$RELEASE_ID" && -z "$TYPE" && -z "$DISPLAYMANAGER" ]]; then
-	printf "%s\n" "Please run script with arguments"
-	printf "%s\n" "usage $0 [options]"
-        printf "%s\n" "general options:"
-        printf "%s\n" "--arch= Architecture of packages: i586, x86_64"
-        printf "%s\n" "--tree= Branch of software repository: cooker, lx3, openmandriva2014.0"
-        printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
-        printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
-        printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
-        printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
-        printf "%s\n" "--workdir= Set directory where ISO will be build"
-        printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
-        printf "%s\n" "--debug Enable debug output. This option also allows ABF=1 to be used loacally for testing"
-        printf "%s\n" "--urpmi-debug Enable urpmi debugging output"
-        printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
-        printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
-        printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
-        printf "%s\n" "--devmode Enables some developer aids see the README"
-        printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
-        printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
-        printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
-        printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
-        printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
-        printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
-        printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given"
-        printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
-        printf "%s\n" " "
-        printf "%s\n" "For example:"
-        printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
-        printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
-        printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
-        printf "%s\n" "Exiting."
-	exit 1
-    else
-	return 0
-    fi
-}
 
 umountAll() {
     printf "%s\n" "-> Unmounting all."
@@ -632,12 +634,11 @@ updateSystem() {
     
 	$SUDO dnf clean metadata
 
-
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
-#    $SUDO urpmi --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --no-verify-rpm --ignorearch ${RPM_LIST} --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
+#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
     $SUDO dnf --nogpgcheck ${RPM-LIST}
 	echo "-> Updating rpms files inside system environment"
 
@@ -952,9 +953,6 @@ mkOmSpin() {
 #mkRpmDb() {
 #Use $INSTALL_LIST to create db from synthesis hdlist.
 
-
-
-
 updateUserSpin() {
 # updateUserSpin [main install file path] i.e. path/omdv-kde4.lst
 # Sets two variables
@@ -1119,10 +1117,8 @@ mkUpdateChroot() {
 }
 
 InstallRepos() {
-# This function fetches templates frpom the main OpenMandriva GitHub repo and installs it in the chroot. 
-# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. 
-# First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot.
-# Currently the github repo has only a master branch we need to have a master and a release branch. For the time being we will remove the unnecessary files.
+# This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
+# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
 
 if [ $GIT_BRNCH == "master" ]; then
     EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
@@ -1139,10 +1135,9 @@ fi
         wget -qO- https://github.com/OpenMandrivaAssociation/openmanriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
-# At this point the repo template source files are in the $WORKDIR
-# There are four of them as shown in the EXCLUDE_LIST above
-# The files have replaceable variables for setting the ARCHES
-# Currently the repo urls point at abf-downloads this is ok for iso builds but what to do when we need mirror lists? 
+        fi
+    fi
+# At this point the repo template source files are in the $WORKDIR. The files have replaceable variables for setting the ARCHES. Currently the repo urls point at abf-downloads this is ok for iso builds. 
 # Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
 # Also need to provide for a local repo so...
 
@@ -1151,8 +1146,6 @@ MULTI="x86_64 i686"
 else
 MULTI="$EXTARCH"
 fi
-#if [ ${TREE,,} == "cooker" ]; then
-#REPTYPE=
 
 for A in "$MULTI" ;do
     for REPTYPE in contrib nonfree restricted main; do
@@ -1163,6 +1156,7 @@ for A in "$MULTI" ;do
             fi
         else
         install $WORKDIR/${TREE,,}-main-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
+        fi
     done
     sed -e "s/@DIST_ARCH@/${A}/g" -i "$CHROOTDIR"/etc/yum.repos.d/*${A}*.repo
 done
@@ -1182,8 +1176,12 @@ sed -e "s/@DIST_SECTION@/contrib/g" \
 #if [ "$FREE" == "1" ]; then    
     
 if [ -n "$TESTREPO" ]; then
-awk '/Jack/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
-fi     
+awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
+fi 
+if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcach is retained
+echo "keepcache=1" $CHROOTDIR/etc/dnf/dnf.conf
+fi
+}
         
         
 createChroot() {
@@ -1196,15 +1194,10 @@ if [ "$CHGFLAG" != "1" ]; then
         printf "%s\n" "-> Creating chroot $CHROOTNAME" 
     else 
         printf "%s\n" "-> Updating existing chroot $CHROOTNAME"
-#	elif [ -z "$NOCLEAN" ] && [ -e "$CHROOTNAME" ]; then
-#	    echo $'\n'
-#	    echo "-> Cleaning existing chroot $CHROOTNAME"
-#	    $SUDO rm -rf "$CHROOTNAME"
     fi
-# Make sure /proc, /sys and friends are mounted so %post scripts can use them
-# Note that below mkdir -p creates $WORKDIR/BASE 
+# Make sure /proc, /sys and friends can be mounted so %post scripts can use them
     $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
-
+    
     if [ -n "$REBUILD" ]; then
 	    ANYRPMS=$(find "$CHROOTNAME/var/cache/urpmi/rpms/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
         if [ -z "$ANYRPMS" ]; then
@@ -1216,45 +1209,10 @@ if [ "$CHGFLAG" != "1" ]; then
 	fi
 fi
 
-#BREAK THIS OUT TO A FUNCTION. GET THE REPO DATA FROM GITHUB DIRECTLY DON'T USE THE RPM
- EXCLUDE_LIST=""
-        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
-        cd "$WORKDIR" || exit;
-        $SUDO rm -rf ${EXCLUDE_LIST}
-# If chroot exists and if we have --noclean then the repo files are not needed with exception of the
-# first time run with --noclean when they must be installed. If --rebuild is called they will have been
-# deleted so reinstall them. 
-echo ${TREE,,}
-    REPOPATH="http://abf-downloads.openmandriva.org/${TREE,,}/repository/$EXTARCH/"
-    printf "%s" "$REPOPATH"
-# If the kernel hasn't been installed then it's a new chroot or a rebuild
-    if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
-	printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
-        if [ "$FREE" = "0" ]; then
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" --distrib $REPOPATH
-        else
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Main" $REPOPATH/main/release
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Contrib" $REPOPATH/contrib/release
-        # This one is needed to grab firmwares
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-free" $REPOPATH/non-free/release
-            # and this one for the users local stuff 
-#        $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "local" file://home/colin/Development/fixuprepo
-        fi
-        if [ "${TREE,,}" != "cooker" ]; then
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainUpdates" $REPOPATH/main/updates
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "ContribUpdates" $REPOPATH/contrib/updates
-    # This one is needed to grab firmwares
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "Non-freeUpdates" $REPOPATH/non-free/updates
-    # and this one for the users local stuff 
-#        $SUDO urpmi.addmedia --urpmi-root "$CHROOTNAME" "local" file://home/colin/Development/fixuprepo
-
-        fi
-	fi
-
 # Update media
-     if [ -n "$TESTREPO" ]; then
-        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-     fi
+#     if [ -n "$TESTREPO" ]; then
+#        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
+#     fi
     $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
         printf "%s -> Updating urpmi repositories in $CHROOTNAME"
