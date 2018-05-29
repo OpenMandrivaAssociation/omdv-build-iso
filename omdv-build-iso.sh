@@ -289,7 +289,7 @@ setWorkdir
 
 if [[ "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" && -z "$NOCLEAN" ]]; then
 RemkWorkDir
-elif [[ "$IN_ABF" == "0" && -z "$NOCLEAN" && -z "$REBUILD" && -d "$WORKDIR" ]]; then
+elif [[ "$IN_ABF" == "0" && ! -n "$NOCLEAN" && ! -n "$REBUILD" && -d "$WORKDIR" ]]; then
     if [ -n "$KEEP" ]; then
     SaveDaTa
     RestoreDaTa
@@ -305,9 +305,11 @@ if [[ "$IN_ABF" == "0" && -n "$REBUILD" && -d "$WORKDIR" ]]; then
     SaveDaTa
     RestoreDaTa 
     fi
-elif [ ! -d "$WORKDIR" ]; then
+elif [ ! -d "$WORKDIR" ] && [ -n "$REBUILD" ]; then
+#THIS TEST IS BROKEN BECAUSE IT DOES NOT DISCRIMINATE WHETHER REBUILD IS SET AND THUS ALWAYS EXITS
   printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
    "-> You must run  your command with the --noclean option set to create something to rebuild."
+  printf '%s' "rb_$REBUILD" "nc_$NOCLEAN" "Kp_$KEEP" "wkdir_$WORKDIR"
   exit 1
 fi
 
@@ -343,8 +345,9 @@ $SUDO mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
 
 mkISOLabel
 showInfo
-updateSystem
 getPkgList
+InstallRepos
+updateSystem
 localMd5Change #Calls doDiff
 createChroot
 createInitrd
@@ -671,11 +674,11 @@ getPkgList() {
             # download iso packages lists from https://github.com
             # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
             if [ -n "$ISO_VER" ]; then
-                GIT_BRNCH="$ISO_VER"
+                export GIT_BRNCH="$ISO_VER"
             elif [ ${TREE,,} == "cooker" ]; then
-                GIT_BRNCH=master
+                export GIT_BRNCH=master
             else 
-                GIT_BRNCH=${TREE,,}
+                export GIT_BRNCH=${TREE,,}
                 # ISO_VER defaults to user build entry
             fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
@@ -1084,7 +1087,7 @@ mkUpdateChroot() {
     elif [ "$IN_ABF" == "1" ]; then
     #printf "%s\n" "-> Installing packages at ABF"
         if [ -n "$PLLL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto | tee "$WORKDIR/urpmopt.log"
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf --noclean --installroot "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto | tee "$WORKDIR/urpmopt.log"
         else
         printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
         fi
@@ -1117,10 +1120,11 @@ mkUpdateChroot() {
 }
 
 InstallRepos() {
+set -x
 # This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
 # Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
 
-if [ $GIT_BRNCH == "master" ]; then
+if [ "$GIT_BRNCH" == "master" ]; then
     EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
 else 
     EXCLUDE_LIST="cooker-main-repo cooker-extrasect-repo cooker-main.srcrepo cooker-extrasect-srcrepo openmandriva-repos.spec"
@@ -1132,7 +1136,7 @@ fi
     if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
 	printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
         if [ "$FREE" = "1" ]; then
-        wget -qO- https://github.com/OpenMandrivaAssociation/openmanriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
+        wget -qO- https://github.com/OpenMandrivaAssociation/openmandriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         fi
@@ -1147,38 +1151,41 @@ else
 MULTI="$EXTARCH"
 fi
 
-for A in "$MULTI" ;do
+for A in $(echo "$MULTI") ; do
     for REPTYPE in contrib nonfree restricted main; do
-        if [ $REPTYPE != "main" ] && [ "$A" != "$EXTARCH" ]; then
-            install $WORKDIR/${TREE,,}-extrasect-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$EXTARCH".repo
+        if [ $REPTYPE != "main" ] && [ "$A" = "$EXTARCH" ]; then
+            $SUDO install -d -pm 0644 "$CHROOTNAME/etc/yum.repos.d/"
+            $SUDO cp  "$WORKDIR/${TREE,,}-extrasect-repo"  "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$EXTARCH".repo
             if [ "$A" == "i686" ]; then
-            sed -e "s/enabled=1/enabled=0/g" -i "$CHROOTDIR"/etc/yum.repos.d/*"$A"*.repo
+            sed -e "s/enabled=1/enabled=0/g" -i "$CHROOTNAME"/etc/yum.repos.d/"${TREE,,}-$REPTYPE-$A.repo"
             fi
         else
-        install $WORKDIR/${TREE,,}-main-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
+#        $SUDO install -d $WORKDIR/${TREE,,}-main-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
+        $SUDO cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
+#	mv "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-main-repo "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
         fi
     done
-    sed -e "s/@DIST_ARCH@/${A}/g" -i "$CHROOTDIR"/etc/yum.repos.d/*${A}*.repo
+    sed -e "s/@DIST_ARCH@/${A}/g" -i "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-${A}.repo
 done
 
 sed -e "s/@DIST_SECTION@/nonfree/g" \
     -e "s/@DIST_SECTION_NAME@/Nonfree/g" \
-    -i "$CHROOTDIR"/etc/yum.repos.d/*nonfree*${EXTARCH}*.repo
+    -i "$CHROOTNAME"/etc/yum.repos.d/*nonfree*${EXTARCH}*.repo
 
 sed -e "s/@DIST_SECTION@/restricted/g" \
     -e "s/@DIST_SECTION_NAME@/Restricted/g" \
-    -i $CHROOTDIR/etc/yum.repos.d/*restricted*${EXTARCH}*.repo
+    -i $CHROOTNAME/etc/yum.repos.d/*restricted*${EXTARCH}*.repo
 
 sed -e "s/@DIST_SECTION@/contrib/g" \
     -e "s/@DIST_SECTION_NAME@/Contrib/g" \
-    -i "$CHROOTDIR"/etc/yum.repos.d/*contrib*${EXTARCH}*.repo
+    -i "$CHROOTNAME"/etc/yum.repos.d/*contrib*${EXTARCH}*.repo
 
 #if [ "$FREE" == "1" ]; then    
     
 if [ -n "$TESTREPO" ]; then
 awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
 fi 
-if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcach is retained
+if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
 echo "keepcache=1" $CHROOTDIR/etc/dnf/dnf.conf
 fi
 }
@@ -1213,7 +1220,7 @@ fi
 #     if [ -n "$TESTREPO" ]; then
 #        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 #     fi
-    $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" main
+    $SUDO dnf --refresh --distro-sync --installroot "$CHROOTNAME" main
     if [ "${TREE,,}" != "cooker" ]; then
         printf "%s -> Updating urpmi repositories in $CHROOTNAME"
         $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
@@ -1257,7 +1264,7 @@ fi
     # Update a noclean chroot with the contents of the user files my.add and my.rmv 
     elif [[ -n "$AUTO_UPDATE" && -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
         #$SUDO chroot "$CHROOTNAME"
-       $SUDO /usr/sbin/urpmi --auto-update --force --urpmi-root "$CHROOTNAME"
+       $SUDO /usr/bin/dnf --refresh --distro-sync  --installroot "$CHROOTNAME"
     elif 
     [[ -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
         updateUserSpin
