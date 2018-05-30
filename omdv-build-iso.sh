@@ -1150,35 +1150,29 @@ else
 MULTI="$EXTARCH"
 fi
 
-for A in $(echo "$MULTI") ; do
-    for REPTYPE in contrib nonfree restricted main; do
-        if [ $REPTYPE != "main" ] && [ "$A" = "$EXTARCH" ]; then
-            $SUDO install -d -pm 0644 "$CHROOTNAME/etc/yum.repos.d/"
-            $SUDO cp  "$WORKDIR/${TREE,,}-extrasect-repo"  "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$EXTARCH".repo
-            if [ "$A" == "i686" ]; then
-            sed -e "s/enabled=1/enabled=0/g" -i "$CHROOTNAME"/etc/yum.repos.d/"${TREE,,}-$REPTYPE-$A.repo"
-            fi
-#        else
-#        $SUDO cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$A.repo"
-        fi
-    set -x
-    sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$A.repo"
-    done
-#    set -x
-#    sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$A.repo"
+# Create location for repo files
+$SUDO install -d -pm 0644 "$CHROOTNAME/etc/yum.repos.d/"
+for A in $(echo "$MULTI"); do
+	$SUDO cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
+	sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
+done
+
+for REPTYPE in contrib nonfree restricted; do
+    $SUDO cp  "$WORKDIR/${TREE,,}-extrasect-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
+    sed -e "s/@DIST_ARCH@/$EXTARCH/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
 done
 
 sed -e "s/@DIST_SECTION@/nonfree/g" \
     -e "s/@DIST_SECTION_NAME@/Nonfree/g" \
-    -i "$CHROOTNAME"/etc/yum.repos.d/*nonfree*${EXTARCH}*.repo
+    -i "$CHROOTNAME"/etc/yum.repos.d/*nonfree*"$EXTARCH"*.repo
 
 sed -e "s/@DIST_SECTION@/restricted/g" \
     -e "s/@DIST_SECTION_NAME@/Restricted/g" \
-    -i $CHROOTNAME/etc/yum.repos.d/*restricted*${EXTARCH}*.repo
+    -i $CHROOTNAME/etc/yum.repos.d/*restricted*"$EXTARCH"*.repo
 
 sed -e "s/@DIST_SECTION@/contrib/g" \
     -e "s/@DIST_SECTION_NAME@/Contrib/g" \
-    -i "$CHROOTNAME"/etc/yum.repos.d/*contrib*${EXTARCH}*.repo
+    -i "$CHROOTNAME"/etc/yum.repos.d/*contrib*"$EXTARCH"*.repo
 
 #if [ "$FREE" == "1" ]; then    
     
