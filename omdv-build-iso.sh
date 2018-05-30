@@ -504,14 +504,14 @@ mv "$WORKDIR/grub2" "$UHOME/grub2"
 mv "$WORKDIR/boot" "$UHOME/boot"
 if [ -n "$REBUILD" ]; then
 printf "%s\n" "-> Saving rpms for rebuild"
-$SUDO mv "$CHROOTNAME/var/cache/urpmi/rpms" "$UHOME/RPMS"
+$SUDO mv "$CHROOTNAME/var/cache/dnf/" "$UHOME/RPMS"
 fi
 }
 
 RestoreDaTa() {
 printf "%s\n"  "->    Cleaning WORKDIR"
 # Re-creates the WORKDIR and populates it with saved data
-# In the case of a rebuild the $CHRROTNAME dir is recreated and the saved rpm cache is restored to it..
+# In the case of a rebuild the $CHROOTNAME dir is recreated and the saved rpm cache is restored to it..
 $SUDO rm -rf "$WORKDIR"
 $SUDO mkdir -p "$WORKDIR"
 if [ -n "$KEEP" ]; then
@@ -527,8 +527,8 @@ printf "%s\n" "-> Restoring rpms for new build"
 #Remake needed directories
 $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
 $SUDO mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
-$SUDO mkdir -p "$CHROOTNAME/var/cache/urpmi"
-$SUDO mv "$UHOME/RPMS" "$CHROOTNAME/var/cache/urpmi/rpms"
+$SUDO mkdir -p "$CHROOTNAME/var/cache/dnf"
+$SUDO mv "$UHOME/RPMS" "$CHROOTNAME/var/cache/dnf/"
 fi
 $SUDO touch "$WORKDIR/.new"
 }
@@ -642,7 +642,7 @@ updateSystem() {
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 #--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-    $SUDO dnf --nogpgcheck ${RPM-LIST}
+    $SUDO dnf install -y --nogpgcheck ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 
 #	$SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
@@ -1029,7 +1029,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto  | tee "$WORKDIR/urpmopt.log"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y  --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/urpmopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1039,10 +1039,10 @@ MyRmv() {
         if [ -n "$__remove_list" ]; then
             printf "%s" "-> Removing user specified rpms and orphans"
             # rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
-            printf '%s\n' "$__remove_list" | parallel --tty --halt now,fail=10 -P 1 $SUDO rpm -e -v --nodeps --noscripts --root "$CHROOTNAME"
+            # printf '%s\n' "$__remove_list" | parallel --tty --halt now,fail=10 -P 1 $SUDO rpm -e -v --nodeps --noscripts --root "$CHROOTNAME"
             #--dbpath "$CHROOTNAME/var/lib/rpm"       
             # This exposed a bug in urpme
-            $SUDO urpme --urpmi-root "$CHROOTNAME"  --auto --auto-orphans --force
+            $SUDO /usr/bin/dnf autoremove -y  --installroot "$CHROOTNAME" "$__remove_list" 
             #printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6  "$SUDO" urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
         else
             printf "%s\n" " " "-> No rpms need to be removed"
@@ -1087,9 +1087,9 @@ mkUpdateChroot() {
     elif [ "$IN_ABF" == "1" ]; then
     #printf "%s\n" "-> Installing packages at ABF"
         if [ -n "$PLLL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf --noclean --installroot "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --auto | tee "$WORKDIR/urpmopt.log"
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
         else
-        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/urpmi --noclean --urpmi-root "$CHROOTNAME" --download-all --no-suggests --fastunsafe --ignoresize --nolock --auto ${URPMI_DEBUG}
+        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/dnf  --nogpgcheck --installroot "$CHROOTNAME"   
         fi
    fi
 }
@@ -1120,7 +1120,6 @@ mkUpdateChroot() {
 }
 
 InstallRepos() {
-set -x
 # This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
 # Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
 
@@ -1159,13 +1158,14 @@ for A in $(echo "$MULTI") ; do
             if [ "$A" == "i686" ]; then
             sed -e "s/enabled=1/enabled=0/g" -i "$CHROOTNAME"/etc/yum.repos.d/"${TREE,,}-$REPTYPE-$A.repo"
             fi
-        else
-#        $SUDO install -d $WORKDIR/${TREE,,}-main-repo -pm 0644 "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
-        $SUDO cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
-#	mv "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-main-repo "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-"$A".repo
+#        else
+#        $SUDO cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$A.repo"
         fi
+    set -x
+    sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$A.repo"
     done
-    sed -e "s/@DIST_ARCH@/${A}/g" -i "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"$REPTYPE"-${A}.repo
+#    set -x
+#    sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$A.repo"
 done
 
 sed -e "s/@DIST_SECTION@/nonfree/g" \
