@@ -637,20 +637,21 @@ updateSystem() {
     # Can't use urpmi without installing repos
     # Use wget and rpm to install dnf and it's deps for the time being.
     # The following code compliments of bero (Bernhard Rozenkranzer)
-TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
-if ! [ -d "$TMPDIR" ]; then
+if [ "IN_ABF" == "1" ] && [ ! -f /usr/bin/dnf ]; then
+  TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
+    if ! [ -d "$TMPDIR" ]; then
         echo Install mktemp
         exit 1
-fi
-cd "$TMPDIR"
-ARCH=`uname -m`
-echo $ARCH |grep -qE "^arm" && ARCH=armv7hl
-echo $ARCH |grep -qE "i.86" && ARCH=i686
-if echo $ARCH |grep -q 64; then
+    fi
+  cd "$TMPDIR"
+  ARCH=`uname -m`
+  echo $ARCH |grep -qE "^arm" && ARCH=armv7hl
+  echo $ARCH |grep -qE "i.86" && ARCH=i686
+    if echo $ARCH |grep -q 64; then
         LIB=lib64
-else
+    else
         LIB=lib
-fi
+    fi
 #FIX ME BELOW MUST ALLOW FOR RELEASE SPINS
 PKGS=http://abf-downloads.openmandriva.org/cooker/repository/$ARCH/main/release/
 curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
@@ -665,7 +666,7 @@ for i in $PACKAGES; do
 done
 cd "$TMPDIR"
 rpm -Uvh --force --oldpackage --nodeps *.rpm
-
+fi
 #	$SUDO dnf clean metadata 
 
 	# List of packages that needs to be installed inside lxc-container and local machines
