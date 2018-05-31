@@ -663,6 +663,7 @@ updateSystem() {
 }
 
 getPkgList() {
+set -x
     # update iso-pkg-lists from GitHub if required
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
@@ -694,6 +695,7 @@ getPkgList() {
         errorCatch
         fi
     fi
+set +x
 }
 
 showInfo() {
