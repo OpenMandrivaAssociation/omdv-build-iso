@@ -1122,6 +1122,7 @@ mkUpdateChroot() {
 }
 
 InstallRepos() {
+set -x
 # This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
 # Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
 
@@ -1184,6 +1185,7 @@ fi
 if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
 echo "keepcache=1" $CHROOTDIR/etc/dnf/dnf.conf
 fi
+set -x
 }
         
         
