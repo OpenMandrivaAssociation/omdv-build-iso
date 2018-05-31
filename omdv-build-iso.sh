@@ -1151,7 +1151,7 @@ MULTI="$EXTARCH"
 fi
 
 # Create location for repo files
-$SUDO install -d -pm 0644 "$CHROOTNAME/etc/yum.repos.d/"
+$SUDO mkdir -p -m  0644 "$CHROOTNAME/etc/yum.repos.d/"
 for A in $(echo "$MULTI"); do
 	$SUDO cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
 	sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
