@@ -632,19 +632,48 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 }
 
 updateSystem() {
-# The only way to ensure dnf updates it's metadata seems to be to erase it first
-# So the equivalent to urpmi --auto-update is to run "sudo dnf clean metadata
 # Remember it's the local system we are updateing here not the chroot
-# The next time dnf is run the metadata is update before running the real command/
-    
-	$SUDO dnf clean metadata
+    # Currently no dnf in the builder
+    # Can't use urpmi without installing repos
+    # Use wget and rpm to install dnf and it's deps for the time being.
+    # The following code compliments of bero (Bernhard Rozenkranzer)
+TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
+if ! [ -d "$TMPDIR" ]; then
+        echo Install mktemp
+        exit 1
+fi
+cd "$TMPDIR"
+ARCH=`uname -m`
+echo $ARCH |grep -qE "^arm" && ARCH=armv7hl
+echo $ARCH |grep -qE "i.86" && ARCH=i686
+if echo $ARCH |grep -q 64; then
+        LIB=lib64
+else
+        LIB=lib
+fi
+#FIX ME BELOW MUST ALLOW FOR RELEASE SPINS
+PKGS=http://abf-downloads.openmandriva.org/cooker/repository/$ARCH/main/release/
+curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
+for i in $PACKAGES; do
+        P=`grep "^$i-[0-9].*" PACKAGES`
+        if [ "$?" != "0" ]; then
+                echo "Can't find cooker version of $i, please report"
+                exit 1
+        fi
+        wget $PKGS/$P
+done
+cd "$TMPDIR"
+rpm -Uvh --force --oldpackage --nodeps *.rpm
+
+#	$SUDO dnf clean metadata 
 
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 #--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-    $SUDO dnf install -y --nogpgcheck ${RPM_LIST}
+#    $SUDO dnf install --refresh -y --nogpgcheck ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 
 #	$SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
@@ -671,25 +700,26 @@ set -x
         if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
             mkdir -p "$WORKDIR/sessrec/base_lists/"
         fi
+        if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+            printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+            # download iso packages lists from https://github.com
+            # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+        fi
     fi
-#    if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-        printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-        # download iso packages lists from https://github.com
-        # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-        if [ -n "$ISO_VER" ]; then
-           export GIT_BRNCH="$ISO_VER"
-        elif [ ${TREE,,} == "cooker" ]; then
-            export GIT_BRNCH=master
-        else 
-            export GIT_BRNCH=${TREE,,}
-            # ISO_VER defaults to user build entry
-         fi
+    if [ -n "$ISO_VER" ]; then
+       export GIT_BRNCH="$ISO_VER"
+       elif [ ${TREE,,} == "cooker" ]; then
+       export GIT_BRNCH=master
+     else 
+        export GIT_BRNCH=${TREE,,}
+        # ISO_VER defaults to user build entry
+     fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
         wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
-#        fi
+        fi
         if [ ! -e "$FILELISTS" ]; then
         printf "%s\n" "-> $FILELISTS does not exist. Exiting"
         errorCatch
