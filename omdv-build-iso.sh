@@ -689,11 +689,11 @@ set -x
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
-        fi
+#        fi
         if [ ! -e "$FILELISTS" ]; then
         printf "%s\n" "-> $FILELISTS does not exist. Exiting"
         errorCatch
-#        fi
+        fi
 set +x
 }
 
