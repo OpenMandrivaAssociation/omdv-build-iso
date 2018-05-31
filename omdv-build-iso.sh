@@ -671,7 +671,7 @@ set -x
         if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
             mkdir -p "$WORKDIR/sessrec/base_lists/"
         fi
-
+    fi
         if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
             printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
             # download iso packages lists from https://github.com
@@ -694,7 +694,6 @@ set -x
         printf "%s\n" "-> $FILELISTS does not exist. Exiting"
         errorCatch
         fi
-    fi
 set +x
 }
 
