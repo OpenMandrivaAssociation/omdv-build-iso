@@ -667,23 +667,23 @@ set -x
     # update iso-pkg-lists from GitHub if required
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
-    if [[ ( "$IN_ABF" == "1" && -n "$DEBUG" ) || "$IN_ABF" == "0" ]]; then
+    if [  "$IN_ABF" == "0" ]; then
         if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
             mkdir -p "$WORKDIR/sessrec/base_lists/"
         fi
     fi
-        if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-            printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-            # download iso packages lists from https://github.com
-            # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-            if [ -n "$ISO_VER" ]; then
-                export GIT_BRNCH="$ISO_VER"
-            elif [ ${TREE,,} == "cooker" ]; then
-                export GIT_BRNCH=master
-            else 
-                export GIT_BRNCH=${TREE,,}
-                # ISO_VER defaults to user build entry
-            fi
+#    if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+        printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+        # download iso packages lists from https://github.com
+        # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+        if [ -n "$ISO_VER" ]; then
+           export GIT_BRNCH="$ISO_VER"
+        elif [ ${TREE,,} == "cooker" ]; then
+            export GIT_BRNCH=master
+        else 
+            export GIT_BRNCH=${TREE,,}
+            # ISO_VER defaults to user build entry
+         fi
         EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
         wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
@@ -693,7 +693,7 @@ set -x
         if [ ! -e "$FILELISTS" ]; then
         printf "%s\n" "-> $FILELISTS does not exist. Exiting"
         errorCatch
-        fi
+#        fi
 set +x
 }
 
