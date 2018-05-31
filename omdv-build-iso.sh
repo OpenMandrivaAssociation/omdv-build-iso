@@ -442,6 +442,7 @@ printf  "%s\n" "In abf = $IN_ABF"
 }
 
 setWorkdir() {
+set -x
 # Set the $WORKDIR
 # If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
 # To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
@@ -478,6 +479,7 @@ printf "%s\n" "-> The work directory is $WORKDIR"
 CHROOTNAME="$WORKDIR/BASE"
 # this is where ISO files are created
 ISOROOTNAME="$WORKDIR/ISO"
+set +x
 }
 
 RemkWorkDir() {
