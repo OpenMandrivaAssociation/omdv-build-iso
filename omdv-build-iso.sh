@@ -632,7 +632,7 @@ LABEL="$PRODUCT_ID.$EXTARCH"
 }
 
 updateSystem() {
-# Remember it's the local system we are updateing here not the chroot
+# Remember it's the local system we are updating here not the chroot
     # Currently no dnf in the builder
     # Can't use urpmi without installing repos
     # Use wget and rpm to install dnf and it's deps for the time being.
@@ -687,7 +687,7 @@ fi
             else
             printf "%s\n" "-> Your build lists have been retained" # Files already copied
         fi
-	fi
+    fi
 	# Make our directory writeable by current sudo user
 	$SUDO chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
 }
@@ -709,9 +709,9 @@ set -x
     fi
     if [ -n "$ISO_VER" ]; then
        export GIT_BRNCH="$ISO_VER"
-       elif [ ${TREE,,} == "cooker" ]; then
+    elif [ ${TREE,,} == "cooker" ]; then
        export GIT_BRNCH=master
-     else 
+    else 
         export GIT_BRNCH=${TREE,,}
         # ISO_VER defaults to user build entry
      fi
@@ -720,7 +720,6 @@ set -x
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
         cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
-        fi
         if [ ! -e "$FILELISTS" ]; then
         printf "%s\n" "-> $FILELISTS does not exist. Exiting"
         errorCatch
