@@ -627,10 +627,7 @@ updateSystem() {
     # Can't use urpmi without installing repos
     # Use wget and rpm to install dnf and it's deps for the time being.
     # The following code compliments of bero (Bernhard Rozenkranzer)
-set -x
-if [ "IN_ABF" == "1" ] && [ -f /usr/bin/dnf ]; then
-:
-else
+if [ "IN_ABF" == "0" ]; then
 TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
     if ! [ -d "$TMPDIR" ]; then
         echo Install mktemp
@@ -660,14 +657,14 @@ done
 cd "$TMPDIR"
 rpm -Uvh --force --oldpackage --nodeps *.rpm
 fi
-#	$SUDO dnf clean metadata 
+	$SUDO dnf clean metadata 
 
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 #--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-#    $SUDO dnf install --refresh -y --nogpgcheck ${RPM_LIST}
+    $SUDO dnf install -y --nogpgcheck --forcearch=x86_64 ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 
 #	$SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
@@ -683,7 +680,6 @@ fi
     fi
 	# Make our directory writeable by current sudo user
 	$SUDO chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
-set +x
 }
 
 getPkgList() {
@@ -1112,9 +1108,9 @@ mkUpdateChroot() {
     elif [ "$IN_ABF" == "1" ]; then
     #printf "%s\n" "-> Installing packages at ABF"
         if [ -n "$PLLL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --forcearch=x86_64 --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
         else
-        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/dnf  --nogpgcheck --installroot "$CHROOTNAME"   
+        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/dnf  -y --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"   
         fi
    fi
 }
