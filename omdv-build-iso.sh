@@ -442,7 +442,6 @@ printf  "%s\n" "In abf = $IN_ABF"
 }
 
 setWorkdir() {
-set -x
 # Set the $WORKDIR
 # If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
 # To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
@@ -479,7 +478,6 @@ printf "%s\n" "-> The work directory is $WORKDIR"
 CHROOTNAME="$WORKDIR/BASE"
 # this is where ISO files are created
 ISOROOTNAME="$WORKDIR/ISO"
-set +x
 }
 
 RemkWorkDir() {
@@ -534,14 +532,6 @@ $SUDO mv "$UHOME/RPMS" "$CHROOTNAME/var/cache/dnf/"
 fi
 $SUDO touch "$WORKDIR/.new"
 }
-
-
-
-
-
-
-
-
 
 umountAll() {
     printf "%s\n" "-> Unmounting all."
@@ -637,6 +627,7 @@ updateSystem() {
     # Can't use urpmi without installing repos
     # Use wget and rpm to install dnf and it's deps for the time being.
     # The following code compliments of bero (Bernhard Rozenkranzer)
+set -x
 if [ "IN_ABF" == "1" ] && [ ! -f /usr/bin/dnf ]; then
   TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
     if ! [ -d "$TMPDIR" ]; then
@@ -690,10 +681,10 @@ fi
     fi
 	# Make our directory writeable by current sudo user
 	$SUDO chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
+set +x
 }
 
 getPkgList() {
-set -x
     # update iso-pkg-lists from GitHub if required
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
@@ -724,7 +715,6 @@ set -x
         printf "%s\n" "-> $FILELISTS does not exist. Exiting"
         errorCatch
         fi
-set +x
 }
 
 showInfo() {
