@@ -1050,7 +1050,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y  --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/urpmopt.log"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y  --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1110,7 +1110,7 @@ mkUpdateChroot() {
         if [ -n "$PLLL" ]; then
         printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --forcearch=x86_64 --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
         else
-        printf '%s\n' "$__install_list" | xargs $SUDO /usr/sbin/dnf  -y --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"   
+        printf '%s\n' "$__install_list" | xargs $SUDO /usr/bin/dnf  -y --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"   
         fi
    fi
 }
