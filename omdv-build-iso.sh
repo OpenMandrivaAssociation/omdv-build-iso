@@ -648,7 +648,7 @@ TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
 #FIX ME BELOW MUST ALLOW FOR RELEASE SPINS
 PKGS=http://abf-downloads.openmandriva.org/cooker/repository/$ARCH/main/release/
 curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
+PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 ${LIB}lua5 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
 for i in $PACKAGES; do
         P=`grep "^$i-[0-9].*" PACKAGES`
         if [ "$?" != "0" ]; then
@@ -1241,7 +1241,7 @@ fi
 #     if [ -n "$TESTREPO" ]; then
 #        $SUDO urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 #     fi
-    $SUDO dnf --refresh --distro-sync --installroot "$CHROOTNAME" main
+#    $SUDO dnf --refresh --distro-sync --installroot "$CHROOTNAME" 
     if [ "${TREE,,}" != "cooker" ]; then
         printf "%s -> Updating urpmi repositories in $CHROOTNAME"
         $SUDO urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
