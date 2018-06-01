@@ -628,8 +628,10 @@ updateSystem() {
     # Use wget and rpm to install dnf and it's deps for the time being.
     # The following code compliments of bero (Bernhard Rozenkranzer)
 set -x
-if [ "IN_ABF" == "1" ] && [ ! -f /usr/bin/dnf ]; then
-  TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
+if [ "IN_ABF" == "1" ] && [ -f /usr/bin/dnf ]; then
+:
+else
+TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
     if ! [ -d "$TMPDIR" ]; then
         echo Install mktemp
         exit 1
