@@ -1938,7 +1938,7 @@ EOF
     #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 # Fix Me This should be a function
-# addUrpmiRepos () {
+addUrpmiRepos () {
 # FIX ME There should be a fallback to abf-downloads here or perhaps to a primary mirror.
     if [ -z "$NOCLEAN" ]; then
 # FIX ME THIS IS ONLY NEEDED FOR Lx3 and WONT BE NEEDED FOR Lx4 
