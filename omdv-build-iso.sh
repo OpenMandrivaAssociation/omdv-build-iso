@@ -2158,7 +2158,7 @@ postBuild() {
 
 # Count checksums
 	printf "%s\n" "-> Generating ISO checksums."
-	if [ -n "$OUTPUTDIR" ]; then
+    if [ -n "$OUTPUTDIR" ]; then
         $SUDO cd "$OUTPUTDIR"
         md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
         sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
@@ -2173,8 +2173,6 @@ postBuild() {
         $SUDO mv "$OUTPUTDIR"/*.iso* "$WORKDIR/results/"
 	else
         $SUDO mv "$WORKDIR"/*.iso* "$WORKDIR/results/"
-	fi
-	if [[ "$IN_ABF" == "0"  || ( "$IN_ABF" == "1" && -n "$DEBUG" && -n "$DEVMODE" ) ]]; then
 	$SUDO cp -r "$WORKDIR"/sessrec/ "$WORKDIR/archives/"
 	fi
 
