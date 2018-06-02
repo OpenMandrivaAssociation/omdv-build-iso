@@ -1507,7 +1507,7 @@ createUEFI() {
 # making the loop devices unavailable to the main kernel though additional devices may be used in the docker instance.
 # Yet another side effect is that the host OS automounts all the loop devices which then makes it impossible 
 # to unmount them from inside the container. This problem can be overcome by adding the following rule to the docker-80.rules file
-
+#SUBSYSTEM=="block", DEVPATH=="/devices/virtual/block/loop*", ENV{ID_FS_UUID}="2222-2222", ENV{UDISKS_PRESENTATION_HIDE}="1", ENV{UDISKS_IGNORE}="1"
 # The indentifiers in the files system image are used to ensure that the rule is unique to this script
 
     $SUDO losetup -f  > /dev/null 2>&1
@@ -1938,8 +1938,10 @@ EOF
     #remove rpm db files which may not match the non-chroot environment
     $SUDO chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 # Fix Me This should be a function
+# addUrpmiRepos () {
 # FIX ME There should be a fallback to abf-downloads here or perhaps to a primary mirror.
     if [ -z "$NOCLEAN" ]; then
+# FIX ME THIS IS ONLY NEEDED FOR Lx3 and WONT BE NEEDED FOR Lx4 
 # add urpmi medias inside chroot
 	printf "%s\n" "-> Removing old urpmi repositories."
 	$SUDO urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
@@ -1994,6 +1996,7 @@ EOF
 	printf "%s" "-> Updating urpmi repositories"
 	$SUDO urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
     fi # noclean
+}
 
 # Get back to real /etc/resolv.conf
     $SUDO rm -f "$CHROOTNAME"/etc/resolv.conf
@@ -2051,7 +2054,6 @@ EOF
 #
  $SUDO echo 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
     | tee "$CHROOTNAME"/etc/.updated >"$CHROOTNAME"/var/.updated
-
 }
 
 ClnShad() {
