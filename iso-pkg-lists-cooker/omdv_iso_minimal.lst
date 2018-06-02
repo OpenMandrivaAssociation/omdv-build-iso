@@ -10,6 +10,7 @@ cronie-anacron
 distro-release-OpenMandriva
 dhcp-client
 dmraid
+dracut
 e2fsprogs
 grub2
 grub2-efi
