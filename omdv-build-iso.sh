@@ -1050,7 +1050,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y  --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/urpmopt.log"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y --forcearch=x86_64 --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/urpmopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1179,14 +1179,14 @@ for A in $(echo "$MULTI"); do
 	sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
 done
 
-for REPTYPE in contrib nonfree restricted; do
+for REPTYPE in contrib non-free restricted; do
     $SUDO cp  "$WORKDIR/${TREE,,}-extrasect-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
     sed -e "s/@DIST_ARCH@/$EXTARCH/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
 done
 
-sed -e "s/@DIST_SECTION@/nonfree/g" \
-    -e "s/@DIST_SECTION_NAME@/Nonfree/g" \
-    -i "$CHROOTNAME"/etc/yum.repos.d/*nonfree*"$EXTARCH"*.repo
+sed -e "s/@DIST_SECTION@/non-free/g" \
+    -e "s/@DIST_SECTION_NAME@/Non-free/g" \
+    -i "$CHROOTNAME"/etc/yum.repos.d/*non-free*"$EXTARCH"*.repo
 
 sed -e "s/@DIST_SECTION@/restricted/g" \
     -e "s/@DIST_SECTION_NAME@/Restricted/g" \
