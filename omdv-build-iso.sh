@@ -1128,7 +1128,7 @@ mkUpdateChroot() {
         cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$18}' >> "$WORKDIR/rpm-install.log"
         # Make a dependency failure log
         if [ -f "$WORKDIR/urpmopt.log" ]; then
-         grep -hr -A1 'A requested package cannot be installed:' "$WORKDIR/urpmopt.log" | sort -u >depfail.log
+         grep -hr -A1 'A requested package cannot be installed:' "$WORKDIR/urpmopt.log" | sort -u > "$WORKDIR/depfail.log"
         fi
         if [[ "$IN_ABF" == "1" && -f "$WORKDIR/install.log" ]]; then
          cat "$WORKDIR/rpm-fail.log"
