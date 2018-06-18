@@ -29,12 +29,11 @@ libxdg-basedir #iso
 lsof #iso
 lm_sensors #iso
 mailcap #iso
-man
+man-db
 mc
 mdv-rpm-summary #iso
 monitor-edid #iso
 memtest86+
-mktemp #iso
 mkxauth #iso
 mlocate #iso
 mtools #iso
@@ -44,8 +43,6 @@ plymouth-system-theme
 python-curl
 quota #iso
 reiserfsprogs
-rpmdrake #iso
-rpmstats #iso
 rtkit #iso
 shared-desktop-ontologies #iso
 sharutils #iso
