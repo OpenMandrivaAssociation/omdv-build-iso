@@ -1050,7 +1050,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y  --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y --refresh --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1108,33 +1108,35 @@ mkUpdateChroot() {
     elif [ "$IN_ABF" == "1" ]; then
     #printf "%s\n" "-> Installing packages at ABF"
         if [ -n "$PLLL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --forcearch=x86_64 --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=x86_64 --nogpgcheck --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
         else
-        printf '%s\n' "$__install_list" | xargs $SUDO /usr/bin/dnf  install -y --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"   
+        printf '%s\n' "$__install_list" | xargs $SUDO /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch=x86_64 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log" 
         fi
    fi
 }
 
     FilterLogs() {
         printf "%s\n" "-> Make some helpful logs"
-# Create the header
-        printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
-        head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
-        printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log" 
-        head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-fail.log" 
-        cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}'
-# Append the data
-        cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$16}'>> "$WORKDIR/rpm-fail.log"
-        cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$16}' >> "$WORKDIR/rpm-install.log"
-        # Make a dependency failure log
-        if [ -f "$WORKDIR/urpmopt.log" ]; then
-         grep -hr -A1 'A requested package cannot be installed:' "$WORKDIR/urpmopt.log" | sort -u > "$WORKDIR/depfail.log"
+        if [ -f "$WORKDIR/install.log" ]; then
+            # Create the header
+            printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
+            head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
+            printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log" 
+            head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-fail.log" 
+            cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}'
+            # Append the data
+            cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$16}'>> "$WORKDIR/rpm-fail.log"
+            cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t "$9" "$16}' >> "$WORKDIR/rpm-install.log"
+         fi
+         # Make a dependency failure log
+        if [ -f "$WORKDIR/dnfopt.log" ]; then
+        grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
         fi
         if [[ "$IN_ABF" == "1" && -f "$WORKDIR/install.log" ]]; then
-         cat "$WORKDIR/rpm-fail.log"
-         printf "%s\n" " " "-> DEPENDENCY FAILURES"
-         cat "$WORKDIR/depfail.log"
-         cat "$WORKDIR/rpm-install.log" 
+        cat "$WORKDIR/rpm-fail.log"
+        printf "%s\n" " " "-> DEPENDENCY FAILURES"
+        cat "$WORKDIR/depfail.log"
+        cat "$WORKDIR/rpm-install.log" 
         fi
         #Clean-up
  #       rm -f "$WORKDIR/install.log"
