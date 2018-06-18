@@ -8,6 +8,7 @@ btrfs-progs
 busybox-static #min-iso
 cronie-anacron
 distro-release-OpenMandriva
+dracut
 dhcp-client
 dmraid
 e2fsprogs
