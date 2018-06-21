@@ -25,7 +25,6 @@ task-plasma
 phonon4qt5-gstreamer
 fcitx-qt5
 kcm-fcitx
-clementine
 rosa-imagewriter
 quick-usb-formatter
 # digikam and kipi-plugins
@@ -79,7 +78,6 @@ edidbins
 avahi #service
 cagibi #service
 firewall-applet #service
-# jackit #service
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
