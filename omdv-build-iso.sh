@@ -1369,7 +1369,7 @@ createInitrd() {
     fi
 
 # Building liveinitrd
-    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks --noprelink  /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
+    $SUDO chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
 
     if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 	printf "%s\n" "-> File $CHROOTNAME/boot/liveinitrd.img does not exist. Exiting."
