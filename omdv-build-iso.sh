@@ -257,7 +257,7 @@ DIST=omdv
 [ -z "${TREE}" ] && TREE=cooker
 [ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 [ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-[ -z "${COMPTYPE}" ] && COMPTYPE=zstd
+[ -z "${COMPTYPE}" ] && COMPTYPE="zstd -Xcompression-level 22"
 [ -z "${MAXERRORS}" ] && MAXERRORS=1
 if [[ ( "$IN_ABF" == "1"  &&  -n "$DEBUG" )  ||  "$IN_ABF" == "0" ]]; then
     if [ -z "$NOCLEAN" ]; then
