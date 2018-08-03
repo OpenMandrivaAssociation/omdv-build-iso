@@ -237,7 +237,7 @@ if [ "$(id -u)" != "0" ]; then
     # We need to be root for umount and friends to work...
     # NOTE the following command will only work on OMDV for the first registered user
     # this user is a member of the wheel group and has root privelidges
-    exec sudo -E `echo ${SUDOVAR}` $0 "$@"
+    exec sudo -E $(echo ${SUDOVAR}) $0 "$@"
     printf "%s\n" "-> Run me as root."
     exit 1
 fi
@@ -313,7 +313,7 @@ elif [ ! -d "$WORKDIR" ] && [ -n "$REBUILD" ]; then
   exit 1
 fi
 
-if [[ -n "$NOCLEAN" && -d "$WORKDIR" ]]; then #if NOCLEAN option selected then retain the chroot.
+if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
 	if [ -d "$WORKDIR/sessrec" ]; then
         printf "%s\n" "-> You have chosen not to clean the base installation" \
         "If your build chroot becomes corrupted you may want"\
@@ -325,7 +325,7 @@ if [[ -n "$NOCLEAN" && -d "$WORKDIR" ]]; then #if NOCLEAN option selected then r
 fi
 
 # Assign the config build list
-if [ "$TYPE" == "my.add" ]; then
+if [ "$TYPE" = 'my.add' ]; then
 FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${TYPE,,}"
 printf "%s\n" " " "-> You are creating a user build" \
 "This build will use the the omdv_minimal_iso.lst to create a basic iso" \
@@ -372,7 +372,7 @@ usage_help() {
 	printf "%s\n" "Please run script with arguments"
 	printf "%s\n" "usage $0 [options]"
         printf "%s\n" "general options:"
-        printf "%s\n" "--arch= Architecture of packages: i586, x86_64"
+        printf "%s\n" "--arch= Architecture of packages: i686, x86_64"
         printf "%s\n" "--tree= Branch of software repository: cooker, lx3, openmandriva2014.0"
         printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
         printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
@@ -407,7 +407,7 @@ usage_help() {
 }
 
 allowedOptions() {
-if [ "$ABF" == "1" ]; then
+if [ "$ABF" = '1' ]; then
     IN_ABF=1
     printf "%s\n" "-> We are in ABF (https://abf.openmandriva.org) environment"
     if [ -n "$NOCLEAN" ] && [ -n  "$DEBUG" ]; then
@@ -467,7 +467,7 @@ if [[ "$IN_ABF" == "1" && -d '/home/omv/docker-iso-worker' ]]; then
     # We really are in ABF
     WORKDIR=$(realpath "$(dirname "$0")")
 fi
-if [ "$IN_ABF" == "0" ]; then
+if [ "$IN_ABF" = '0' ]; then
     if [ -z "$WORKDIR" ]; then
     WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
     fi
@@ -488,7 +488,7 @@ $SUDO mkdir -p "$WORKDIR"
 $SUDO mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 #Create the ISO directory
 $SUDO mkdir -p "$ISOROOTNAME"
-if [ "$IN_ABF" == "0" ]; then
+if [ "$IN_ABF" = '0' ]; then
 $SUDO touch "$WORKDIR/.new"
 fi
 }
@@ -609,7 +609,7 @@ elif [ "${RELEASE_ID,,}" == "alpha" ]; then
     RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)"
 fi
 # Check if user build if true fixup name logic
-if [ "$TYPE" = "my.add" ]; then
+if [ "$TYPE" = 'my.add' ]; then
 PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$UISONAME"
 else
     PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
@@ -627,8 +627,8 @@ updateSystem() {
     # Can't use urpmi without installing repos
     # Use wget and rpm to install dnf and it's deps for the time being.
     # The following code compliments of bero (Bernhard Rozenkranzer)
-if [ "IN_ABF" == "0" ]; then
-TMPDIR="`mktemp -d /tmp/upgradeXXXXXX`"
+if [ "IN_ABF" = '0' ]; then
+TMPDIR="$(mktemp -d /tmp/upgradeXXXXXX)"
     if ! [ -d "$TMPDIR" ]; then
         echo Install mktemp
         exit 1
@@ -669,7 +669,7 @@ fi
 
 #	$SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
 
-    if [ "$IN_ABF" = "0" ]; then
+    if [ "$IN_ABF" = '0' ]; then
         if [ ! -d "$WORKDIR/dracut" ]; then
             find "$WORKDIR"
             touch "$WORKDIR/.new"
@@ -686,7 +686,7 @@ getPkgList() {
     # update iso-pkg-lists from GitHub if required
     # we need to do this for ABF to ensure any edits have been included
     # Do we need to do this if people are using the tool locally?
-    if [  "$IN_ABF" == "0" ]; then
+    if [  "$IN_ABF" = '0' ]; then
         if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
             mkdir -p "$WORKDIR/sessrec/base_lists/"
         fi
@@ -724,12 +724,12 @@ showInfo() {
 	printf "%s\n" "Tree is $TREE"
 	printf "%s\n" "Version is $VERSION"
 	printf "%s\n" "Release ID is $RELEASE_ID"
-	if [ "${TYPE,,}" == "my.add" ]; then
+	if [ "${TYPE,,}" == 'my.add' ]; then
         printf "%s\n" "TYPE is user"
     else    
 	printf "%s\n" "Type is $TYPE"
 	fi
-	if [ "${TYPE,,}" == "minimal" ]; then
+	if [ "${TYPE,,}" = 'minimal' ]; then
 	    printf "%s\n" "-> No display manager for minimal ISO."
     elif [ "${TYPE,,}" == "my.add" ] && [ -z "$DISPLAYMANAGER" ]; then
         printf "%s\n" "-> No display manager for user ISO."
@@ -816,13 +816,13 @@ localMd5Change() {
         printf "%s\n" "New Directory Reference checksum" "$NEW_CHGSENSE" 
         printf "%s\n" "New Filesums"  "$NEW_FILESUMS" 
     fi
-        if [ "$NEW_CHGSENSE" == "$REF_CHGSENSE" ]; then
+        if [ "$NEW_CHGSENSE" = "$REF_CHGSENSE" ]; then
         CHGFLAG=0
         else
         $SUDO printf "%s\n" "$NEW_CHGSENSE" >"$WORKDIR/sessrec/ref_chgsense"
         CHGFLAG=1
         fi
-	if [ "$CHGFLAG" == "1" ]; then
+	if [ "$CHGFLAG" = '1' ]; then
 	    printf "%s\n" "-> Your build files have changed"
 	# Create a list of changed files by diffing checksums
     # In these circumstances awk does a better job than diff
@@ -1090,7 +1090,7 @@ mkUpdateChroot() {
     local __install_list="$1"
 	local __remove_list="$2"
 
-    if [ "$IN_ABF" == "0" ]; then
+    if [ "$IN_ABF" = '0' ]; then
         
         # Sometimes the order of add and remove are critical for example if a package needs to be replaced with the same package the package needs to be removed first thus the remove list needs to be run first
         # If the same package exists in both add and remove lists then remove list needs to be run first but there no point in running a remove list first if there's no rpms to remove because 
@@ -1105,7 +1105,7 @@ mkUpdateChroot() {
             MyAdd
             MyRmv
         fi
-    elif [ "$IN_ABF" == "1" ]; then
+    elif [ "$IN_ABF" = '1' ]; then
     #printf "%s\n" "-> Installing packages at ABF"
         if [ -n "$PLLL" ]; then
         printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=x86_64 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
@@ -1147,7 +1147,7 @@ set -x
 # This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
 # Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
 
-if [ "$GIT_BRNCH" == "master" ]; then
+if [ "$GIT_BRNCH" = 'master' ]; then
     EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
 else 
     EXCLUDE_LIST="cooker-main-repo cooker-extrasect-repo cooker-main.srcrepo cooker-extrasect-srcrepo openmandriva-repos.spec"
@@ -1158,7 +1158,7 @@ fi
 # If the kernel hasn't been installed then it's a new chroot or a rebuild
     if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
 	printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
-        if [ "$FREE" = "1" ]; then
+        if [ "$FREE" = '1' ]; then
         wget -qO- https://github.com/OpenMandrivaAssociation/openmandriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
         cd "$WORKDIR" || exit;
         $SUDO rm -rf ${EXCLUDE_LIST}
@@ -1168,7 +1168,7 @@ fi
 # Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
 # Also need to provide for a local repo so...
 
-if [ "$EXTARCH" == "x86_64" ]; then
+if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
 MULTI="x86_64 i686"
 else
 MULTI="$EXTARCH"
@@ -1411,7 +1411,7 @@ createMemDisk () {
 # Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
 
-    if [ $EXTARCH = "x86_64" ]; then
+    if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
 	ARCHFMT=x86_64-efi
 	ARCHPFX=X64
     else
@@ -1470,7 +1470,7 @@ createUEFI() {
 # Usage: createEFI $EXTARCH $ISOCHROOTNAME
 # Creates a fat formatted file in filesystem image which will boot an UEFI system.
 # PLEASE NOTE THAT THE ISO DIRECTORY IS TEMPORARILY MOVED TO THE CHROOT DIRECTORY FOR THE PURPOSE OF GENERATING THE GRUB IMAGE.
-    if [ $EXTARCH = "x86_64" ]; then
+    if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
 	ARCHFMT=x86_64-efi
 	ARCHPFX=X64
     else
@@ -1685,7 +1685,7 @@ setupISOenv() {
     if [ "${TYPE,,}" = "minimal" ]; then
 	echo "ram = 512" >> "$CHROOTNAME/etc/minsysreqs"
 	echo "hdd = 5" >> "$CHROOTNAME/etc/minsysreqs"
-    elif [ "$EXTARCH" = "x86_64" ]; then
+    elif [ "$EXTARCH" = "x86_64" ] || [ "$EXTARCH" = "znver1" ]; then
 	echo "ram = 1536" >> "$CHROOTNAME/etc/minsysreqs"
 	echo "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
     else
@@ -1957,7 +1957,7 @@ addUrpmiRepos () {
 	    fi
 
 # Add 32-bit main repository for non i586 build
-	    if [ "$EXTARCH" = "x86_64" ]; then
+	    if [ "$EXTARCH" = 'x86_64' ] || "$EXTARCH" = 'znver1']; then
 		printf "%s\n" "-> Adding 32-bit media repository."
 # Use previous MIRRORLIST declaration but with i586 arch in link name
         MIRRORLIST2="$(echo "$MIRRORLIST" | sed -e "s/x86_64/i586/g")"
@@ -2067,7 +2067,7 @@ ClnShad() {
 createSquash() {
     printf "%s\n" "-> Starting squashfs image build."
 # Before we do anything check if we are a local build
-    if [ "$IN_ABF" == "0" ]; then
+    if [ "$IN_ABF" = '0' ]; then
 # We are so make sure that nothing is mounted on the chroots /run/os-prober/dev/ directory.
 # If mounts exist mksquashfs will try to build a squashfs.img with contents of all  mounted drives
 # It's likely that the img will be written to one of the mounted drives so it's unlikely
@@ -2110,7 +2110,7 @@ buildIso() {
 
     printf "%s\n" "-> Starting ISO build."
 
-    if [ "$IN_ABF" == "1" ]; then
+    if [ "$IN_ABF" = '1' ]; then
 	ISOFILE="$WORKDIR/$PRODUCT_ID.$EXTARCH.iso"
     else
 	if [ -z "$OUTPUTDIR" ]; then
@@ -2189,6 +2189,3 @@ postBuild() {
 }
 
 main "$@"
-
-
-
