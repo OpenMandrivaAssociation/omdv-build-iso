@@ -4,7 +4,6 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 bootsplash #iso
-bootloader-utils # min-iso
 calamares #min-iso
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
@@ -24,7 +23,7 @@ isomd5sum #iso
 iso-codes #iso
 irqbalance
 jfsutils #iso
-ldetect #iso
+ldetect-lst
 libxdg-basedir #iso
 lsof #iso
 lm_sensors #iso
