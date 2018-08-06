@@ -1,9 +1,4 @@
 cpupower
-drakconf
-drakx-finish-install
 #firewalld #control
-harddrake
 rfkill
-userdrake
 wpa_supplicant
-mandi #needed for oma-welcome and other drak-stuff
