@@ -6,4 +6,5 @@ locales
 locales-en
 ncurses
 dnf
+dnf-automatic
 # openmandriva-repos
