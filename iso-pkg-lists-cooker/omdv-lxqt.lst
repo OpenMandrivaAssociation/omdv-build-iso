@@ -86,7 +86,6 @@ edidbins
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
-cagibi #service
 firewall-applet #service
 
 atk1.0-common #gtk dep
