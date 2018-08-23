@@ -222,6 +222,11 @@ else
     usage_help
 fi
 
+# Locales aren't installed in the chroot yet (obviously), don't
+# spew errors about that
+export LANG=C
+export LC_ALL=C
+
 # We lose our cli variables when we invoke sudo so we save them
 # and pass them to sudo when it is started. Also the user name is needed.
 # The abf isobuilder docker instance is created with a single working directory /home/omv/iso_builder. This directory must not be deleted as it contains important (but hidden) config files.
