@@ -52,7 +52,6 @@ sane-backends
 sane-backends-iscan #utils
 sash #utils
 sscape_ctl #utils old
-vpnpptp-allde #utils
 xev #utils
 xl2tpd #utils old
 zcip #utils old
