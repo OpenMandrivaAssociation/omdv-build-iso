@@ -1055,7 +1055,7 @@ MyAdd() {
 # Usage: MyAdd
         if [ -n "$__install_list" ]; then 
             printf "%s\n" "-> Installing user package selection" " "
-            printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail=$MAXERRORS -P 1 /usr/bin/dnf install -y --refresh --nogpgcheck --forcearch=x86_64 --exclude=*.i686 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+            printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --nogpgcheck --forcearch=x86_64 --exclude=*.i686 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
             $SUDO printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
 }
@@ -1113,7 +1113,7 @@ mkUpdateChroot() {
     elif [ "$IN_ABF" = '1' ]; then
     #printf "%s\n" "-> Installing packages at ABF"
         if [ -n "$PLLL" ]; then
-        printf "%s\n" "$__install_list" | parallel -q --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=x86_64 --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+        printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch=x86_64 --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
         else
         printf '%s\n' "$__install_list" | xargs $SUDO /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch=x86_64 --exclude=*.i686 --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log" 
         fi
