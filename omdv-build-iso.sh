@@ -232,6 +232,7 @@ main() {
 
 	# default definitions
 	DIST=omdv
+	[ -z "$EXTARCH" ] && EXTARCH="$(rpm -E '%{_target_cpu}')"
 	[ -z "$EXTARCH" ] && EXTARCH="$(uname -m)"
 	[ -z "${TREE}" ] && TREE=cooker
 	[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
@@ -612,7 +613,8 @@ updateSystem() {
 			exit 1
 		fi
 		cd "$TMPDIR"
-		ARCH=`uname -m`
+		ARCH="$(rpm -E '%{_target_cpu}')"
+		[ -z "$ARCH" ] && ARCH=`uname -m`
 		echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
 		echo $ARCH |grep -qE "i.86" && ARCH=i686
 		if echo $ARCH |grep -q 64; then
