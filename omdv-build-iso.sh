@@ -602,49 +602,64 @@ mkISOLabel() {
 
 updateSystem() {
 	# Remember it's the local system we are updating here not the chroot
-	# Currently no dnf in the builder
-	# Can't use urpmi without installing repos
-	# Use wget and rpm to install dnf and it's deps for the time being.
-	# The following code compliments of bero (Bernhard Rozenkranzer)
-	if [ "IN_ABF" = '0' ]; then
-		TMPDIR="$(mktemp -d /tmp/upgradeXXXXXX)"
-		if ! [ -d "$TMPDIR" ]; then
-			echo Install mktemp
-			exit 1
-		fi
-		cd "$TMPDIR"
-		ARCH="$(rpm -E '%{_target_cpu}')"
-		[ -z "$ARCH" ] && ARCH=`uname -m`
-		echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
-		echo $ARCH |grep -qE "i.86" && ARCH=i686
-		if echo $ARCH |grep -q 64; then
-			LIB=lib64
-		else
-			LIB=lib
-		fi
-		#FIX ME BELOW MUST ALLOW FOR RELEASE SPINS
-		PKGS=http://abf-downloads.openmandriva.org/cooker/repository/$ARCH/main/release/
-		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-		PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 ${LIB}lua5 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
-		for i in $PACKAGES; do
-			P=`grep "^$i-[0-9].*" PACKAGES`
-			if [ "$?" != "0" ]; then
-					echo "Can't find cooker version of $i, please report"
-					exit 1
+
+	ARCH="$(rpm -E '%{_target_cpu}')"
+	ARCHEXCLUDE=""
+	[ -z "$ARCH" ] && ARCH=`uname -m`
+	echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
+	echo $ARCH |grep -qE "i.86" && ARCH=i686
+
+	# Exclude 32-bit compat packages on multiarch capable systems
+	case $ARCH in
+	znver1|x86_64)
+		ARCHEXCLUDE='--exclude=*.i686'
+		;;
+	aarch64)
+		ARCHEXCLUDE='--exclude=*.armv7hnl'
+		;;
+	esac
+
+	if ! [ -e /usr/bin/dnf ]; then
+		# Currently no dnf in the builder
+		# Can't use urpmi without installing repos
+		# Use wget and rpm to install dnf and it's deps for the time being.
+		# The following code compliments of bero (Bernhard Rosenkranzer)
+		if [ "IN_ABF" = '0' ]; then
+			TMPDIR="$(mktemp -d /tmp/upgradeXXXXXX)"
+			if ! [ -d "$TMPDIR" ]; then
+				echo Install mktemp
+				exit 1
 			fi
-			wget $PKGS/$P
-		done
-		cd "$TMPDIR"
-		rpm -Uvh --force --oldpackage --nodeps *.rpm
+			cd "$TMPDIR"
+			if echo $ARCH |grep -q 64; then
+				LIB=lib64
+			else
+				LIB=lib
+			fi
+			#FIX ME BELOW MUST ALLOW FOR RELEASE SPINS
+			PKGS=http://abf-downloads.openmandriva.org/cooker/repository/$ARCH/main/release/
+			curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+			PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 ${LIB}lua5 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
+			for i in $PACKAGES; do
+				P=`grep "^$i-[0-9].*" PACKAGES`
+				if [ "$?" != "0" ]; then
+						echo "Can't find cooker version of $i, please report"
+						exit 1
+				fi
+				wget $PKGS/$P
+			done
+			cd "$TMPDIR"
+			rpm -Uvh --force --oldpackage --nodeps *.rpm
+		fi
+		$SUDO dnf clean metadata 
 	fi
-	$SUDO dnf clean metadata 
 
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-	$SUDO dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch=x86_64 --exclude=*.i686 ${RPM_LIST}
+	$SUDO dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch=$ARCH $ARCHEXCLUDE ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 
 	# $SUDO urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
