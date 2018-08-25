@@ -1268,7 +1268,7 @@ createChroot() {
 	# Update a noclean chroot with the contents of the user files my.add and my.rmv 
 	elif [[ -n "$AUTO_UPDATE" && -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
 		# chroot "$CHROOTNAME"
-		/usr/bin/dnf --refresh --distro-sync  --installroot "$CHROOTNAME"
+		/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
 	elif [[ -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
 		updateUserSpin
 		printf "%s\n" "-> Updating user spin"
