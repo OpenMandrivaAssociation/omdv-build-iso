@@ -296,10 +296,10 @@ main() {
 	if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
 		if [ -d "$WORKDIR/sessrec" ]; then
 			printf "%s\n" "-> You have chosen not to clean the base installation" \
-			"If your build chroot becomes corrupted you may want"\
-			"to take advantage of the 'rebuild' option to delete the corrupted files"\
-			"and build a new base installation." \
-			"This will be faster than dowloading the rpm packages again"
+				"If your build chroot becomes corrupted you may want"\
+				"to take advantage of the 'rebuild' option to delete the corrupted files"\
+				"and build a new base installation." \
+				"This will be faster than dowloading the rpm packages again"
 		fi
 		# Note need to clean out grub uuid files here and maybe others
 	fi
