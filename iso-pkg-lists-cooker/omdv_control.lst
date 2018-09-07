@@ -1,4 +1,4 @@
 cpupower
-#firewalld #control
+firewalld #control
 rfkill
 wpa_supplicant
