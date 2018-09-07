@@ -8,7 +8,6 @@ calamares #min-iso
 distro-theme-OpenMandriva
 distro-theme-OpenMandriva-screensaver #iso
 dosfstools
-dynamic
 eject
 #freetype-tools #iso
 firewalld
@@ -23,7 +22,7 @@ isomd5sum #iso
 iso-codes #iso
 irqbalance
 jfsutils #iso
-ldetect-lst
+hwdata
 libxdg-basedir #iso
 lsof #iso
 lm_sensors #iso
