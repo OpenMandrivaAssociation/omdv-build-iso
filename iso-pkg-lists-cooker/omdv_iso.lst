@@ -51,7 +51,6 @@ task-x11
 testdisk
 tmpwatch #iso
 tuned
-unionfs-utils #iso
 upower #iso
 usbmuxd #iso
 urw-fonts
