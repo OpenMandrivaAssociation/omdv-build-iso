@@ -1116,8 +1116,8 @@ FilterLogs() {
 		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-fail.log" 
 #		cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}'
 		# Append the data
-		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t\t"$17}'>> "$WORKDIR/rpm-fail.log"
-		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t\t"$17}' >> "$WORKDIR/rpm-install.log"
+		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t\t"$18}'>> "$WORKDIR/rpm-fail.log"
+		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t\t"$18}' >> "$WORKDIR/rpm-install.log"
 	fi
 	# Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
