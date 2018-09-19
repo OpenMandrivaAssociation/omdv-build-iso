@@ -111,7 +111,6 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_tcb
 nss_wins
 openssl
 pam_ldap
