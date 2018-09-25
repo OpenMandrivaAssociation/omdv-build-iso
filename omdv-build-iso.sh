@@ -605,7 +605,7 @@ updateSystem() {
 
 	ARCH="$(rpm -E '%{_target_cpu}')"
 	ARCHEXCLUDE=""
-	[ -z "$ARCH" ] && ARCH=`uname -m`
+	[ -z "$ARCH" ] && ARCH="$(uname -m)"
 	echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
 	echo $ARCH |grep -qE "i.86" && ARCH=i686
 
