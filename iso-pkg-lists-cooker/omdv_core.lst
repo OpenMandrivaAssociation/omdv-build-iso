@@ -7,4 +7,6 @@ locales-en
 ncurses
 dnf
 dnf-automatic
-# openmandriva-repos
+openmandriva-repos
+openmandriva-repos-cooker
+openmandriva-repos-keys
