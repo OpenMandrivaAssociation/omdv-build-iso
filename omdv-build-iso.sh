@@ -605,7 +605,7 @@ updateSystem() {
 
 	ARCH="$(rpm -E '%{_target_cpu}')"
 	ARCHEXCLUDE=""
-	[ -z "$ARCH" ] && ARCH=`uname -m`
+	[ -z "$ARCH" ] && ARCH="$(uname -m)"
 	echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
 	echo $ARCH |grep -qE "i.86" && ARCH=i686
 
@@ -1835,7 +1835,7 @@ EOF
 
 	# Enable services on demand
 	# SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance systemd-timesyncd vboxadd)
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket NetworkManager.service irqbalance systemd-timesyncd systemd-networkd vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer dnf-automatic-install.timer)
 
 	for i in "${SERVICES_ENABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
