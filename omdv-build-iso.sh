@@ -685,19 +685,16 @@ getPkgList() {
 	# update iso-pkg-lists from GitHub if required
 	# we need to do this for ABF to ensure any edits have been included
 	# Do we need to do this if people are using the tool locally?
-	if [  "$IN_ABF" = '0' ]; then
-		if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
-			mkdir -p "$WORKDIR/sessrec/base_lists/"
-		fi
-		if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-			printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-			# download iso packages lists from https://github.com
-			# GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-		fi
-	fi
-	if [ -n "$ISO_VER" ]; then
-		export GIT_BRNCH="$ISO_VER"
-	elif [ ${TREE,,} == "cooker" ]; then
+	# If the tool is being used locally lets source the files from a local git repos which has been primed with the files from the branch selected on the command line.
+    # This makes it easy to keep a record of the session without all the complcations of trying to diff the file to detect changes.
+    if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+        printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+        # download iso packages lists from https://github.com
+        # GitHub doesn't support git archive so we have to jump through hoops and get more files than we need
+    fi
+#	if [ -n "$ISO_VER" ]; then
+#		export GIT_BRNCH="$ISO_VER"
+	if [ ${TREE,,} == "cooker" ]; then
 		export GIT_BRNCH=master
 	else 
 		export GIT_BRNCH=${TREE,,}
@@ -711,6 +708,24 @@ getPkgList() {
 	if [ ! -e "$FILELISTS" ]; then
 		printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 		errorCatch
+	fi
+
+	if [  "$IN_ABF" = '0' ]; then
+        if [ -n "$LREPODIR" ]; then
+            mkeREPOdir
+        fi
+    else
+        LREPODIR="$UHOME/user-iso"
+        mkeREPOdir
+#    fi
+}
+
+mkeREPOdir() {        
+        if [ ! -d "$LREPODIR" ]; then
+                mkdir -p "$LREPODIR"
+                cd "$LREPODIR" || exit
+        fi
+ 
 	fi
 }
 
