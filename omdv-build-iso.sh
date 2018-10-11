@@ -2134,7 +2134,7 @@ postBuild() {
 		mv "$OUTPUTDIR"/*.iso* "$WORKDIR/results/"
 	else
 		mv "$WORKDIR"/*.iso* "$WORKDIR/results/"
-		if [-d "$WORKDIR/sessrec/" ]; then
+		if [ -d "$WORKDIR/sessrec/" ]; then
 		cp -r "$WORKDIR"/sessrec/ "$WORKDIR/archives/"
 		fi
 	fi
