@@ -580,7 +580,12 @@ mkISOLabel() {
 	GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
 	ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
 	# in case when i386 is passed, fall back to i586
-	[ "$EXTARCH" = "i386" ] && EXTARCH=i586
+	if [ "$TREE" == "3.0" ]; then
+		[ "$EXTARCH" = "i386" ] && EXTARCH=i586
+	else
+		[ "$EXTARCH" = "i386" ] && EXTARCH=i686
+		[ "$EXTARCH" = "i586" ] && EXTARCH=i686
+	fi
 
 	if [ "${RELEASE_ID,,}" == "final" ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
@@ -596,8 +601,8 @@ mkISOLabel() {
 	printf "%s" "$PRODUCT_ID"
 
 	LABEL="$PRODUCT_ID.$EXTARCH"
-	[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
-	[ `echo "$LABEL" | wc -m` -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
+	[ $(echo "$LABEL" | wc -m) -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
+	[ $(echo "$LABEL" | wc -m) -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
 }
 
 updateSystem() {
