@@ -1,4 +1,3 @@
-aoss  #utils old
 aria2 #utils
 bash-completion #utils
 bind-utils #utils
@@ -7,7 +6,8 @@ cdrkit #utils
 cdrkit-genisoimage #utils
 cifs-utils #utils
 command-not-found #utils
-davfs2 #utils
+# why this ?
+#davfs2 #utils
 dmraid #utils
 dmraid-events #utils
 dump #utils
@@ -17,19 +17,20 @@ dvbtune #utils
 dvd+rw-tools #utils
 freerdp #utils
 fuse-exfat #utils
+# wrong here
 gnupg #utils
 html2text #utils
 htop #utils
+## hmm ? core ?
 hw-probe #utils
 krb5-workstation #utils
 lame #utils
 lftp #utils
 libgphoto-common #utils
 libmtp-utils #utils
+# core ?
 lvm2 #utils
-microcode-intel #utils
 nail #utils
-ndiswrapper #utils
 nfs-utils #utils
 nfs-utils-clients #utils
 networkmanager-openvpn #utils
@@ -51,7 +52,6 @@ saned
 sane-backends
 sane-backends-iscan #utils
 sash #utils
-sscape_ctl #utils old
 xev #utils
-xl2tpd #utils old
-zcip #utils old
+radeontool
+
