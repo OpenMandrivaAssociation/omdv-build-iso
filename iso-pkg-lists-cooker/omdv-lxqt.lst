@@ -19,6 +19,7 @@
 
 # Desktop Specifics
 task-lxqt
+pavucontrol-qt
 ark
 #cantata
 lximage-qt
