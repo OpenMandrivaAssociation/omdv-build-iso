@@ -48,9 +48,6 @@ kipi-plugins-smug
 kipi-plugins-yandexfotki
 showfoto
 
-# these are extra requires to get on ISO LXQt and Hawaii desktops
-task-lxqt
-
 # Needed Task/Meta Packages
 task-pulseaudio
 
