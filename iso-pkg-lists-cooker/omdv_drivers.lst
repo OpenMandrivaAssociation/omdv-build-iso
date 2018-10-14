@@ -1,8 +1,6 @@
 as10k1
 awesfx
 bluez-firmware
-bcm43xx-fwcutter
-b43-fwcutter
 ipw2100-firmware
 ipw2200-firmware
 iwlwifi-agn-ucode
@@ -19,4 +17,5 @@ speedtouch-firmware-extractor
 us428control
 zd1201-firmware
 zd1211-firmware
+# FIXME
 dri-drivers
