@@ -71,20 +71,8 @@ edidbins
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
+# FIXME: replace with https://github.com/nomad-desktop/nomad-firewall
 firewall-applet #service
-
-atk1.0-common #gtk dep
-canberra-gtk #gtk dep
-gamin #gtk dep
-GConf2 #gtk dep
-gtk2-modules #gtk dep
-gvfs-archive #gtk dep
-gvfs-fuse #gtk dep
-gvfs-gphoto2 #gtk dep
-gvfs-smb #gtk dep
-# ia_ora-gnome #gtk dep
-#notification-daemon #dubious virt req
-pango #gtk dep
 
 # Support for talking to wrongPhone/wrongPad
 usbmuxd
@@ -101,16 +89,9 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
+## hmm these need be pulled from elsewhere
 openssh-server #server
 samba-server #server
-
-#python deps?
-#python-ldap
-#python-notify
-#python-OpenSSL
-#python-pycrypto
-#python-sip
-#pyxdg
 
 # special featured software
 oma-welcome
