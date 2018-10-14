@@ -1,4 +1,5 @@
-cpupower
+## does not work in OM , fixinf soon - crazy -
+#cpupower
 firewalld #control
 rfkill
 wpa_supplicant
