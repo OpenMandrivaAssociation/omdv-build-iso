@@ -77,7 +77,7 @@ main() {
 			;;
 		--version=*)
 			VERSION=${k#*=}
-			if [[ "${VERSION,,}" == "cooker" ]]; then
+			if [[ "${VERSION,,}" = 'cooker' ]]; then
 				VERSION="$(date +%Y.0)"
 			fi
 			;;
@@ -212,7 +212,7 @@ main() {
 	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS " 
 
 	# run only when root
-	if [ "$(id -u)" != "0" ]; then
+	if [ "$(id -u)" != '0' ]; then
 		# We need to be root for umount and friends to work...
 		# NOTE the following command will only work on OMDV for the first registered user
 		# this user is a member of the wheel group and has root privelidges
@@ -239,7 +239,7 @@ main() {
 	[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
 	[ -z "${COMPTYPE}" ] && COMPTYPE="zstd -Xcompression-level 15"
 	[ -z "${MAXERRORS}" ] && MAXERRORS=1
-	if [[ ( "$IN_ABF" == "1"  &&  -n "$DEBUG" )  ||  "$IN_ABF" == "0" ]]; then
+	if [[ ( "$IN_ABF" = '1'  &&  -n "$DEBUG" )  ||  "$IN_ABF" = '0' ]]; then
 		if [ -z "$NOCLEAN" ]; then
 			[ -z "${BUILD_ID}" ] && BUILD_ID=$(($RANDOM%9999+1000))
 			# The build_id gets written to file when the use makes the first change
@@ -267,9 +267,9 @@ main() {
 	# User mode also generates a series of diffs as a record of the multiple sessions.
 	# The --keep option allow these to be retained for subsequent sessions
 
-	if [[ "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" && -z "$NOCLEAN" ]]; then
+	if [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ] && [ -z "$NOCLEAN" ]; then
 		RemkWorkDir
-	elif [[ "$IN_ABF" == "0" && ! -n "$NOCLEAN" && ! -n "$REBUILD" && -d "$WORKDIR" ]]; then
+	elif [ "$IN_ABF" = '0' ] && [ ! -n "$NOCLEAN" ] && [ ! -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
 		if [ -n "$KEEP" ]; then
 			SaveDaTa
 			RestoreDaTa
@@ -280,7 +280,7 @@ main() {
 		fi
 	fi
 
-	if [[ "$IN_ABF" == "0" && -n "$REBUILD" && -d "$WORKDIR" ]]; then
+	if [ "$IN_ABF" = '0' ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
 		if [ -n "$KEEP" ]; then
 			SaveDaTa
 			RestoreDaTa 
@@ -347,7 +347,7 @@ main() {
 #   Start functions    #
 ########################
 usage_help() {
-	if [[ -z "$EXTARCH" && -z "$TREE" && -z "$VERSION" && -z "$RELEASE_ID" && -z "$TYPE" && -z "$DISPLAYMANAGER" ]]; then
+	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%s\n" "Please run script with arguments"
 		printf "%s\n" "usage $0 [options]"
 		printf "%s\n" "general options:"
@@ -427,10 +427,10 @@ setWorkdir() {
 	# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and 
 	# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
 
-	if [[ "$IN_ABF" == "1"  &&  ! -d '/home/omv/docker-iso-worker'  &&  -z "$DEBUG" ]]; then
+	if [ "$IN_ABF" = '1'  ] &&  [ ! -d '/home/omv/docker-iso-worker' ] && [ -z "$DEBUG" ]; then
 		printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 		exit 1
-	elif [[  "$IN_ABF" == "1" && -n "$DEBUG" && "$WHO" != "omv" ]]; then
+	elif [  "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ]; then
 		printf "%s\n" "-> Debugging ABF build locally"
 		#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
 		# Avoid setting the usual ABF WORKDIR
@@ -442,7 +442,7 @@ setWorkdir() {
 		fi
 	fi
 
-	if [[ "$IN_ABF" == "1" && -d '/home/omv/docker-iso-worker' ]]; then
+	if [ "$IN_ABF" = '1' ] && [ -d '/home/omv/docker-iso-worker' ]; then
 		# We really are in ABF
 		WORKDIR=$(realpath "$(dirname "$0")")
 	fi
@@ -531,7 +531,7 @@ errorCatch() {
 	unset MIRRORLIST
 	umount -l /mnt
 	losetup -D
-	if [[ -z "$DEBUG" || -z "$NOCLEAN" || -z "$REBUILD" ]]; then
+	if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
 		# for some reason the next line deletes irrespective of flags
 		#	rm -rf $(dirname "$FILELISTS")
 		umountAll "$CHROOTNAME"
@@ -560,11 +560,11 @@ userISONme() {
 cfrmISONme() {
 	read -r in2
 	echo $in2
-	if [[ $in2 == "yes" || $in2 == "y" ]]; then
+	if [ $in2 = 'yes' ] || [ $in2 = 'y' ]; then
 		UISONAME="$in1"
 		return 0
 	fi
-	if [[ $in2 == "no" || $in2 == "n" ]]; then
+	if [ $in2 = 'no' ] || [ $in2 = 'n' ]; then
 		userISONme
 	fi
 }
@@ -580,16 +580,16 @@ mkISOLabel() {
 	GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
 	ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
 	# in case when i386 is passed, fall back to i586
-	if [ "$TREE" == "3.0" ]; then
-		[ "$EXTARCH" = "i386" ] && EXTARCH=i586
+	if [ "$TREE" = '3.0' ]; then
+		[ "$EXTARCH" = 'i386' ] && EXTARCH=i586
 	else
-		[ "$EXTARCH" = "i386" ] && EXTARCH=i686
-		[ "$EXTARCH" = "i586" ] && EXTARCH=i686
+		[ "$EXTARCH" = 'i386' ] && EXTARCH=i686
+		[ "$EXTARCH" = 'i586' ] && EXTARCH=i686
 	fi
 
-	if [ "${RELEASE_ID,,}" == "final" ]; then
+	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
-	elif [ "${RELEASE_ID,,}" == "alpha" ]; then
+	elif [ "${RELEASE_ID,,}" = 'alpha' ]; then
 		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d)"
 	fi
 	# Check if user build if true fixup name logic
@@ -646,8 +646,8 @@ updateSystem() {
 			curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 			PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 ${LIB}lua5 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
 			for i in $PACKAGES; do
-				P=`grep "^$i-[0-9].*" PACKAGES`
-				if [ "$?" != "0" ]; then
+				P=$(grep "^$i-[0-9].*" PACKAGES)
+				if [ "$?" != '0' ]; then
 						echo "Can't find cooker version of $i, please report"
 						exit 1
 				fi
@@ -723,14 +723,14 @@ showInfo() {
 	printf "%s\n" "Tree is $TREE"
 	printf "%s\n" "Version is $VERSION"
 	printf "%s\n" "Release ID is $RELEASE_ID"
-	if [ "${TYPE,,}" == 'my.add' ]; then
+	if [ "${TYPE,,}" = 'my.add' ]; then
 		printf "%s\n" "TYPE is user"
 	else	
 		printf "%s\n" "Type is $TYPE"
 	fi
 	if [ "${TYPE,,}" = 'minimal' ]; then
 		printf "%s\n" "-> No display manager for minimal ISO."
-	elif [ "${TYPE,,}" == "my.add" ] && [ -z "$DISPLAYMANAGER" ]; then
+	elif [ "${TYPE,,}" = "my.add" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%s\n" "-> No display manager for user ISO."
 	else
 		printf "%s\n" "Display Manager is $DISPLAYMANAGER"
@@ -771,7 +771,7 @@ showInfo() {
 # This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
 # This function is not used when the script is run on ABF.
 localMd5Change() {
-	if [[ "$IN_ABF" == "1" && -z "$DEBUG" ]]; then
+	if [ "$IN_ABF" = '1' ] && [ -z "$DEBUG" ]; then
 		return 0
 	fi
    	local __difflist
@@ -1123,7 +1123,7 @@ FilterLogs() {
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
 	fi
-	if [[ "$IN_ABF" == "1" && -f "$WORKDIR/install.log" ]]; then
+	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
 		printf "%s\n" " " "-> DEPENDENCY FAILURES"
 		cat "$WORKDIR/depfail.log"
@@ -1147,7 +1147,7 @@ InstallRepos() {
 	# first time run with --noclean when they must be installed. If --rebuild is called they will have been
 	# deleted so reinstall them. 
 	# If the kernel hasn't been installed then it's a new chroot or a rebuild
-	if [[ ! -d "$CHROOTNAME"/lib/modules || -n "$REBUILD" ]]; then
+	if [ ! -d "$CHROOTNAME"/lib/modules ] || [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
 		if [ "$FREE" = '1' ]; then
 			wget -qO- https://github.com/OpenMandrivaAssociation/openmandriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
@@ -1189,7 +1189,7 @@ InstallRepos() {
 		-e "s/@DIST_SECTION_NAME@/Contrib/g" \
 		-i "$CHROOTNAME"/etc/yum.repos.d/*contrib*"$EXTARCH"*.repo
 
-	#if [ "$FREE" == "1" ]; then	
+	#if [ "$FREE" = '1' ]; then	
 	
 	if [ -n "$TESTREPO" ]; then
 		awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
@@ -1205,7 +1205,7 @@ InstallRepos() {
 # Creates a chroot environment with all packages in the packages.lst
 # file and their dependencies in /target/dir
 createChroot() {
-	if [ "$CHGFLAG" != "1" ]; then
+	if [ "$CHGFLAG" != '1' ]; then
 		if [[ ( -f "$CHROOTNAME"/.noclean && ! -d "$CHROOTNAME/lib/modules") || -n "$REBUILD" ]]; then 
 			printf "%s\n" "-> Creating chroot $CHROOTNAME" 
 		else 
@@ -1258,23 +1258,23 @@ createChroot() {
 	# Files that were added to the user files will be downloaded.
 
 	# Build from scratch
-	if [[ -z "$NOCLEAN" && -z "$REBUILD" ]]; then
+	if [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ]; then
 		printf "%s\n" "Creating chroot" 
 		mkOmSpin
 	 # Build the initial noclean chroot this is user mode only and will include the two user files my.add and my.rmv
-	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then 
+	elif [ -n "$NOCLEAN" ] && [ ! -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '0' ]; then 
 		printf "%s\n" "Creating an user chroot"
 		mkUserSpin
 	 # Build the initial noclean chroot in ABF test mode and will use just the base lists   
-	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "1" && -n "$DEBUG" ]]; then
-#	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "1" ]]; then	
+	elif [ -n "$NOCLEAN" ] && [ ! -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
+#	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" = '1' ]]; then	
 		printf "%s\n" "Creating chroot in ABF developer mode"
 		mkOmSpin
 	# Update a noclean chroot with the contents of the user files my.add and my.rmv 
-	elif [[ -n "$AUTO_UPDATE" && -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
+	elif [ -n "$AUTO_UPDATE" ] && [ -n "$NOCLEAN" ] && [ -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '0' ]; then
 		# chroot "$CHROOTNAME"
 		/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
-	elif [[ -n "$NOCLEAN" && -e "$CHROOTNAME"/.noclean && "$IN_ABF" == "0" ]]; then
+	elif [ -n "$NOCLEAN" ] && [ -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '0' ]; then
 		updateUserSpin
 		printf "%s\n" "-> Updating user spin"
 		# Rebuild the users chroot from cached rpms
@@ -1285,7 +1285,7 @@ createChroot() {
  
 	touch "$CHROOTNAME/.noclean"
  
-	if [[ $? != 0 ]] && [ ${TREE,,} != "cooker" ]; then
+	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
 		printf "%s\n" "-> Can not install packages from $FILELISTS"
 		errorCatch
 	fi
@@ -1343,7 +1343,7 @@ createInitrd() {
 
 	# Fugly hack to get /dev/disk/by-label
 	sed -i -e '/KERNEL!="sr\*\", IMPORT{builtin}="blkid"/s/sr/none/g' -e '/TEST=="whole_disk", GOTO="persistent_storage_end"/s/TEST/# TEST/g' "$CHROOTNAME"/lib/udev/rules.d/60-persistent-storage.rules
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed with editing /lib/udev/rules.d/60-persistent-storage.rules file. Exiting."
 		errorCatch
 	fi
@@ -1376,7 +1376,7 @@ createInitrd() {
 
 	# Building initrd
 	chroot "$CHROOTNAME" /usr/sbin/dracut -N -f "/boot/initrd-$KERNEL_ISO.img" "$KERNEL_ISO"
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed creating initrd. Exiting."
 		errorCatch
 	fi
@@ -1386,7 +1386,7 @@ createInitrd() {
 		# Building boot kernel initrd
 		printf "%s\n" "-> Building initrd-$BOOT_KERNEL_ISO inside chroot"
 		chroot "$CHROOTNAME" /usr/sbin/dracut -N -f "/boot/initrd-$BOOT_KERNEL_ISO.img" "$BOOT_KERNEL_ISO"
-		if [[ $? != 0 ]]; then
+		if [ $? != 0 ]; then
 			printf "%s\n" "-> Failed creating boot kernel initrd. Exiting."
 			errorCatch
 		fi
@@ -1511,13 +1511,13 @@ createUEFI() {
 	sleep 1
 	losetup -f "$IMGNME"
 	sleep 1
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed to mount loopback image." "Exiting."
 		errorCatch
 	fi
 	sleep 1
 	mount -t vfat "$IMGNME" /mnt
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed to mount UEFI image." "Exiting."
 		errorCatch
 	fi
@@ -1557,7 +1557,7 @@ setupGrub2() {
 	cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
 	printf "%s\n" "-> Setting GRUB_UUID to ${GRUB_UUID}"
 	sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed to set up GRUB_UUID."
 		errorCatch
 	fi
@@ -1569,13 +1569,13 @@ setupGrub2() {
 		cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
 		sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt > /dev/null 2>&1
 
-		if [[ $? != 0 ]]; then
+		if [ $? != 0 ]; then
 			printf "%s\n" "-> WARNING Failed to update Grub2 theme." "Please add a grub theme to my.add if needed."
 			# errorCatch
 		fi
 	fi
 	# Fix up 2014.0 grub installer line...We don't have Calamares in 2014.
-	if [ "${VERSION,,}" == openmandriva2014.0 ]; then
+	if [ "${VERSION,,}" = 'openmandriva2014.0' ]; then
 		sed -i -e "s/.*systemd\.unit=calamares\.target/ install/g" "$ISOROOTNAME"/boot/grub/start_cfg
 	fi
 
@@ -1614,13 +1614,13 @@ setupGrub2() {
 	mv -f "$CHROOTNAME/ISO/" "$WORKDIR"
 	# Create bootable hard disk image
 	cat "$CHROOTNAME/$GRUB_LIB/boot.img" "$CHROOTNAME/$GRUB_IMG" > "$ISOROOTNAME/boot/grub/grub2-embed_img"
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed to create Grub2 El-Torito image." "Exiting."
 		errorCatch
 	fi
 	# Create bootable cdimage
 	cat "$CHROOTNAME/$GRUB_LIB/cdboot.img" "$CHROOTNAME/$GRUB_IMG" > "$ISOROOTNAME/boot/grub/grub2-eltorito.img"
-	if [[ $? != 0 ]]; then
+	if [ $? != 0 ]; then
 		printf  "%s\n" "-> Failed to create Grub2 El-Torito image." "Exiting."
 		errorCatch
 	fi
@@ -1712,12 +1712,12 @@ EOF
 	# Copy some extra config files
 	cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
 	cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
-	if [ "$TREE" == "3.0" ]; then
-		chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd 
+	if [ "$TREE" = '3.0' ]; then
+		chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd
 		# Add the no passwd group for systemd
 	fi
 	# Add the VirtualBox folder sharing group
-	chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf 
+	chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf
 
 	# Set up live user
 	live_user=live
@@ -1736,7 +1736,7 @@ EOF
 		printf "%s\n" "-> Clearing $username password."
 		chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username
 
-		if [[ $? != 0 ]]; then
+		if [ $? != 0 ]; then
 			printf "%s\n" "-> Failed to clear $username user password." "Exiting."
 			errorCatch
 		fi
@@ -1824,7 +1824,7 @@ EOF
 					for s_file in $(find "$UNIT_DIR" -type f -name "$SANITIZED"); do
 						DEST=$(grep -o 'WantedBy=.*' "$s_file"  | cut -f2- -d'=')
 						if [ -n "$DEST" ] && [ -d "$CHROOTNAME/etc/systemd/system" ] && [ ! -e "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}" ] ; then
-							[[ ! -d "/etc/systemd/system/$DEST.wants" ]] && mkdir -p "$CHROOTNAME/etc/systemd/system/$DEST.wants"
+							[ ! -d "/etc/systemd/system/$DEST.wants" ] && mkdir -p "$CHROOTNAME/etc/systemd/system/$DEST.wants"
 							printf "%s\n" "-> Enabling ${s_file#$UNIT_DIR/}"
 							#/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
 							ln -sf "/${s_file#$CHROOTNAME/}" "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}"
@@ -1886,10 +1886,10 @@ EOF
 	done
 
 	# mask systemd-journald-audit.socket to stop polluting journal with audit spam
-	[[ ! -e "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket ]] && ln -sf /dev/null "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket
+	[ ! -e "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket ] && ln -sf /dev/null "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket
 
 	# ATTENTION getty@.service must be always disabled
-	[[ -e "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service ]] && rm -rf "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service
+	[ -e "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service ] && rm -rf "$CHROOTNAME"/etc/systemd/system/getty.target.wants/getty@.service
 
 	# Calamares installer
 	if [ -e "$CHROOTNAME"/etc/calamares/modules/displaymanager.conf ]; then
@@ -1897,31 +1897,36 @@ EOF
 		# https://issues.openmandriva.org/show_bug.cgi?id=1424
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
-		if [ "${TYPE,,}" = "plasma" ]; then
+		if [ "${TYPE,,}" = 'plasma' ]; then
+		    if [ "$TREE" = '3.0' ] || [ "$TREE" = 'openmandriva2014.0' ]; then
 			sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		    else
+			sed -i -e "s/.*executable:.*/executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/desktopFile: "plasmawayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		    fi
 		fi
 
-		if [ "${TYPE,,}" = "kde4" ]; then
+		if [ "${TYPE,,}" = 'kde4' ]; then
 			sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "kde-plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = "mate" ]; then
+		if [ "${TYPE,,}" = 'mate' ]; then
 			sed -i -e "s/.*executable:.*/executable: "mate-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = "lxqt" ]; then
+		if [ "${TYPE,,}" = 'lxqt' ]; then
 			sed -i -e "s/.*executable:.*/executable: "lxqt-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "lxqt"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = "icewm" ]; then
+		if [ "${TYPE,,}" = 'icewm' ]; then
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "icewm"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = "xfce4" ]; then
+		if [ "${TYPE,,}" = 'xfce4' ]; then
 			sed -i -e "s/.*executable:.*/executable: "startxfce4"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "xfce"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
@@ -1939,22 +1944,22 @@ EOF
 			urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
 			printf "%s\n" "-> Adding new urpmi repositories."
 			urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
-			if [[ $? != 0 ]]; then
+			if [ $? != 0 ]; then
 				urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/contrib/release
 			fi
 			# This one is needed to grab firmwares
 			urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
-			if [[ $? != 0 ]]; then
+			if [ $? != 0 ]; then
 				urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release
 			fi
 		else
 			MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${TREE##openmandriva}.$EXTARCH.list"
 			printf "%s -> Using $MIRRORLIST"
 			urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
-			if [[ $? != 0 ]]; then
+			if [ $? != 0 ]; then
 				printf "%s\n" "-> Adding urpmi media FAILED. Falling back to use ABF."
 				urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/${TREE##openmandriva}.${EXTARCH}.list
-				if [[ $? != 0 ]]; then
+				if [ $? != 0 ]; then
 					printf "%s" "-> Adding urpmi media FAILED. Exiting."
 					errorCatch
 				fi
@@ -1968,7 +1973,7 @@ EOF
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
-	if [ "$(cat "$CHROOTNAME/etc/release" | grep -o 2014.0)" == "2014.0" ]; then
+	if [ "$(cat "$CHROOTNAME/etc/release" | grep -o 2014.0)" = '2014.0' ]; then
 		ln -sf /run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	else
 		ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
@@ -2005,7 +2010,7 @@ EOF
 	rm -rf "$CHROOTNAME"/tmp/*
 
 	# Clear urpmi cache
-	if [[ ("$IN_ABF" == "0" || ( "$IN_ABF" == "1" && -n "$DEBUG" )) ]]; then
+	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
 		# Move contents of rpm cache away so as not to include in iso
 		mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR/rpms"
 		# Remake original directory	
@@ -2093,7 +2098,7 @@ buildIso() {
 	# if it is overwriting an earlier copy. Also it's not clear whether this affects the.
 	# contents or structure of the iso (see --append-partition in the man page)
 	# Either way building the iso is 30 seconds quicker (for a 1G iso) if the old one is deleted.
-	if [[ "$IN_ABF" == "0" && -n "$ISOFILE" ]]; then
+	if [ "$IN_ABF" = '0' ] && [ -n "$ISOFILE" ]; then
 		printf "%s" "-> Removing old iso."
 		rm -rf "$ISOFILE"
 	fi
@@ -2146,7 +2151,7 @@ postBuild() {
 
 
 	# If not in ABF move rpms back to the cache directories
-	if [[ ("$IN_ABF" == "0" || ( "$IN_ABF" == "1" && -n "$DEBUG" )) ]]; then
+	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
 		mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
 	fi
 
