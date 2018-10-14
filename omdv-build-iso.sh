@@ -1898,13 +1898,9 @@ EOF
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 		if [ "${TYPE,,}" = 'plasma' ]; then
-		    if [ "$TREE" = '3.0' ] || [ "$TREE" = 'openmandriva2014.0' ]; then
 			sed -i -e "s/.*executable:.*/executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		    else
-			sed -i -e "s/.*executable:.*/executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/desktopFile: "plasmawayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		    fi
+
 		fi
 
 		if [ "${TYPE,,}" = 'kde4' ]; then
