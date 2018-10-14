@@ -1863,7 +1863,7 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb.service mysql.service mysqld.service postfix NetworkManager-wait-online.service chronyd.service)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb.service mysql.service mysqld.service postfix NetworkManager-wait-online.service chronyd.service udisks2.service)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
