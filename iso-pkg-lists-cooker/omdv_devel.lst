@@ -9,7 +9,7 @@ nano
 pkgutils
 rpm-build
 strace
-subversion
+git
 sudo
 traceroute
 wget
