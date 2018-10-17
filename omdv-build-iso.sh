@@ -92,19 +92,22 @@ main() {
 			lc=${k#*=}
 			case "$lc" in
 			plasma)
-				TYPE=PLASMA
+				TYPE=plasma
+				;;
+            plasma-wayland)
+				TYPE=plasma-wayland
 				;;
 			kde4)
-				TYPE=KDE4
+				TYPE=kde4
 				;;
 			mate)
-				TYPE=MATE
+				TYPE=mate
 				;;
 			lxqt)
-				TYPE=LXQt
+				TYPE=lxqtt
 				;;
 			icewm)
-				TYPE=IceWM
+				TYPE=icewm
 				;;
 			hawaii)
 				TYPE=hawaii
@@ -312,6 +315,8 @@ main() {
 			"Additional packages or files to be included may be added to the file my.add" \
 			"Packages or files that you wish to be removed may be added to the file my.rmv"
 		userISONme
+	elif [ "$TYPE" = 'plasma-wayland' ]; then
+		FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
 	else
 		FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 	fi
@@ -1898,12 +1903,21 @@ EOF
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 		## NOTE these sed's need generate valid yaml .. - crazy -
+		 if [ "$TREE" = '3.0' ] || [ "$TREE" = 'openmandriva2014.0' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+        fi
+		
 		if [ "${TYPE,,}" = 'plasma' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-
 		fi
-
+		
+        if [ "${TYPE,,}" = 'plasma-wayland' ]; then
+            sed -i -e "s/.*executable:.*/    executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		fi
+		
 		if [ "${TYPE,,}" = 'kde4' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "kde-plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
