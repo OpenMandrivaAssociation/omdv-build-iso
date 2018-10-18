@@ -104,7 +104,7 @@ main() {
 				TYPE=mate
 				;;
 			lxqt)
-				TYPE=lxqtt
+				TYPE=lxqt
 				;;
 			icewm)
 				TYPE=icewm
