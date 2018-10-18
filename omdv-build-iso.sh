@@ -9,7 +9,7 @@
 # Modified on 2016 by: Colin Close <itchka@compuserve.com>
 # Modified on 2017 by: Colin Close <itchka@compuserve.com>
 # Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
-# April 2018 Major Revision to support the use of the 
+# April 2018 Major Revision to support the use of the
 # dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
 
 # This tool is licensed under GPL license
@@ -40,7 +40,7 @@
 
 
 main() {
-	# This function which starts at the top of the file is executed first from the end of file 
+	# This function which starts at the top of the file is executed first from the end of file
 	# to ensure that all functions are read before the body of the script is run.
 	# All global variables need to be inside the curly braces of this function.
 
@@ -175,7 +175,7 @@ main() {
 			;;
 		 --maxerrors=*)
 			MAXERRORS=${k#*=}
-			;;	   
+			;;
 		 --devmode)
 			DEVMODE=devmode
 			;;
@@ -199,20 +199,24 @@ main() {
 		esac
 	done
 
-	# Locales aren't installed in the chroot yet (obviously), don't
-	# spew errors about that
+	# Locales aren't installed in the chroot yet (obviously), don't spew errors about that
 	export LANG=C
 	export LC_ALL=C
 
 	# We lose our cli variables when we invoke sudo so we save them
 	# and pass them to sudo when it is started. Also the user name is needed.
-	# The abf isobuilder docker instance is created with a single working directory /home/omv/iso_builder. This directory must not be deleted as it contains important (but hidden) config files.
+	# The abf isobuilder docker instance is created with a single working directory /home/omv/iso_builder.
+	# This directory must not be deleted as it contains important (but hidden) config files.
 	# A support directory /home/omv/docker-iso-worker is also created this should also not be touched.
-	# When an iso build request is generated from ABF the script commandline along with the data from the git repo for the named branch of the script is loaded into the /home/omv/iso_builder directory and the script executed from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed. 
+	# When an iso build request is generated from ABF the script commandline along with the data from the git repo
+        # for the named branch of the script is loaded into the /home/omv/iso_builder directory and the script executed
+        # from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created
+        # and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
+        # to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 	"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS " 
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "
 
 	# run only when root
 	if [ "$(id -u)" != '0' ]; then
@@ -225,7 +229,7 @@ main() {
 	fi
 
 	# Set the local build prefix
-	if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then 
+	if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then
 		WHO=omv
 	else
 		# FIXME how is this supposed to work? Nothing sets that variable
@@ -263,7 +267,7 @@ main() {
 	# The options are:-
 	# --noclean Where the chroot (once generated) is reused
 	# --rebuild. Where the chroot/BASE is rebuilt from the initial rpm downloads
-	# Run without either option and with --workdir pointing to the chroot 
+	# Run without either option and with --workdir pointing to the chroot
 	# the script will delete the existing chroot and create a new one.
 
 	# For all modes any changes made to the pkg lists are implemented and recorded
@@ -429,7 +433,7 @@ setWorkdir() {
 	# Set the $WORKDIR
 	# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
 	# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
-	# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and 
+	# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and
 	# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
 
 	if [ "$IN_ABF" = '1'  ] &&  [ ! -d '/home/omv/docker-iso-worker' ] && [ -z "$DEBUG" ]; then
@@ -713,7 +717,7 @@ getPkgList() {
 	wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
 	cd "$WORKDIR" || exit
 	rm -rf ${EXCLUDE_LIST}
-	cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"	
+	cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"
 	if [ ! -e "$FILELISTS" ]; then
 		printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 		errorCatch
@@ -730,7 +734,7 @@ showInfo() {
 	printf "%s\n" "Release ID is $RELEASE_ID"
 	if [ "${TYPE,,}" = 'my.add' ]; then
 		printf "%s\n" "TYPE is user"
-	else	
+	else
 		printf "%s\n" "Type is $TYPE"
 	fi
 	if [ "${TYPE,,}" = 'minimal' ]; then
@@ -782,7 +786,7 @@ localMd5Change() {
    	local __difflist
 	BASE_LIST=$WORKDIR/sessrec/base_lists/iso-pkg-lists-${TREE}
 	WORKING_LIST=$WORKDIR/iso-pkg-lists-${TREE}
-	   	
+
 	if [ -f "$WORKDIR/.new" ]; then
 		printf "%s\n" "-> Making reference file sums"
 		REF_FILESUMS=$(find ${BASE_LIST}/my.add ${BASE_LIST}/my.rmv ${BASE_LIST}/*.lst -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
@@ -802,22 +806,22 @@ localMd5Change() {
 		printf "%s\n" "$REF_CHGSENSE"
 		printf "%s\n" "$REF_FILESUMS"
 	fi
-	
+
 	REF_CHGSENSE=$(cat "$WORKDIR/sessrec/ref_chgsense")
 	REF_FILESUMS=$(cat "$WORKDIR/sessrec/ref_filesums")
 	printf "%s\n" "-> References loaded"
-	
+
 	# Generate the references for this run
 	# Need to be careful here; there may be backup files so get the exact files
 	# Order is important (sort?)
 	NEW_FILESUMS=$(find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums)
 	NEW_CHGSENSE=$(printf "%s" "$NEW_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/new_chgsense")
-	printf "%s\n" "-> New references created" 
+	printf "%s\n" "-> New references created"
 	if [ -n "$DEBUG" ]; then
 		printf "%s\n" "Directory Reference checksum" "$REF_CHGSENSE"
-		printf "%s\n" "Reference Filesums" "$REF_FILESUMS" 
-		printf "%s\n" "New Directory Reference checksum" "$NEW_CHGSENSE" 
-		printf "%s\n" "New Filesums"  "$NEW_FILESUMS" 
+		printf "%s\n" "Reference Filesums" "$REF_FILESUMS"
+		printf "%s\n" "New Directory Reference checksum" "$NEW_CHGSENSE"
+		printf "%s\n" "New Filesums"  "$NEW_FILESUMS"
 	fi
 	if [ "$NEW_CHGSENSE" = "$REF_CHGSENSE" ]; then
 		CHGFLAG=0
@@ -831,9 +835,9 @@ localMd5Change() {
 		# In these circumstances awk does a better job than diff
 		# This looks complicated but all it does is to put the two fields in each file into independent arrays,
 		# compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-		DIFFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums") 
+		DIFFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums")
 		MODFILES="${DIFFILES}"
-		if [ -n "$DEBUG" ]; then 
+		if [ -n "$DEBUG" ]; then
 			printf "%s\n" "$MODFILES"
 		fi
 		#mv "$WORKDIR/sessrec/tmp_new_filesums" "$WORKDIR/sessrec/new_filesums"
@@ -854,7 +858,7 @@ localMd5Change() {
 	fi
 }
 
-# Usage: getIncFiles [filename] xyz.* $"[name of variable to return] 
+# Usage: getIncFiles [filename] xyz.* $"[name of variable to return]
 # Returns a sorted list of include files
 # Function: Gets all the include lines for the specified package file
 # The full path to the package list must be supplied
@@ -864,12 +868,12 @@ getIncFiles() {
 	local __incflist=$2 # Carries returned variable
 	getEntrys() {
 		# Recursively fetch included files
-		while read -r r; do 
+		while read -r r; do
 			echo "$r"
-			[ -z "$r" ] && continue 
+			[ -z "$r" ] && continue
 			# $'\n' nothing else works just don't go there.
-			__addrpminc+=$'\n'"$WORKDIR/iso-pkg-lists-$TREE/$r" 
-			getEntrys "$WORKDIR/iso-pkg-lists-$TREE/$r" 
+			__addrpminc+=$'\n'"$WORKDIR/iso-pkg-lists-$TREE/$r"
+			getEntrys "$WORKDIR/iso-pkg-lists-$TREE/$r"
 			# Avoid sub-shells make sure commented out includes are removed.
 		done < <(cat "$1" | grep  '^[A-Za-z0-9 \t]*%include' | sed '/ #/d' | awk -F\./// '{print $2}' | sed '/^\s$/d' | sed '/^$/d') > /dev/null 2>&1
 	}
@@ -877,10 +881,10 @@ getIncFiles() {
 	# Add the primary file to the list
    	__addrpminc+=$'\n'"$__infile"
 	# Sort and remove dupes.
-   	__addrpminc=$(printf "%s" "$__addrpminc" | sort -u | uniq -u) 
+   	__addrpminc=$(printf "%s" "$__addrpminc" | sort -u | uniq -u)
    	# Export
 	eval $__incflist="'$__addrpminc'"
-} 
+}
 
 # Usage: createPkgList  "$VAR" VARNAME
 # Function: Creates lists of packages from package lists
@@ -892,6 +896,8 @@ getIncFiles() {
 # NOTE: This routine requires 'lastpipe' so that
 # subshells do not dump their data.
 # This requires that job control be disabled.
+
+# real really FIXME! - crazy -
 createPkgList() {
 	set +m
 	shopt -s lastpipe
@@ -902,7 +908,7 @@ createPkgList() {
 	local __pkglst # The current package list
 	while read -r __pkglst; do
 		__pkgs+=$'\n'$(cat "$__pkglst" 2> /dev/null)
-	done < <(printf '%s\n' "$1") 
+	done < <(printf '%s\n' "$1")
 	# sanitise regex compliments of TPG
 	__pkgs=$(printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,		, ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p' | sed 's/ $//')
 	# The above was getting comments that occured after the package name i.e. vim-minimal #mini-iso9660. but was leaving a trailing space which confused parallel and it failed the install
@@ -933,12 +939,12 @@ diffPkgLists() {
 	local __difflist="$1"
 	local __newdiffname
 	local dodiff="/usr/bin/diff -Naur"
-	
+
 	# Here a combined diff is created
 	while read -r DIFF ; do
 		ALL+=$(eval  "$dodiff" "$DIFF")$'\n'
 	done < <(printf '%s\n' "$__difflist")
-	
+
 	if [ -n "$__difflist" ]; then
 		# BUILD_ID and SEQNUM are used to label diffs
 		if [ -f "$WORKDIR/sessrec/.build_id" ]; then
@@ -966,7 +972,7 @@ mkOmSpin() {
 	getIncFiles "$FILELISTS" ADDRPMINC
 	printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
 	printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" " " "   Which includes"
-	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"  
+	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
 	createPkgList "$ADDRPMINC" INSTALL_LIST
 	if [ -n "$DEVMODE" ]; then
 		printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
@@ -1019,14 +1025,14 @@ mkUserSpin() {
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
 
-	getIncFiles "$FILELISTS" ADDRPMINC 
+	getIncFiles "$FILELISTS" ADDRPMINC
 	#"$TYPE"
 	printf "%s\n" "$ADDRPMINC" > "$WORKDIR/prime.list"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
 	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
 	printf "%s\n" "$ALLRPMINC" > "$WORKDIR/primary.list"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
-	printf "%s\n" "-> Remove the common include lines for the remove package includes" 
+	printf "%s\n" "-> Remove the common include lines for the remove package includes"
 	RMRPMINC=$(comm -1 -3 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$RMRPMINC" | sort))
 	printf "%s" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes "
 	printf "%s\n" "$ALLRPMINC" | grep -v "$FILELISTS"
@@ -1041,26 +1047,27 @@ mkUserSpin() {
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
-# The MyAdd and MyRmv finctionsCan't take full advantage of parallel until a full rpm dep list is produced which means using a solvedb setup. We can however make use of it's fail utility.. Add some logging too.
+# The MyAdd and MyRmv finctionsCan't take full advantage of parallel until a full rpm dep list is produced
+# which means using a solvedb setup. We can however make use of it's fail utility.. Add some logging too.
 
 # Usage: MyAdd
 MyAdd() {
-	if [ -n "$__install_list" ]; then 
+	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --nogpgcheck --forcearch=x86_64 --exclude=*.i686 --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 		printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 	fi
 }
 
-# Usage: MyRmv 
+# Usage: MyRmv
 MyRmv() {
 	if [ -n "$__remove_list" ]; then
 		printf "%s" "-> Removing user specified rpms and orphans"
 		# rpm is used here to get unconditional removal. urpme's idea of a broken system does not comply with our minimal install.
 		# printf '%s\n' "$__remove_list" | parallel --tty --halt now,fail=10 -P 1 rpm -e -v --nodeps --noscripts --root "$CHROOTNAME"
-		#--dbpath "$CHROOTNAME/var/lib/rpm"	   
+		#--dbpath "$CHROOTNAME/var/lib/rpm
 		# This exposed a bug in urpme
-		/usr/bin/dnf autoremove -y  --installroot "$CHROOTNAME" "$__remove_list" 
+		/usr/bin/dnf autoremove -y  --installroot "$CHROOTNAME" "$__remove_list"
 		#printf '%s\n' "$__removelist" | parallel --dryrun --halt now,fail=10 -P 6 urpme --auto --auto-orphans --urpmi-root "$CHROOTNAME"
 	else
 		printf "%s\n" " " "-> No rpms need to be removed"
@@ -1088,12 +1095,14 @@ mkUpdateChroot() {
 	local __remove_list="$2"
 
 	if [ "$IN_ABF" = '0' ]; then
-		# Sometimes the order of add and remove are critical for example if a package needs to be replaced with the same package the package needs to be removed first thus the remove list needs to be run first
-		# If the same package exists in both add and remove lists then remove list needs to be run first but there no point in running a remove list first if there's no rpms to remove because 
-		# they haven't been installed yet. So removing rpms only needs to be invoked first if the NOCLEAN flag is set indicating a built chroot. The problem is that the replacepkgs flag does not install if the package has not been installed
-		# that are already there so the package has to be removed first otherwise parts of the install list will fail. A replace list could be provided
-		# A simple fix for the moment turn both operations into functions and call then through logic which determines whether --noclean has been invoked.
-		# Needs more work though as --noclean can be invoked without an existing chroot so need to check for this exception
+		# Sometimes the order of add and remove are critical for example if a package needs to be replaced with the same package
+		# the package needs to be removed first thus the remove list needs to be run first. If the same package exists in both
+		# add and remove lists then remove list needs to be run first but there no point in running a remove list first if there's no rpms to remove because
+		# they haven't been installed yet. So removing rpms only needs to be invoked first if the NOCLEAN flag is set indicating a built chroot. The problem
+		# is that the replacepkgs flag does not install if the package has not been installed that are already there so the package has to be removed first
+		# otherwise parts of the install list will fail. A replace list could be provided. A simple fix for the moment turn both operations into functions
+		# and call then through logic which determines whether --noclean has been invoked. Needs more work though as --noclean can be invoked without an
+		# existing chroot so need to check for this exception
 		if [ -n "$NOCLEAN" ]; then
 			MyRmv
 			MyAdd
@@ -1115,10 +1124,10 @@ FilterLogs() {
 	printf "%s\n" "-> Make some helpful logs"
 	if [ -f "$WORKDIR/install.log" ]; then
 		# Create the header
-		printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log" 
+		printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log"
 		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
-		printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log" 
-		head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-fail.log" 
+		printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log"
+		head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-fail.log"
 		cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}'
 		# Append the data
 		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t  "$17}'>> "$WORKDIR/rpm-fail.log"
@@ -1140,8 +1149,11 @@ FilterLogs() {
 
 InstallRepos() {
 	set -x
-	# This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
-	# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
+	# This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot.
+	# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker
+	# or release. First we get all the data..then we remove the unwanted files and finally install then in the
+	# approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to
+	# have a master and a release branch. For the time being we will remove the unnecessary files.
 
 	if [ "$GIT_BRNCH" = 'master' ]; then
 		EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
@@ -1150,7 +1162,7 @@ InstallRepos() {
 	fi
 	# If chroot exists and if we have --noclean then the repo files are not needed with exception of the
 	# first time run with --noclean when they must be installed. If --rebuild is called they will have been
-	# deleted so reinstall them. 
+	# deleted so reinstall them.
 	# If the kernel hasn't been installed then it's a new chroot or a rebuild
 	if [ ! -d "$CHROOTNAME"/lib/modules ] || [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
@@ -1160,7 +1172,8 @@ InstallRepos() {
 			rm -rf ${EXCLUDE_LIST}
 		fi
 	fi
-	# At this point the repo template source files are in the $WORKDIR. The files have replaceable variables for setting the ARCHES. Currently the repo urls point at abf-downloads this is ok for iso builds. 
+	# At this point the repo template source files are in the $WORKDIR. The files have replaceable variables
+	# for setting the ARCHES. Currently the repo urls point at abf-downloads this is ok for iso builds.
 	# Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
 	# Also need to provide for a local repo so...
 
@@ -1194,8 +1207,8 @@ InstallRepos() {
 		-e "s/@DIST_SECTION_NAME@/Contrib/g" \
 		-i "$CHROOTNAME"/etc/yum.repos.d/*contrib*"$EXTARCH"*.repo
 
-	#if [ "$FREE" = '1' ]; then	
-	
+	#if [ "$FREE" = '1' ]; then
+
 	if [ -n "$TESTREPO" ]; then
 		awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
 	fi
@@ -1211,14 +1224,14 @@ InstallRepos() {
 # file and their dependencies in /target/dir
 createChroot() {
 	if [ "$CHGFLAG" != '1' ]; then
-		if [[ ( -f "$CHROOTNAME"/.noclean && ! -d "$CHROOTNAME/lib/modules") || -n "$REBUILD" ]]; then 
-			printf "%s\n" "-> Creating chroot $CHROOTNAME" 
-		else 
+		if [[ ( -f "$CHROOTNAME"/.noclean && ! -d "$CHROOTNAME/lib/modules") || -n "$REBUILD" ]]; then
+			printf "%s\n" "-> Creating chroot $CHROOTNAME"
+		else
 			printf "%s\n" "-> Updating existing chroot $CHROOTNAME"
 		fi
 		# Make sure /proc, /sys and friends can be mounted so %post scripts can use them
 		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
-		
+
 		if [ -n "$REBUILD" ]; then
 			ANYRPMS=$(find "$CHROOTNAME/var/cache/urpmi/rpms/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
 			if [ -z "$ANYRPMS" ]; then
@@ -1226,7 +1239,7 @@ createChroot() {
 				errorCatch
 			fi
 		else
-			printf "%s\n" "-> Rebuilding." 
+			printf "%s\n" "-> Rebuilding."
 		fi
 	fi
 
@@ -1234,7 +1247,7 @@ createChroot() {
 	#	 if [ -n "$TESTREPO" ]; then
 	#		urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
 	#	 fi
-	#	dnf --refresh --distro-sync --installroot "$CHROOTNAME" 
+	#	dnf --refresh --distro-sync --installroot "$CHROOTNAME"
 	if [ "${TREE,,}" != "cooker" ]; then
 		printf "%s -> Updating urpmi repositories in $CHROOTNAME"
 		urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
@@ -1245,37 +1258,37 @@ createChroot() {
 	mount --bind /dev "$CHROOTNAME"/dev
 	mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
-	# Start rpm packages installation 
+	# Start rpm packages installation
 	# CHGFLAG=1 Indicates a global change in the iso lists
 
 	# If we are IN_ABF=1 then build a standard iso
-	# If we are IN_ABF=1 and DEBUG is set then we are running the ABF mode locally. 
-	# In this mode the NOCLEAN flag is allowed. 
-	# If set this will build a standard iso initially once built subsequent runs 
+	# If we are IN_ABF=1 and DEBUG is set then we are running the ABF mode locally.
+	# In this mode the NOCLEAN flag is allowed.
+	# If set this will build a standard iso initially once built subsequent runs
 	# with NOCLEAN set will update the chroot with any changed file entries.
 
-	# If the NOCLEAN flag is set this will build an iso using the standard files 
-	# plus the contents of the two user files my.add and my.rmv. 
-	# Once built subsequent runs with NOCLEAN set will update the chroot with 
-	# any changed entries in the user files only. 
-	# if --rebuild is set then rebuild the chroot using the standard and user file lists. 
-	# This uses the preserved rpm cache to speed up the rebuild. 
+	# If the NOCLEAN flag is set this will build an iso using the standard files
+	# plus the contents of the two user files my.add and my.rmv.
+	# Once built subsequent runs with NOCLEAN set will update the chroot with
+	# any changed entries in the user files only.
+	# if --rebuild is set then rebuild the chroot using the standard and user file lists.
+	# This uses the preserved rpm cache to speed up the rebuild.
 	# Files that were added to the user files will be downloaded.
 
 	# Build from scratch
 	if [ -z "$NOCLEAN" ] && [ -z "$REBUILD" ]; then
-		printf "%s\n" "Creating chroot" 
+		printf "%s\n" "Creating chroot"
 		mkOmSpin
 	 # Build the initial noclean chroot this is user mode only and will include the two user files my.add and my.rmv
-	elif [ -n "$NOCLEAN" ] && [ ! -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '0' ]; then 
+	elif [ -n "$NOCLEAN" ] && [ ! -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '0' ]; then
 		printf "%s\n" "Creating an user chroot"
 		mkUserSpin
-	 # Build the initial noclean chroot in ABF test mode and will use just the base lists   
+	 # Build the initial noclean chroot in ABF test mode and will use just the base lists
 	elif [ -n "$NOCLEAN" ] && [ ! -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
-#	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" = '1' ]]; then	
+#	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" = '1' ]]; then
 		printf "%s\n" "Creating chroot in ABF developer mode"
 		mkOmSpin
-	# Update a noclean chroot with the contents of the user files my.add and my.rmv 
+	# Update a noclean chroot with the contents of the user files my.add and my.rmv
 	elif [ -n "$AUTO_UPDATE" ] && [ -n "$NOCLEAN" ] && [ -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '0' ]; then
 		# chroot "$CHROOTNAME"
 		/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
@@ -1284,12 +1297,12 @@ createChroot() {
 		printf "%s\n" "-> Updating user spin"
 		# Rebuild the users chroot from cached rpms
 	elif [ -n "$REBUILD" ]; then
-		printf  "%s\n" "-> Rebuilding." 
+		printf  "%s\n" "-> Rebuilding."
 		mkUserSpin "$FILELISTS"
 	fi
- 
+
 	touch "$CHROOTNAME/.noclean"
- 
+
 	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
 		printf "%s\n" "-> Can not install packages from $FILELISTS"
 		errorCatch
@@ -1297,7 +1310,7 @@ createChroot() {
 
 	# Check CHROOT
 	if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
-		printf "%s\n" "-> Broken chroot installation." "Exiting" 
+		printf "%s\n" "-> Broken chroot installation." "Exiting"
 		errorCatch
 	fi
 
@@ -1334,7 +1347,7 @@ createInitrd() {
 	cp -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
-		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it." 
+		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
 
 		if [ ! -d "$WORKDIR"/dracut/90liveiso ]; then
 			printf "%s\n" "-> Cant find 90liveiso dracut module in $WORKDIR/dracut. Exiting." " "
@@ -1478,12 +1491,12 @@ createUEFI() {
 
 	ARCHLIB=/usr/lib/grub/"$ARCHFMT"
 	EFINAME=BOOT"$ARCHPFX".efi
-	printf "%s\n" "-> Setting up UEFI partiton and image." 
+	printf "%s\n" "-> Setting up UEFI partiton and image."
 
 	IMGNME="$ISOROOTNAME/boot/grub/$EFINAME"
 	GRB2FLS="$ISOROOTNAME"/EFI/BOOT
 
-	printf "%s\n" "-> Building GRUB's EFI image." 
+	printf "%s\n" "-> Building GRUB's EFI image."
 	if [ -e "$IMGNME" ]; then
 		rm -rf "$IMGNME"
 	fi
@@ -1501,12 +1514,12 @@ createUEFI() {
 	# IMPORTANT NOTE: In OMDV 4.x.x series kernels the loop driver is compiled as a module
 	# This causes problems when building in an ABF iso container.
 	# When the container is started if the the main kernel has not started the loop driver then
-	# no loop devices will be created in the docker isobuilder instance so the module must be loaded before 
+	# no loop devices will be created in the docker isobuilder instance so the module must be loaded before
 	# running losetup this is achieved by running "losetup -f" with no arguments.
-	# A further side effect is that if the module is loaded from inside docker when an image is mounted 
+	# A further side effect is that if the module is loaded from inside docker when an image is mounted
 	# on the docker loop device it is also mounted on ALL the available device names in the host OS thus
 	# making the loop devices unavailable to the main kernel though additional devices may be used in the docker instance.
-	# Yet another side effect is that the host OS automounts all the loop devices which then makes it impossible 
+	# Yet another side effect is that the host OS automounts all the loop devices which then makes it impossible
 	# to unmount them from inside the container. This problem can be overcome by adding the following rule to the docker-80.rules file
 	#SUBSYSTEM=="block", DEVPATH=="/devices/virtual/block/loop*", ENV{ID_FS_UUID}="2222-2222", ENV{UDISKS_PRESENTATION_HIDE}="1", ENV{UDISKS_IGNORE}="1"
 	# The indentifiers in the files system image are used to ensure that the rule is unique to this script
@@ -1592,8 +1605,9 @@ setupGrub2() {
 	# Copy memtest
 	cp -rfT "$WORKDIR/extraconfig/memtest" "$ISOROOTNAME/boot/grub/memtest"
 	chmod +x "$ISOROOTNAME/boot/grub/memtest"
-	# To use an embedded image with our grub2 we need to make the modules available in the /boot/grub directory of the iso. The modules can't be carried in the payload of
-	# the embedded image as it's size is limited to 32kb. So we copy the i386-pc modules to the isobuild directory
+	# To use an embedded image with our grub2 we need to make the modules available in the /boot/grub directory of the iso.
+	# The modules can't be carried in the payload of the embedded image as it's size is limited to 32kb.
+	# So we copy the i386-pc modules to the isobuild directory
 
 	mkdir -p "$ISOROOTNAME/boot/grub/i386-pc"
 	cp -rf "$CHROOTNAME/usr/lib/grub/i386-pc" "$ISOROOTNAME/boot/grub/"
@@ -1770,7 +1784,7 @@ EOF
 		mkdir -p "$CHROOTNAME"/home/$live_user/.kde4/env
 		echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
 		echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
-		
+
 		# disable baloo in live session
 		# FIXME needs to be done for plasma5 as well...
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.kde4/share/config
@@ -1949,7 +1963,7 @@ EOF
 	addUrpmiRepos () {
 		# FIX ME There should be a fallback to abf-downloads here or perhaps to a primary mirror.
 		if [ -z "$NOCLEAN" ]; then
-			# FIX ME THIS IS ONLY NEEDED FOR Lx3 and WONT BE NEEDED FOR Lx4 
+			# FIX ME THIS IS ONLY NEEDED FOR Lx3 and WONT BE NEEDED FOR Lx4
 			# add urpmi medias inside chroot
 			printf "%s\n" "-> Removing old urpmi repositories."
 			urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
@@ -2024,7 +2038,7 @@ EOF
 	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
 		# Move contents of rpm cache away so as not to include in iso
 		mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR/rpms"
-		# Remake original directory	
+		# Remake original directory
 		mkdir -m 755 -p  "$CHROOTNAME"/var/cache/urpmi/rpms
 	else
 		rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
