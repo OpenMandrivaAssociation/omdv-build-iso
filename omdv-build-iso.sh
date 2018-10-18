@@ -1807,6 +1807,13 @@ Indexing-Enabled=false
 [General]
 first run=false
 EOF
+
+		# we really need disable automouter , it still fires udisks2 for some partition types
+		[ -f "$CHROOTNAME"/home/${live_user}/.config/kded_device_automounterrc ] && rm -rf "$CHROOTNAME"/home/${live_user}/.config/kded_device_automounterrc
+		cat >"$CHROOTNAME"/home/${live_user}/.config/kded_device_automounterrc << EOF
+[General]
+AutomountEnabled=false
+EOF
 	fi
 
 	# Enable DM autologin
