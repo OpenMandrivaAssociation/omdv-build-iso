@@ -1797,7 +1797,7 @@ EOF
 		rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 	fi
 
-	if [ "${TYPE,,}" = "plasma" ]; then
+	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma-wayland" ]; then
 		# disable baloo in live session
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
 		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
