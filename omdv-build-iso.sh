@@ -1814,6 +1814,15 @@ EOF
 [General]
 AutomountEnabled=false
 EOF
+
+		# kscreenlocker
+		# see: https://forum.openmandriva.org/t/omlx-4-0-pre-alpha-iso-plasma-development-builds/2128/48
+		# to manipulate Timeout change value to disable replace Timeout= with -> Autolock=false
+#		[ -f "$CHROOTNAME"/home/${live_user}/.config/kscreenlockerrc ] && rm -rf "$CHROOTNAME"/home/${live_user}/.config/kscreenlockerrc
+#		cat >"$CHROOTNAME"/home/${live_user}/.config/kscreenlockerrc << EOF
+#[Daemon]
+#Timeout=45
+#EOF
 	fi
 
 	# Enable DM autologin
