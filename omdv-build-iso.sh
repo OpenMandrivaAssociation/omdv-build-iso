@@ -1786,7 +1786,6 @@ EOF
 		echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
 
 		# disable baloo in live session
-		# FIXME needs to be done for plasma5 as well...
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.kde4/share/config
 		cat >"$CHROOTNAME"/home/${live_user}/.kde4/share/config/baloofilerc << EOF
 [Basic Settings]
@@ -1796,6 +1795,18 @@ EOF
 		chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.kde4
 	else
 		rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
+	fi
+
+	if [ "${TYPE,,}" = "plasma" ]; then
+		# disable baloo in live session
+		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
+		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
+[Basic Settings]
+Indexing-Enabled=false
+
+[General]
+first run=false
+EOF
 	fi
 
 	# Enable DM autologin
