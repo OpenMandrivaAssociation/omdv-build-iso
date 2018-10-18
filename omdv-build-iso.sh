@@ -1780,7 +1780,7 @@ EOF
 	chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" /var/lib/AccountsService/users/${live_user}
 
 	# KDE4 related settings
-	if [ "${TYPE,,}" = "kde4" ] || [ "${TYPE,,}" = "plasma" ]; then
+	if [ "${TYPE,,}" = "kde4" ]; then
 		mkdir -p "$CHROOTNAME"/home/$live_user/.kde4/env
 		echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
 		echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
