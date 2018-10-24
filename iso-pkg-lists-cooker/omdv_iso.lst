@@ -35,6 +35,7 @@ mkxauth #iso
 mlocate #iso
 mtools #iso
 ntfsprogs
+os-prober
 pcmciautils
 plymouth-system-theme
 python-curl
