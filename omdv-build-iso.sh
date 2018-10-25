@@ -1177,8 +1177,10 @@ InstallRepos() {
 	# Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
 	# Also need to provide for a local repo so...
 
-	if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
+	if [ "$EXTARCH" = 'x86_64' ]; then
 		MULTI="x86_64 i686"
+	elif [ "$EXTARCH" = 'znver1' ]; then
+		MULTI="znver1 i686"
 	else
 		MULTI="$EXTARCH"
 	fi
