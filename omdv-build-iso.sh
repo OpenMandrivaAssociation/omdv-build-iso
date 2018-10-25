@@ -673,7 +673,7 @@ updateSystem() {
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch=$ARCH $ARCHEXCLUDE ${RPM_LIST}
+	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 
 	# urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
@@ -728,7 +728,7 @@ showInfo() {
 	echo $'###\n'
 	printf "%s\n" "Building ISO with arguments:"
 	printf "%s\n" "Distribution is $DIST"
-	printf "%s\n" "Architecture is $EXTARCH"
+	printf "%s\n" "Architecture for ISO is $EXTARCH"
 	printf "%s\n" "Tree is $TREE"
 	printf "%s\n" "Version is $VERSION"
 	printf "%s\n" "Release ID is $RELEASE_ID"
@@ -1113,9 +1113,9 @@ mkUpdateChroot() {
 	elif [ "$IN_ABF" = '1' ]; then
 		#printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$PLLL" ]; then
-			printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch=x86_64 --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+			printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}"--exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 		else
-			printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch=x86_64 --exclude=*.i686 --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log" 
+			printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch="${EXTARCH}" --exclude=*.i686 --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log" 
 		fi
 	fi
 }
