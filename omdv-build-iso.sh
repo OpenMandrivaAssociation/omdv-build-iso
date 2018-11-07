@@ -1873,7 +1873,7 @@ EOF
 						DEST=$(grep -o 'WantedBy=.*' "$s_file"  | cut -f2- -d'=')
 						if [ -n "$DEST" ] && [ -d "$CHROOTNAME/etc/systemd/system" ] && [ ! -e "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}" ] ; then
 							[ ! -d "/etc/systemd/system/$DEST.wants" ] && mkdir -p "$CHROOTNAME/etc/systemd/system/$DEST.wants"
-							printf "%s\n" "-> Enabling ${s_file#$UNIT_DIR/}"
+							printf "%s\n" "-> Enabling ${s_file#$UNIT_DIR/} based on preset file"
 							#/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
 							ln -sf "/${s_file#$CHROOTNAME/}" "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}"
 						fi
@@ -1911,7 +1911,7 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb.service mysql.service mysqld.service postfix NetworkManager-wait-online.service chronyd.service udisks2.service)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online chronyd udisks2)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
