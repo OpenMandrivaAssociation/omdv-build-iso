@@ -1113,7 +1113,7 @@ mkUpdateChroot() {
 	elif [ "$IN_ABF" = '1' ]; then
 		#printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$PLLL" ]; then
-			printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}"--exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+			printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 		else
 			printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch="${EXTARCH}" --exclude=*.i686 --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log" 
 		fi
