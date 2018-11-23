@@ -64,6 +64,9 @@ main() {
 			cooker)
 				TREE=cooker
 				;;
+            lx4)
+                TREE=4.0
+                ;;
 			lx3)
 				TREE=3.0
 				;;
@@ -1151,8 +1154,36 @@ FilterLogs() {
 	#Clean-up
 	# rm -f "$WORKDIR/install.log"
 }
-
 InstallRepos() {
+# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just 
+# in case we need to revert to git again for the repo files.
+#Get the repo files
+    cd "$CHROOTDIR"
+    PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$ARCH/main/release/
+    curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+    PACKAGES="openmandriva-repos-"$TREE" openmandriva-repos-keys openmandriva-repos-pkgprefs "
+    for i in $PACKAGES; do
+        P=`grep "^$i-[0-9].*" PACKAGES`
+        if [ "$?" != "0" ]; then
+                echo "Can't find cooker version of $i, please report"
+                exit 1
+        fi
+        wget $PKGS/$P
+    done
+	rpm -Uvh --root "$CHROOTDIR" --force --oldpackage --nodeps *.rpm
+	#Check the repofiles and gpg keys exist in chroot
+	if [ ! -s "./etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "./etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
+        printf "%s\n"  "Repo dir bad install"
+        errorCatch
+    else
+        printf "%s\n" "Repository and GPG files installed sucessfully"
+    fi
+    # Clean up
+    /bin/rm "$CHROOTDIR"/PACKAGES "$CHROOTDIR"/*.rpm 
+
+}
+# Leave the old function for the time being in case it's needed after all
+InstallRepos1() {
 	set -x
 	# This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot. 
 	# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker or release. First we get all the data..then we remove the unwanted files and finally install then in the approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to have a master and a release branch. For the time being we will remove the unnecessary files.
