@@ -721,7 +721,7 @@ getPkgList() {
     else
         LREPODIR="$UHOME/user-iso"
         mkeREPOdir
-#    fi
+    fi
 }
 
 mkeREPOdir() {        
@@ -730,7 +730,7 @@ mkeREPOdir() {
                 cd "$LREPODIR" || exit
         fi
  
-	fi
+#	fi
 }
 
 showInfo() {
