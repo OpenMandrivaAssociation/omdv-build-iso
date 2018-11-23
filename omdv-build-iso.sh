@@ -47,7 +47,7 @@ main() {
 	# Make sure MAXERRORS gets preset to a real number else parallel will error out.
 	# This will be overidden by the users value if given.
 	MAXERRORS=1
-
+set -set -xx
 	if [ "$#" -lt 1 ]; then
 		usage_help
 		exit 1
@@ -1159,8 +1159,9 @@ InstallRepos() {
 # There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just 
 # in case we need to revert to git again for the repo files.
 #Get the repo files
-    cd "$CHROOTDIR"
-    PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$ARCH/main/release/
+set -x
+    cd "$CHROOTNAME"
+    PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
     curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
     PACKAGES="openmandriva-repos-"$TREE" openmandriva-repos-keys openmandriva-repos-pkgprefs "
     for i in $PACKAGES; do
@@ -1171,7 +1172,7 @@ InstallRepos() {
         fi
         wget $PKGS/$P
     done
-	rpm -Uvh --root "$CHROOTDIR" --force --oldpackage --nodeps *.rpm
+	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
 	#Check the repofiles and gpg keys exist in chroot
 	if [ ! -s "./etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "./etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
         printf "%s\n"  "Repo dir bad install"
@@ -1180,8 +1181,8 @@ InstallRepos() {
         printf "%s\n" "Repository and GPG files installed sucessfully"
     fi
     # Clean up
-    /bin/rm "$CHROOTDIR"/PACKAGES "$CHROOTDIR"/*.rpm 
-
+    /bin/rm "$CHROOTNAME"/PACKAGES "$CHROOTNAME"/*.rpm 
+set +x
 }
 # Leave the old function for the time being in case it's needed after all
 InstallRepos1() {
@@ -1246,7 +1247,7 @@ InstallRepos1() {
 		awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
 	fi
 	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-		echo "keepcache=1" $CHROOTDIR/etc/dnf/dnf.conf
+		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
 	fi
 	set -x
 }
@@ -2077,7 +2078,7 @@ EOF
 
 # Clean out the backups of passwd, group and shadow
 ClnShad() {
-	/bin/rm -f "$CHROOTDIR/etc/passwd- $CHROOTDIR/etc/group- $CHROOTDIR/etc/shadow-"
+	/bin/rm -f "$CHROOTNAME/etc/passwd- $CHROOTNAME/etc/group- $CHROOTNAME/etc/shadow-"
 }
 
 
