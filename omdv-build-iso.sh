@@ -73,10 +73,10 @@ main() {
 			openmandriva2014.0)
 				TREE=openmandriva2014.0
 				;;
-			*)
+			  *)
 				TREE="$TREE"
 				;;
-			esac
+		esac
 			;;
 		--version=*)
 			VERSION=${k#*=}
@@ -147,6 +147,7 @@ main() {
 			REPO=${k%*=}
 			# Expand the tilde
 			LREPODIR=${REPO/#\~/HOME}
+			;;
 		--debug)
 			DEBUG=debug
 			;;
