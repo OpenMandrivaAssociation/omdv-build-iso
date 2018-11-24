@@ -64,6 +64,9 @@ main() {
 			cooker)
 				TREE=cooker
 				;;
+            lx4)
+                TREE=4.0
+                ;;
 			lx3)
 				TREE=3.0
 				;;
@@ -143,6 +146,11 @@ main() {
 			# Expand the tilde
 			OUTPUTDIR=${OUTPUT/#\~/$HOME}
 			;;
+		--listrepodir=*)
+			REPO=${k%*=}
+			# Expand the tilde
+			LREPODIR=${REPO/#\~/HOME}
+			;;
 		--debug)
 			DEBUG=debug
 			;;
@@ -216,7 +224,7 @@ main() {
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 	"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR " 
 
 	# run only when root
 	if [ "$(id -u)" != '0' ]; then
@@ -356,7 +364,7 @@ main() {
 #   Start functions    #
 ########################
 usage_help() {
-	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
+       if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%s\n" "Please run script with arguments"
 		printf "%s\n" "usage $0 [options]"
 		printf "%s\n" "general options:"
@@ -722,6 +730,24 @@ getPkgList() {
 		printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 		errorCatch
 	fi
+
+	if [  "$IN_ABF" = '0' ]; then
+        if [ -n "$LREPODIR" ]; then
+            mkeREPOdir
+        fi
+    else
+        LREPODIR="$UHOME/user-iso"
+        mkeREPOdir
+    fi
+}
+
+mkeREPOdir() {        
+        if [ ! -d "$LREPODIR" ]; then
+                mkdir -p "$LREPODIR"
+                cd "$LREPODIR" || exit
+        fi
+ 
+#	fi
 }
 
 showInfo() {
@@ -1113,7 +1139,7 @@ mkUpdateChroot() {
 	elif [ "$IN_ABF" = '1' ]; then
 		#printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$PLLL" ]; then
-			printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=x86_64 --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 		else
 			printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch="${EXTARCH}" --exclude=*.i686 --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log" 
 		fi
@@ -1125,13 +1151,13 @@ FilterLogs() {
 	if [ -f "$WORKDIR/install.log" ]; then
 		# Create the header
 		printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log"
-		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
+		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
 		printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log"
-		head -1 "$WORKDIR/install.log"  | awk '{print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}' >>"$WORKDIR/rpm-fail.log"
-		cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"  "$8"  "$9"\t"$20}'
+		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-fail.log" 
+#		cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}'
 		# Append the data
-		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t  "$17}'>> "$WORKDIR/rpm-fail.log"
-		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t "$8"\t  "$17}' >> "$WORKDIR/rpm-install.log"
+		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$19}'>> "$WORKDIR/rpm-fail.log"
+		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$19}' >> "$WORKDIR/rpm-install.log"
 	fi
 	# Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
@@ -1148,7 +1174,40 @@ FilterLogs() {
 }
 
 InstallRepos() {
-	set -x
+# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just 
+# in case we need to revert to git again for the repo files.
+#Get the repo files
+
+    cd "$CHROOTNAME"
+    PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+    curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+    PACKAGES="openmandriva-repos-"$TREE" openmandriva-repos-keys openmandriva-repos-pkgprefs "
+    for i in $PACKAGES; do
+        P=`grep "^$i-[0-9].*" PACKAGES`
+        if [ "$?" != "0" ]; then
+                echo "Can't find cooker version of $i, please report"
+                exit 1
+        fi
+        wget $PKGS/$P
+    done
+	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
+	#Check the repofiles and gpg keys exist in chroot
+	if [ ! -s "./etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "./etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
+        printf "%s\n"  "Repo dir bad install"
+        errorCatch
+    else
+        printf "%s\n" "Repository and GPG files installed sucessfully"
+    fi
+    # Clean up
+    /bin/rm "$CHROOTNAME"/PACKAGES "$CHROOTNAME"/*.rpm 
+
+    # Enable non-free repos for firmware
+    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/$TREE-nonfree-$EXTARCH.repo"
+}
+
+# Leave the old function for the time being in case it's needed after all
+InstallRepos1() {
+
 	# This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot.
 	# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker
 	# or release. First we get all the data..then we remove the unwanted files and finally install then in the
@@ -1215,9 +1274,9 @@ InstallRepos() {
 		awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
 	fi
 	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-		echo "keepcache=1" $CHROOTDIR/etc/dnf/dnf.conf
+		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
 	fi
-	set -x
+
 }
 
 
@@ -1557,7 +1616,7 @@ createUEFI() {
 	# Remove the EFI directory
 	rm -R "$ISOROOTNAME/EFI"
 	XORRISO_OPTIONS2=" --efi-boot $EFINAME -append_partition 2 0xef $IMGNME"
-	set +x
+	
 }
 
 # Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>)
@@ -1675,7 +1734,7 @@ setupGrub2() {
 }
 
 setupISOenv() {
-	#set -x
+	
 	# Set up default timezone
 	printf "%s\n" "-> Setting default timezone"
 	ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME/etc/localtime"
@@ -2084,7 +2143,7 @@ EOF
 
 # Clean out the backups of passwd, group and shadow
 ClnShad() {
-	/bin/rm -f "$CHROOTDIR/etc/passwd- $CHROOTDIR/etc/group- $CHROOTDIR/etc/shadow-"
+	/bin/rm -f "$CHROOTNAME/etc/passwd- $CHROOTNAME/etc/group- $CHROOTNAME/etc/shadow-"
 }
 
 
