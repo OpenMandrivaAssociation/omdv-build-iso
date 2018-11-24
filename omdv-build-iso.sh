@@ -1192,7 +1192,7 @@ InstallRepos() {
     done
 	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
 	#Check the repofiles and gpg keys exist in chroot
-	if [ ! -s "./etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "./etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
+	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
         printf "%s\n"  "Repo dir bad install"
         errorCatch
     else
