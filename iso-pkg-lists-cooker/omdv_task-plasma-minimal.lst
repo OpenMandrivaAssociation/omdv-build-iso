@@ -18,6 +18,47 @@
 #Requires:	pinentry-qt5 <-- why ? FIXME
 #Requires:	libproxy-kde  <-- why ? FIXME
 #Requires:	libproxy-networkmanager <-- why ?  FIXME
+#Requires:	breeze
+#Requires:	breeze-icons
+#Requires:	oxygen-sounds
+#Requires:	frameworkintegration
+#Requires:	kde-cli-tools
+#Requires:	kinit
+#Requires:	kded
+#Requires:	kdeclarative
+#Requires:	milou
+#Requires:	baloo5
+#Requires:	plasma-pa
+#Requires:	plasma-integration
+#Requires:	plasma-desktop >= %{version}
+#Requires:	plasma-framework
+#Requires:	plasma-vault
+#Requires:	plasma-browser-integration
+#Requires:	plasma-workspace >= %{version}
+#Requires:	kdeplasma-addons
+#Requires:	kde-gtk-config
+#Requires:	khotkeys
+#Requires:	kinfocenter >= 5.8.4
+#Requires:	kio-extras
+#Requires:	kmenuedit
+#Requires:	konsole
+#Requires:	kscreen5
+#Requires:	kscreenlocker
+#Requires:	kservice
+#Requires:	ksysguard
+#Requires:	ksshaskpass
+#Requires:	kwalletmanager
+#Requires:	kwin-x11 >= %{version}
+#Requires:	kwrited
+#Requires:	phonon4qt5-backend
+#Requires:	plasma-nm
+#Requires:	powerdevil >= 5.8.4
+#Requires:	systemsettings
+#Requires:	solid
+#Requires:	polkit-kde-agent-1
+#Requires:	xdg-desktop-portal-kde
+#Requires:	desktop-common-data
+
 
 dbus-x11
 xsettings-kde
@@ -28,3 +69,44 @@ kate
 pinentry-qt5
 libproxy-kde
 libproxy-networkmanager
+breeze
+breeze-icons
+oxygen-sounds
+frameworkintegration
+kde-cli-tools
+kinit
+kded
+kdeclarative
+milou
+baloo5
+plasma-pa
+plasma-integration
+plasma-desktop
+plasma-framework
+plasma-vault
+plasma-browser-integration
+plasma-workspace
+kdeplasma-addons
+kde-gtk-config
+khotkeys
+kinfocenter
+kio-extras
+kmenuedit
+konsole
+kscreen5
+kscreenlocker
+kservice
+ksysguard
+ksshaskpass
+kwalletmanager
+kwin-x11
+kwrited
+phonon4qt5-backend
+plasma-nm
+powerdevil
+systemsettings
+solid
+polkit-kde-agent-1
+xdg-desktop-portal-kde
+desktop-common-data
+falkon
