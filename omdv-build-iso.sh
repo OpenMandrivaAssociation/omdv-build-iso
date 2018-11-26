@@ -673,7 +673,7 @@ updateSystem() {
 			cd "$TMPDIR"
 			rpm -Uvh --force --oldpackage --nodeps *.rpm
 		fi
-		dnf clean metadata 
+		dnf clean metadata
 	fi
 
 	# List of packages that needs to be installed inside lxc-container and local machines
@@ -1099,7 +1099,7 @@ MyRmv() {
 		printf "%s\n" " " "-> No rpms need to be removed"
 	fi
 }
- 
+
 # Usage: mkUpdateChroot [Install variable] [remove variable]
 # Function:	  If the --noclean option is set and a full chroot has been built
 #			   (presence of .noclean in the chroot directory) then this function will be
@@ -1183,28 +1183,31 @@ InstallRepos() {
     curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
     PACKAGES="openmandriva-repos-"$TREE" openmandriva-repos-keys openmandriva-repos-pkgprefs "
     for i in $PACKAGES; do
-        P=$(grep "^$i-[0-9].*" PACKAGES)
-        if [ "$?" != '0' ]; then
-                printf '$s\n' "Can't find cooker version of $i, please report"
-                exit 1
-        fi
-        wget $PKGS/$P
+	P=$(grep "^$i-[0-9].*" PACKAGES)
+	if [ "$?" != '0' ]; then
+	    printf '$s\n' "Can't find cooker version of $i, please report"
+	    exit 1
+	fi
+	wget $PKGS/$P
     done
-	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
-	#Check the repofiles and gpg keys exist in chroot
-	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
-        printf "%s\n"  "Repo dir bad install."
-        errorCatch
+
+    rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
+
+#Check the repofiles and gpg keys exist in chroot
+    if [ ! -s "$CHROOTNAME/etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
+	printf "%s\n"  "Repo dir bad install."
+	errorCatch
     else
-        printf "%s\n" "Repository and GPG files installed sucessfully."
+	printf "%s\n" "Repository and GPG files installed sucessfully."
 	/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
     fi
-    # Clean up
+
+# Clean up
     /bin/rm -rf openmandriva*.rpm 
 
-    # Enable non-free repos for firmware
+# Enable non-free repos for firmware
     printf "%s\n" "Enable non-free repos for firmware."
-    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/$TREE-nonfree-$EXTARCH.repo"
+    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-nonfree-$EXTARCH.repo"
 }
 
 # Leave the old function for the time being in case it's needed after all
@@ -1280,7 +1283,6 @@ InstallRepos1() {
 	fi
 
 }
-
 
 # Usage: createChroot packages.lst /target/dir
 # Creates a chroot environment with all packages in the packages.lst
