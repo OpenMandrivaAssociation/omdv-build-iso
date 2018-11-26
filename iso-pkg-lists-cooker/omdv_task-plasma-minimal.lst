@@ -1,5 +1,5 @@
 %include .///omdv_task-x11.lst
-%include .///omdv_task-pulseaudio.lst
+%include .///omdv-pulseaudio.lst
 
 ## original taken from spec file
 # %package minimal
