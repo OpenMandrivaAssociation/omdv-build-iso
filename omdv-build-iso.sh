@@ -1183,9 +1183,9 @@ InstallRepos() {
     curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
     PACKAGES="openmandriva-repos-"$TREE" openmandriva-repos-keys openmandriva-repos-pkgprefs "
     for i in $PACKAGES; do
-        P=`grep "^$i-[0-9].*" PACKAGES`
-        if [ "$?" != "0" ]; then
-                echo "Can't find cooker version of $i, please report"
+        P=$(grep "^$i-[0-9].*" PACKAGES)
+        if [ "$?" != '0' ]; then
+                printf '$s\n' "Can't find cooker version of $i, please report"
                 exit 1
         fi
         wget $PKGS/$P
@@ -1193,15 +1193,17 @@ InstallRepos() {
 	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
 	#Check the repofiles and gpg keys exist in chroot
 	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/cooker-x86_64.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
-        printf "%s\n"  "Repo dir bad install"
+        printf "%s\n"  "Repo dir bad install."
         errorCatch
     else
-        printf "%s\n" "Repository and GPG files installed sucessfully"
+        printf "%s\n" "Repository and GPG files installed sucessfully."
+	/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
     fi
     # Clean up
-    /bin/rm "$CHROOTNAME"/PACKAGES "$CHROOTNAME"/*.rpm 
+    /bin/rm -rf openmandriva*.rpm 
 
     # Enable non-free repos for firmware
+    printf "%s\n" "Enable non-free repos for firmware."
     sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/$TREE-nonfree-$EXTARCH.repo"
 }
 
