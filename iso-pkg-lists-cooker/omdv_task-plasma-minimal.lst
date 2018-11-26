@@ -1,0 +1,30 @@
+%include .///omdv_task-x11.lst
+%include .///omdv_task-pulseaudio.lst
+
+## original taken from spec file
+# %package minimal
+# Summary:	Minimal dependencies needed for Plasma 5
+# Group:		Graphical desktop/KDE
+# Basic
+#Requires:	dbus-x11
+#Requires:	oxygen-font  <-- not use in plasma5
+#Requires:	oxygen-icons  <-- optional in plasma5
+#Suggests:	task-pulseaudio
+#Requires:	task-x11
+#Requires:	xsettings-kde
+#Requires:	ark
+#Requires:	dolphin
+#Requires:	gwenview <-- no please , minimal need a konsole and an editor not an half broken image viewer
+#Requires:	pinentry-qt5 <-- why ? FIXME
+#Requires:	libproxy-kde  <-- why ? FIXME
+#Requires:	libproxy-networkmanager <-- why ?  FIXME
+
+dbus-x11
+xsettings-kde
+ark
+dolphin
+konsole
+kate
+pinentry-qt5
+libproxy-kde
+libproxy-networkmanager
