@@ -1,21 +1,13 @@
 as10k1
 awesfx
-bluez-firmware
-ipw2100-firmware
-ipw2200-firmware
 iwlwifi-agn-ucode
 ld10k1
 madwimax
 pcmcia-cis-firmware
-prism54-firmware
 prism2-utils
 radeon-firmware
 sb16_csp
-speedtouch-firmware
-speedtouch-firmware-extractor
 us428control
-zd1201-firmware
-zd1211-firmware
 microcode-intel
 # FIXME
 dri-drivers
