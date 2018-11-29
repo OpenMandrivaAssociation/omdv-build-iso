@@ -95,3 +95,9 @@ samba-server #server
 
 # special featured software
 oma-welcome
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
+
+  
