@@ -1,7 +1,7 @@
 # 2014 Author: tpgxyz@gmail.com
 
 NAME = omdv-build-iso
-VERSION = 0.1.4
+VERSION = 0.1.5
 DATAFILE ?= $(DESTDIR)/usr/share/$(NAME)
 BINFILE ?= $(DESTDIR)/usr/bin
 
