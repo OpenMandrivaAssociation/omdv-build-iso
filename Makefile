@@ -30,7 +30,7 @@ install:
 	install -m 644 tools/* $(DATAFILE)/tools/
 
 dist:
-	git archive --format=tar --prefix=$(NAME)-$(VERSION)/ HEAD | xz -2vec -T0 > $(NAME)-$(VERSION).tar.xz;
+	git archive --format=tar --prefix=$(NAME)-$(VERSION)/ 3.0 | xz -2vec -T0 > $(NAME)-$(VERSION).tar.xz;
 	$(info $(NAME)-$(VERSION).tar.xz is ready)
 
 PHONY: ChangeLog log changelog
