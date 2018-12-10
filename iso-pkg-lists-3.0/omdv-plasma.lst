@@ -79,7 +79,6 @@ edidbins
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
-cagibi #service
 firewall-applet #service
 # jackit #service
 
@@ -89,7 +88,6 @@ gamin #gtk dep
 GConf2 #gtk dep
 gtk2-modules #gtk dep
 gtk-engines2 #gtk dep
-gtk-qt-engine #gtk dep
 gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep

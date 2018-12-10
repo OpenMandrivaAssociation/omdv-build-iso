@@ -41,7 +41,6 @@ x11-data-cursor-themes
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
-cagibi #service
 firewall-applet #service
 jackit #service
 networkmanager-applet
