@@ -1797,8 +1797,20 @@ EOF
 	fi
 
 	# Copy some extra config files
-	cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
-	cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
+	if [ "$TREE" = '3.0' ] || [ "$TREE" = 'openmandriva2014.0' ]; then
+		## (crazy) NO way we do that for > 3.0 , please look at these files
+		cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
+		cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
+
+	else
+		## (crazy) fixme this kind stuff should not be needed this way!
+		cp -rfT "$WORKDIR/extraconfig/etc/X11" "$CHROOTNAME"/etc/X11
+		cp -rfT "$WORKDIR/extraconfig/etc/locale.conf" "$CHROOTNAME"/etc/locale.conf
+		cp -rfT "$WORKDIR/extraconfig/etc/vconsole.conf" "$CHROOTNAME"/etc/vconsole.conf
+		## why ?
+		cp -rfT "$WORKDIR/extraconfig/etc/polkit-1" "$CHROOTNAME"/etc/polkit-1
+	fi
+
 	if [ "$TREE" = '3.0' ]; then
 		chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd
 		# Add the no passwd group for systemd
