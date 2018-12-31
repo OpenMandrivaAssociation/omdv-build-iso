@@ -1954,7 +1954,7 @@ EOF
 
 	# Enable services on demand
 	# SERVICES_ENABLE=(getty@tty1.service sshd.socket irqbalance smb nmb winbind systemd-timesyncd)
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket NetworkManager irqbalance systemd-timesyncd systemd-networkd vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer dnf-automatic-install.timer)
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket NetworkManager irqbalance systemd-timesyncd vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer dnf-automatic-install.timer)
 
 	for i in "${SERVICES_ENABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
@@ -1977,7 +1977,7 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online chronyd udisks2 packagekit)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix systemd-networkd systemd-resolved nfs-utils chronyd udisks2 packagekit)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
