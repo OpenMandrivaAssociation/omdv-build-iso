@@ -14,7 +14,6 @@ The contents of the ISO are controlled by a series build lists grouped under OMA
 There are currently three sets of files collected under the follwing directories.
 /iso-pkg-lists-3.0
 /iso-pkg-lists-cooker
-/iso-pkg-lists-openmandriva2014.0
 
 A typical directory structure will be.
 ./iso-pkg-lists-3.0
