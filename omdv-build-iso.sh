@@ -64,14 +64,11 @@ main() {
 			cooker)
 				TREE=cooker
 				;;
-            lx4)
-                TREE=4.0
-                ;;
+			lx4)
+				TREE=4.0
+				;;
 			lx3)
 				TREE=3.0
-				;;
-			openmandriva2014.0)
-				TREE=openmandriva2014.0
 				;;
 			*)
 				TREE="$TREE"
@@ -369,8 +366,8 @@ usage_help() {
 		printf "%s\n" "usage $0 [options]"
 		printf "%s\n" "general options:"
 		printf "%s\n" "--arch= Architecture of packages: i686, x86_64"
-		printf "%s\n" "--tree= Branch of software repository: cooker, lx3, openmandriva2014.0"
-		printf "%s\n" "--version= Version for software repository: 2015.0, 2014.1, 2014.0"
+		printf "%s\n" "--tree= Branch of software repository: cooker, lx3, lx4"
+		printf "%s\n" "--version= Version for software repository: 3.0, 4.0"
 		printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
 		printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
 		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
@@ -1660,10 +1657,6 @@ setupGrub2() {
 			# errorCatch
 		fi
 	fi
-	# Fix up 2014.0 grub installer line...We don't have Calamares in 2014.
-	if [ "${VERSION,,}" = 'openmandriva2014.0' ]; then
-		sed -i -e "s/.*systemd\.unit=calamares\.target/ install/g" "$ISOROOTNAME"/boot/grub/start_cfg
-	fi
 
 	printf "%s\n" "-> Building Grub2 El-Torito image and an embedded image."
 
@@ -1797,7 +1790,7 @@ EOF
 	fi
 
 	# Copy some extra config files
-	if [ "$TREE" = '3.0' ] || [ "$TREE" = 'openmandriva2014.0' ]; then
+	if [ "$TREE" = '3.0' ]; then
 		## (crazy) NO way we do that for > 3.0 , please look at these files
 		cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
 		cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
@@ -2025,7 +2018,7 @@ EOF
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 		## NOTE these sed's need generate valid yaml .. - crazy -
-		 if [ "$TREE" = '3.0' ] || [ "$TREE" = 'openmandriva2014.0' ]; then
+		 if [ "$TREE" = '3.0' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
@@ -2106,11 +2099,7 @@ EOF
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
-	if [ "$(cat "$CHROOTNAME/etc/release" | grep -o 2014.0)" = '2014.0' ]; then
-		ln -sf /run/resolvconf/resolv.conf "$CHROOTNAME"/etc/resolv.conf
-	else
-		ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
-	fi
+	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 
 	# ldetect stuff
 	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
