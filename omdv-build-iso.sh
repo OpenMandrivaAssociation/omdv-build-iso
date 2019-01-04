@@ -1175,7 +1175,6 @@ InstallRepos() {
 # in case we need to revert to git again for the repo files.
 #Get the repo files
 
-    cd "$CHROOTNAME"
     PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
     curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
     PACKAGES="openmandriva-repos-"$TREE" openmandriva-repos-keys openmandriva-repos-pkgprefs "
@@ -1207,7 +1206,7 @@ InstallRepos() {
 
 # Enable non-free repos for firmware
     printf "%s\n" "Enable non-free repos for firmware."
-    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-nonfree-$EXTARCH.repo"
+    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-non-free-$EXTARCH.repo"
 }
 
 # Leave the old function for the time being in case it's needed after all
