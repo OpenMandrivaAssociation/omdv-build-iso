@@ -17,7 +17,6 @@ install:
 	-install -d $(DATAFILE)/grub2
 	-install -d $(DATAFILE)/tools
 	-install -d $(DATAFILE)/iso-pkg-lists-cooker
-	-install -d $(DATAFILE)/iso-pkg-lists-openmandriva2014.0
 	-install -d $(DATAFILE)/iso-pkg-lists-3.0
 	install -m 755 omdv-build-iso.sh $(BINFILE)
 	cp -fr data/* $(DATAFILE)/data/
@@ -25,7 +24,6 @@ install:
 	cp -fr grub2/* $(DATAFILE)/grub2/
 	cp -fr iso-pkg-lists-cooker/* $(DATAFILE)/iso-pkg-lists-cooker/
 	cp -fr iso-pkg-lists-3.0/* $(DATAFILE)/iso-pkg-lists-3.0/
-	cp -fr iso-pkg-lists-openmandriva2014.0/* $(DATAFILE)/iso-pkg-lists-openmandriva2014.0/
 	cp -fr extraconfig/* $(DATAFILE)/extraconfig/
 	install -m 644 tools/* $(DATAFILE)/tools/
 
