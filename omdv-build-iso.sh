@@ -2000,6 +2000,9 @@ EOF
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
+	# (crazy) that badly su*** .. we need fix systemd/NM stuff
+	# so ne sure we have an NS written in case both breaks.
+	echo "nameserver 8.8.8.8" >"$CHROOTNAME"/etc/resolv.conf
 
 	# ldetect stuff
 	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
