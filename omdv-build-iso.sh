@@ -1291,10 +1291,6 @@ createChroot() {
 		fi
 	fi
 
-	# Update media
-	## (crazy) I guess , the check was buggy before
-	dnf -y --refresh --distro-sync --installroot "$CHROOTNAME"
-
 	mount --bind /proc "$CHROOTNAME"/proc
 	mount --bind /sys "$CHROOTNAME"/sys
 	mount --bind /dev "$CHROOTNAME"/dev
