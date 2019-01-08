@@ -67,9 +67,6 @@ main() {
 			lx4)
 				TREE=4.0
 				;;
-			lx3)
-				TREE=3.0
-				;;
 			*)
 				TREE="$TREE"
 				;;
@@ -97,9 +94,6 @@ main() {
 			plasma-wayland)
 				TYPE=plasma-wayland
 				;;
-			kde4)
-				TYPE=kde4
-				;;
 			mate)
 				TYPE=mate
 				;;
@@ -108,9 +102,6 @@ main() {
 				;;
 			icewm)
 				TYPE=icewm
-				;;
-			hawaii)
-				TYPE=hawaii
 				;;
 			xfce4)
 				TYPE=xfce4
@@ -151,9 +142,6 @@ main() {
 		--debug)
 			DEBUG=debug
 			;;
-		--urpmi-debug)
-			URPMI_DEBUG=--debug
-			;;
 		--noclean)
 			NOCLEAN=noclean
 			;;
@@ -187,9 +175,6 @@ main() {
 		 --auto-update)
 			AUTO_UPDATE=1
 			;;
-		 --enable-skip-list)
-			ENSKPLST=enskplst #prolly should be a symlink
-			;;
 		 --userbuild)
 			USRBUILD=usrbuild #allow fresh build without destroying user files
 			;;
@@ -221,7 +206,7 @@ main() {
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 	"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR " 
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "
 
 	# run only when root
 	if [ "$(id -u)" != '0' ]; then
@@ -295,7 +280,7 @@ main() {
 	if [ "$IN_ABF" = '0' ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
 		if [ -n "$KEEP" ]; then
 			SaveDaTa
-			RestoreDaTa 
+			RestoreDaTa
 		fi
 	elif [ ! -d "$WORKDIR" ] && [ -n "$REBUILD" ]; then
 		#THIS TEST IS BROKEN BECAUSE IT DOES NOT DISCRIMINATE WHETHER REBUILD IS SET AND THUS ALWAYS EXITS
@@ -365,16 +350,15 @@ usage_help() {
 		printf "%s\n" "Please run script with arguments"
 		printf "%s\n" "usage $0 [options]"
 		printf "%s\n" "general options:"
-		printf "%s\n" "--arch= Architecture of packages: i686, x86_64"
-		printf "%s\n" "--tree= Branch of software repository: cooker, lx3, lx4"
-		printf "%s\n" "--version= Version for software repository: 3.0, 4.0"
+		printf "%s\n" "--arch= Architecture of packages: i686, x86_64, znver1"
+		printf "%s\n" "--tree= Branch of software repository: cooker, lx4"
+		printf "%s\n" "--version= Version for software repository: 4.0"
 		printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
-		printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
-		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
+		printf "%s\n" "--type= User environment type on ISO: plasma, mate, lxqt, icewm, xfce4, weston, minimal"
+		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: gdm, sddm , none"
 		printf "%s\n" "--workdir= Set directory where ISO will be build"
 		printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
 		printf "%s\n" "--debug Enable debug output. This option also allows ABF=1 to be used loacally for testing"
-		printf "%s\n" "--urpmi-debug Enable urpmi debugging output"
 		printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
 		printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
 		printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
@@ -383,13 +367,12 @@ usage_help() {
 		printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
 		printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
 		printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
-		printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
 		printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
 		printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given"
 		printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
 		printf "%s\n" " "
 		printf "%s\n" "For example:"
-		printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
+		printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=4.0 --release_id=alpha --type=plasma --displaymanager=sddm"
 		printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
 		printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
 		printf "%s\n" "Exiting."
@@ -486,6 +469,7 @@ RemkWorkDir() {
 	fi
 }
 
+## hmm ?
 SaveDaTa() {
 	printf "%s\n" "Saving config data"
 	if [ -n "$KEEP" ]; then
@@ -526,6 +510,7 @@ RestoreDaTa() {
 	touch "$WORKDIR/.new"
 }
 
+## (crazy) Fixme
 umountAll() {
 	printf "%s\n" "-> Unmounting all."
 	unset KERNEL_ISO
@@ -543,6 +528,7 @@ errorCatch() {
 	unset KERNEL_ISO
 	unset UEFI
 	unset MIRRORLIST
+	# (crazy) umountAll() ?
 	umount -l /mnt
 	losetup -D
 	if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
@@ -566,7 +552,7 @@ userISONme() {
 	echo "$in1"
 	if [ -n "$in1" ]; then
 		printf "%s\n" "The isoname will be $in1" "Is this correct y or n ?"
-		cfrmISONme 
+		cfrmISONme
 	fi
 	printf "%s\n" "Your iso's name will be $UISONAME"
 }
@@ -593,13 +579,9 @@ mkISOLabel() {
 	# grub2 needs dashes to separate the fields..
 	GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
 	ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
-	# in case when i386 is passed, fall back to i586
-	if [ "$TREE" = '3.0' ]; then
-		[ "$EXTARCH" = 'i386' ] && EXTARCH=i586
-	else
-		[ "$EXTARCH" = 'i386' ] && EXTARCH=i686
-		[ "$EXTARCH" = 'i586' ] && EXTARCH=i686
-	fi
+	# in case when i386 is passed, fall back to i686
+	[ "$EXTARCH" = 'i386' ] && EXTARCH=i686
+	[ "$EXTARCH" = 'i586' ] && EXTARCH=i686
 
 	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
@@ -681,8 +663,7 @@ updateSystem() {
 	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 
-	# urpmi --auto-update --downloader wget --wget-options --auth-no-challenge --auto --no-suggests --verify-rpm --ignorearch --prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-
+	# (crazy) why this check like this ?
 	if [ "$IN_ABF" = '0' ]; then
 		if [ ! -d "$WORKDIR/dracut" ]; then
 			find "$WORKDIR"
@@ -714,7 +695,7 @@ getPkgList() {
 		export GIT_BRNCH="$ISO_VER"
 	elif [ ${TREE,,} == "cooker" ]; then
 		export GIT_BRNCH=master
-	else 
+	else
 		export GIT_BRNCH=${TREE,,}
 		# ISO_VER defaults to user build entry
 	fi
@@ -738,13 +719,11 @@ getPkgList() {
     fi
 }
 
-mkeREPOdir() {        
+mkeREPOdir() {
         if [ ! -d "$LREPODIR" ]; then
                 mkdir -p "$LREPODIR"
                 cd "$LREPODIR" || exit
         fi
- 
-#	fi
 }
 
 showInfo() {
@@ -793,6 +772,7 @@ showInfo() {
 	printf "%s\n" "###" " "
 }
 
+# (crazy) WHY do we need that ?!?
 # Usage: userMd5Change [VARNAME] {Name of variable to contain diff list}
 # Function:
 # Creates md5sums current iso package list directory and store to file if file does not already exist.
@@ -881,6 +861,9 @@ localMd5Change() {
 	fi
 }
 
+
+
+## (crazy) move to arry's for the .lst stuff that is...
 # Usage: getIncFiles [filename] xyz.* $"[name of variable to return]
 # Returns a sorted list of include files
 # Function: Gets all the include lines for the specified package file
@@ -1077,6 +1060,7 @@ mkUserSpin() {
 MyAdd() {
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
+		## (crazy) why ? dnf install -y ... ${...[@]} ...  | tee ...
 		printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --nogpgcheck --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 		printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 	fi
@@ -1150,8 +1134,8 @@ FilterLogs() {
 		printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log"
 		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
 		printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log"
-		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-fail.log" 
-#		cat rpm-install.log | awk '$7  ~ /0/ {print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}'
+		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-fail.log"
+
 		# Append the data
 		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$19}'>> "$WORKDIR/rpm-fail.log"
 		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$19}' >> "$WORKDIR/rpm-install.log"
@@ -1171,7 +1155,7 @@ FilterLogs() {
 }
 
 InstallRepos() {
-# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just 
+# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
 # in case we need to revert to git again for the repo files.
 #Get the repo files
 
@@ -1192,7 +1176,7 @@ InstallRepos() {
     ls -l $CHROOTNAME/etc/yum.repos.d
     echo ${EXTARCH}
 
-#Check the repofiles and gpg keys exist in chroot
+    #Check the repofiles and gpg keys exist in chroot
     if [ ! -s "$CHROOTNAME/etc/yum.repos.d/cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
 	printf "%s\n"  "Repo dir bad install."
 	errorCatch
@@ -1201,10 +1185,10 @@ InstallRepos() {
 	/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
     fi
 
-# Clean up
-    /bin/rm -rf openmandriva*.rpm 
+    # Clean up
+    /bin/rm -rf openmandriva*.rpm
 
-# Enable non-free repos for firmware
+    # Enable non-free repos for firmware
     printf "%s\n" "Enable non-free repos for firmware."
     sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-non-free-$EXTARCH.repo"
 }
@@ -1220,7 +1204,7 @@ InstallRepos1() {
 
 	if [ "$GIT_BRNCH" = 'master' ]; then
 		EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
-	else 
+	else
 		EXCLUDE_LIST="cooker-main-repo cooker-extrasect-repo cooker-main.srcrepo cooker-extrasect-srcrepo openmandriva-repos.spec"
 	fi
 	# If chroot exists and if we have --noclean then the repo files are not needed with exception of the
@@ -1308,14 +1292,8 @@ createChroot() {
 	fi
 
 	# Update media
-	#	 if [ -n "$TESTREPO" ]; then
-	#		urpmi.addmedia --wget --urpmi-root "$CHROOTNAME" "MainTesting" $REPOPATH/main/testing
-	#	 fi
-	#	dnf --refresh --distro-sync --installroot "$CHROOTNAME"
-	if [ "${TREE,,}" != "cooker" ]; then
-		printf "%s -> Updating urpmi repositories in $CHROOTNAME"
-		urpmi.update -a -c -ff --wget --urpmi-root "$CHROOTNAME" updates
-	fi
+	## (crazy) I guess , the check was buggy before
+	dnf -y --refresh --distro-sync --installroot "$CHROOTNAME"
 
 	mount --bind /proc "$CHROOTNAME"/proc
 	mount --bind /sys "$CHROOTNAME"/sys
@@ -1349,7 +1327,6 @@ createChroot() {
 		mkUserSpin
 	 # Build the initial noclean chroot in ABF test mode and will use just the base lists
 	elif [ -n "$NOCLEAN" ] && [ ! -e "$CHROOTNAME"/.noclean ] && [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
-#	elif [[ -n "$NOCLEAN" && ! -e "$CHROOTNAME"/.noclean && "$IN_ABF" = '1' ]]; then
 		printf "%s\n" "Creating chroot in ABF developer mode"
 		mkOmSpin
 	# Update a noclean chroot with the contents of the user files my.add and my.rmv
@@ -1395,6 +1372,8 @@ createChroot() {
 }
 
 createInitrd() {
+
+	# (crazy) dracut conf need fixing , compression need match --compression=
 	# Check if dracut is installed
 	if [ ! -f "$CHROOTNAME/usr/sbin/dracut" ]; then
 		printf "%s\n" "-> dracut is not installed inside chroot." "Exiting."
@@ -1619,7 +1598,6 @@ createUEFI() {
 	# Remove the EFI directory
 	rm -R "$ISOROOTNAME/EFI"
 	XORRISO_OPTIONS2=" --efi-boot $EFINAME -append_partition 2 0xef $IMGNME"
-	
 }
 
 # Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>)
@@ -1733,7 +1711,6 @@ setupGrub2() {
 }
 
 setupISOenv() {
-	
 	# Set up default timezone
 	printf "%s\n" "-> Setting default timezone"
 	ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME/etc/localtime"
@@ -1779,7 +1756,7 @@ setupISOenv() {
 		if  [ -e "$CHROOTNAME/etc/sysconfig/desktop" ]; then
 			rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
 		fi
-
+		# (crazy) what for ? drak* stuff ?
 		# Create very important desktop file
 		cat >"$CHROOTNAME"/etc/sysconfig/desktop <<EOF
 DISPLAYMANAGER=$DISPLAYMANAGER
@@ -1789,34 +1766,20 @@ EOF
 	fi
 
 	# Copy some extra config files
-	if [ "$TREE" = '3.0' ]; then
-		## (crazy) NO way we do that for > 3.0 , please look at these files
-		cp -rfT "$WORKDIR/extraconfig/etc" "$CHROOTNAME"/etc/
-		cp -rfT "$WORKDIR/extraconfig/usr" "$CHROOTNAME"/usr/
+	## (crazy) fixme this kind stuff should not be needed this way!
+	cp -rfT "$WORKDIR/extraconfig/etc/X11" "$CHROOTNAME"/etc/X11
+	cp -rfT "$WORKDIR/extraconfig/etc/locale.conf" "$CHROOTNAME"/etc/locale.conf
+	cp -rfT "$WORKDIR/extraconfig/etc/vconsole.conf" "$CHROOTNAME"/etc/vconsole.conf
+	## why ?
+	cp -rfT "$WORKDIR/extraconfig/etc/polkit-1" "$CHROOTNAME"/etc/polkit-1
+	cp -rfT "$WORKDIR/extraconfig/etc/hostname" "$CHROOTNAME"/etc/hostname
 
-	else
-		## (crazy) fixme this kind stuff should not be needed this way!
-		cp -rfT "$WORKDIR/extraconfig/etc/X11" "$CHROOTNAME"/etc/X11
-		cp -rfT "$WORKDIR/extraconfig/etc/locale.conf" "$CHROOTNAME"/etc/locale.conf
-		cp -rfT "$WORKDIR/extraconfig/etc/vconsole.conf" "$CHROOTNAME"/etc/vconsole.conf
-		## why ?
-		cp -rfT "$WORKDIR/extraconfig/etc/polkit-1" "$CHROOTNAME"/etc/polkit-1
-		cp -rfT "$WORKDIR/extraconfig/etc/hostname" "$CHROOTNAME"/etc/hostname
-	fi
-
-	if [ "$TREE" = '3.0' ]; then
-		chroot "$CHROOTNAME" /usr/sbin/groupadd -f nopasswd
-		# Add the no passwd group for systemd
-	fi
 	# Add the VirtualBox folder sharing group
 	chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf
 
 	# Set up live user
 	live_user=live
 	printf "%s\n" "-> Setting up user ${live_user}"
-	#if [ -n "$NOCLEAN" ]; then
-	#	chroot "$CHROOTNAME" /usr/sbin/usermod -G wheel,nopasswd ${live_user}
-	#fi
 	chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd,vboxsf ${live_user}
 
 	# Clear user passwords
@@ -1852,23 +1815,7 @@ EOF
 	cp -f "$WORKDIR"/data/account-icon "$CHROOTNAME"/var/lib/AccountsService/icons/${live_user}
 	chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" /var/lib/AccountsService/users/${live_user}
 
-	# KDE4 related settings
-	if [ "${TYPE,,}" = "kde4" ]; then
-		mkdir -p "$CHROOTNAME"/home/$live_user/.kde4/env
-		echo "export KDEVARTMP=/tmp" > "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
-		echo "export KDETMP=/tmp" >> "$CHROOTNAME"/home/${live_user}/.kde4/env/00-live.sh
-
-		# disable baloo in live session
-		mkdir -p "$CHROOTNAME"/home/${live_user}/.kde4/share/config
-		cat >"$CHROOTNAME"/home/${live_user}/.kde4/share/config/baloofilerc << EOF
-[Basic Settings]
-Indexing-Enabled=false
-EOF
-		chroot "$CHROOTNAME" chmod -R 0777 /home/${live_user}/.kde4
-		chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}/.kde4
-	else
-		rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
-	fi
+	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
 	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma-wayland" ]; then
 		# disable baloo in live session
@@ -1901,9 +1848,6 @@ EOF
 	# Enable DM autologin
 	if [ "${TYPE,,}" != "minimal" ]; then
 		case ${DISPLAYMANAGER,,} in
-		"kdm")
-			chroot "$CHROOTNAME" sed -i -e 's/.*AutoLoginEnable.*/AutoLoginEnable=True/g' -e 's/.*AutoLoginUser.*/AutoLoginUser=live/g' /usr/share/config/kdm/kdmrc
-			;;
 		"sddm")
 			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 			if [ "${TYPE,,}" = "lxqt" ]; then
@@ -1919,6 +1863,7 @@ EOF
 		esac
 	fi
 
+	# (crazy) not used ? cannot work like this ?
 	pushd "$CHROOTNAME"/etc/sysconfig/network-scripts > /dev/null 2>&1
 	for iface in eth0 wlan0; do
 		cat > ifcfg-$iface << EOF
@@ -1932,6 +1877,7 @@ EOF
 
 	printf "%s\n" "-> Starting services setup."
 
+	# (crazy) fixme after systemd is fixed..
 	# (tpg) enable services based on preset files from systemd and others
 	UNIT_DIR="$CHROOTNAME"/lib/systemd/system
 	if [ -f "$UNIT_DIR-preset/90-default.preset" ]; then
@@ -1953,6 +1899,7 @@ EOF
 			done < "$file"
 		done
 	else
+		# (crazy) that is wrong
 		printf "%s\n" "-> File $UNIT_DIR-preset/90-default.preset does not exist. Installation is broken"
 		errorCatch
 	fi
@@ -2017,11 +1964,6 @@ EOF
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 		## NOTE these sed's need generate valid yaml .. - crazy -
-		 if [ "$TREE" = '3.0' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
 		if [ "${TYPE,,}" = 'plasma' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
@@ -2030,11 +1972,6 @@ EOF
 		if [ "${TYPE,,}" = 'plasma-wayland' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'kde4' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "kde-plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
 		if [ "${TYPE,,}" = 'mate' ]; then
@@ -2060,45 +1997,9 @@ EOF
 	#remove rpm db files which may not match the non-chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 
-	addUrpmiRepos () {
-		# FIX ME There should be a fallback to abf-downloads here or perhaps to a primary mirror.
-		if [ -z "$NOCLEAN" ]; then
-			# FIX ME THIS IS ONLY NEEDED FOR Lx3 and WONT BE NEEDED FOR Lx4
-			# add urpmi medias inside chroot
-			printf "%s\n" "-> Removing old urpmi repositories."
-			urpmi.removemedia -a --urpmi-root "$CHROOTNAME"
-			printf "%s\n" "-> Adding new urpmi repositories."
-			urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Contrib' 'media/contrib/release'
-			if [ $? != 0 ]; then
-				urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Contrib' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/contrib/release
-			fi
-			# This one is needed to grab firmwares
-			urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --mirrorlist "$MIRRORLIST" 'Non-free' 'media/non-free/release'
-			if [ $? != 0 ]; then
-				urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum 'Non-Free' http://abf-downloads.openmandriva.org/"${TREE,,}"/repository/"${EXTARCH}"/non-free/release
-			fi
-		else
-			MIRRORLIST="http://downloads.openmandriva.org/mirrors/openmandriva.${TREE##openmandriva}.$EXTARCH.list"
-			printf "%s -> Using $MIRRORLIST"
-			urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist $MIRRORLIST
-			if [ $? != 0 ]; then
-				printf "%s\n" "-> Adding urpmi media FAILED. Falling back to use ABF."
-				urpmi.addmedia --urpmi-root "$CHROOTNAME" --wget --no-md5sum --distrib --mirrorlist http://abf-downloads.openmandriva.org/${TREE##openmandriva}.${EXTARCH}.list
-				if [ $? != 0 ]; then
-					printf "%s" "-> Adding urpmi media FAILED. Exiting."
-					errorCatch
-				fi
-			fi
-		fi
-
-		# Update urpmi medias
-		printf "%s" "-> Updating urpmi repositories"
-		urpmi.update --urpmi-root "$CHROOTNAME" -a -ff --wget --force-key
-	}
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
-	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 
 	# ldetect stuff
 	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
@@ -2273,7 +2174,7 @@ postBuild() {
 
 	# If not in ABF move rpms back to the cache directories
 	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
-		mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
+		mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/dnf/
 	fi
 
 	# Clean chroot
