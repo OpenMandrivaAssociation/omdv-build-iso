@@ -67,9 +67,6 @@ main() {
 			lx4)
 				TREE=4.0
 				;;
-			lx3)
-				TREE=3.0
-				;;
 			*)
 				TREE="$TREE"
 				;;
