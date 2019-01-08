@@ -2024,6 +2024,8 @@ EOF
 		chroot "$CHROOTNAME" /usr/bin/mandb --quiet
 	fi
 
+	# (crazy) NOTE: this be after last think touched /home/live
+	chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
 	# Rebuild linker cache
 	chroot "$CHROOTNAME" /sbin/ldconfig
 
