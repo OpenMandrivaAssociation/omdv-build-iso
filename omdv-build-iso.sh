@@ -2174,7 +2174,7 @@ postBuild() {
 
 	# If not in ABF move rpms back to the cache directories
 	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
-		mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/urpmi/
+		mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/dnf/
 	fi
 
 	# Clean chroot
