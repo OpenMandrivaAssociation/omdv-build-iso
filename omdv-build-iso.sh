@@ -1780,7 +1780,7 @@ EOF
 	# Set up live user
 	live_user=live
 	printf "%s\n" "-> Setting up user ${live_user}"
-	chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd,vboxsf ${live_user}
+	chroot "$CHROOTNAME" /usr/sbin/adduser -m -G wheel,nopasswd,vboxsf,lpadmin ${live_user}
 
 	# Clear user passwords
 	for username in root $live_user; do
