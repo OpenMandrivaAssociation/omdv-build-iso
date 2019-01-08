@@ -2000,7 +2000,6 @@ EOF
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
-	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 
 	# ldetect stuff
 	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
