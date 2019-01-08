@@ -469,6 +469,7 @@ RemkWorkDir() {
 	fi
 }
 
+## hmm ?
 SaveDaTa() {
 	printf "%s\n" "Saving config data"
 	if [ -n "$KEEP" ]; then
@@ -509,6 +510,7 @@ RestoreDaTa() {
 	touch "$WORKDIR/.new"
 }
 
+## (crazy) Fixme
 umountAll() {
 	printf "%s\n" "-> Unmounting all."
 	unset KERNEL_ISO
@@ -526,6 +528,7 @@ errorCatch() {
 	unset KERNEL_ISO
 	unset UEFI
 	unset MIRRORLIST
+	# (crazy) umountAll() ?
 	umount -l /mnt
 	losetup -D
 	if [ -z "$DEBUG" ] || [ -z "$NOCLEAN" ] || [ -z "$REBUILD" ]; then
@@ -549,7 +552,7 @@ userISONme() {
 	echo "$in1"
 	if [ -n "$in1" ]; then
 		printf "%s\n" "The isoname will be $in1" "Is this correct y or n ?"
-		cfrmISONme 
+		cfrmISONme
 	fi
 	printf "%s\n" "Your iso's name will be $UISONAME"
 }
@@ -576,13 +579,9 @@ mkISOLabel() {
 	# grub2 needs dashes to separate the fields..
 	GRUB_UUID="$(date -u +%Y-%m-%d-%H-%M-%S-00)"
 	ISO_DATE="$(printf "%s" "$GRUB_UUID" | sed -e s/-//g)"
-	# in case when i386 is passed, fall back to i586
-	if [ "$TREE" = '3.0' ]; then
-		[ "$EXTARCH" = 'i386' ] && EXTARCH=i586
-	else
-		[ "$EXTARCH" = 'i386' ] && EXTARCH=i686
-		[ "$EXTARCH" = 'i586' ] && EXTARCH=i686
-	fi
+	# in case when i386 is passed, fall back to i686
+	[ "$EXTARCH" = 'i386' ] && EXTARCH=i686
+	[ "$EXTARCH" = 'i586' ] && EXTARCH=i686
 
 	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
