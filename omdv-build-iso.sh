@@ -94,9 +94,6 @@ main() {
 			plasma-wayland)
 				TYPE=plasma-wayland
 				;;
-			kde4)
-				TYPE=kde4
-				;;
 			mate)
 				TYPE=mate
 				;;
@@ -105,9 +102,6 @@ main() {
 				;;
 			icewm)
 				TYPE=icewm
-				;;
-			hawaii)
-				TYPE=hawaii
 				;;
 			xfce4)
 				TYPE=xfce4
