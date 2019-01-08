@@ -175,9 +175,6 @@ main() {
 		 --auto-update)
 			AUTO_UPDATE=1
 			;;
-		 --enable-skip-list)
-			ENSKPLST=enskplst #prolly should be a symlink
-			;;
 		 --userbuild)
 			USRBUILD=usrbuild #allow fresh build without destroying user files
 			;;
@@ -283,7 +280,7 @@ main() {
 	if [ "$IN_ABF" = '0' ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
 		if [ -n "$KEEP" ]; then
 			SaveDaTa
-			RestoreDaTa 
+			RestoreDaTa
 		fi
 	elif [ ! -d "$WORKDIR" ] && [ -n "$REBUILD" ]; then
 		#THIS TEST IS BROKEN BECAUSE IT DOES NOT DISCRIMINATE WHETHER REBUILD IS SET AND THUS ALWAYS EXITS
@@ -353,16 +350,15 @@ usage_help() {
 		printf "%s\n" "Please run script with arguments"
 		printf "%s\n" "usage $0 [options]"
 		printf "%s\n" "general options:"
-		printf "%s\n" "--arch= Architecture of packages: i686, x86_64"
-		printf "%s\n" "--tree= Branch of software repository: cooker, lx3, lx4"
-		printf "%s\n" "--version= Version for software repository: 3.0, 4.0"
+		printf "%s\n" "--arch= Architecture of packages: i686, x86_64, znver1"
+		printf "%s\n" "--tree= Branch of software repository: cooker, lx4"
+		printf "%s\n" "--version= Version for software repository: 4.0"
 		printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
-		printf "%s\n" "--type= User environment type on ISO: Plasma, KDE4, MATE, LXQt, IceWM, hawaii, xfce4, weston, minimal"
-		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: KDM, GDM, LightDM, sddm, xdm, none"
+		printf "%s\n" "--type= User environment type on ISO: plasma, mate, lxqt, icewm, xfce4, weston, minimal"
+		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: gdm, sddm , none"
 		printf "%s\n" "--workdir= Set directory where ISO will be build"
 		printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
 		printf "%s\n" "--debug Enable debug output. This option also allows ABF=1 to be used loacally for testing"
-		printf "%s\n" "--urpmi-debug Enable urpmi debugging output"
 		printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
 		printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
 		printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
@@ -371,13 +367,12 @@ usage_help() {
 		printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
 		printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
 		printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
-		printf "%s\n" "--enable-skip-list Links a user created skip.list into the /etc/uprmi/ directory. Can be used in conjunction with --auto-update"
 		printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
 		printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given"
 		printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
 		printf "%s\n" " "
 		printf "%s\n" "For example:"
-		printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=2015.0 --release_id=alpha --type=lxqt --displaymanager=sddm"
+		printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=4.0 --release_id=alpha --type=plasma --displaymanager=sddm"
 		printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
 		printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
 		printf "%s\n" "Exiting."
