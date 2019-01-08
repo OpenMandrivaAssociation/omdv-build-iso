@@ -2034,16 +2034,6 @@ EOF
 	# Clear tmp
 	rm -rf "$CHROOTNAME"/tmp/*
 
-	# Clear urpmi cache
-	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
-		# Move contents of rpm cache away so as not to include in iso
-		mv "$CHROOTNAME/var/cache/urpmi/rpms" "$WORKDIR/rpms"
-		# Remake original directory
-		mkdir -m 755 -p  "$CHROOTNAME"/var/cache/urpmi/rpms
-	else
-		rm -rf "$CHROOTNAME"/var/cache/urpmi/partial/*
-		rm -rf "$CHROOTNAME"/var/cache/urpmi/rpms/*
-	fi
 	# Generate list of installed rpm packages
 	chroot "$CHROOTNAME" rpm -qa --queryformat="%{NAME}\n" | sort > /var/lib/rpm/installed-by-default
 
@@ -2174,11 +2164,6 @@ postBuild() {
 		fi
 	fi
 
-
-	# If not in ABF move rpms back to the cache directories
-	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
-		mv -f "$WORKDIR"/rpms "$CHROOTNAME"/var/cache/dnf/
-	fi
 
 	# Clean chroot
 	umountAll "$CHROOTNAME"
