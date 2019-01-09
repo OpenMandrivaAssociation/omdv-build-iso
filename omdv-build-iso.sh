@@ -1752,7 +1752,7 @@ setupISOenv() {
 	## (crazy) fixme this kind stuff should not be needed this way!
 	cp -rfT "$WORKDIR/extraconfig/etc/X11" "$CHROOTNAME"/etc/X11
 	# (crazy) booting is handle these now , we start with empty locale.conf
-	touch $CHROOTNAME"/etc/locale.conf
+	touch "$CHROOTNAME"/etc/locale.conf
 	cp -rfT "$WORKDIR/extraconfig/etc/vconsole.conf" "$CHROOTNAME"/etc/vconsole.conf
 	## why ?
 	cp -rfT "$WORKDIR/extraconfig/etc/polkit-1" "$CHROOTNAME"/etc/polkit-1
