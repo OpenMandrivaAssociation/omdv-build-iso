@@ -1748,17 +1748,11 @@ setupISOenv() {
 
 		ln -sf "/lib/systemd/system/${DISPLAYMANAGER,,}.service" "$CHROOTNAME/etc/systemd/system/display-manager.service" 2> /dev/null || :
 
+		# (crazy) probably remove that ?
 		# Set reasonable defaults
 		if  [ -e "$CHROOTNAME/etc/sysconfig/desktop" ]; then
 			rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
 		fi
-		# (crazy) what for ? drak* stuff ?
-		# Create very important desktop file
-		cat >"$CHROOTNAME"/etc/sysconfig/desktop <<EOF
-DISPLAYMANAGER=$DISPLAYMANAGER
-DESKTOP=$TYPE
-EOF
-
 	fi
 
 	# Copy some extra config files
