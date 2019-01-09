@@ -17,12 +17,10 @@
 %include .///omdv_myspell.lst
 %include .///omdv_vlc.lst
 %include .///omdv_smplayer.lst
+%include .///omdv_pulseaudio.lst
+%include .///omdv_task-plasma.lst
 
 # Desktop Specifics
-
-# (crazy) all task-xxx need fixing , do NOT use task-xxx
-# but the fake task lst files
-%include .///omdv_task-plasma.lst
 
 phonon4qt5-gstreamer
 rosa-imagewriter
