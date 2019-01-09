@@ -1188,6 +1188,9 @@ InstallRepos() {
     # Clean up
     /bin/rm -rf openmandriva*.rpm
 
+    # Enable non-free repos for firmware
+    printf "%s\n" "Enable non-free repos for firmware."
+    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-non-free-$EXTARCH.repo"
 }
 
 # Leave the old function for the time being in case it's needed after all
@@ -1236,10 +1239,14 @@ InstallRepos1() {
 		sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
 	done
 
-	for REPTYPE in contrib  restricted; do
+	for REPTYPE in contrib non-free restricted; do
 		cp  "$WORKDIR/${TREE,,}-extrasect-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
 		sed -e "s/@DIST_ARCH@/$EXTARCH/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
 	done
+
+	sed -e "s/@DIST_SECTION@/non-free/g" \
+		-e "s/@DIST_SECTION_NAME@/Non-free/g" \
+		-i "$CHROOTNAME"/etc/yum.repos.d/*non-free*"$EXTARCH"*.repo
 
 	sed -e "s/@DIST_SECTION@/restricted/g" \
 		-e "s/@DIST_SECTION_NAME@/Restricted/g" \
