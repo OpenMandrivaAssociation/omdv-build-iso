@@ -586,7 +586,7 @@ mkISOLabel() {
 	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
 	elif [ "${RELEASE_ID,,}" = 'alpha' ]; then
-		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$(BUILD_ID)"
+		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	fi
 	# Check if user build if true fixup name logic
 	if [ "$TYPE" = 'my.add' ]; then
