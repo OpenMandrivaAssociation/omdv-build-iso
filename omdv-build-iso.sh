@@ -1986,7 +1986,7 @@ EOF
 	rm -f "$CHROOTNAME"/etc/resolv.conf
 	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	# set up some default settings
-	printf '%s\n' "nameserver 8.8.8.8" >> "$CHROOTNAME"/run/systemd/resolve/resolv.conf
+	printf '%s\n' "nameserver 208.67.222.222" "nameserver 208.67.220.220" >> "$CHROOTNAME"/run/systemd/resolve/resolv.conf
 
 	# ldetect stuff
 	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
