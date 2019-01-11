@@ -1890,7 +1890,7 @@ EOF
 
 	# Enable services on demand
 	# (crazy) WARNING: calamares-locale service need to run for langauage settings grub menu's
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager irqbalance systemd-timesyncd vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer dnf-automatic-install.timer)
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer )
 
 	for i in "${SERVICES_ENABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
@@ -1913,7 +1913,7 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix systemd-networkd systemd-resolved nfs-utils chronyd udisks2 packagekit)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix systemd-networkd nfs-utils chronyd udisks2 packagekit)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
@@ -1984,9 +1984,9 @@ EOF
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
-	# (crazy) that badly su*** .. we need fix systemd/NM stuff
-	# so be sure we have an NS written in case both breaks.
-	echo "nameserver 8.8.8.8" >"$CHROOTNAME"/etc/resolv.conf
+	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	# set up some default settings
+	printf '%s\n' "nameserver 8.8.8.8" >> "$CHROOTNAME"/run/systemd/resolve/resolv.conf
 
 	# ldetect stuff
 	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
