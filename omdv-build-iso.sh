@@ -234,8 +234,7 @@ main() {
 	[ -z "${TREE}" ] && TREE=cooker
 	[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 	[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-	# (crazy) fixme , --compression= is broken
-	[ -z "${COMPTYPE}" ] && COMPTYPE="xz -Xbcj x86 -Xdict-size 100%"
+	[ -z "${COMPTYPE}" ] && COMPTYPE="zstd -Xcompression-level 15"
 	[ -z "${MAXERRORS}" ] && MAXERRORS=1
 	if [[ ( "$IN_ABF" = '1'  &&  -n "$DEBUG" )  ||  "$IN_ABF" = '0' ]]; then
 		if [ -z "$NOCLEAN" ]; then
