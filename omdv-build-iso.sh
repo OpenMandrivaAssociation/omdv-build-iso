@@ -1875,8 +1875,10 @@ EOF
 						if [ -n "$DEST" ] && [ -d "$CHROOTNAME/etc/systemd/system" ] && [ ! -e "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}" ] ; then
 							[ ! -d "/etc/systemd/system/$DEST.wants" ] && mkdir -p "$CHROOTNAME/etc/systemd/system/$DEST.wants"
 							printf "%s\n" "-> Enabling ${s_file#$UNIT_DIR/} based on preset file"
-							#/bin/systemctl --quiet enable ${s#$UNIT_DIR/};
-							ln -sf "/${s_file#$CHROOTNAME/}" "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}"
+							chroot "$CHROOTNAME" /bin/systemctl enable ${s_file#$UNIT_DIR/}
+							#ln -sf "/${s_file#$CHROOTNAME/}" "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}"
+						else
+							printf "%s\n" "-> All preset based service already enabled , moving on.."
 						fi
 					done
 				fi
@@ -1884,7 +1886,7 @@ EOF
 		done
 	else
 		# (crazy) that is wrong
-		printf "%s\n" "-> File $UNIT_DIR-preset/90-default.preset does not exist. Installation is broken"
+		printf "%s\n" "-> File $UNIT_DIR-preset/90-default.preset does not exist. Installation may be broken"
 		errorCatch
 	fi
 
@@ -1892,46 +1894,38 @@ EOF
 	# (crazy) WARNING: calamares-locale service need to run for langauage settings grub menu's
 	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer )
 
+
+	# ( crazy) we cannot symlink/rm for .service,.socket
+	# these have , or may have dependecies in the unit file meaning,
+	# if you rm/symlink foo it won't enable foo.dbus one or socket , same for disable.
 	for i in "${SERVICES_ENABLE[@]}"; do
-		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
+		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
 			if [ -e "$CHROOTNAME/lib/systemd/system/$i" ]; then
 				printf "%s\n" "-> Enabling $i"
 				ln -sf "/lib/systemd/system/$i" "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i"
 			else
 				printf "%s\n" "-> Special service $i does not exist. Skipping."
 			fi
-		elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
-			if [ -e "$CHROOTNAME/lib/systemd/system/$i.service" ]; then
-				printf "%s\n" "-> Enabling $i.service"
-				ln -sf "/lib/systemd/system/$i.service" "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i.service"
-			else
-				printf "%s\n" "-> Service $i does not exist. Skipping."
-			fi
 		else
-			printf "%s\n" "-> Wrong service match."
+			printf "%s\n" "-> Enabling $i"
+			chroot "$CHROOTNAME" /bin/systemctl enable $i
 		fi
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix systemd-networkd.socket systemd-networkd nfs-utils chronyd udisks2 packagekit mdmonitor)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 packagekit mdmonitor)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
-		if [[ $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
+		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
 			if [ -e "$CHROOTNAME/lib/systemd/system/$i" ]; then
 				printf "%s\n" "-> Disabling $i"
 				rm -rf "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i"
 			else
 				printf "%s\n" "-> Special service $i does not exist. Skipping."
 			fi
-		elif [[ ! $i  =~ ^.*socket$|^.*path$|^.*target$|^.*timer$ ]]; then
-			if [ -e "$CHROOTNAME/lib/systemd/system/$i.service" ]; then
-				printf "%s\n" "-> Disabling $i.service"
-				rm -rf "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i.service"
-			else
-				printf "%s\n" "-> Service $i does not exist. Skipping."
-			fi
 		else
-			printf "%s\n" "-> Wrong service match."
+			printf "%s\n" "-> Disabling $i"
+			chroot "$CHROOTNAME" /bin/systemctl disable $i
 		fi
 	done
 
