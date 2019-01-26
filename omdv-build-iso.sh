@@ -1929,6 +1929,8 @@ EOF
 		fi
 	done
 
+	# it refuses to die :-)
+	[ -e "$CHROOTNAME"/lib/systemd/system/multi-user.target.wants/systemd-networkd.service ] && rm -rf "$CHROOTNAME"/lib/systemd/system/multi-user.target.wants/systemd-networkd.service
 	# mask systemd-journald-audit.socket to stop polluting journal with audit spam
 	[ ! -e "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket ] && ln -sf /dev/null "$CHROOTNAME"/etc/systemd/system/systemd-journald-audit.socket
 
