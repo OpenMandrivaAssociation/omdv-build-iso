@@ -1755,7 +1755,6 @@ setupISOenv() {
 	touch "$CHROOTNAME"/etc/locale.conf
 	cp -rfT "$WORKDIR/extraconfig/etc/vconsole.conf" "$CHROOTNAME"/etc/vconsole.conf
 	## why ?
-	cp -rfT "$WORKDIR/extraconfig/etc/polkit-1" "$CHROOTNAME"/etc/polkit-1
 	cp -rfT "$WORKDIR/extraconfig/etc/hostname" "$CHROOTNAME"/etc/hostname
 
 	# Add the VirtualBox folder sharing group
