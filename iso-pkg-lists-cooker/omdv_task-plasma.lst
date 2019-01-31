@@ -72,5 +72,5 @@ spectacle
 speech-dispatcher
 ssr
 systemd-kcm
-user-manager
+kuser
 zeroconf-ioslave
