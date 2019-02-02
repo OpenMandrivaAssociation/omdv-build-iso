@@ -20,6 +20,10 @@
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
+
+# install for Live only
+# and remove with calamares cleaner
+kpat
 # Desktop Specifics
 
 phonon4qt5-gstreamer
