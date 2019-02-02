@@ -1891,7 +1891,7 @@ EOF
 
 	# Enable services on demand
 	# (crazy) WARNING: calamares-locale service need to run for langauage settings grub menu's
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer )
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon irqbalance systemd-timedated systemd-timesyncd systemd-resolved dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer )
 
 
 	# ( crazy) we cannot symlink/rm for .service,.socket
@@ -1912,7 +1912,7 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 packagekit mdmonitor)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix vboxadd systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 packagekit mdmonitor)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
