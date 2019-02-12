@@ -1759,6 +1759,7 @@ setupISOenv() {
 
 	# Add the VirtualBox folder sharing group
 	chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf
+	chroot "$CHROOTNAME" /usr/sbin/groupadd -f lpadmin
 
 	# Set up live user
 	live_user=live
