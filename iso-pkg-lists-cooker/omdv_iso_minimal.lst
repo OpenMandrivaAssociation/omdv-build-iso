@@ -15,7 +15,7 @@ e2fsprogs
 grub2
 grub2-efi
 efibootmgr
-kernel-release-desktop-latest
+#kernel-release-desktop-latest
 kernel-release-desktop
 kernel-firmware
 kernel-firmware-extra
