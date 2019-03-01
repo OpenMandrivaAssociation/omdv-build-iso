@@ -46,7 +46,7 @@ main() {
 
 	# Make sure MAXERRORS gets preset to a real number else parallel will error out.
 	# This will be overidden by the users value if given.
-	MAXERRORS=1
+	MAXERRORS=10
 set -set -xx
 	if [ "$#" -lt 1 ]; then
 		usage_help
@@ -699,7 +699,7 @@ getPkgList() {
 #	if [ -n "$ISO_VER" ]; then
 #		export GIT_BRNCH="$ISO_VER"
 	if [ ${TREE,,} == "cooker" ]; then
-		export GIT_BRNCH=master
+		export GIT_BRNCH=cookerpll
 	else 
 		export GIT_BRNCH=${TREE,,}
 		# ISO_VER defaults to user build entry
@@ -1119,7 +1119,7 @@ mkUpdateChroot() {
 			MyAdd
 			MyRmv
 		fi
-	elif [ "$IN_ABF" = '1' ]; then
+#	elif [ "$IN_ABF" = '1' ]; then
 		#printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$PLLL" ]; then
 			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=x86_64 --exclude=*.i686 --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
