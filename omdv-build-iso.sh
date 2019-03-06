@@ -297,7 +297,7 @@ main() {
 			SaveDaTa
 			RestoreDaTa 
 		fi
-	elif [ ! -d "$WORKDIR" ] && [ -n "$REBUILD" ]; then
+	elif  [ -n "$REBUILD" ] && [ ! -d "$WORKDIR" ]; then
 		#THIS TEST IS BROKEN BECAUSE IT DOES NOT DISCRIMINATE WHETHER REBUILD IS SET AND THUS ALWAYS EXITS
 		printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
 			"-> You must run  your command with the --noclean option set to create something to rebuild."
@@ -1133,7 +1133,7 @@ mkUpdateChroot() {
 			MyAdd
 			MyRmv
 		fi
-	elif [ "$IN_ABF" = '1' ]; then
+#	elif [ "$IN_ABF" = '1' ]; then
 		#printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$PLLL" ]; then
 			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
