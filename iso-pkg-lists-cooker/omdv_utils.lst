@@ -16,6 +16,7 @@ dvbsnoop #utils
 dvbtune #utils
 dvd+rw-tools #utils
 freerdp #utils
+fuse2
 fuse-exfat #utils
 # wrong here
 gnupg #utils
@@ -54,4 +55,6 @@ sane-backends-iscan #utils
 sash #utils
 xev #utils
 radeontool
-
+## this is *wong* , the whole file is wrong
+dnfdragora
+dnfdragora-updater

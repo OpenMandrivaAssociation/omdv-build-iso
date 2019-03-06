@@ -76,6 +76,7 @@ gamin #gtk dep
 GConf2 #gtk dep
 gtk2-modules #gtk dep
 #gtk-xfce-engine
+gvfs
 gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
