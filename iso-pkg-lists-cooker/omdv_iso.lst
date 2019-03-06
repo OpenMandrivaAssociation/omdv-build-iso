@@ -12,7 +12,6 @@ eject
 #freetype-tools #iso
 firewalld
 firewall-config
-gvfs
 hfsutils #iso
 indexhtml
 info #iso

@@ -29,5 +29,6 @@ pciutils
 timezone
 usbutils
 usb_modeswitch
-vim-minimal #min-iso
+vim-enhanced
+nano
 wireless-tools

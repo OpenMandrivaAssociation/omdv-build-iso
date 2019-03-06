@@ -11,17 +11,21 @@
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_krita.lst
-%include .///omdv_libreoffice.lst
+#%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
-%include .///omdv_pulseaudio.lst
 %include .///omdv_vlc.lst
 %include .///omdv_smplayer.lst
+%include .///omdv_pulseaudio.lst
+%include .///omdv_task-plasma.lst
 
+
+# install for Live only
+# and remove with calamares cleaner
+kpat
 # Desktop Specifics
-# task-plasma need fixing also - crazy
-task-plasma 
+
 phonon4qt5-gstreamer
 rosa-imagewriter
 quick-usb-formatter
@@ -48,19 +52,13 @@ kipi-plugins-smug
 kipi-plugins-yandexfotki
 showfoto
 
-# Needed Task/Meta Packages
-task-pulseaudio
-
 task-printing
 # printing
 task-printing-scanning
-hplip-gui #printer
 system-config-printer-gui #printer
 
+## (crazy) hmm .. this need move away from here
 x11-font-cyrillic
-# keep to check
-x11-server-xorg
-x11-compose-cache
 x11-tools
 x11-docs
 x11-font-type1
@@ -74,9 +72,6 @@ avahi #service
 # FIXME: replace with https://github.com/nomad-desktop/nomad-firewall
 firewall-applet #service
 
-# Support for talking to wrongPhone/wrongPad
-usbmuxd
-
 # Miscelaneous Packages
 enchant
 ffmpeg
@@ -89,12 +84,11 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
-## hmm these need be pulled from elsewhere
-openssh-server #server
-samba-server #server
 
 # special featured software
 oma-welcome
+# oma-welcome got broken deps
+oxygen-icons 
 
 #packagekit
 packagekit-gstreamer-plugin

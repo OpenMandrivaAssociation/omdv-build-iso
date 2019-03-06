@@ -92,8 +92,8 @@ firewall-applet #service
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
 gamin #gtk dep
-GConf2 #gtk dep
 gtk2-modules #gtk dep
+gvfs
 gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+
+do_menu()
+{
+
+	local i
+	## order matters..
+	local file=(grub-common-menu.cfg grub-language-menu.cfg grub-keyboard-menu.cfg grub-trouble-menu.cfg grub-other-menu.cfg)
+
+	for i in ${file[@]}
+	do
+
+		if [[ ! -e ./$i ]]; then
+			echo "Error: File $i missing cannot continue"
+			exit 1
+		else
+			local new_menu="./grub2-bios.cfg"
+			if [[ $i =~ grub-common-menu.cfg ]]; then
+				echo >$new_menu
+				cat $i >$new_menu
+			else
+				cat $i >>$new_menu
+			fi
+		fi
+	done
+}
+
+do_menu

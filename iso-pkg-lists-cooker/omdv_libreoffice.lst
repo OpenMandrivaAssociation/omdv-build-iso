@@ -5,10 +5,6 @@ libreoffice-impress
 libreoffice-math
 libreoffice-writer
 
-libreoffice-l10n-ja
-libreoffice-help-ja
-libreoffice-l10n-ko
-libreoffice-help-ko
 libreoffice-l10n-nb
 libreoffice-help-nb
 libreoffice-l10n-nn
@@ -33,7 +29,3 @@ libreoffice-help-it
 libreoffice-l10n-nl
 libreoffice-help-nl
 libreoffice-l10n-ro
-libreoffice-l10n-zh_CN
-libreoffice-help-zh_CN
-libreoffice-l10n-zh_TW
-libreoffice-help-zh_TW
