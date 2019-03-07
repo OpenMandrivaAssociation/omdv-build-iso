@@ -325,9 +325,10 @@ main() {
 	mkISOLabel
 	showInfo
 	getPkgList
+	MkeListRepo # Create git repo for pkg lists
+	DtctCmmt    # Check for changes and set change flag 
 	InstallRepos
 	updateSystem
-	localMd5Change #Calls doDiff
 	createChroot
 	createInitrd
 	createMemDisk
@@ -479,10 +480,10 @@ SaveDaTa() {
 	mv "$WORKDIR/dracut" "$UHOME/dracut"
 	mv "$WORKDIR/grub2" "$UHOME/grub2"
 	mv "$WORKDIR/boot" "$UHOME/boot"
-	if [ -n "$REBUILD" ]; then
+#	if [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> Saving rpms for rebuild"
-		mv "$CHROOTNAME/var/cache/dnf/" "$UHOME/RPMS"
-	fi
+		mv "$CHROOTNAME/var/cache/dnf/" "$UHOME/dnf"
+#	fi
 }
 
 RestoreDaTa() {
@@ -620,51 +621,16 @@ updateSystem() {
 		;;
 	esac
 
-	if ! [ -e /usr/bin/dnf ]; then
-		# Currently no dnf in the builder
-		# Can't use urpmi without installing repos
-		# Use wget and rpm to install dnf and it's deps for the time being.
-		# The following code compliments of bero (Bernhard Rosenkranzer)
-		if [ "IN_ABF" = '0' ]; then
-			TMPDIR="$(mktemp -d /tmp/upgradeXXXXXX)"
-			if ! [ -d "$TMPDIR" ]; then
-				echo Install mktemp
-				exit 1
-			fi
-			cd "$TMPDIR"
-			if echo $ARCH |grep -q 64; then
-				LIB=lib64
-			else
-				LIB=lib
-			fi
-			#FIX ME BELOW MUST ALLOW FOR RELEASE SPINS
-			PKGS=http://abf-downloads.openmandriva.org/cooker/repository/$ARCH/main/release/
-			curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-			PACKAGES="createrepo_c deltarpm distro-release-OpenMandriva distro-release-common dnf dnf-automatic dnf-conf dnf-yum dwz hawkey-man ${LIB}comps0 ${LIB}createrepo_c0 ${LIB}crypto1.1 ${LIB}ssl1.1 ${LIB}db6.2 ${LIB}dnf-gir1.0 ${LIB}dnf1 ${LIB}gpgme11 ${LIB}gpgmepp6 ${LIB}repo0 ${LIB}rpm8 ${LIB}rpmbuild8 ${LIB}rpmsign8 ${LIB}solv0 ${LIB}solvext0 ${LIB}lua5 libsolv openmandriva-repos openmandriva-repos-cooker openmandriva-repos-keys openmandriva-repos-pkgprefs ${LIB}python3.7m_1 python python-dnf python-dnf-plugin-leaves python-dnf-plugin-local python-dnf-plugin-show-leaves python-dnf-plugin-versionlock python-dnf-plugins-core python-gpg python-hawkey python-iniparse python-libcomps python-librepo python-rpm python-six rpm rpm-openmandriva-setup rpm-plugin-ima rpm-plugin-syslog rpm-plugin-systemd-inhibit rpm-sign rpmlint rpmlint-distro-policy"
-			for i in $PACKAGES; do
-				P=$(grep "^$i-[0-9].*" PACKAGES)
-				if [ "$?" != '0' ]; then
-						echo "Can't find cooker version of $i, please report"
-						exit 1
-				fi
-				wget $PKGS/$P
-			done
-			cd "$TMPDIR"
-			rpm -Uvh --force --oldpackage --nodeps *.rpm
-		fi
-		dnf clean metadata
-	fi
-
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel"
+	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel git"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
 	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
-
-	# (crazy) why this check like this ?
-	if [ "$IN_ABF" = '0' ]; then
+	if [ "$IN_ABF" = 0 ]; then
+        echo "-> Updating dnf.conf to cache packages for rebuild"
+        echo "keepcache=True" >> /etc/dnf/dnf.conf
 		if [ ! -d "$WORKDIR/dracut" ]; then
 			find "$WORKDIR"
 			touch "$WORKDIR/.new"
@@ -681,16 +647,10 @@ getPkgList() {
 	# update iso-pkg-lists from GitHub if required
 	# we need to do this for ABF to ensure any edits have been included
 	# Do we need to do this if people are using the tool locally?
-	if [  "$IN_ABF" = '0' ]; then
-		if [ ! -d "$WORKDIR/sessrec/base_lists" ]; then
-			mkdir -p "$WORKDIR/sessrec/base_lists/"
-		fi
 		if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
 			printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
 			# download iso packages lists from https://github.com
 			# GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-		fi
-	fi
 	if [ -n "$ISO_VER" ]; then
 		export GIT_BRNCH="$ISO_VER"
 	elif [ ${TREE,,} == "cooker" ]; then
@@ -703,7 +663,7 @@ getPkgList() {
 	wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
 	cd "$WORKDIR" || exit
 	rm -rf ${EXCLUDE_LIST}
-	cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"
+#            cp -r "$WORKDIR"/iso-pkg-lists* "$WORKDIR/sessrec/base_lists/"
 	if [ ! -e "$FILELISTS" ]; then
 		printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 		errorCatch
@@ -772,93 +732,42 @@ showInfo() {
 	printf "%s\n" "###" " "
 }
 
-# (crazy) WHY do we need that ?!?
-# Usage: userMd5Change [VARNAME] {Name of variable to contain diff list}
-# Function:
-# Creates md5sums current iso package list directory and store to file if file does not already exist.
-# Three files are created "$WORKDIR/filesums", "/tmp/filesums" and $WORKDIR/chngsense
-# The first two contain file md5's for the original set and the current set, the last contains the checksum for the entire directory.
-# On each run the directory md5sums are compared if there has been a change a flag is set triggering modification of the chroot.
-# If the flag is set the md5s for the files are compared and a named variable containing the changed files is emmitted.
-# This variable is used as input for diffPkgLists() to generate diffs for the information of the developer/user
-# This function is not used when the script is run on ABF.
-localMd5Change() {
-	if [ "$IN_ABF" = '1' ] && [ -z "$DEBUG" ]; then
-		return 0
+# Create git repo for the package lists so we can record user mode changes. 
+MkeListRepo() {
+    if [ ! -d "$WORKDIR/iso-pkg-lists-$TREE/git" ]; then
+        printf "%s\n" "-> Creating package list repo"
+        cd ${WORKDIR}/iso-pkg-lists-${TREE}
+        git init
+        git add .
 	fi
-   	local __difflist
-	BASE_LIST=$WORKDIR/sessrec/base_lists/iso-pkg-lists-${TREE}
-	WORKING_LIST=$WORKDIR/iso-pkg-lists-${TREE}
+}
+# Detect whether the lists have changed and if so set the change flag, generate commit msg and commit the changes.
+DtctCmmt() {
+GITDF=`git diff`
+if [ -n "$GITDF" ]; then
+    CHGFLAG=1
+    MkeCmmtMsg
+    git commit -a -m "$CMMTMSG"
+    CHGFLAG=0
+	fi
+}
 
-	if [ -f "$WORKDIR/.new" ]; then
-		printf "%s\n" "-> Making reference file sums"
-		REF_FILESUMS=$(find ${BASE_LIST}/my.add ${BASE_LIST}/my.rmv ${BASE_LIST}/*.lst -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
-		printf "%s\n" "-> Making directory reference sum"
-		REF_CHGSENSE=$(printf "%s" "$REF_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
-		printf "%s\n" "$BUILD_ID" > "$WORKDIR/sessrec/.build_id"
-		printf "%s\n" "-> Recording build identifier"
-		rm -rf "$WORKDIR/.new"
-	elif [ -n "$NOCLEAN" ]; then
-		# Regenerate the references for the next run
-		REF_FILESUMS=$(find ${BASE_LIST}/my.add ${BASE_LIST}/my.rmv ${BASE_LIST}/*.lst -type f -exec md5sum {} \; | tee "$WORKDIR/sessrec/ref_filesums")
-		printf "%s\n" "-> Making reference file sums"
-		REF_CHGSENSE=$(printf "%s" "$REF_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/ref_chgsense")
-		printf "%s\n" "-> Making directory reference sum"
-	fi
-	if [ -n "$DEBUG" ]; then
-		printf "%s\n" "$REF_CHGSENSE"
-		printf "%s\n" "$REF_FILESUMS"
-	fi
-
-	REF_CHGSENSE=$(cat "$WORKDIR/sessrec/ref_chgsense")
-	REF_FILESUMS=$(cat "$WORKDIR/sessrec/ref_filesums")
-	printf "%s\n" "-> References loaded"
-
-	# Generate the references for this run
-	# Need to be careful here; there may be backup files so get the exact files
-	# Order is important (sort?)
-	NEW_FILESUMS=$(find ${WORKING_LIST}/my.add ${WORKING_LIST}/my.rmv ${WORKING_LIST}/*.lst -type f -exec md5sum {} \; | tee $WORKDIR/sessrec/new_filesums)
-	NEW_CHGSENSE=$(printf "%s" "$NEW_FILESUMS" | colrm 33 | md5sum | tee "$WORKDIR/sessrec/new_chgsense")
-	printf "%s\n" "-> New references created"
-	if [ -n "$DEBUG" ]; then
-		printf "%s\n" "Directory Reference checksum" "$REF_CHGSENSE"
-		printf "%s\n" "Reference Filesums" "$REF_FILESUMS"
-		printf "%s\n" "New Directory Reference checksum" "$NEW_CHGSENSE"
-		printf "%s\n" "New Filesums"  "$NEW_FILESUMS"
-	fi
-	if [ "$NEW_CHGSENSE" = "$REF_CHGSENSE" ]; then
-		CHGFLAG=0
+# Create a sequential commit message
+MkeCmmtMsg() {
+if [ -f "$WORKDIR/sessrec/.build_id" ]; then
+				SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
 	else
-		printf "%s\n" "$NEW_CHGSENSE" >"$WORKDIR/sessrec/ref_chgsense"
-		CHGFLAG=1
-	fi
-	if [ "$CHGFLAG" = '1' ]; then
-		printf "%s\n" "-> Your build files have changed"
-		# Create a list of changed files by diffing checksums
-		# In these circumstances awk does a better job than diff
-		# This looks complicated but all it does is to put the two fields in each file into independent arrays,
-		# compares the first field from each file and if they are not equal then print the second field (filename) from each file.
-		DIFFILES=$(awk 'NR==FNR{c[NR]=$2; d[NR]=$1;next}; {e[FNR]=$1; f[FNR]=$2}; {if(e[FNR] == d[FNR]){} else{print c[FNR],"   "f[FNR]}}' "$WORKDIR/sessrec/ref_filesums" "$WORKDIR/sessrec/new_filesums")
-		MODFILES="${DIFFILES}"
-		if [ -n "$DEBUG" ]; then
-			printf "%s\n" "$MODFILES"
+    SESSNO=${BUILD_ID}
 		fi
-		#mv "$WORKDIR/sessrec/tmp_new_filesums" "$WORKDIR/sessrec/new_filesums"
-		USERMOD=$(printf '%s' "$DIFFILES" | grep 'my.add\|my.rmv')
-		if [ -z "$USERMOD" ]; then
-			printf "%s\n" "-> No Changes"
-			return 0
-		fi
-		# Here just the standard files are diffed ommitting my.add and my.remove
-		# Intended for developers creating new compilations. Only active if DEVMODE is set in the env.
-		# This list is intended for Developers
-		DEVMOD=$(printf '%s' "$DIFFILES" | grep -v 'my.add\|my.rmv')
-		# Create a diff for the users reference
-		diffPkgLists "$USERMOD"
-	elif [[ -n "$DEBUG"  && ( -n "$DEVMOD" || -n "$DEVMODE" ) ]]; then #DEVMOD not empty so run a full update.
-		# Create a developer diff ommitting my.add and my.rmv
-		diffPkgLists "$DEVMOD"
+
+if [ -f "$WORKDIR/sessrec/.seqnum" ]; then
+    SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
+else
+    SEQNUM=1
+    echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
 	fi
+CMMTMSG=printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}"
+SEQNUM=$((SEQNUM+1))
 }
 
 
@@ -869,7 +778,7 @@ localMd5Change() {
 # Function: Gets all the include lines for the specified package file
 # The full path to the package list must be supplied
 getIncFiles() {
-	# Define a some local variables
+	# Define some local variables
 	local __infile=$1   # The main build file
 	local __incflist=$2 # Carries returned variable
 	getEntrys() {
@@ -1018,6 +927,8 @@ updateUserSpin() {
 		printf '%s\n' "$INSTALL_LIST" >"$WORKDIR/user_update_add_rpmlist" " "
 		printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_update_rm_rpmlist" " "
 	fi
+	# We don't want parallel here
+	unset PLLL
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 	printf "%s\n" "$INSTALL_LIST" "$REMOVE_LIST"
 }
@@ -1188,6 +1099,9 @@ InstallRepos() {
     # Clean up
     /bin/rm -rf openmandriva*.rpm
 
+# Enable non-free repos for firmware
+    printf "%s\n" "Enable non-free repos for firmware."
+    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-non-free-$EXTARCH.repo"
 }
 
 # Leave the old function for the time being in case it's needed after all
@@ -1274,7 +1188,7 @@ createChroot() {
 		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
 		if [ -n "$REBUILD" ]; then
-			ANYRPMS=$(find "$CHROOTNAME/var/cache/urpmi/rpms/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
+			ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
 			if [ -z "$ANYRPMS" ]; then
 				printf "%s\n" "-> You must run with --noclean before you use --rebuild"
 				errorCatch
@@ -2146,6 +2060,11 @@ postBuild() {
 		fi
 	fi
 
+
+	# If not in ABF move rpms back to the cache directories
+	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
+		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+	fi
 
 	# Clean chroot
 	umountAll "$CHROOTNAME"
