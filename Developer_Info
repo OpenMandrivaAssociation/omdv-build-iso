@@ -56,3 +56,12 @@ The function and control logic are all enclosed in a mail function which is invo
 prior to executing the script this simplifies the control login snd makes understanding the execution of the program easier to grasp.
 The diff recording function now operates correctly. Urpmi debugging has been seperated from normal debugging 
 It is now possible to run in ABF mode for testing and if necessary fixing to do this requires the --debug option to be passed to the ecript.
+
+2018
+Code revised to support the dnf package manager. urpmi retired.
+
+March 2019
+Massive revision of the code used that generated the session records in user mode. Git is now used to store and record the changes to the package files 
+during a dynamic session. This removed some hefty and opaque functions from the code.
+The --keep funtionality (retention of pkg list data and downloaded rpms) over multiple sessions was fixed the --rebuild function now operates correctly
+The build id was fixed so that isos are now uniquely named  Some dodgy logic was also fixed.
