@@ -1043,8 +1043,8 @@ mkUpdateChroot() {
 			MyAdd
 			MyRmv
 		fi
-#	elif [ "$IN_ABF" = '1' ]; then
-		#printf "%s\n" "-> Installing packages at ABF"
+	elif [ "$IN_ABF" = '1' ]; then
+		printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$__install_list" ]; then # Dont do it with an empty list
             if [ -n "$PLLL" ]; then
                 printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
