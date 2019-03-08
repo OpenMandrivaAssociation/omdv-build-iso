@@ -240,7 +240,7 @@ main() {
 	# always build free ISO
 	FREE=1
 	LOGDIR="."
-    if [ -z $IN_ABF ]; then
+    if [ -z $ABF ]; then
         IN_ABF='0'
     fi
 	allowedOptions
@@ -308,9 +308,9 @@ main() {
 		FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 	fi
 
-	# Create the ISO directory
+	# Create the EFI directory
 	mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
-	# and the grub diectory
+	# and the grub directory
 	mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
 	printf "%s\n" "Create the BUILD_ID"
 	if [ "$IN_ABF" = '0' ]; then
