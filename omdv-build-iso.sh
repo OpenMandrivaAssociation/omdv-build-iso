@@ -1118,7 +1118,7 @@ InstallRepos() {
 
 # Enable non-free repos for firmware
     printf "%s\n" "Enable non-free repos for firmware."
-    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/*-non-free-$EXTARCH.repo"
+    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/$TREE-non-free-$EXTARCH.repo"
 }
 
 # Leave the old function for the time being in case it's needed after all
