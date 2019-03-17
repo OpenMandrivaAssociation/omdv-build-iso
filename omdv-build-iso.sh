@@ -1116,9 +1116,7 @@ InstallRepos() {
     # Clean up
     /bin/rm -rf openmandriva*.rpm
 
-# Enable non-free repos for firmware
-    printf "%s\n" "Enable non-free repos for firmware."
-    sed -e "s/enabled=0/enabled=1/g" -i "$CHROOTNAME/etc/yum.repos.d/$TREE-non-free-$EXTARCH.repo"
+	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
 
 # Leave the old function for the time being in case it's needed after all
