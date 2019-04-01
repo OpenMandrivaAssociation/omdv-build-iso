@@ -112,6 +112,9 @@ main() {
 			minimal)
 				TYPE=minimal
 				;;
+			sway)
+				TYPE=sway
+				;;
 			user)
 				TYPE=my.add
 				;;
