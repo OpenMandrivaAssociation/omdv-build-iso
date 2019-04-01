@@ -13,6 +13,7 @@ dhcp-client
 dmraid
 e2fsprogs
 grub2
+iproute2
 grub2-efi
 efibootmgr
 #kernel-release-desktop-latest
