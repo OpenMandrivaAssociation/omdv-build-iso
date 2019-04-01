@@ -16,7 +16,6 @@
 # Desktop Specifics
 calamares
 mesa-demos
-papyros-shell
 quassel
 weston
 wayland-tools
