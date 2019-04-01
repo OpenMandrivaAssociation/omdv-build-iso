@@ -3,7 +3,6 @@
 %include .///omdv_control.lst
 %include .///omdv_drivers.lst
 %include .///omdv_ppp.lst
-%include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
 %include .///omdv_fonts.lst
@@ -55,3 +54,5 @@ uuidd
 whois
 sudo
 reiserfsprogs
+bash-completion
+gnupg
