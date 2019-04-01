@@ -1,6 +1,5 @@
 # basic includes file lists
 %include .///omdv_core.lst
-%include .///omdv_iso.lst
 %include .///omdv_control.lst
 %include .///omdv_drivers.lst
 %include .///omdv_ppp.lst
@@ -39,5 +38,20 @@ x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
 
+# tools
 openssl
 openssh-server
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+dosfstools
+firewalld
+hfsutils
+ntfsprogs
+monitor-edid
+tuned
+wget
+uuidd
+whois
+sudo
+reiserfsprogs
