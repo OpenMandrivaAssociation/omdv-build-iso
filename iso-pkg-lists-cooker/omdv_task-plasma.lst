@@ -17,7 +17,7 @@ gwenview
 kaccounts-integration
 kaccounts-providers
 kaddressbook
-kalarm
+# kalarm -- not until it stops crashing on startup
 kamera
 kamoso
 kate
