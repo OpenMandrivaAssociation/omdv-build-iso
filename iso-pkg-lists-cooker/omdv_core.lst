@@ -6,6 +6,7 @@ locales
 locales-en
 ncurses
 dnf
+dnf-plugins-core
 dnf-automatic
 openmandriva-repos
 openmandriva-repos-cooker
