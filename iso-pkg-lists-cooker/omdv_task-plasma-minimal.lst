@@ -9,6 +9,8 @@ dbus-x11
 desktop-common-data
 dolphin
 falkon
+falkon-kde
+falkon-plugins
 frameworkintegration
 kate
 kdeclarative
