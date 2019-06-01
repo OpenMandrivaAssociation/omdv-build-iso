@@ -2,4 +2,4 @@
 #cpupower
 firewalld #control
 rfkill
-iwd
+wpa_supplicant
