@@ -7,8 +7,6 @@ akonadi-search
 akregator
 audiocd-kio
 bluedevil5
-discover
-discover-notifier
 digikam
 distro-plasma-config
 dolphin-plugins
@@ -19,7 +17,7 @@ gwenview
 kaccounts-integration
 kaccounts-providers
 kaddressbook
-kalarm
+# kalarm -- not until it stops crashing on startup
 kamera
 kamoso
 kate
