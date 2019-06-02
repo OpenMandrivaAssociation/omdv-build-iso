@@ -87,6 +87,7 @@ sasl-plug-gssapi
 
 # special featured software
 oma-welcome
+om-repo-picker
 # oma-welcome got broken deps
 oxygen-icons 
 
