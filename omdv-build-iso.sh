@@ -1909,7 +1909,6 @@ EOF
 	#remove rpm db files which may not match the non-chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 
-
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
 	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
@@ -1947,6 +1946,7 @@ EOF
 
 	# Clear tmp
 	rm -rf "$CHROOTNAME"/tmp/*
+	rm -rf "$CHROOTNAME/1" ||:
 
 	# Generate list of installed rpm packages
 	chroot "$CHROOTNAME" rpm -qa --queryformat="%{NAME}\n" | sort > /var/lib/rpm/installed-by-default
