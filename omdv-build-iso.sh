@@ -1108,7 +1108,7 @@ InstallRepos() {
     echo ${EXTARCH}
 
     #Check the repofiles and gpg keys exist in chroot
-    if [ ! -s "$CHROOTNAME/etc/yum.repos.d/cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
+    if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
 	printf "%s\n"  "Repo dir bad install."
 	errorCatch
     else
