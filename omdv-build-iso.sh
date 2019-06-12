@@ -1093,7 +1093,7 @@ InstallRepos() {
 
 	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-	PACKAGES="openmandriva-repos-$TREE openmandriva-repos-keys openmandriva-repos-pkgprefs "
+	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs "
 	for i in $PACKAGES; do
 		P=$(grep "^$i-[0-9].*" PACKAGES)
 		if [ "$?" != '0' ]; then
