@@ -202,10 +202,10 @@ main() {
 	# This directory must not be deleted as it contains important (but hidden) config files.
 	# A support directory /home/omv/docker-iso-worker is also created this should also not be touched.
 	# When an iso build request is generated from ABF the script commandline along with the data from the git repo
-        # for the named branch of the script is loaded into the /home/omv/iso_builder directory and the script executed
-        # from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created
-        # and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
-        # to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
+	# for the named branch of the script is loaded into the /home/omv/iso_builder directory and the script executed
+	# from that directory. If the build completes without error a directory /home/omv/iso_builder/results is created
+	# and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
+	# to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 	"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
@@ -243,9 +243,9 @@ main() {
 	# always build free ISO
 	FREE=1
 	LOGDIR="."
-    if [ -z $ABF ]; then
-        IN_ABF='0'
-    fi
+	if [ -z $ABF ]; then
+		IN_ABF='0'
+	fi
 	allowedOptions
 	setWorkdir
 
@@ -317,16 +317,16 @@ main() {
 	mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
 	printf "%s\n" "Create the BUILD_ID"
 	if [ "$IN_ABF" = '0' ]; then
-       if [ -f "$WORKDIR"/sessrec/.build_id ]; then
-            # The BUILD_ID has already been saved. Used to create commit messages.
-            BUILD_ID=$(cat "$WORKDIR"/sessrec/.build_id)
-       else
-            BUILD_ID=$(($RANDOM%9999+1000))
-            echo ${BUILD_ID} > "$WORKDIR"/sessrec/.build_id
-       fi     
-    else
-        BUILD_ID=$(($RANDOM%9999+1000))
-    fi    
+		if [ -f "$WORKDIR"/sessrec/.build_id ]; then
+			# The BUILD_ID has already been saved. Used to create commit messages.
+			BUILD_ID=$(cat "$WORKDIR"/sessrec/.build_id)
+		else
+			BUILD_ID=$(($RANDOM%9999+1000))
+			echo ${BUILD_ID} > "$WORKDIR"/sessrec/.build_id
+		fi
+	else
+		BUILD_ID=$(($RANDOM%9999+1000))
+	fi
 
 # START ISO BUILD
 
@@ -355,7 +355,7 @@ main() {
 #   Start functions    #
 ########################
 usage_help() {
-       if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
+	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%s\n" "Please run script with arguments"
 		printf "%s\n" "usage $0 [options]"
 		printf "%s\n" "general options:"
@@ -457,7 +457,7 @@ setWorkdir() {
 			WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
 		fi
 		mkdir -p ${UHOME}/ISOBUILD
-        BUILDSAV=${UHOME}/ISOBUILD
+		BUILDSAV=${UHOME}/ISOBUILD
 	fi
 	printf "%s\n" "-> The work directory is $WORKDIR"
 	# Define these earlier so that files can be moved easily for the various save options
@@ -523,10 +523,10 @@ RestoreDaTa() {
 		mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
 		mkdir -p "$CHROOTNAME/var/cache/dnf"
 		mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
-    else
-        # Clean out the dnf dir
-        cd "$BUILDSAV"||exit
-        /bin/rm -r ./dnf
+	else
+		# Clean out the dnf dir
+		cd "$BUILDSAV"||exit
+		/bin/rm -r ./dnf
 	fi
 	touch "$WORKDIR/.new"
 }
@@ -606,7 +606,7 @@ mkISOLabel() {
 
 	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
-    elif  [ "${RELEASE_ID,,}" = 'beta' ]; then
+	elif  [ "${RELEASE_ID,,}" = 'beta' ]; then
 		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	elif [ "${RELEASE_ID,,}" = 'alpha' ]; then
 		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
@@ -651,8 +651,8 @@ updateSystem() {
 	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 	if [ "$IN_ABF" = 0 ]; then
-        echo "-> Updating dnf.conf to cache packages for rebuild"
-        echo "keepcache=True" >> /etc/dnf/dnf.conf
+		echo "-> Updating dnf.conf to cache packages for rebuild"
+		echo "keepcache=True" >> /etc/dnf/dnf.conf
 		if [ ! -d "$WORKDIR/dracut" ]; then
 			find "$WORKDIR"
 			touch "$WORKDIR/.new"
@@ -669,43 +669,43 @@ getPkgList() {
 	# update iso-pkg-lists from GitHub if required
 	# we need to do this for ABF to ensure any edits have been included
 	# Do we need to do this if people are using the tool locally?
-    if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-        printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-        # download iso packages lists from https://github.com
-        # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-        if [ -n "$ISO_VER" ]; then
-            export GIT_BRNCH="$ISO_VER"
-        elif [ ${TREE,,} == "cooker" ]; then
-            export GIT_BRNCH=master
-        else
-            export GIT_BRNCH=${TREE,,}
-            # ISO_VER defaults to user build entry
-        fi
-        EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
-        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
-        cd "$WORKDIR" || exit
-        rm -rf ${EXCLUDE_LIST}
-        if [ ! -e "$FILELISTS" ]; then
-            printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-            errorCatch
-        fi
+	if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+		printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+		# download iso packages lists from https://github.com
+		# GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+		if [ -n "$ISO_VER" ]; then
+			export GIT_BRNCH="$ISO_VER"
+		elif [ ${TREE,,} == "cooker" ]; then
+			export GIT_BRNCH=master
+		else
+			export GIT_BRNCH=${TREE,,}
+			# ISO_VER defaults to user build entry
+		fi
+		EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
+		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
+		cd "$WORKDIR" || exit
+		rm -rf ${EXCLUDE_LIST}
+		if [ ! -e "$FILELISTS" ]; then
+			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
+			errorCatch
+		fi
 
-        if [  "$IN_ABF" = '0' ]; then
-            if [ -n "$LREPODIR" ]; then
-                mkeREPOdir
-            fi
-        else
-            LREPODIR="$UHOME/user-iso"
-            mkeREPOdir
-        fi
-    fi
+		if [  "$IN_ABF" = '0' ]; then
+			if [ -n "$LREPODIR" ]; then
+				mkeREPOdir
+			fi
+		else
+			LREPODIR="$UHOME/user-iso"
+			mkeREPOdir
+		fi
+	fi
 }
 
 mkeREPOdir() {
-        if [ ! -d "$LREPODIR" ]; then
-                mkdir -p "$LREPODIR"
-                cd "$LREPODIR" || exit
-        fi
+	if [ ! -d "$LREPODIR" ]; then
+		mkdir -p "$LREPODIR"
+		cd "$LREPODIR" || exit
+	fi
 }
 
 showInfo() {
@@ -756,36 +756,36 @@ showInfo() {
 
 # Create git repo for the package lists so we can record user mode changes. 
 MkeListRepo() {
-    if [ ! -d "${WORKDIR}/iso-pkg-lists-${TREE}/.git" ]; then
-        printf "%s\n" "-> Creating package list repo"
-        cd ${WORKDIR}/iso-pkg-lists-${TREE}
-        git init
-        git add .
-        MkeCmmtMsg
-        git commit -a -m "$CMMTMSG"
+	if [ ! -d "${WORKDIR}/iso-pkg-lists-${TREE}/.git" ]; then
+		printf "%s\n" "-> Creating package list repo"
+		cd ${WORKDIR}/iso-pkg-lists-${TREE}
+		git init
+		git add .
+		MkeCmmtMsg
+		git commit -a -m "$CMMTMSG"
 	fi
 }
 
 # Detect whether the lists have changed and if so set the change flag, generate commit msg and commit the changes.
 DtctCmmt() {
-cd ${WORKDIR}/iso-pkg-lists-${TREE}
-GITDF=$(git diff)
-if [ -n "$GITDF" ]; then
-    MkeCmmtMsg
-    git commit -a -m "$CMMTMSG"
+	cd ${WORKDIR}/iso-pkg-lists-${TREE}
+	GITDF=$(git diff)
+	if [ -n "$GITDF" ]; then
+		MkeCmmtMsg
+		git commit -a -m "$CMMTMSG"
 	fi
 }
 
 # Create a sequential commit message
 MkeCmmtMsg() {
-if  [ -f "$WORKDIR/sessrec/.seqnum" ]; then
-    SEQNUM=$((SEQNUM+1))
-else
-    SEQNUM=1
-fi
-echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
-CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
+	if  [ -f "$WORKDIR/sessrec/.seqnum" ]; then
+		SEQNUM=$((SEQNUM+1))
+	else
+		SEQNUM=1
+	fi
+	echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
+	SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
+	CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
 }
 
 
@@ -1049,12 +1049,12 @@ mkUpdateChroot() {
 	elif [ "$IN_ABF" = '1' ]; then
 		printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$__install_list" ]; then # Dont do it with an empty list
-            if [ -n "$PLLL" ]; then
-                printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
-            else
-                printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
-            fi
-        fi
+			if [ -n "$PLLL" ]; then
+				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+			else
+				printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+			fi
+		fi
 	fi
 }
 
@@ -1090,34 +1090,34 @@ InstallRepos() {
 # in case we need to revert to git again for the repo files.
 #Get the repo files
 
-    PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-    curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-    PACKAGES="openmandriva-repos-$TREE openmandriva-repos-keys openmandriva-repos-pkgprefs "
-    for i in $PACKAGES; do
-	P=$(grep "^$i-[0-9].*" PACKAGES)
-	if [ "$?" != '0' ]; then
-	    printf "$s\n" "Can't find cooker version of $i, please report"
-	    exit 1
+	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+	PACKAGES="openmandriva-repos-$TREE openmandriva-repos-keys openmandriva-repos-pkgprefs "
+	for i in $PACKAGES; do
+		P=$(grep "^$i-[0-9].*" PACKAGES)
+		if [ "$?" != '0' ]; then
+			printf "$s\n" "Can't find cooker version of $i, please report"
+			exit 1
+		fi
+		wget $PKGS/$P
+	done
+
+	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
+
+	ls -l $CHROOTNAME/etc/yum.repos.d
+	echo ${EXTARCH}
+
+	#Check the repofiles and gpg keys exist in chroot
+	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
+		printf "%s\n"  "Repo dir bad install."
+		errorCatch
+	else
+		printf "%s\n" "Repository and GPG files installed sucessfully."
+		/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
 	fi
-	wget $PKGS/$P
-    done
 
-    rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
-
-    ls -l $CHROOTNAME/etc/yum.repos.d
-    echo ${EXTARCH}
-
-    #Check the repofiles and gpg keys exist in chroot
-    if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
-	printf "%s\n"  "Repo dir bad install."
-	errorCatch
-    else
-	printf "%s\n" "Repository and GPG files installed sucessfully."
-	/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
-    fi
-
-    # Clean up
-    /bin/rm -rf openmandriva*.rpm
+	# Clean up
+	/bin/rm -rf openmandriva*.rpm
 
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
