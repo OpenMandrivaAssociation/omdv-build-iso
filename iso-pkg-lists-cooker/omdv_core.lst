@@ -9,5 +9,4 @@ dnf
 dnf-plugins-core
 dnf-automatic
 openmandriva-repos
-openmandriva-repos-cooker
 openmandriva-repos-keys
