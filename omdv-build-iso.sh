@@ -241,6 +241,21 @@ main() {
 	[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
 	[ -z "${COMPTYPE}" ] && COMPTYPE="zstd -Xcompression-level 15"
 	[ -z "${MAXERRORS}" ] && MAXERRORS=1
+
+	ARCHEXCLUDE=""
+	echo $EXTARCH |grep -qE "^arm" && EXTARCH=armv7hnl
+	echo $EXTARCH |grep -qE "i.86" && EXTARCH=i686
+
+	# Exclude 32-bit compat packages on multiarch capable systems
+	case $EXTARCH in
+	znver1|x86_64)
+		ARCHEXCLUDE='--exclude=*.i686'
+		;;
+	aarch64)
+		ARCHEXCLUDE='--exclude=*.armv7hnl'
+		;;
+	esac
+
 	# always build free ISO
 	FREE=1
 	LOGDIR="."
@@ -629,7 +644,7 @@ updateSystem() {
 	# Remember it's the local system we are updating here not the chroot
 
 	ARCH="$(rpm -E '%{_target_cpu}')"
-	ARCHEXCLUDE=""
+	HOST_ARCHEXCLUDE=""
 	[ -z "$ARCH" ] && ARCH="$(uname -m)"
 	echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
 	echo $ARCH |grep -qE "i.86" && ARCH=i686
@@ -637,10 +652,10 @@ updateSystem() {
 	# Exclude 32-bit compat packages on multiarch capable systems
 	case $ARCH in
 	znver1|x86_64)
-		ARCHEXCLUDE='--exclude=*.i686'
+		HOST_ARCHEXCLUDE='--exclude=*.i686'
 		;;
 	aarch64)
-		ARCHEXCLUDE='--exclude=*.armv7hnl'
+		HOST_ARCHEXCLUDE='--exclude=*.armv7hnl'
 		;;
 	esac
 
@@ -649,7 +664,7 @@ updateSystem() {
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${ARCHEXCLUDE}" ${RPM_LIST}
+	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 	if [ "$IN_ABF" = 0 ]; then
 		echo "-> Updating dnf.conf to cache packages for rebuild"
