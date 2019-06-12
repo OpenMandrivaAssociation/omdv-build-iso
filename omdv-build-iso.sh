@@ -38,6 +38,7 @@
 # DONE Add choice of xargs or parallel for ABF builds
 # DONE buffer standard out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
 
+set -x
 
 main() {
 	# This function which starts at the top of the file is executed first from the end of file
