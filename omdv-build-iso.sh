@@ -662,7 +662,7 @@ updateSystem() {
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
-	dnf install -y --nogpgcheck --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
+	dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
 	if [ "$IN_ABF" = 0 ]; then
 		echo "-> Updating dnf.conf to cache packages for rebuild"
@@ -1004,7 +1004,7 @@ MyAdd() {
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		## (crazy) why ? dnf install -y ... ${...[@]} ...  | tee ...
-		printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --nogpgcheck --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+		printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 		printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 	fi
 }
@@ -1064,9 +1064,9 @@ mkUpdateChroot() {
 		printf "%s\n" "-> Installing packages at ABF"
 		if [ -n "$__install_list" ]; then # Dont do it with an empty list
 			if [ -n "$PLLL" ]; then
-				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --nogpgcheck --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 			else
-				printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --nogpgcheck --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+				printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 			fi
 		fi
 	fi
