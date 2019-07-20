@@ -1,0 +1,12 @@
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
