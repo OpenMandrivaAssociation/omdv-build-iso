@@ -1,0 +1,129 @@
+# basic includes file lists
+%include .///omdv_core.lst
+%include .///omdv_iso.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_utils.lst
+
+# more includes lists for common sets that are not task/meta pkgs
+%include .///omdv_calligra.lst
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_krita.lst
+%include .///omdv_locales.lst
+%include .///omdv_man-pages.lst
+%include .///omdv_pulseaudio.lst
+%include .///omdv_vlc.lst
+%include .///omdv_smplayer.lst
+
+# Desktop Specifics
+task-lxqt
+pavucontrol-qt
+ark
+#cantata
+lximage-qt
+meteo-qt
+networkmanager-applet
+notepadqq
+owncloudclient
+qterminal
+quassel
+qupzilla
+rosa-imagewriter
+sddm
+silicon-audio-disc
+silicon-converter
+silicon-copy-disc
+silicon-database
+silicon-data-disc
+silicon-disc-details
+silicon-disc-eraser
+silicon-disc-imaging
+silicon-disc-scanner
+silicon-image-burner
+silicon-library
+silicon-mounter
+silicon-sample-app
+silicon-script-runner
+silicon-themes
+silicon-plugin-audio-cd-record
+silicon-plugin-cd-record
+silicon-plugin-eraser
+silicon-plugin-fuseiso
+silicon-plugin-mkdiscfs
+silicon-plugin-mkisofs
+silicon-plugin-mpg123
+silicon-plugin-read-cd
+silicon-plugin-rootmount
+silicon-plugin-single-inner-dialog
+silicon-plugin-system-tray
+silicon-plugin-udisks
+trojita
+
+# Needed Task/Meta Packages
+task-pulseaudio
+
+#task-printing
+# printing
+task-printing-scanning
+hplip-gui #printer
+system-config-printer-gui #printer
+
+x11-font-cyrillic
+# keep to check
+x11-server-xorg
+x11-server-xwayland
+x11-compose-cache
+x11-tools
+#x11-docs
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+xscreensaver
+xscreensaver-base
+edidbins
+
+# MD this entire list should be shuffled or justified to be needed for the full ISO
+
+avahi #service
+firewall-applet #service
+
+atk1.0-common #gtk dep
+canberra-gtk #gtk dep
+gamin #gtk dep
+gtk2-modules #gtk dep
+gvfs
+gvfs-archive #gtk dep
+gvfs-fuse #gtk dep
+gvfs-gphoto2 #gtk dep
+gvfs-smb #gtk dep
+ia_ora-gnome #gtk dep
+notification-daemon #dubious virt req
+pango #gtk dep
+
+# Support for talking to wrongPhone/wrongPad
+usbmuxd
+
+# Miscelaneous Packages
+enchant
+ffmpeg
+jasper
+nss
+nss_ldap
+nss_mdns
+nss_wins
+openssl
+pam_ldap
+poppler-data
+sasl-plug-gssapi
+
+openssh-server #server
+samba-server #server
+
+# Add breeze then for openbox startup
+
+breeze-gtk
+
+# special featured software
+#oma-welcome
