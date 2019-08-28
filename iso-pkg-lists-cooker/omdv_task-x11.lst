@@ -4,7 +4,6 @@ fonts-ttf-liberation
 iceauth
 rgb
 setxkbmap
-x11-compose-cache
 x11-data-cursor-themes
 x11-driver-input
 x11-driver-video
