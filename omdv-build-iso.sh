@@ -1105,7 +1105,7 @@ InstallRepos() {
 	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs "
 	for i in $PACKAGES; do
-		P=$(grep "^$i-[0-9].*" PACKAGES)
+		P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 		if [ "$?" != '0' ]; then
 			printf "$s\n" "Can't find $TREE version of $i, please report"
 			exit 1
