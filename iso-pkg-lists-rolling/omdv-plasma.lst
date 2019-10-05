@@ -70,8 +70,7 @@ edidbins
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
-# FIXME: replace with https://github.com/nomad-desktop/nomad-firewall
-firewall-applet #service
+# FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Miscelaneous Packages
 enchant
