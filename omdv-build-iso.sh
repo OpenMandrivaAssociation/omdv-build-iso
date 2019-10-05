@@ -162,6 +162,12 @@ main() {
 		 --testrepo)
 			TESTREPO=testrepo
 			;;
+        --unsupprepo)
+            UNSUPPREPO=unsupprepo
+            ;;
+        --enablerepo)
+            ENABLREPO=*
+            ;;
 		 --parallel)
 			PLLL=plll
 			;;
@@ -208,7 +214,7 @@ main() {
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 	"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "
 
 	# run only when root
 	if [ "$(id -u)" != '0' ]; then
@@ -358,6 +364,7 @@ main() {
 	setupGrub2
 	setupISOenv
 	ClnShad
+	InstallRepos
 	createSquash
 	buildIso
 	postBuild
@@ -489,7 +496,7 @@ RemkWorkDir() {
 	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 	# Create the ISO directory
 	mkdir -p "$ISOROOTNAME"
-	# Create the session record directory
+	# Create the session record directorygetpkglist
 	mkdir -p ${WORKDIR}/sessrec
 	if [ "$IN_ABF" = '0' ]; then
 		touch "$WORKDIR/.new"
@@ -658,7 +665,7 @@ updateSystem() {
 	esac
 
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools syslinux bc imagemagick kpartx gdisk gptfdisk parallel git"
+	RPM_LIST="xorriso squashfs-tools  bc imagemagick kpartx gdisk gptfdisk parallel git"
 
 	printf "%s\n" "-> Installing rpm files inside system environment"
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
@@ -695,10 +702,14 @@ getPkgList() {
 			export GIT_BRNCH=${TREE,,}
 			# ISO_VER defaults to user build entry
 		fi
-		EXCLUDE_LIST=".abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec docs/* tools/*"
-		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
-		cd "$WORKDIR" || exit
-		rm -rf ${EXCLUDE_LIST}
+        EX_PREF=omdv-build-iso-rolling
+        EXCLUDE_LIST="--exclude $EX_PREF/.abf.yml --exclude $EX_PREF/ChangeLog --exclude $EX_PREF/Developer_Info --exclude $EX_PREF/Makefile --exclude $EX_PREF/README --exclude $EX_PREF/TODO --exclude $EX_PREF/omdv-build-iso.sh --exclude $EX_PREF/omdv-build-iso.spec --exclude $EX_PREF/docs/*  --exclude $EX_PREF/tools/* --exclude $EX_PREF/ancient/*"
+        if [ -n "$KEEP" ]; then
+        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
+        else
+        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"` --strip-components 1  -xvf -
+        fi		
+        cd "$WORKDIR" || exit
 		if [ ! -e "$FILELISTS" ]; then
 			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 			errorCatch
@@ -775,6 +786,8 @@ MkeListRepo() {
 		cd ${WORKDIR}/iso-pkg-lists-${TREE}
 		git init
 		git add .
+		git config --global user.email "root@localhost"
+        git config --global user.name "iso buider"
 		MkeCmmtMsg
 		git commit -a -m "$CMMTMSG"
 	fi
@@ -816,7 +829,7 @@ getIncFiles() {
 	getEntrys() {
 		# Recursively fetch included files
 		while read -r r; do
-			echo "$r"
+			echo "$r".git
 			[ -z "$r" ] && continue
 			# $'\n' nothing else works just don't go there.
 			__addrpminc+=$'\n'"$WORKDIR/iso-pkg-lists-$TREE/$r"
@@ -1103,21 +1116,28 @@ InstallRepos() {
 # There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
 # in case we need to revert to git again for the repo files.
 #Get the repo files
-
-	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs "
-	for i in $PACKAGES; do
-		P=$(grep "^$i-[0-9].*" PACKAGES)
-		if [ "$?" != '0' ]; then
-			printf "$s\n" "Can't find cooker version of $i, please report"
-			exit 1
-		fi
-		wget $PKGS/$P
-	done
-
+set -x
+    if [ -e "$WORKDIR"/.new ]; then
+        PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+        cd "$WORKDIR"
+        curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+        PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+        for i in $PACKAGES; do
+            P=$(grep "^$i-[0-9].*" PACKAGES)
+                if [ "$?" != '0' ]; then
+                    printf "$s\n" "Can't find cooker version of $i, please report"
+                exit 1
+                fi
+            wget $PKGS/$P
+        done
+	fi
+    if [ -e "$WORKDIR"/.new ]; then
 	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
-
+    else
+    /bin/rm "$CHROOTNAME"/etc/yum.repos.d/*.repo
+    rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps  *.rpm
+    fi 
+    
 	ls -l $CHROOTNAME/etc/yum.repos.d
 	echo ${EXTARCH}
 
@@ -1129,13 +1149,37 @@ InstallRepos() {
 		printf "%s\n" "Repository and GPG files installed sucessfully."
 		/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
 	fi
-
-	# Clean up
+	# First make sure cooker is disabled
+	dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
+	# Then enable the main repo of the chosen tree
+	dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"
+    # Make sure we are getting our files from abf-downloads and not from some possibly incomplete mirror.
+    if [ -e "$WORKDIR"/.new ]; then
+    sed -i '/mirrorlist/d' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
+    sed -i '/fastestmirror/d' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
+    sed -i 's/# baseurl/baseurl/' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
+    fi
+    # Clean up
+   if [ ! -e "$WORKDIR"/.new ]; then
 	/bin/rm -rf openmandriva*.rpm
+	# Disable the cooker repo
+	# Enable the trees main repo
+	fi
+   if [ -n "$UNSUPPREPO" ]; then
+    dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
+   fi
+   if [ -n "$ENABLEREPO" ]; then
+    dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-"$ENABLEREPO"
+   fi
+   if [ -n "$TESTREPO" ]; then
+    dnf -installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
+   fi
+   if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
+    echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
+   fi
 
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
-
 # Leave the old function for the time being in case it's needed after all
 InstallRepos1() {
 
@@ -1973,7 +2017,8 @@ EOF
 
 # Clean out the backups of passwd, group and shadow
 ClnShad() {
-	/bin/rm -f "$CHROOTNAME/etc/passwd- $CHROOTNAME/etc/group- $CHROOTNAME/etc/shadow-"
+	/bin/rm -f "$CHROOTNAME"/etc/passwd- "$CHROOTNAME"/etc/group- "$CHROOTNAME"/etc/shadow-  
+	/bin/rm -f "$WORKDIR"/.new
 }
 
 
