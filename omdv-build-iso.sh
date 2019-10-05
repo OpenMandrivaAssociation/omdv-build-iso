@@ -1119,7 +1119,7 @@ InstallRepos() {
 	echo ${EXTARCH}
 
 	# Use the master repository, not mirrors
-	sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^#baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
+	sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
 
 	#Check the repofiles and gpg keys exist in chroot
 	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
