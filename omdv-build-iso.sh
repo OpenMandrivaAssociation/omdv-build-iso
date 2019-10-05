@@ -60,9 +60,6 @@ main() {
 		--tree=*)
 			TREE=${k#*=}
 			case "$TREE" in
-			cooker)
-				TREE=cooker
-				;;
 			lx4)
 				TREE=4.0
 				;;
