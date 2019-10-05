@@ -1114,7 +1114,6 @@ InstallRepos() {
 # There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
 # in case we need to revert to git again for the repo files.
 #Get the repo files
-set -x
     if [ -e "$WORKDIR"/.new ]; then
         PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
         cd "$WORKDIR"
@@ -1180,75 +1179,6 @@ set -x
    fi
 
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
-}
-# Leave the old function for the time being in case it's needed after all
-InstallRepos1() {
-
-	# This function fetches templates from the main OpenMandriva GitHub repo and installs them in the chroot.
-	# Although there is an rpm containing the data we need to be able to choose whether the repodata is cooker
-	# or release. First we get all the data..then we remove the unwanted files and finally install then in the
-	# approrpriate directory in the chroot. Currently the github repo has only a master branch maybe we need to
-	# have a master and a release branch. For the time being we will remove the unnecessary files.
-
-	if [ "$GIT_BRNCH" = 'master' ]; then
-		EXCLUDE_LIST="openmandriva-main-repo openmandriva-extrasect-repo openmandriva-main.srcrepo openmandriva-extrasect-srcrepo openmandriva-repos.spec"
-	else
-		EXCLUDE_LIST="cooker-main-repo cooker-extrasect-repo cooker-main.srcrepo cooker-extrasect-srcrepo openmandriva-repos.spec"
-	fi
-	# If chroot exists and if we have --noclean then the repo files are not needed with exception of the
-	# first time run with --noclean when they must be installed. If --rebuild is called they will have been
-	# deleted so reinstall them.
-	# If the kernel hasn't been installed then it's a new chroot or a rebuild
-	if [ ! -d "$CHROOTNAME"/lib/modules ] || [ -n "$REBUILD" ]; then
-		printf "%s\n" "-> Adding DNF repositorys $REPOPATH into $CHROOTNAME" " "
-		if [ "$FREE" = '1' ]; then
-			wget -qO- https://github.com/OpenMandrivaAssociation/openmandriva-repos/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}  --strip-components 1 -xvf -
-			cd "$WORKDIR" || exit
-			rm -rf ${EXCLUDE_LIST}
-		fi
-	fi
-	# At this point the repo template source files are in the $WORKDIR. The files have replaceable variables
-	# for setting the ARCHES. Currently the repo urls point at abf-downloads this is ok for iso builds.
-	# Initially we need a distrib type of setup which is everything bar the testing repos which are optional.
-	# Also need to provide for a local repo so...
-
-	if [ "$EXTARCH" = 'x86_64' ]; then
-		MULTI="x86_64 i686"
-	elif [ "$EXTARCH" = 'znver1' ]; then
-		MULTI="znver1 i686"
-	else
-		MULTI="$EXTARCH"
-	fi
-
-	# Create location for repo files
-	mkdir -p -m  0644 "$CHROOTNAME/etc/yum.repos.d/"
-	for A in $(echo "$MULTI"); do
-		cp  "$WORKDIR/${TREE,,}-main-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
-		sed -e "s/@DIST_ARCH@/$A/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-main-$A.repo"
-	done
-
-	for REPTYPE in contrib restricted; do
-		cp  "$WORKDIR/${TREE,,}-extrasect-repo"  "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
-		sed -e "s/@DIST_ARCH@/$EXTARCH/g" -i "$CHROOTNAME/etc/yum.repos.d/${TREE,,}-$REPTYPE-$EXTARCH.repo"
-	done
-
-	sed -e "s/@DIST_SECTION@/restricted/g" \
-		-e "s/@DIST_SECTION_NAME@/Restricted/g" \
-		-i $CHROOTNAME/etc/yum.repos.d/*restricted*"$EXTARCH"*.repo
-
-	sed -e "s/@DIST_SECTION@/contrib/g" \
-		-e "s/@DIST_SECTION_NAME@/Contrib/g" \
-		-i "$CHROOTNAME"/etc/yum.repos.d/*contrib*"$EXTARCH"*.repo
-
-	#if [ "$FREE" = '1' ]; then
-
-	if [ -n "$TESTREPO" ]; then
-		awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
-	fi
-	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
-	fi
-
 }
 
 # Usage: createChroot packages.lst /target/dir
