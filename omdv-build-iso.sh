@@ -355,6 +355,8 @@ main() {
 	setupGrub2
 	setupISOenv
 	ClnShad
+	# Go back to using mirrors instead of the master repository
+	sed -i -e 's,^#mirrorlist=,mirrorlist=,g;s,^baseurl=,# baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
 	createSquash
 	buildIso
 	postBuild
