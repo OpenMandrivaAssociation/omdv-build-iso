@@ -37,7 +37,6 @@
 
 # DONE Add choice of xargs or parallel for ABF builds
 # DONE buffer standard out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
-
 main() {
 	# This function which starts at the top of the file is executed first from the end of file
 	# to ensure that all functions are read before the body of the script is run.
@@ -496,9 +495,7 @@ RemkWorkDir() {
 	mkdir -p "$ISOROOTNAME"
 	# Create the session record directorygetpkglist
 	mkdir -p ${WORKDIR}/sessrec
-	if [ "$IN_ABF" = '0' ]; then
-		touch "$WORKDIR/.new"
-	fi
+	touch "$WORKDIR/.new"
 }
 
 ## hmm ?
