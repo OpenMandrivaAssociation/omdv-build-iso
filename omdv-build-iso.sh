@@ -158,12 +158,12 @@ main() {
 		 --testrepo)
 			TESTREPO=testrepo
 			;;
-        --unsupprepo)
-            UNSUPPREPO=unsupprepo
-            ;;
-        --enablerepo)
-            ENABLREPO=*
-            ;;
+		--unsupprepo)
+			UNSUPPREPO=unsupprepo
+			;;
+		--enablerepo)
+			ENABLREPO=*
+			;;
 		 --parallel)
 			PLLL=plll
 			;;
@@ -697,14 +697,14 @@ getPkgList() {
 			export GIT_BRNCH=${TREE,,}
 			# ISO_VER defaults to user build entry
 		fi
-        EX_PREF=omdv-build-iso-rolling
-        EXCLUDE_LIST="--exclude $EX_PREF/.abf.yml --exclude $EX_PREF/ChangeLog --exclude $EX_PREF/Developer_Info --exclude $EX_PREF/Makefile --exclude $EX_PREF/README --exclude $EX_PREF/TODO --exclude $EX_PREF/omdv-build-iso.sh --exclude $EX_PREF/omdv-build-iso.spec --exclude $EX_PREF/docs/*  --exclude $EX_PREF/tools/* --exclude $EX_PREF/ancient/*"
-        if [ -n "$KEEP" ]; then
-        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
-        else
-        wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"` --strip-components 1  -xvf -
-        fi		
-        cd "$WORKDIR" || exit
+		EX_PREF=omdv-build-iso-rolling
+		EXCLUDE_LIST="--exclude $EX_PREF/.abf.yml --exclude $EX_PREF/ChangeLog --exclude $EX_PREF/Developer_Info --exclude $EX_PREF/Makefile --exclude $EX_PREF/README --exclude $EX_PREF/TODO --exclude $EX_PREF/omdv-build-iso.sh --exclude $EX_PREF/omdv-build-iso.spec --exclude $EX_PREF/docs/*  --exclude $EX_PREF/tools/* --exclude $EX_PREF/ancient/*"
+		if [ -n "$KEEP" ]; then
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
+		else
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"` --strip-components 1  -xvf -
+		fi		
+		cd "$WORKDIR" || exit
 		if [ ! -e "$FILELISTS" ]; then
 			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 			errorCatch
@@ -782,7 +782,7 @@ MkeListRepo() {
 		git init
 		git add .
 		git config --global user.email "root@localhost"
-        git config --global user.name "iso buider"
+		git config --global user.name "iso buider"
 		MkeCmmtMsg
 		git commit -a -m "$CMMTMSG"
 	fi
@@ -1108,30 +1108,30 @@ FilterLogs() {
 }
 
 InstallRepos() {
-# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
-# in case we need to revert to git again for the repo files.
-#Get the repo files
-    if [ -e "$WORKDIR"/.new ]; then
-        PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-        cd "$WORKDIR"
-        curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-        PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
-        for i in $PACKAGES; do
-            P=$(grep "^$i-[0-9].*" PACKAGES)
-                if [ "$?" != '0' ]; then
-                    printf "$s\n" "Can't find cooker version of $i, please report"
-                exit 1
-                fi
-            wget $PKGS/$P
-        done
+	# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
+	# in case we need to revert to git again for the repo files.
+	#Get the repo files
+	if [ -e "$WORKDIR"/.new ]; then
+		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+		cd "$WORKDIR"
+		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+		PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+		for i in $PACKAGES; do
+			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
+			if [ "$?" != '0' ]; then
+				printf "$s\n" "Can't find $TREE version of $i, please report"
+				exit 1
+			fi
+			wget $PKGS/$P
+		done
 	fi
-    if [ -e "$WORKDIR"/.new ]; then
-	rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
-    else
-    /bin/rm "$CHROOTNAME"/etc/yum.repos.d/*.repo
-    rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps  *.rpm
-    fi 
-    
+	if [ -e "$WORKDIR"/.new ]; then
+		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
+	else
+		/bin/rm "$CHROOTNAME"/etc/yum.repos.d/*.repo
+		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps  *.rpm
+	fi 
+
 	ls -l $CHROOTNAME/etc/yum.repos.d
 	echo ${EXTARCH}
 
@@ -1150,30 +1150,22 @@ InstallRepos() {
 	dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
 	# Then enable the main repo of the chosen tree
 	dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"
-    # Make sure we are getting our files from abf-downloads and not from some possibly incomplete mirror.
-    if [ -e "$WORKDIR"/.new ]; then
-    sed -i '/mirrorlist/d' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
-    sed -i '/fastestmirror/d' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
-    sed -i 's/# baseurl/baseurl/' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
-    fi
-    # Clean up
-   if [ ! -e "$WORKDIR"/.new ]; then
-	/bin/rm -rf openmandriva*.rpm
-	# Disable the cooker repo
-	# Enable the trees main repo
+	# Clean up
+	if [ ! -e "$WORKDIR"/.new ]; then
+		/bin/rm -rf openmandriva*.rpm
 	fi
-   if [ -n "$UNSUPPREPO" ]; then
-    dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
-   fi
-   if [ -n "$ENABLEREPO" ]; then
-    dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-"$ENABLEREPO"
-   fi
-   if [ -n "$TESTREPO" ]; then
-    dnf -installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
-   fi
-   if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-    echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
-   fi
+	if [ -n "$UNSUPPREPO" ]; then
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
+	fi
+	if [ -n "$ENABLEREPO" ]; then
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-"$ENABLEREPO"
+	fi
+	if [ -n "$TESTREPO" ]; then
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
+	fi
+	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
+		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
+	fi
 
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
