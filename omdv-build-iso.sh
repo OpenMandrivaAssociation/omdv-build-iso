@@ -1111,18 +1111,18 @@ FilterLogs() {
 }
 
 InstallRepos() {
-# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
-# in case we need to revert to git again for the repo files.
-#Get the repo files
+	# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
+	# in case we need to revert to git again for the repo files.
+	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
 		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 		cd "$WORKDIR"
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 		PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
 		for i in $PACKAGES; do
-			P=$(grep "^$i-[0-9].*" PACKAGES)
+			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 			if [ "$?" != '0' ]; then
-				printf "$s\n" "Can't find cooker version of $i, please report"
+				printf "$s\n" "Can't find $TREE version of $i, please report"
 				exit 1
 			fi
 			wget $PKGS/$P
@@ -1153,12 +1153,6 @@ InstallRepos() {
 	dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
 	# Then enable the main repo of the chosen tree
 	dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"
-	# Make sure we are getting our files from abf-downloads and not from some possibly incomplete mirror.
-	if [ -e "$WORKDIR"/.new ]; then
-		sed -i '/mirrorlist/d' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
-		sed -i '/fastestmirror/d' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
-		sed -i 's/# baseurl/baseurl/' "$CHROOTNAME"/etc/yum.repos.d/openmandriva-"$TREE"-"$EXTARCH".repo
-	fi
 	# Clean up
 	if [ ! -e "$WORKDIR"/.new ]; then
 		/bin/rm -rf openmandriva*.rpm
@@ -1170,7 +1164,7 @@ InstallRepos() {
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-"$ENABLEREPO"
 	fi
 	if [ -n "$TESTREPO" ]; then
-		dnf -installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
 	fi
 	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
 		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
