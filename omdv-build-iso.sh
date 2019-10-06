@@ -361,7 +361,6 @@ main() {
 	setupISOenv
 	ClnShad
 	InstallRepos
-	sed -i -e 's,^#mirrorlist=,mirrorlist=,g;s,^baseurl=,# baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
 	createSquash
 	buildIso
 	postBuild
@@ -1135,9 +1134,11 @@ InstallRepos() {
 	ls -l $CHROOTNAME/etc/yum.repos.d
 	echo ${EXTARCH}
 
-	# Use the master repository, not mirrors
+	# Use the master repository, not mirrors 
+	if [ -e "$WORKDIR"/.new ]; then
 	sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
-
+    fi
+    
 	#Check the repofiles and gpg keys exist in chroot
 	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
 		printf "%s\n"  "Repo dir bad install."
