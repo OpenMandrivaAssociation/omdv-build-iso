@@ -1113,18 +1113,20 @@ InstallRepos() {
 	# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
-	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-	cd "$WORKDIR"
-	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
-	for i in $PACKAGES; do
-		P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
-		if [ "$?" != '0' ]; then
-			printf "$s\n" "Can't find $TREE version of $i, please report"
-			exit 1
-		fi
-		wget $PKGS/$P
-	done
+	if [ -e "$WORKDIR"/.new ]; then
+        PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+        cd "$WORKDIR"
+        curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+        PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+        for i in $PACKAGES; do
+            P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
+            if [ "$?" != '0' ]; then
+                printf "$s\n" "Can't find $TREE version of $i, please report"
+                exit 1
+            fi
+            wget $PKGS/$P
+        done
+	fi
 
 	if [ -e "$WORKDIR"/.new ]; then
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
