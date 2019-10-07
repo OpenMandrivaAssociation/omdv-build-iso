@@ -1134,7 +1134,7 @@ InstallRepos() {
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
 		ls -l $CHROOTNAME/etc/yum.repos.d
 	else
-		printf "%s\n"  "/etc/yum.repos.d not pressent"
+		printf "%s\n"  "/etc/yum.repos.d not present"
 	fi
 	echo ${EXTARCH}
 
