@@ -1153,7 +1153,7 @@ InstallRepos() {
 	dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"
 	# Clean up
 	if [ ! -e "$WORKDIR"/.new ]; then
-		/bin/rm -rf openmandriva*.rpm
+		/bin/rm -rf "$WORKDIR"/openmandriva*.rpm
 	fi
 	if [ -n "$UNSUPPREPO" ]; then
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
