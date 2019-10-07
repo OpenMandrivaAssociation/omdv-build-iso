@@ -1110,6 +1110,7 @@ InstallRepos() {
 	# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
+	set -x
 	if [ -e "$WORKDIR"/.new ]; then
 		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 		cd "$WORKDIR"
