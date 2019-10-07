@@ -1127,18 +1127,22 @@ InstallRepos() {
 	if [ -e "$WORKDIR"/.new ]; then
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
 	else
-		/bin/rm "$CHROOTNAME"/etc/yum.repos.d/*.repo
+		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps  *.rpm
-	fi 
+	fi
 
-	ls -l $CHROOTNAME/etc/yum.repos.d
+	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
+		ls -l $CHROOTNAME/etc/yum.repos.d
+	else
+		printf "%s\n"  "/etc/yum.repos.d not pressent"
+	fi
 	echo ${EXTARCH}
 
-	# Use the master repository, not mirrors 
+	# Use the master repository, not mirrors
 	if [ -e "$WORKDIR"/.new ]; then
 	sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
     fi
-    
+
 	#Check the repofiles and gpg keys exist in chroot
 	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
 		printf "%s\n"  "Repo dir bad install."
