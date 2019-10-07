@@ -288,6 +288,8 @@ main() {
 			printf "%s\n" "-> No base chroot exists...creating one"
 			RemkWorkDir
 		fi
+    else
+        RemkWorkDir
 	fi
 
 	if [ "$IN_ABF" = '0' ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
