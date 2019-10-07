@@ -494,7 +494,7 @@ RemkWorkDir() {
 	mkdir -p "$ISOROOTNAME"
 	# Create the session record directorygetpkglist
 	mkdir -p ${WORKDIR}/sessrec
-	touch "$WORKDIR/.new"
+	touch "$WORKDIR"/.new
 }
 
 ## hmm ?
