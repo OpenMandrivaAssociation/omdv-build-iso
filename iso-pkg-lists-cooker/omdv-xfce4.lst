@@ -20,7 +20,7 @@
 task-xfce
 task-xfce-minimal
 #task-xfce-plugins
-eatmonkey
+#eatmonkey
 slim
 orage
 gigolo
@@ -28,7 +28,7 @@ midori
 parole
 #squeeze
 xarchiver
-ristretto
+#ristretto
 thunar-archive-plugin
 thunar-media-tags-plugin
 thunar-shares-plugin
