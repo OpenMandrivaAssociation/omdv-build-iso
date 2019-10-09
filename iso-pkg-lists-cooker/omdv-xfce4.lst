@@ -98,6 +98,7 @@ pango #gtk dep
 #pam_ldap
 #poppler-data
 #sasl-plug-gssapi
+sddm
 
 #openssh-server #server
 #samba-server #server
@@ -112,3 +113,6 @@ pango #gtk dep
 
 # special featured software
 #oma-welcome
+om-repo-picker
+om-control-center
+om-wallpapers-extra
