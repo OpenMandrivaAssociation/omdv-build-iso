@@ -17,7 +17,7 @@
 # include .///omdv_vlc.lst
 
 # Desktop Specifics
-#task-xfce
+task-xfce
 task-xfce-minimal
 #task-xfce-plugins
 eatmonkey
