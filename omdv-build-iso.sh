@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
@@ -35,8 +36,6 @@
 # TODO:
 # Add user controlled variable for setting number of failures tolerated
 
-# DONE Add choice of xargs or parallel for ABF builds
-# DONE buffer standard out so that the output of urpmi can be monitored for failed dependencies and then extracted and placed in a separate log.
 main() {
 	# This function which starts at the top of the file is executed first from the end of file
 	# to ensure that all functions are read before the body of the script is run.
@@ -158,11 +157,11 @@ main() {
 		 --testrepo)
 			TESTREPO=testrepo
 			;;
-		--unsupprepo)
+		 --unsupprepo)
 			UNSUPPREPO=unsupprepo
 			;;
-		--enablerepo)
-			ENABLREPO=*
+		 --repolist=*)
+			ENABLEREPO=${k#*=}
 			;;
 		 --parallel)
 			PLLL=plll
@@ -276,45 +275,45 @@ main() {
 	# For all modes any changes made to the pkg lists are implemented and recorded
 	# User mode also generates a series of diffs as a record of the multiple sessions.
 	# The --keep option allow these to be retained for subsequent sessions
-	if [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ] && [ -z "$NOCLEAN" ]; then
-		RemkWorkDir
-	elif [ "$IN_ABF" = '0' ] && [ -z "$NOCLEAN" ] && [ ! -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
-		if [ -n "$KEEP" ]; then
-			SaveDaTa
-			RestoreDaTa
-			# RestoreDaTa also cleans and recreates the $WORKDIR
-		else
-			printf "%s\n" "-> No base chroot exists...creating one"
-			RemkWorkDir
-		fi
-    else
-        RemkWorkDir
-	fi
 
-	if [ "$IN_ABF" = '0' ] && [ -n "$REBUILD" ] && [ -d "$WORKDIR" ]; then
-		if [ -n "$KEEP" ]; then
-			SaveDaTa
-			RestoreDaTa
-		fi
-	elif  [ -n "$REBUILD" ] && [ ! -d "$WORKDIR" ]; then
-		#THIS TEST IS BROKEN BECAUSE IT DOES NOT DISCRIMINATE WHETHER REBUILD IS SET AND THUS ALWAYS EXITS
-		printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
-			"-> You must run  your command with the --noclean option set to create something to rebuild."
-		printf '%s' "rb_$REBUILD" "nc_$NOCLEAN" "Kp_$KEEP" "wkdir_$WORKDIR"
-		exit 1
-	fi
-
-	if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
-		if [ -d "$WORKDIR/sessrec" ]; then
+ if [ "$IN_ABF" = '0' ]; then
+    if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
+		if [ ! -d "$WORKDIR"/sessrec ]; then 
+            touch "$WORKDIR"/.new
+        else
 			printf "%s\n" "-> You have chosen not to clean the base installation" \
 				"If your build chroot becomes corrupted you may want"\
 				"to take advantage of the 'rebuild' option to delete the corrupted files"\
 				"and build a new base installation." \
 				"This will be faster than dowloading the rpm packages again"
+        # The .new file will have been removed restore it for the next build.
+            touch "$WORKDIR"/.new
 		fi
 		# Note need to clean out grub uuid files here and maybe others
-	fi
+    else
+        if [ -n "$REBUILD" ] && [ ! -d "$WORKDIR" ]; then
+            printf "%s\n" "-> Error the $WORKDIR does not exist there is nothing to rebuild." \
+            "-> You must run  your command with the --noclean option set to create something to rebuild."
+            printf "%s\n" "-> No base chroot exists...creating one"
+            RemkWorkDir
+        elif [ -d "$WORKDIR" ]; then
+             SaveDaTa     #Save data does not save the package lists sessions unless the --keep option is chosen
+                          # It only saves the dnf rpm cache and the file sin the dracut,grub2, boot, data and extraconfig directories
+                          # which may of may not have been modified by ther user
+             RestoreDaTa  # RestoreDaTa also cleans and recreates the $WORKDIR
 
+        fi
+     fi   
+ else
+        # Expressly for debugging ABF=1 outside of the ABF builder
+        if [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ] && [ -n "$NOCLEAN" ]; then
+            touch "$WORKDIR"/.new
+            printf "%s\n" "Using noclean inside abf mode debug instance"
+        else
+            RemkWorkDir
+        fi
+ fi
+ 
 	# Assign the config build list
 	if [ "$TYPE" = 'my.add' ]; then
 		FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${TYPE,,}"
@@ -347,7 +346,6 @@ main() {
 	fi
 
 # START ISO BUILD
-
 	mkISOLabel
 	showInfo
 	getPkgList
@@ -499,14 +497,12 @@ RemkWorkDir() {
 	touch "$WORKDIR"/.new
 }
 
-## hmm ?
 SaveDaTa() {
 	printf "%s\n" "Saving config data"
 	if [ -n "$KEEP" ]; then
 		mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$BUILDSAV/iso-pkg-lists-${TREE,,}"
 		mv "$WORKDIR/sessrec" "$BUILDSAV/sessrec"
 	fi
-	if [ -n "$REBUILD" ]; then
 	mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
 	mv "$WORKDIR/grub2" "$BUILDSAV/grub2"
 	mv "$WORKDIR/boot" "$BUILDSAV/boot"
@@ -514,7 +510,7 @@ SaveDaTa() {
 	mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
 	printf "%s\n" "-> Saving rpms for rebuild"
 	mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
-	fi
+	mv "$CHROOTNAME/etc/dnf/" "$BUILDSAV/etc/dnf"	
 }
 
 RestoreDaTa() {
@@ -540,6 +536,7 @@ RestoreDaTa() {
 		mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
 		mkdir -p "$CHROOTNAME/var/cache/dnf"
 		mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		mv "$BUILDSAV/etc/dnf" "$CHROOTNAME/etc/dnf/"
 	else
 		# Clean out the dnf dir
 		cd "$BUILDSAV"||exit
@@ -667,17 +664,14 @@ updateSystem() {
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
 	dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 	echo "-> Updating rpms files inside system environment"
-	if [ "$IN_ABF" = 0 ]; then
-		echo "-> Updating dnf.conf to cache packages for rebuild"
-		echo "keepcache=True" >> /etc/dnf/dnf.conf
 		if [ ! -d "$WORKDIR/dracut" ]; then
 			find "$WORKDIR"
 			touch "$WORKDIR/.new"
 			chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
 		else
-			printf "%s\n" "-> Your build lists have been retained" # Files already copied
+
+		printf "%s\n" "-> Your build lists have been retained" # Files already copied
 		fi
-	fi
 	# Make our directory writeable by current sudo user
 	chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
 }
@@ -698,10 +692,10 @@ getPkgList() {
 			export GIT_BRNCH=${TREE,,}
 			# ISO_VER defaults to user build entry
 		fi
-		EX_PREF=omdv-build-iso-rolling
+		EX_PREF=omdv-build-iso-${TREE,,}
 		EXCLUDE_LIST="--exclude $EX_PREF/.abf.yml --exclude $EX_PREF/ChangeLog --exclude $EX_PREF/Developer_Info --exclude $EX_PREF/Makefile --exclude $EX_PREF/README --exclude $EX_PREF/TODO --exclude $EX_PREF/omdv-build-iso.sh --exclude $EX_PREF/omdv-build-iso.spec --exclude $EX_PREF/docs/*  --exclude $EX_PREF/tools/* --exclude $EX_PREF/ancient/*"
 		if [ -n "$KEEP" ]; then
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-${TREE,,}/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
 		else
 			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"` --strip-components 1  -xvf -
 		fi		
@@ -782,8 +776,8 @@ MkeListRepo() {
 		cd ${WORKDIR}/iso-pkg-lists-${TREE}
 		git init
 		git add .
-		git config --global user.email "root@localhost"
-		git config --global user.name "iso buider"
+		git config user.email "omdv@abf.openmandriva.org"
+		git config user.name "iso buider"
 		MkeCmmtMsg
 		git commit -a -m "$CMMTMSG"
 	fi
@@ -801,7 +795,9 @@ DtctCmmt() {
 
 # Create a sequential commit message
 MkeCmmtMsg() {
+    mkdir "$WORKDIR"/sessrec
 	if  [ -f "$WORKDIR/sessrec/.seqnum" ]; then
+        SEQNUM=`cat "$WORKDIR/sessrec/.seqnum"`
 		SEQNUM=$((SEQNUM+1))
 	else
 		SEQNUM=1
@@ -1005,7 +1001,7 @@ mkUserSpin() {
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
-# The MyAdd and MyRmv finctionsCan't take full advantage of parallel until a full rpm dep list is produced
+# The MyAdd and MyRmv functions can't take full advantage of parallel until a full rpm dep list is produced
 # which means using a solvedb setup. We can however make use of it's fail utility.. Add some logging too.
 
 # Usage: MyAdd
@@ -1013,9 +1009,13 @@ MyAdd() {
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		## (crazy) why ? dnf install -y ... ${...[@]} ...  | tee ...
-		printf "%s\n" "$__install_list" | xargs /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
-		printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
-	fi
+		if [ -n "$PLLL" ]; then
+            printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+        else
+            /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+            printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
+        fi
+    fi
 }
 
 # Usage: MyRmv
@@ -1075,7 +1075,8 @@ mkUpdateChroot() {
 			if [ -n "$PLLL" ]; then
 				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 			else
-				printf '%s\n' "$__install_list" | xargs /usr/bin/dnf  install -y --refresh  --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+                /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+                printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 			fi
 		fi
 	fi
@@ -1086,17 +1087,21 @@ FilterLogs() {
 	if [ -f "$WORKDIR/install.log" ]; then
 		# Create the header
 		printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log"
-		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
+		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$10}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
 		printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log"
-		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$9}' >>"$WORKDIR/rpm-fail.log"
+		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$10}' >>"$WORKDIR/rpm-fail.log"
 
 		# Append the data
-		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$19}'>> "$WORKDIR/rpm-fail.log"
-		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$19}' >> "$WORKDIR/rpm-install.log"
+		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$10}'>> "$WORKDIR/rpm-fail.log"
+		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$10}' >> "$WORKDIR/rpm-install.log"
 	fi
 	# Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
+		MISSING=`grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"`: 
+		#if [ -n "$MISSING" ]; then
+		#echo "$MISSING" "ERROR! Is your repo enabled"
+		#fi
 	fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
@@ -1104,6 +1109,8 @@ FilterLogs() {
 		cat "$WORKDIR/depfail.log"
 		cat "$WORKDIR/rpm-install.log" 
 	fi
+	# List the available repos and their status
+	dnf repolist -C --installroot "$CHROOTNAME" --quiet  --all > REPO_STATUS.txt
 	#Clean-up
 	# rm -f "$WORKDIR/install.log"
 }
@@ -1120,18 +1127,21 @@ InstallRepos() {
         for i in $PACKAGES; do
             P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
             if [ "$?" != '0' ]; then
-                printf "$s\n" "Can't find $TREE version of $i, please report"
+                printf "%s\n" "Can't find $TREE version of $i, please report"
                 exit 1
             fi
             wget $PKGS/$P
         done
-	fi
+    #else
+        
+    #    errorCatch
+    fi
 
 	if [ -e "$WORKDIR"/.new ]; then
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
 	else
-		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo
-		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps  *.rpm
+		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
+		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps  *.rpm
 	fi
 
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
@@ -1139,11 +1149,14 @@ InstallRepos() {
 	else
 		printf "%s\n"  "/etc/yum.repos.d not present"
 	fi
-	echo ${EXTARCH}
 
 	# Use the master repository, not mirrors
 	if [ -e "$WORKDIR"/.new ]; then
-	sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
+        sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
+	# we must make sure that the rpmcache is retained
+		echo "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
+    # This setting will be overwritten when the repos are re-installed at the end; however
+    # because the repo rpms are installed with rpm -Uvh the cache wont be cleared as dnf won't be run.
     fi
 
 	#Check the repofiles and gpg keys exist in chroot
@@ -1160,21 +1173,25 @@ InstallRepos() {
 	dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"
 	# Clean up
 	if [ ! -e "$WORKDIR"/.new ]; then
-		/bin/rm -rf "$WORKDIR"/openmandriva*.rpm
+		/bin/rm -rf "$WORKDIR"/*.rpm
 	fi
 	if [ -n "$UNSUPPREPO" ]; then
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
 	fi
+	# Some pre-processing required here because of the inconsistant structure of repoid's
 	if [ -n "$ENABLEREPO" ]; then
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-"$ENABLEREPO"
+            ENABLEREPO=`tr "," " " <<< $ENABLEREPO`
+        #for rpo in ${ENABLEREPO//,/]; do
+		dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
+		#done
 	fi
 	if [ -n "$TESTREPO" ]; then
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
 	fi
+	#if [ "$TREE" = "rock" ]; then
+        
 	## > or >> ?
-	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
-	fi
+
 
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
@@ -1925,7 +1942,13 @@ EOF
 		printf "%s\n" "-> Please wait...rebuilding man page database"
 		chroot "$CHROOTNAME" /usr/bin/mandb --quiet
 	fi
-
+    
+    # Move the rpm cache out of the way for the iso build
+	if [[ "$IN_ABF" = 0  || ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]]; then
+	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
+	mkdir "$CHROOTNAME"/var/cache/dnf
+	fi
+	
 	# (crazy) NOTE: this be after last think touched /home/live
 	chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
 	# Rebuild linker cache
@@ -2068,7 +2091,9 @@ postBuild() {
 
 
 	# If not in ABF move rpms back to the cache directories
-	if [[ ("$IN_ABF" = '0' || ( "$IN_ABF" = '1' && -n "$DEBUG" )) ]]; then
+	#if [ "$IN_ABF" = 0 ] || [ ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]; then
+	if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
+        /bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
 		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
 	fi
 
