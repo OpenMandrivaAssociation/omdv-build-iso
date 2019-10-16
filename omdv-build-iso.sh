@@ -692,12 +692,13 @@ getPkgList() {
 			export GIT_BRNCH=${TREE,,}
 			# ISO_VER defaults to user build entry
 		fi
-		EX_PREF=omdv-build-iso-${TREE,,}
-		EXCLUDE_LIST="--exclude $EX_PREF/.abf.yml --exclude $EX_PREF/ChangeLog --exclude $EX_PREF/Developer_Info --exclude $EX_PREF/Makefile --exclude $EX_PREF/README --exclude $EX_PREF/TODO --exclude $EX_PREF/omdv-build-iso.sh --exclude $EX_PREF/omdv-build-iso.spec --exclude $EX_PREF/docs/*  --exclude $EX_PREF/tools/* --exclude $EX_PREF/ancient/*"
+		#EX_PREF=omdv-build-iso-${TREE,,}
+		EX_PREF=./
+		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
 		if [ -n "$KEEP" ]; then
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-${TREE,,}/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   ${EXCLUDE_LIST}  --exclude omdv-build-iso-${TREE,,}/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
 		else
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"` --strip-components 1  -xvf -
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   ${EXCLUDE_LIST} --strip-components 1  -xvf -
 		fi		
 		cd "$WORKDIR" || exit
 		if [ ! -e "$FILELISTS" ]; then
@@ -1279,7 +1280,8 @@ createChroot() {
 		printf "%s\n" "-> Broken chroot installation." "Exiting"
 		errorCatch
 	fi
-
+# There's a problem here if you have something like desktop and desktop-clang kernels as module detection fails if 
+# the boot kernel type is defined as desktop
 	# Export installed and boot kernel
 	pushd "$CHROOTNAME"/lib/modules > /dev/null 2>&1
 	BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,')"
