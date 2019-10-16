@@ -1346,7 +1346,7 @@ createInitrd() {
 	fi
 
 	# Building liveinitrd
-	chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
+	chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$BOOT_KERNEL_ISO"
     if [ -n "$BOOT_KERNEL_TYPE" ]; then
         chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
     fi
@@ -1626,7 +1626,7 @@ setupGrub2() {
     sed -i "s/%KCC_TYPE%/with ${BOOT_KERNEL_TYPE}/" "$ISOROOTNAME"/boot/grub/grub.cfg
         if [ -n "$BOOT_KERNEL_TYPE" ]; then
             cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
-            cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd1.img"
+            cp -a "$CHROOTNAME/boot/liveinitrd1.img" "$ISOROOTNAME/boot/liveinitrd1.img"
                 # If dual kernels are used set up the grub2 menu to show them.
                 ALT_KERNEL=`echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}'`
             sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
