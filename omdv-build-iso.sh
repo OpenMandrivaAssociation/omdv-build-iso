@@ -1619,26 +1619,24 @@ setupGrub2() {
 
 	printf "%s\n" "-> End building Grub2 El-Torito image."
 	printf "%s\n" "-> Installing liveinitrd for grub2"
-
+	
 	if [ -e "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" ] && [ -e "$CHROOTNAME/boot/liveinitrd.img" ]; then
-		cp -a "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
-		cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd.img"
-	if [ -n "$BOOT_KERNEL_TYPE" ]; then
-        cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
-		cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd1.img"
-			# If dual kernels are used set up the grub2 menu to show them.
-        sed 's/%{BOOT_KCC_TYPE}/with "$BOOT_KERNEL_TYPE"/' grub.cfg
-    else
-            # Remove the uneeded menu entry
-         sed '/linux1/,+4'
-	fi	
+    cp -a "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
+    cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd.img"
+    sed -i 's/%BOOT_KCC_TYPE%/with "$BOOT_KERNEL_ISO"/' "$ISOROOTNAME"/boot/grub/grub.cfg
+        if [ -n "$BOOT_KERNEL_TYPE" ]; then
+            cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
+            cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd1.img"
+                # If dual kernels are used set up the grub2 menu to show them.
+            sed -i 's/%BOOT_KCC_TYPE%/with "$BOOT_KERNEL_TYPE"/' "$ISOROOTNAME"/boot/grub/grub.cfg
+        else
+                # Remove the uneeded menu entry
+            sed -i '/linux1/,+4' "$ISOROOTNAME"/boot/grub/grub.cfg
+        fi	
 	else
 		printf "%s\n" "-> vmlinuz or liveinitrd does not exists. Exiting."
 		errorCatch
 	fi
-
-	if [ -n 
-	
 
 	if [ ! -f "$ISOROOTNAME/boot/liveinitrd.img" ]; then
 		printf "%s\n" "-> Missing /boot/liveinitrd.img. Exiting."
