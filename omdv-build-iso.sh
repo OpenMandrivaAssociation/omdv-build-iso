@@ -1623,12 +1623,13 @@ setupGrub2() {
 	if [ -e "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" ] && [ -e "$CHROOTNAME/boot/liveinitrd.img" ]; then
     cp -a "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
     cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd.img"
-    sed -i 's/%BOOT_KCC_TYPE%/with "$BOOT_KERNEL_ISO"/' "$ISOROOTNAME"/boot/grub/grub.cfg
+    sed -i "s/%KCC_TYPE%/with ${BOOT_KERNEL_TYPE}/" "$ISOROOTNAME"/boot/grub/grub.cfg
         if [ -n "$BOOT_KERNEL_TYPE" ]; then
             cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
             cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd1.img"
                 # If dual kernels are used set up the grub2 menu to show them.
-            sed -i 's/%BOOT_KCC_TYPE%/with "$BOOT_KERNEL_TYPE"/' "$ISOROOTNAME"/boot/grub/grub.cfg
+                ALT_KERNEL=echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}' 
+            sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
         else
                 # Remove the uneeded menu entry
             sed -i '/linux1/,+4' "$ISOROOTNAME"/boot/grub/grub.cfg
