@@ -99,6 +99,7 @@ pango #gtk dep
 #poppler-data
 #sasl-plug-gssapi
 sddm
+breeze-gtk
 
 #openssh-server #server
 #samba-server #server
