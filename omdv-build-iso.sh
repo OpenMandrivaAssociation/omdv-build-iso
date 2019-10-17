@@ -103,6 +103,9 @@ main() {
 			weston)
 				TYPE=weston
 				;;
+            gnome)
+                TYPE=gnome3
+                ;;
 			minimal)
 				TYPE=minimal
 				;;
@@ -1923,7 +1926,11 @@ EOF
 			sed -i -e "s/.*executable:.*/    executable: "startxfce4"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "xfce"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
-
+		
+        if [ "${TYPE,,}" = 'gnome3' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startgnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "gnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		fi
 	fi
 	#remove rpm db files which may not match the non-chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
@@ -1959,10 +1966,11 @@ EOF
 	fi
     
     # Move the rpm cache out of the way for the iso build
-	if [[ "$IN_ABF" = 0  || ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]]; then
+	#if [[ "$IN_ABF" = 0  || ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]]; then
+	#if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
 	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
 	mkdir "$CHROOTNAME"/var/cache/dnf
-	fi
+	#fi
 	
 	# (crazy) NOTE: this be after last think touched /home/live
 	chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
