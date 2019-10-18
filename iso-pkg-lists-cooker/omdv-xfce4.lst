@@ -29,6 +29,7 @@ parole
 #squeeze
 xarchiver
 #ristretto
+viewnior
 thunar-archive-plugin
 thunar-media-tags-plugin
 thunar-shares-plugin
@@ -99,6 +100,7 @@ pango #gtk dep
 #poppler-data
 #sasl-plug-gssapi
 sddm
+breeze-gtk
 
 #openssh-server #server
 #samba-server #server
