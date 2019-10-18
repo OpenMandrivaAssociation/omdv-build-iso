@@ -50,7 +50,7 @@ gdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
-gnome-software
+#gnome-software
 gnome-terminal-nautilus
 
 empathy
