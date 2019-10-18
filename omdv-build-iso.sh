@@ -103,7 +103,7 @@ main() {
 			weston)
 				TYPE=weston
 				;;
-            gnome)
+            gnome3)
                 TYPE=gnome3
                 ;;
 			minimal)
