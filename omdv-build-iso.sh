@@ -2114,7 +2114,6 @@ postBuild() {
 
 
 	# If not in ABF move rpms back to the cache directories
-	#if [ "$IN_ABF" = 0 ] || [ ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]; then
 	if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
         /bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
 		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
