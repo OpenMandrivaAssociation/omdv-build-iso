@@ -53,11 +53,11 @@ gnome-packagekit
 gnome-software
 gnome-terminal-nautilus
 
-Recommends:	empathy
-Recommends:	epiphany
-Recommends:	gnome-games
-Recommends:	rhythmbox
-Recommends:	totem
+empathy
+epiphany
+gnome-games
+#rhythmbox
+totem
 
 simple-scan
 shotwell
