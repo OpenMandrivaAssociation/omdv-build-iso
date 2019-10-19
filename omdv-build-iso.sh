@@ -112,6 +112,9 @@ main() {
 			sway)
 				TYPE=sway
 				;;
+            mate)
+                TYPE=mate
+                ;;
 			user)
 				TYPE=my.add
 				;;
@@ -374,6 +377,14 @@ main() {
 ########################
 #   Start functions    #
 ########################
+# TODO:
+# Test --auto-update switch
+# Checkout --debug option
+# Create --baserepo option
+# Expand --isover option to allow a local path
+# Look at including files in the LREPODIR in the buildIso
+
+
 usage_help() {
 	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%s\n" "Please run script with arguments"
@@ -383,23 +394,34 @@ usage_help() {
 		printf "%s\n" "--tree= Branch of software repository: cooker, lx4"
 		printf "%s\n" "--version= Version for software repository: 4.0"
 		printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
-		printf "%s\n" "--type= User environment type on ISO: plasma, mate, lxqt, icewm, xfce4, weston, minimal"
+		printf "%s\n" "--type= User environment type on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal"
 		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: gdm, sddm , none"
-		printf "%s\n" "--workdir= Set directory where ISO will be build"
-		printf "%s\n" "--outputdir= Set destination directory to where put final ISO file"
-		printf "%s\n" "--debug Enable debug output. This option also allows ABF=1 to be used loacally for testing"
-		printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
-		printf "%s\n" "--rebuild Clean build chroot and rebuild from cached rpm's"
-		printf "%s\n" "--boot-kernel-type Type of kernel to use for syslinux (eg nrj-desktop), if different from standard kernel"
-		printf "%s\n" "--devmode Enables some developer aids see the README"
-		printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
-		printf "%s\n" "--keep Use this if you want to be sure to preserve the diffs of your session when building a new iso session"
-		printf "%s\n" "--testrepo Includes the main testing repo in the iso build. Only available fo released builds "
+		printf "%s\n" "--workdir= Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
+		printf "%s\n" "--outputdir= Set destination directory to where put final ISO file. The default is ~/omdv-buildchroot-<arch>/results"
+		printf "%s\n" "--boot-kernel-type Type of kernel to use for booting, if different from standard kernel. The grub menu on the iso offers alternate kernels for booting"
 		printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
-		printf "%s\n" "--parallel This uses the parallel program instead of xarg which allow setting of a specific number of install errors before the iso build fails. The default is 1"
-		printf "%s\n" "--maxerrors=X This can be used to set the number of errors tolerated before the iso build fails. This only has any effect if the --parallel flag is given"
-		printf "%s\n" "--isover Allows the user to fetch a personal repository of buils lists from their own repository"
-		printf "%s\n" " "
+		printf "%s\n" "                               REPOSITORY MANAGEMENT"
+        printf "%s\n" "Several options allow the selection of additional repositories in addition to the default (main)"
+        printf "%s\n" "Please note that is the following options are used the selected repositories will be left enabled on the iso. If you just want the default repositories on the iso use the --baserepo switch in addition to the other selectors."
+        printf "%s\n" "--testrepo - Enables the testing repo for the main repository" 
+        printf "%s\n" "--unsupprepo - Enables the unsupported repo" 
+        printf "%s\n" "--repolist - Allows a list of comma separated repoid's to enable.  i.e. --repolist=unsupported,updates,restricted To obtain a list of repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation"
+        printf "%s\n" "--baserepo - Resets the above options to the default for the repo group (rock, rolling, cooker)"
+		printf "%s\n"                             "USER BUILDS - REMASTERING"
+		printf "%s\n" "Provision is made for custrom builds in the form of two files in the package list directories. These are MyAdd and MyRMV"
+		printf "%s\n" "                                DEVELOPER OPTIONS"
+		printf "%s\n" "--debug Enable debug output basically enables "set -x". This option also allows ABF=1 to be used loacally for testing"
+		printf "%s\n" "--devmode Enables some developer aids see the README"
+        printf "%s\n" "--parallel Runs each item in the build list as a single transaction. Used in conjunction with --maxerrors=<integer> (default=1) can be used when remastering isos to allow failures due to missing or broken packages. This feature is intended for debugging iso builds and is helpful in tracking down broken dependencies. A list of failed packages is produced at the end of the run after the iso is built."
+		printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
+		printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
+		printf "%s\n" "For the following options you must have built an iso before they can be applied"
+		printf "%s\n" "--rebuild Recreates the build chroot and rebuilds from cached rpms and supplementary files. This allows a developer to modify the ""fixed"" iso setup files and preserve them from one run to the next"
+		printf "%s\n" "--isover - Allows the user to fetch a personal repository of build lists from their own repository. Currently the repository must reside on github as a branch of the omdv-build-iso repository"
+		printf "%s\n" "--keep - Retains only the build lists from one run to another. This means that if you modify the package lists within the working directory (usually omdv-build-chroot-<arch>) they will be restored unconditionally on the next run irrespective of any other flags. This can be used to create lists for new compilations. The build lists are stored in a git repository and each time there is a change a commit is performed thus keeping a record of the users session."
+		printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
+		printf "%s\n" 
+	
 		printf "%s\n" "For example:"
 		printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=4.0 --release_id=alpha --type=plasma --displaymanager=sddm"
 		printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
@@ -453,30 +475,25 @@ setWorkdir() {
 	# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and
 	# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
 
-	if [ "$IN_ABF" = '1'  ] &&  [ ! -d '/home/omv/docker-iso-worker' ] && [ -z "$DEBUG" ]; then
-		printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
+	if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
+        # We really are in ABF
+        WORKDIR=$(realpath "$(dirname "$0")")
+	elif [ -n "$DEBUG" ]; then
+        if [ -z "$WORKDIR" ]; then
+            WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+        fi
+        printf "%s\n" "-> Debugging ABF build locally"
+    else
+    	printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
 		exit 1
-	elif [  "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ]; then
-		printf "%s\n" "-> Debugging ABF build locally"
-		#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
-		# Avoid setting the usual ABF WORKDIR
-		# if WORKDIR is not defined then set a default'
-		if [ -z "$WORKDIR" ]; then
-			echo "$SUDOVAR"
-			WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-			printf "%s\n" "-> The build directory is $WORKDIR"
-		fi
-	fi
-
-	if [ "$IN_ABF" = '1' ] && [ -d '/home/omv/docker-iso-worker' ]; then
-		# We really are in ABF
-		WORKDIR=$(realpath "$(dirname "$0")")
 	fi
 	if [ "$IN_ABF" = '0' ]; then
 		if [ -z "$WORKDIR" ]; then
 			WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-		fi
-		mkdir -p ${UHOME}/ISOBUILD
+        fi
+    fi
+        # Make the directory for saving data between runs
+        mkdir -p ${UHOME}/ISOBUILD
 		BUILDSAV=${UHOME}/ISOBUILD
 	fi
 	printf "%s\n" "-> The work directory is $WORKDIR"
@@ -891,35 +908,35 @@ createPkgList() {
 # Running without --noclean set destroys the $WORKDIR and thus the diffs.
 # Adding the --keep flag will move the diffs to the users home directory. They will be moved back at
 # the start of each new session if the --keep flag is set and --noclean or --rebuild are selected.
-diffPkgLists() {
-	local __difflist="$1"
-	local __newdiffname
-	local dodiff="/usr/bin/diff -Naur"
+#diffPkgLists() {
+#	local __difflist="$1"
+#	local __newdiffname
+#	local dodiff="/usr/bin/diff -Naur"
 
-	# Here a combined diff is created
-	while read -r DIFF ; do
-		ALL+=$(eval  "$dodiff" "$DIFF")$'\n'
-	done < <(printf '%s\n' "$__difflist")
+	# Here a combined diff is createdq
+#	while read -r DIFF ; do
+#		ALL+=$(eval  "$dodiff" "$DIFF")$'\n'
+#	done < <(printf '%s\n' "$__difflist")
 
-	if [ -n "$__difflist" ]; then
-		# BUILD_ID and SEQNUM are used to label diffs
-		if [ -f "$WORKDIR/sessrec/.build_id" ]; then
-				SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
-		else
-			SESSNO=${BUILD_ID}
-		fi
-		if [ -f "$WORKDIR/sessrec/.seqnum" ]; then
-			SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
-		else
-			SEQNUM=1
-			echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-		fi
-		__newdiffname="${SESSNO}_${SEQNUM}.diff"
-		printf "%s" "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
-		SEQNUM=$((SEQNUM+1))
-		printf "%s\n" "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-	fi
-}
+#	if [ -n "$__difflist" ]; then
+#		# BUILD_ID and SEQNUM are used to label diffs
+#		if [ -f "$WORKDIR/sessrec/.build_id" ]; then
+#				SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
+#		else
+#			SESSNO=${BUILD_ID}
+#		fi
+#		if [ -f "$WORKDIR/sessrec/.seqnum" ]; then
+#			SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
+#		else
+#			SEQNUM=1
+#			echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
+#		fi
+#		__newdiffname="${SESSNO}_${SEQNUM}.diff"
+#		printf "%s" "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
+#		SEQNUM=$((SEQNUM+1))
+#		printf "%s\n" "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
+#	fi
+#}
 
 # Usage: mkOmSpin [main install file path} i.e. [path]/omdv-kde4.lst.
 # Returns a variable "$INSTALL_LIST" containing all rpms
@@ -1930,6 +1947,10 @@ EOF
         if [ "${TYPE,,}" = 'gnome3' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startgnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "gnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		fi
+		if [ "${TYPE,,}" = 'mate' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startmate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 	fi
 	#remove rpm db files which may not match the non-chroot environment
