@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x 
+
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
@@ -12,6 +12,7 @@ set -x
 # Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
 # April 2018 Major Revision to support the use of the
 # dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
+# October 2019 Revise user mode list storage <itchka@compuserve.com>
 
 # This tool is licensed under GPL license
 #	This program is free software; you can redistribute it and/or modify
@@ -490,7 +491,7 @@ setWorkdir() {
         if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
             # We really are in ABF
             echo "using realpath"
-            #WORKDIR=$(realpath "$(dirname "$0")")
+            WORKDIR=$(realpath "$(dirname "$0")")
         elif [ -n "$DEBUG" ]; then
             if [ -z "$WORKDIR" ]; then
                 WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
