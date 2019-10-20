@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
@@ -138,9 +138,9 @@ main() {
 			OUTPUTDIR=${OUTPUT/#\~/$HOME}
 			;;
 		--listrepodir=*)
-			REPO=${k%*=}
+			REPO=${k#*=}
 			# Expand the tilde
-			LREPODIR=${REPO/#\~/HOME}
+			LREPODIR=${REPO/#*\~/HOME}
 			;;
 		--debug)
 			DEBUG=debug
@@ -284,7 +284,7 @@ main() {
 
  if [ "$IN_ABF" = '0' ]; then
     if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
-		if [ ! -d "$WORKDIR"/sessrec ]; then 
+		if [ ! -d "$COMMITDIR"/sessrec ]; then 
             touch "$WORKDIR"/.new
         else
 			printf "%s\n" "-> You have chosen not to clean the base installation" \
@@ -303,8 +303,8 @@ main() {
             printf "%s\n" "-> No base chroot exists...creating one"
             RemkWorkDir
         elif [ -d "$WORKDIR" ]; then
-             SaveDaTa     #Save data does not save the package lists sessions unless the --keep option is chosen
-                          # It only saves the dnf rpm cache and the file sin the dracut,grub2, boot, data and extraconfig directories
+             SaveDaTa     # Save data does not save the package lists sessions unless the --keep option is chosen
+                          # It only saves the dnf rpm cache and the files in the dracut,grub2, boot, data and extraconfig directories
                           # which may of may not have been modified by ther user
              RestoreDaTa  # RestoreDaTa also cleans and recreates the $WORKDIR
 
@@ -338,21 +338,25 @@ main() {
 	mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
 	# and the grub directory
 	mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
+	
+mKeBuild_id() {
 	printf "%s\n" "Create the BUILD_ID"
 	if [ "$IN_ABF" = '0' ]; then
-		if [ -f "$WORKDIR"/sessrec/.build_id ]; then
+		if [ -f "$COMMITDIR"/sessrec/.build_id ]; then
 			# The BUILD_ID has already been saved. Used to create commit messages.
-			BUILD_ID=$(cat "$WORKDIR"/sessrec/.build_id)
+			BUILD_ID=$(cat "$COMMITDIR"/sessrec/.build_id)
 		else
 			BUILD_ID=$(($RANDOM%9999+1000))
-			echo ${BUILD_ID} > "$WORKDIR"/sessrec/.build_id
+			echo ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
 		fi
 	else
 		BUILD_ID=$(($RANDOM%9999+1000))
 	fi
-
+}
 # START ISO BUILD
 	mkISOLabel
+	mkeREPOdir
+	mKeBuild_id	
 	showInfo
 	getPkgList
 	MkeListRepo # Create git repo for pkg lists
@@ -373,6 +377,7 @@ main() {
 	FilterLogs
 	#END
 }
+
 
 ########################
 #   Start functions    #
@@ -474,54 +479,56 @@ setWorkdir() {
 	# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
 	# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and
 	# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
-
-	if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
-        # We really are in ABF
-        WORKDIR=$(realpath "$(dirname "$0")")
-	elif [ -n "$DEBUG" ]; then
-        if [ -z "$WORKDIR" ]; then
-            WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
-        fi
-        printf "%s\n" "-> Debugging ABF build locally"
-    else
-    	printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
-		exit 1
-	fi
 	if [ "$IN_ABF" = '0' ]; then
 		if [ -z "$WORKDIR" ]; then
 			WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
         fi
-    fi
         # Make the directory for saving data between runs
         mkdir -p ${UHOME}/ISOBUILD
-		BUILDSAV=${UHOME}/ISOBUILD
-	fi
+		BUILDSAV=${UHOME}/ISOBUILD 
+    else
+        if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
+            # We really are in ABF
+            echo "using realpath"
+            #WORKDIR=$(realpath "$(dirname "$0")")
+        elif [ -n "$DEBUG" ]; then
+            if [ -z "$WORKDIR" ]; then
+                WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+            fi
+            printf "%s\n" "-> Debugging ABF build locally"
+        else
+            printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
+            exit 1
+        fi
+    fi
 	printf "%s\n" "-> The work directory is $WORKDIR"
 	# Define these earlier so that files can be moved easily for the various save options
 	# this is where rpms are installed
 	CHROOTNAME="$WORKDIR/BASE"
 	# this is where ISO files are created
 	ISOROOTNAME="$WORKDIR/ISO"
+	mkdir -p ${CHROOTNAME}
+	mkdir ${ISOROOTNAME}
 }
 
 RemkWorkDir() {
 	echo "Remake dirs"
 	rm -rf "$WORKDIR"
-	mkdir -p "$WORKDIR"
+	mkdir -p ${WORKDIR}
 	# Create the mount points
-	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
+	mkdir -p "${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts"
 	# Create the ISO directory
-	mkdir -p "$ISOROOTNAME"
+	mkdir -p ${ISOROOTNAME}
 	# Create the session record directorygetpkglist
-	mkdir -p ${WORKDIR}/sessrec
-	touch "$WORKDIR"/.new
+	mkdir -p ${LREPODIR}/sessrec
+	touch ${WORKDIR}/.new
 }
 
 SaveDaTa() {
 	printf "%s\n" "Saving config data"
 	if [ -n "$KEEP" ]; then
 		mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$BUILDSAV/iso-pkg-lists-${TREE,,}"
-		mv "$WORKDIR/sessrec" "$BUILDSAV/sessrec"
+		mv "$LREPODIR/sessrec" "$BUILDSAV/sessrec"
 	fi
 	mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
 	mv "$WORKDIR/grub2" "$BUILDSAV/grub2"
@@ -539,11 +546,11 @@ RestoreDaTa() {
 	# In the case of a rebuild the $CHROOTNAME dir is recreated and the saved rpm cache is restored to it..
 	rm -rf "$WORKDIR"
 	mkdir -p "$WORKDIR"
-	if [ -n "$KEEP" ]; then
-		printf "%s\n" "-> Restoring package lists and the session records"
-		mv "$BUILDSAV/iso-pkg-lists-${TREE,,}" "$WORKDIR/iso-pkg-lists-${TREE,,}"
-		mv "$BUILDSAV/sessrec" "$WORKDIR/sessrec"
-	fi
+	#if [ -n "$KEEP" ]; then
+	#	printf "%s\n" "-> Restoring package lists and the session records"
+	#	mv "$BUILDSAV/iso-pkg-lists-${TREE,,}" "$WORKDIR/iso-pkg-lists-${TREE,,}"
+	#	mv "$BUILDSAV/sessrec" "$WORKDIR/sessrec"
+	#fi
 	mv "$BUILDSAV/dracut" "$WORKDIR/dracut"
 	mv "$BUILDSAV/grub2" "$WORKDIR/grub2"
 	mv "$BUILDSAV/boot" "$WORKDIR/boot"
@@ -583,6 +590,8 @@ errorCatch() {
 	unset KERNEL_ISO
 	unset UEFI
 	unset MIRRORLIST
+	unset BOOT_KERNEL_ISO
+	#Maybe need to clear the COMMITDIR with user interaction
 	# (crazy) umountAll() ?
 	umount -l /mnt
 	losetup -D
@@ -697,51 +706,90 @@ updateSystem() {
 }
 
 getPkgList() {
-	# update iso-pkg-lists from GitHub if required
-	# we need to do this for ABF to ensure any edits have been included
-	# Do we need to do this if people are using the tool locally?
-	if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-		printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-		# download iso packages lists from https://github.com
-		# GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-		if [ -n "$ISO_VER" ]; then
-			export GIT_BRNCH="$ISO_VER"
-		elif [ ${TREE,,} == "cooker" ]; then
-			export GIT_BRNCH=master
-		else
-			export GIT_BRNCH=${TREE,,}
-			# ISO_VER defaults to user build entry
-		fi
-		#EX_PREF=omdv-build-iso-${TREE,,}
-		EX_PREF=./
-		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
-		if [ -n "$KEEP" ]; then
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   ${EXCLUDE_LIST}  --exclude omdv-build-iso-${TREE,,}/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
-		else
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   ${EXCLUDE_LIST} --strip-components 1  -xvf -
-		fi		
-		cd "$WORKDIR" || exit
-		if [ ! -e "$FILELISTS" ]; then
+    # Package list handling has two modes. When the script is run on ABF the package lists are obtained from the git repos.
+    # The branch used will can be changed by using the --isover switch to get the lists from a different branch of the repo.
+    # When operated outside of ABF it is assumed that the user will wish to modify the lists to create their own custom iso.
+    # In this case the package lists are initial downloaded from GitHub and the versions that match the repo given on the command line
+    # is copied to the directory pointed to by the LREPODIR variable. The LREPODIR variable is automatically set to a default if the user 
+    # does not provide a name. The directory name is stored in an hidden file .rpodir in the users home directory.
+    # An git repository is created in the LREPODIR and an an initial commit made with an automatically generated commit message which 
+    # contains the "Build ID" and a session count which uniquely label each commit. Should the user alter the files then on a subsequent iso build 
+    # the files from the directory pointed to by the LREPODIR variable will be copied to the current working directory and a commit generated for the 
+    # users changes. If the user wished to create a new spin they can achieve this by setting the --lrepodir commanline option to a new directory 
+    # where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name 
+    # with the --lrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
+    
+	if [ -d "$LREPODIR" ] && [ -d "$LREPODIR/iso-pkg-lists-${TREE}/.git" ]; then
+        printf "%s\n" "-> Copying users local package lists to workdir"
+        cp -r ${LREPODIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
+    else
+        if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+            printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+            # download iso packages lists from https://github.com
+            # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+            if [ -n "$ISO_VER" ]; then
+                export GIT_BRNCH="$ISO_VER"
+            elif [ ${TREE,,} == "cooker" ]; then
+                export GIT_BRNCH=master
+            else
+                export GIT_BRNCH=${TREE,,}
+                # ISO_VER defaults to user build entry
+            fi
+            #EX_PREF=omdv-build-iso-${TREE,,}
+        EX_PREF=./
+        EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
+            if [ -n "$KEEP" ]; then
+                wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar -xvf- --cd ${WORKDIR}   ${EXCLUDE_LIST}  --exclude omdv-build-iso-${TREE,,}/iso-package-lists-${TREE}/* --strip-components 1
+            else
+            #exit
+                wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar -xvf- --cd ${WORKDIR}   ${EXCLUDE_LIST} --strip-components 1
+            fi		
+            if [ ! -e "$FILELISTS" ]; then
 			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 			errorCatch
+            fi
+            popREPOdir
 		fi
-
-		if [  "$IN_ABF" = '0' ]; then
-			if [ -n "$LREPODIR" ]; then
-				mkeREPOdir
-			fi
-		else
-			LREPODIR="$UHOME/user-iso"
-			mkeREPOdir
-		fi
-	fi
+    fi
 }
 
 mkeREPOdir() {
-	if [ ! -d "$LREPODIR" ]; then
-		mkdir -p "$LREPODIR"
-		cd "$LREPODIR" || exit
-	fi
+		if [  "$IN_ABF" = '0' ]; then 
+            if [ -n "$LREPODIR" ]; then
+                if [ $LREPODIR == $(< ${UHOME}/.rpodir) ] && [ ! -d $LREPODIR ]; then
+                    mkdir -p "$LREPODIR"
+                    COMMITDIR=${LREPODIR}
+#                    popREPOdir
+                else
+                    mkdir -p "$LREPODIR"
+                    echo "$LREPODIR" > ${UHOME}/.rpodir
+                    COMMITDIR=${LREPODIR}
+#                   popREPOdir
+                fi
+            else
+                LREPODIR="$UHOME"/"$WHO"s-user-iso
+                mkdir -p "$LREPODIR"
+                echo "$LREPODIR" > ${UHOME}/.rpodir
+                COMMITDIR=${LREPODIR}
+#                popREPOdir
+            fi
+            mkdir ${LREPODIR}/sessrec
+        else
+            cd "$WORKDIR" || exit
+            COMMITDIR=${WORKDIR}
+        fi
+}
+popREPOdir() {
+        cp -r ${WORKDIR}/iso-pkg-lists-${TREE}/ ${LREPODIR}/
+        if  [ ! -f ${LREPODIR}/iso-pkg-lists-${TREE}/my.add ]; then
+            printf "%s\n" "There's been an error"
+            printf "%s\n" "Please check whether the directory named in the hidden file .rpodir in your home directory \
+            still exists and if it does it may still have the .git directory which will allow you to recover your package lists. \
+            If no files exist please delete the .rpodir file and the directory named in it and start with a fresh build"
+            errorCatch
+        else
+            COMMITDIR=${LREPODIR}
+        fi
 }
 
 showInfo() {
@@ -792,9 +840,9 @@ showInfo() {
 
 # Create git repo for the package lists so we can record user mode changes. 
 MkeListRepo() {
-	if [ ! -d "${WORKDIR}/iso-pkg-lists-${TREE}/.git" ]; then
+	if [ ! -d "${COMMITDIR}/iso-pkg-lists-${TREE}/.git" ]; then
 		printf "%s\n" "-> Creating package list repo"
-		cd ${WORKDIR}/iso-pkg-lists-${TREE}
+		cd ${COMMITDIR}/iso-pkg-lists-${TREE}
 		git init
 		git add .
 		git config user.email "omdv@abf.openmandriva.org"
@@ -806,7 +854,7 @@ MkeListRepo() {
 
 # Detect whether the lists have changed and if so set the change flag, generate commit msg and commit the changes.
 DtctCmmt() {
-	cd ${WORKDIR}/iso-pkg-lists-${TREE}
+    cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
 	GITDF=$(git diff)
 	if [ -n "$GITDF" ]; then
 		MkeCmmtMsg
@@ -816,15 +864,15 @@ DtctCmmt() {
 
 # Create a sequential commit message
 MkeCmmtMsg() {
-    mkdir "$WORKDIR"/sessrec
-	if  [ -f "$WORKDIR/sessrec/.seqnum" ]; then
-        SEQNUM=`cat "$WORKDIR/sessrec/.seqnum"`
+    mkdir ${COMMITDIR}/sessrec
+	if  [ -f ${COMMITDIR}/sessrec/.seqnum ]; then
+        SEQNUM=`cat ${COMMITDIR}/sessrec/.seqnum`
 		SEQNUM=$((SEQNUM+1))
 	else
 		SEQNUM=1
 	fi
-	echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-	SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
+	echo "$SEQNUM" >"${COMMITDIR}/sessrec/.seqnum"
+	SESSNO=$(cat ${COMMITDIR}/sessrec/.build_id)
 	CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
 }
 
@@ -896,47 +944,6 @@ createPkgList() {
 	shopt -u lastpipe
 	set -m
 }
-
-# Usage diffPkgLists $(LIST_VARIABLE)
-# The "LIST VARIABLE" contains a 'side by side' list of filenames to be diffed.
-# Compares the users set of rpm lists with the shipped set
-# Intent. Used to determine whether changes have occurred in the users set of rpm lists.
-# Diffs are numbered sequentially each time the script is run with --noclean or --rebuild set
-# The primary name of the diff is derived from the $WORKDIR thus the diffs remain in context with the session.
-# The diffs generated are culmulative which means that each diff is the sum of all the previous diffs
-# thus each diff created contains the entire record of the session.
-# Running without --noclean set destroys the $WORKDIR and thus the diffs.
-# Adding the --keep flag will move the diffs to the users home directory. They will be moved back at
-# the start of each new session if the --keep flag is set and --noclean or --rebuild are selected.
-#diffPkgLists() {
-#	local __difflist="$1"
-#	local __newdiffname
-#	local dodiff="/usr/bin/diff -Naur"
-
-	# Here a combined diff is createdq
-#	while read -r DIFF ; do
-#		ALL+=$(eval  "$dodiff" "$DIFF")$'\n'
-#	done < <(printf '%s\n' "$__difflist")
-
-#	if [ -n "$__difflist" ]; then
-#		# BUILD_ID and SEQNUM are used to label diffs
-#		if [ -f "$WORKDIR/sessrec/.build_id" ]; then
-#				SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
-#		else
-#			SESSNO=${BUILD_ID}
-#		fi
-#		if [ -f "$WORKDIR/sessrec/.seqnum" ]; then
-#			SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
-#		else
-#			SEQNUM=1
-#			echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-#		fi
-#		__newdiffname="${SESSNO}_${SEQNUM}.diff"
-#		printf "%s" "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
-#		SEQNUM=$((SEQNUM+1))
-#		printf "%s\n" "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
-#	fi
-#}
 
 # Usage: mkOmSpin [main install file path} i.e. [path]/omdv-kde4.lst.
 # Returns a variable "$INSTALL_LIST" containing all rpms
@@ -1335,7 +1342,7 @@ createInitrd() {
 	fi
 
 	cp -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
-
+    
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
 
