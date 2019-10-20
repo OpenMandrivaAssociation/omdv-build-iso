@@ -1327,7 +1327,6 @@ createChroot() {
 
 createInitrd() {
 
-	# (crazy) dracut conf need fixing , compression need match --compression=
 	# Check if dracut is installed
 	if [ ! -f "$CHROOTNAME/usr/sbin/dracut" ]; then
 		printf "%s\n" "-> dracut is not installed inside chroot." "Exiting."
@@ -1342,6 +1341,22 @@ createInitrd() {
 	fi
 
 	cp -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+	
+	if [ -n $COMPTYPE ]; then
+        sed -i "s/compress_l=.*/compress_l=\"${COMPTYPE}\""
+        case "$COMPTYPE" in
+               gz)
+                ;&
+               xz)
+                ;&
+            zstd)
+                sed -i "s/compress_l=.*/compress_l=\"${COMPTYPE}\"" 
+                ;;
+                *)
+            printf "%s\n" "Error: Illegal compressor name"
+                ;;
+        esac
+    fi
     
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
