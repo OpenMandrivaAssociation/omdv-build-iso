@@ -32,11 +32,6 @@
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
-
-# use only allowed arguments
-# TODO:
-# Add user controlled variable for setting number of failures tolerated
-
 main() {
 	# This function which starts at the top of the file is executed first from the end of file
 	# to ensure that all functions are read before the body of the script is run.
@@ -45,6 +40,11 @@ main() {
 	# Make sure MAXERRORS gets preset to a real number else parallel will error out.
 	# This will be overidden by the users value if given.
 	MAXERRORS=1
+	if [ -n "$DEBUG" ]; then
+        set -x
+    else
+        set +x
+    fi
 
 	if [ "$#" -lt 1 ]; then
 		usage_help
@@ -156,8 +156,35 @@ main() {
 			QUICKEN=squashfs
 			;;
 		 --compressor=*)
-			COMPTYPE=${k#*=}
-			;;
+			declare -l lcmp
+			lcmp=${k#*=}
+                case "$lcmp" in
+                    gzip)
+            		COMPTYPE=gzip
+            		;;
+            		gz)
+            		COMPTYPE=gz
+            		;;
+            		lzo)
+            		COMPTYPE=lzo
+            		;;
+            		lz4)
+            		COMPTYPE=lz4
+            		;;
+            		xz)
+            		COMPTYPE=xz
+            		;;
+            		zstd)
+            		COMPTYPE=zstd
+            		;;
+            		*)
+            		 printf "%s\n" "Error: Illegal compressor name"
+            		 printf "%s\n" "Using default zstd"
+            		 COMPTYPE=zstd
+            		 exit
+            		;;
+            	esac
+            ;;	
 		 --keep)
 			KEEP=keep
 			;;
@@ -170,6 +197,9 @@ main() {
 		 --repolist=*)
 			ENABLEREPO=${k#*=}
 			;;
+        --baserepo)
+            BASEREPO=baserepo
+            ;;
 		 --parallel)
 			PLLL=plll
 			;;
@@ -185,6 +215,9 @@ main() {
 		 --auto-update)
 			AUTO_UPDATE=1
 			;;
+         --usemirrors)
+            USEMIRRORS=usemirrors
+            ;;
 		 --userbuild)
 			USRBUILD=usrbuild #allow fresh build without destroying user files
 			;;
@@ -216,7 +249,8 @@ main() {
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG \
 	"NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN "COMPTYPE="$COMPTYPE \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST \
+	"USRBUILD="$USRBUILD "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO "
 
 	# run only when root
 	if [ "$(id -u)" != '0' ]; then
@@ -385,54 +419,75 @@ mKeBuild_id() {
 ########################
 # TODO:
 # Test --auto-update switch
-# Checkout --debug option
-# Create --baserepo option
-# Expand --isover option to allow a local path
+# Create --baserepo option HALF DONE NEEDS SOME THOUGHT
 # Look at including files in the LREPODIR in the buildIso
 
 
+
+hlpprtf() {
+COLUMNS=`tput cols`
+FINAL=$(( COLUMNS - 100 ))
+OP=`printf "%b\n\t\t\t" "$1" | fmt -w "$FINAL"`
+# echo "$OP"
+printf "%s\n" "$OP"
+}
+
+optprtf() {
+COLUMNS=`tput cols`
+FINAL=$(( COLUMNS - 100 ))
+OPT=`printf "%s" "$1"` 
+OPT1=`printf "%b" "\t\t$2" | fmt -w  "$FINAL" -c`
+printf "%s" "$OPT"; printf "%s\n" "${OPT1//$'\n'$'\t'/$'\n'$'\t'$'\t'}" 
+}
+#"${var%/*}"
+#"${var##*/}"
 usage_help() {
 	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
-		printf "%s\n" "Please run script with arguments"
-		printf "%s\n" "usage $0 [options]"
-		printf "%s\n" "general options:"
-		printf "%s\n" "--arch= Architecture of packages: i686, x86_64, znver1"
-		printf "%s\n" "--tree= Branch of software repository: cooker, lx4"
-		printf "%s\n" "--version= Version for software repository: 4.0"
-		printf "%s\n" "--release_id= Release identifer: alpha, beta, rc, final"
-		printf "%s\n" "--type= User environment type on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal"
-		printf "%s\n" "--displaymanager= Display Manager used in desktop environemt: gdm, sddm , none"
-		printf "%s\n" "--workdir= Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
-		printf "%s\n" "--outputdir= Set destination directory to where put final ISO file. The default is ~/omdv-buildchroot-<arch>/results"
-		printf "%s\n" "--boot-kernel-type Type of kernel to use for booting, if different from standard kernel. The grub menu on the iso offers alternate kernels for booting"
-		printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
-		printf "%s\n" "                               REPOSITORY MANAGEMENT"
-        printf "%s\n" "Several options allow the selection of additional repositories in addition to the default (main)"
-        printf "%s\n" "Please note that is the following options are used the selected repositories will be left enabled on the iso. If you just want the default repositories on the iso use the --baserepo switch in addition to the other selectors."
-        printf "%s\n" "--testrepo - Enables the testing repo for the main repository" 
-        printf "%s\n" "--unsupprepo - Enables the unsupported repo" 
-        printf "%s\n" "--repolist - Allows a list of comma separated repoid's to enable.  i.e. --repolist=unsupported,updates,restricted To obtain a list of repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation"
-        printf "%s\n" "--baserepo - Resets the above options to the default for the repo group (rock, rolling, cooker)"
-		printf "%s\n"                             "USER BUILDS - REMASTERING"
-		printf "%s\n" "Provision is made for custrom builds in the form of two files in the package list directories. These are MyAdd and MyRMV"
-		printf "%s\n" "                                DEVELOPER OPTIONS"
-		printf "%s\n" "--debug Enable debug output basically enables "set -x". This option also allows ABF=1 to be used loacally for testing"
-		printf "%s\n" "--devmode Enables some developer aids see the README"
-        printf "%s\n" "--parallel Runs each item in the build list as a single transaction. Used in conjunction with --maxerrors=<integer> (default=1) can be used when remastering isos to allow failures due to missing or broken packages. This feature is intended for debugging iso builds and is helpful in tracking down broken dependencies. A list of failed packages is produced at the end of the run after the iso is built."
-		printf "%s\n" "--quicken Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
-		printf "%s\n" "--noclean Do not clean build chroot and keep cached rpms. Updates chroot with new packages"
-		printf "%s\n" "For the following options you must have built an iso before they can be applied"
-		printf "%s\n" "--rebuild Recreates the build chroot and rebuilds from cached rpms and supplementary files. This allows a developer to modify the ""fixed"" iso setup files and preserve them from one run to the next"
-		printf "%s\n" "--isover - Allows the user to fetch a personal repository of build lists from their own repository. Currently the repository must reside on github as a branch of the omdv-build-iso repository"
-		printf "%s\n" "--keep - Retains only the build lists from one run to another. This means that if you modify the package lists within the working directory (usually omdv-build-chroot-<arch>) they will be restored unconditionally on the next run irrespective of any other flags. This can be used to create lists for new compilations. The build lists are stored in a git repository and each time there is a change a commit is performed thus keeping a record of the users session."
-		printf "%s\n" "--auto-update Update the iso filesystem to the latest package versions. Saves rebuilding"
-		printf "%s\n" 
+        printf "%b\n" ""
+		printf "%b\n" "Please run script with arguments"
+		printf "%b\n" "usage $0 [options]"
+		printf "%b\n" ""
+		printf "%b\n" "general options:"
+		printf "%b\n" "--arch= \t\tArchitecture of packages: i686, x86_64, znver1"
+		printf "%b\n" "--tree= \t\tBranch of software repository: cooker, lx4"
+		printf "%b\n" "--version= \t\tVersion for software repository: 4.0"
+		printf "%b\n" "--release_id= \t\tRelease identifer: alpha, beta, rc, final"
+		printf "%b\n" "--type= \t\tUser environment type on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal"
+		printf "%b\n" "--displaymanager= \tDisplay Manager used in desktop environemt: sddm , none"
+		printf "%b\n" "--workdir= \t\tSet directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
+		printf "%b\n" "--outputdir= \t\tSet destination directory to where put final ISO file. The default is ~/omdv-buildchroot-<arch>/results"
+		printf "%b\n" "--boot-kernel-type \tKernel to use for booting, if different from standard kernel. Grub's menu will offer alternate kernels for booting"
+		printf "%b\n" "--auto-update \t\tUpdate the build chroot to the latest package versions. Saves rebuilding. Runs dnf --refresh distro-sync on the chroot"
+		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
+		printf "%b\n" "\t\t\t\tREPOSITORY MANAGEMENT"
+        hlpprtf "\t\t\tSeveral options allow the selection of additional repositories in addition to the default (main). Please note that is the following options are used the selected repositories will be left enabled on the iso. If you just want the default repositories on the iso use the --baserepo switch in addition to the other selectors."
+        printf "%b\n" "--testrepo \t\tEnables the testing repo for the main repository" 
+        printf "%b\n" "--unsupprepo \t\tEnables the unsupported repo" 
+        optprtf "--repolist" "Allows a list of comma separated repoid's to enable.  i.e. --repolist=unsupported,updates,restricted To obtain a list of repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation"
+        printf "%b\n" "--baserepo \t\tResets the above options to the default for the repo group (rock, rolling, cooker)"
+		printf "%b\n"
+		printf "%6b\n" "\t\t\t\tUSER BUILDS - REMASTERING"
+		printf "%b\n"
+		hlpprtf "\t\t\tProvision is made for custom builds in the form of two files in the package list directories. These are my.add and my.rmv you can add packages to either of these files and the will be added or removed you may also add full paths to local rpm files and these will be installed as well. The my.rmv file can be used to temporarily remove packages from the package lists that are failing to install without the need to modify the original lists. The files ate stored in a directory which is set up as a git repository; each time the script is run this directory is checked for chnges and if any are found they committed to the git repository using a commmit message which contains the build-id and the number of times the script has been thus providing a full record of the session Note that changes to ALL the files are recorded so it is not mandatory that you use my.add or my.rmv it is just more convenient. my.rmv is the only way to remove packages from the chroot when using the --noclean and --rebuild options\n" 
+		printf "%b\n" "--quicken \t\tSet up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
+		printf "%b\n\n\t\t" "--noclean \t\tDo not clean build chroot and keep cached rpms. Updates chroot with new packages. Option will not re-install the packages it will only retain them"
+		printf "%b\n\n" "For the following options you must have built an iso using the --noclean option before they can be applied"
+		printf "%b\n" "--rebuild \t\tRecreates the build chroot and rebuilds from cached rpms and supplementary files. This allows a developer to modify the ""fixed"" iso setup files and preserve them from one run to the next"
+		printf "%b\n" "--isover \t\tAllows the user to fetch a personal repository of build lists from their own repository. Currently the repository must reside on github as a branch of the omdv-build-iso repository"
+		printf "b\n"  "--usemirrors" "Use the mirrorlists to find packages; this option is only intended for use when the main ABF repositories are unavailable. It's possible that the iso will be built with out of date packages"
+		printf "%6b\n" "DEVELOPER OPTIONS"
+		printf "%b\n" "--debug \t\tEnable debug output basically enables set -x. This option also allows ABF=1 to be used loacally for testing"
+		printf "%b\n" "--devmode \t\tEnables some developer aids see the README"
+        optprtf "--parallel" "Runs each item in the build list as a single transaction. Used in conjunction with --maxerrors=<integer> (default=1) can be used when remastering isos to allow failures due to missing or broken packages. This feature is intended for debugging iso builds and is helpful in tracking down broken dependencies. A list of failed packages is produced at the end of the run after the iso is built."
+		printf "%b\n" "--compressor" "This option allows a choice for the compressor to be used when the mksquashfs file is created. Valid choices are gzip, xz, lzo, lz4 and zstd." 
+		optprtf "--keep  " "Retains only the build lists from one run to another. This means that if you modify the package lists within the working directory (usually omdv-build-chroot-<arch>) they will be restored unconditionally on the next run irrespective of any other flags. This can be used to create lists for new compilations. The build lists are stored in a git repository and each time there is a change a commit is performed thus keeping a record of the users session."
+		printf "%b\n" 
 	
-		printf "%s\n" "For example:"
-		printf "%s\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=4.0 --release_id=alpha --type=plasma --displaymanager=sddm"
-		printf "%s\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
-		printf "%s\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
-		printf "%s\n" "Exiting."
+		printf "%b\n" "For example:"
+		printf "%b\n" "omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=4.0 --release_id=alpha --type=plasma --displaymanager=sddm"
+		printf "%b\n" "Note that when --type is set to user the user may select their own ISO name during the execution of the script"
+		printf "%b\n" "For detailed usage instructions consult the files in /usr/share/omdv-build-iso/docs/"
+		printf "%b\n" "Exiting."
 		exit 1
 	else
 		return 0
@@ -527,18 +582,21 @@ RemkWorkDir() {
 
 SaveDaTa() {
 	printf "%s\n" "Saving config data"
-	if [ -n "$KEEP" ]; then
-		mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$BUILDSAV/iso-pkg-lists-${TREE,,}"
-		mv "$LREPODIR/sessrec" "$BUILDSAV/sessrec"
+#	if [ -n "$KEEP" ]; then
+#		mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$BUILDSAV/iso-pkg-lists-${TREE,,}"
+#		mv "$LREPODIR/sessrec" "$BUILDSAV/sessrec"
+#	fi
+    if [ -n "$KEEP" ] || [ -n "$REBUILD" ]; then
+        printf "%s\n" "-> Saving system files for rebuild"
+        mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
+        mv "$WORKDIR/grub2" "$BUILDSAV/grub2"
+        mv "$WORKDIR/boot" "$BUILDSAV/boot"
+        mv "$WORKDIR/data" "$BUILDSAV/data"
+        mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
+        printf "%s\n" "-> Saving rpms for rebuild"
+        mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+        mv "$CHROOTNAME/etc/dnf/" "$BUILDSAV/etc/dnf"
 	fi
-	mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
-	mv "$WORKDIR/grub2" "$BUILDSAV/grub2"
-	mv "$WORKDIR/boot" "$BUILDSAV/boot"
-	mv "$WORKDIR/data" "$BUILDSAV/data"
-	mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
-	printf "%s\n" "-> Saving rpms for rebuild"
-	mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
-	mv "$CHROOTNAME/etc/dnf/" "$BUILDSAV/etc/dnf"	
 }
 
 RestoreDaTa() {
@@ -547,16 +605,15 @@ RestoreDaTa() {
 	# In the case of a rebuild the $CHROOTNAME dir is recreated and the saved rpm cache is restored to it..
 	rm -rf "$WORKDIR"
 	mkdir -p "$WORKDIR"
-	#if [ -n "$KEEP" ]; then
-	#	printf "%s\n" "-> Restoring package lists and the session records"
-	#	mv "$BUILDSAV/iso-pkg-lists-${TREE,,}" "$WORKDIR/iso-pkg-lists-${TREE,,}"
-	#	mv "$BUILDSAV/sessrec" "$WORKDIR/sessrec"
-	#fi
-	mv "$BUILDSAV/dracut" "$WORKDIR/dracut"
-	mv "$BUILDSAV/grub2" "$WORKDIR/grub2"
-	mv "$BUILDSAV/boot" "$WORKDIR/boot"
-	mv "$BUILDSAV/data" "$WORKDIR/data"
-	mv "$BUILDSAV/extraconfig" "$WORKDIR/extraconfig"
+
+	if [ -n "$KEEP" ] || [ -n "$REBUILD" ]; then
+        printf "%s\n" "-> Restoring system files"
+        mv "$BUILDSAV/dracut" "$WORKDIR/dracut"
+        mv "$BUILDSAV/grub2" "$WORKDIR/grub2"
+        mv "$BUILDSAV/boot" "$WORKDIR/boot"
+        mv "$BUILDSAV/data" "$WORKDIR/data"
+        mv "$BUILDSAV/extraconfig" "$WORKDIR/extraconfig"
+	fi
 	if [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> Restoring rpms for new build"
 		#Remake needed directories
@@ -1181,7 +1238,11 @@ InstallRepos() {
 
 	# Use the master repository, not mirrors
 	if [ -e "$WORKDIR"/.new ]; then
+        if [ -n $USEMIRRORS }
+            printf "->WARNING<- YOU HAVE ELECTED TO DOWNLOAD THE PACKAGES FOR THIS BUILD FROM A MIRROR. PACKAGE VERSIONS MAY NOT BE UP TO DATE"
+        else
         sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
+        fi
 	# we must make sure that the rpmcache is retained
 		echo "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
     # This setting will be overwritten when the repos are re-installed at the end; however
@@ -1204,6 +1265,9 @@ InstallRepos() {
 	if [ ! -e "$WORKDIR"/.new ]; then
 		/bin/rm -rf "$WORKDIR"/*.rpm
 	fi
+	This must only happen on the second invocatiom.
+	#if [ -n "$BASEREPO" ]; then
+        printf "%s\n" "->Enabling the main repo only"
 	if [ -n "$UNSUPPREPO" ]; then
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
 	fi
@@ -1216,6 +1280,7 @@ InstallRepos() {
 	fi
 	if [ -n "$TESTREPO" ]; then
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
+	fi
 	fi
 	#if [ "$TREE" = "rock" ]; then
         
@@ -1343,22 +1408,6 @@ createInitrd() {
 
 	cp -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
 	
-	if [ -n $COMPTYPE ]; then
-        sed -i "s/compress_l=.*/compress_l=\"${COMPTYPE}\""
-        case "$COMPTYPE" in
-               gz)
-                ;&
-               xz)
-                ;&
-            zstd)
-                sed -i "s/compress_l=.*/compress_l=\"${COMPTYPE}\"" 
-                ;;
-                *)
-            printf "%s\n" "Error: Illegal compressor name"
-                ;;
-        esac
-    fi
-    
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
 
@@ -2056,6 +2105,8 @@ createSquash() {
 				errorCatch
 			fi
 		fi
+        # copy the package lists and and the build options to the chroot
+        mkdir ${CHROOTNAME} 
 	fi
 
 	if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
