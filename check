@@ -1,0 +1,3451 @@
+In abf = 0
+-> The work directory is /home/colin/omdv-build-chroot-x86_64
+Saving config data
+->	Cleaning WORKDIR
+OpenMandrivaLx.4.0-alpha.20191025.-xfce4Create the BUILD_ID
+###
+
+Building ISO with arguments:
+Distribution is omdv
+Architecture for ISO is x86_64
+Tree is rolling
+Version is 4.0
+Release ID is alpha.20191025.
+Type is xfce4
+Display Manager is 
+ISO label is OpenMandrivaLx_4.0
+Build ID is 7822
+Working directory is /home/colin/omdv-build-chroot-x86_64
+-> Debugging enabled
+-> Using xz for Squashfs compression
+###
+ 
+-> Could not find /home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling. Downloading from GitHub.
+Verifying...                          ########################################
+Preparing...                          ########################################
+Updating / installing...
+openmandriva-repos-pkgprefs-4.1-0.1   ########################################
+openmandriva-repos-keys-4.1-0.1       ########################################
+openmandriva-repos-4.1-0.1            ########################################
+dnf-conf-4.2.6-2                      ########################################
+total 126
+-rw-r--r-- 1 root root  3263 Sep 28 20:24 openmandriva-cooker-i686-source.repo
+-rw-r--r-- 1 root root  6479 Sep 28 20:24 openmandriva-cooker-i686.repo
+-rw-r--r-- 1 root root  3295 Sep 28 20:24 openmandriva-cooker-x86_64-source.repo
+-rw-r--r-- 1 root root  6607 Sep 28 20:24 openmandriva-cooker-x86_64.repo
+-rw-r--r-- 1 root root  5123 Sep 28 20:24 openmandriva-release-i686-source.repo
+-rw-r--r-- 1 root root 10175 Sep 28 20:24 openmandriva-release-i686.repo
+-rw-r--r-- 1 root root  5171 Sep 28 20:24 openmandriva-release-x86_64-source.repo
+-rw-r--r-- 1 root root 10367 Sep 28 20:24 openmandriva-release-x86_64.repo
+-rw-r--r-- 1 root root  4835 Sep 28 20:24 openmandriva-rock-i686-source.repo
+-rw-r--r-- 1 root root  9599 Sep 28 20:24 openmandriva-rock-i686.repo
+-rw-r--r-- 1 root root  4883 Sep 28 20:24 openmandriva-rock-x86_64-source.repo
+-rw-r--r-- 1 root root  9791 Sep 28 20:24 openmandriva-rock-x86_64.repo
+-rw-r--r-- 1 root root  3295 Sep 28 20:24 openmandriva-rolling-i686-source.repo
+-rw-r--r-- 1 root root  6543 Sep 28 20:24 openmandriva-rolling-i686.repo
+-rw-r--r-- 1 root root  3327 Sep 28 20:24 openmandriva-rolling-x86_64-source.repo
+-rw-r--r-- 1 root root  6671 Sep 28 20:24 openmandriva-rolling-x86_64.repo
+Repository and GPG files installed sucessfully.
+->All the correct system files are installed 
+-> Your build lists have been retained
+-> Updating existing chroot /home/colin/omdv-build-chroot-x86_64/BASE
+-> Rebuilding.
+Creating an user chroot
+-> Making a user spin
+Change Flag = 
+Finished eval
+Finished eval
+Finished eval
+-> Removing the common include lines for the remove package includes
+-> Creating colin's OpenMandriva spin from /home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+  Which includes 
+
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.add
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_control.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_drivers.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_fonts.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso_minimal.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_locales.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_ppp.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_pulseaudio.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_utils.lst
+-> Removing from colin's OpenMandriva spin from /home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+  Which removes 
+
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso_minimal.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_control.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_drivers.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_ppp.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_utils.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_fonts.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_locales.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_pulseaudio.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.add
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.rmv
+-> This is the INSTALL_LIST package list
+task-xfce-minimal
+eatmonkey
+slim
+orage
+gigolo
+midori
+parole
+xarchiver
+ristretto
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+tumbler
+xfbib
+xfburn
+xfmpc
+xfce4-appfinder
+xfce4-screenshooter
+task-pulseaudio
+x11-font-cyrillic
+x11-server-xorg
+x11-compose-cache
+x11-tools
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+avahi
+networkmanager-applet
+atk1.0-common
+canberra-gtk
+gamin
+GConf2
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+pango
+firewalld
+rfkill
+wpa_supplicant
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+as10k1
+awesfx
+iwlwifi-agn-ucode
+ld10k1
+madwimax
+pcmcia-cis-firmware
+prism2-utils
+radeon-firmware
+sb16_csp
+us428control
+microcode-intel
+dri-drivers
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-west_european
+fonts-ttf-poltawski-antiqua
+google-crosextra-carlito-fonts
+google-crosextra-caladea-fonts
+noto-sans-fonts
+noto-serif-fonts
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash
+calamares
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver
+dosfstools
+eject
+firewalld
+firewall-config
+hfsutils
+indexhtml
+info
+info-install
+inxi
+isomd5sum
+iso-codes
+irqbalance
+jfsutils
+hwdata
+libxdg-basedir
+lsof
+lm_sensors
+mailcap
+man-db
+mc
+monitor-edid
+memtest86+
+mkxauth
+mlocate
+mtools
+ntfsprogs
+os-prober
+pcmciautils
+plymouth-system-theme
+python-curl
+quota
+reiserfsprogs
+rtkit
+sharutils
+sound-theme-freedesktop
+sudo
+task-x11
+testdisk
+tmpwatch
+tuned
+upower
+usbmuxd
+urw-fonts
+uuidd
+vbetool
+wget
+whois
+x11-driver-input-vmmouse
+x11-driver-video-vboxvideo
+virtualbox-guest-additions
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xfsprogs
+xrandr
+xterm
+zip
+unzip
+acpi
+acpid
+at
+basesystem
+btrfs-progs
+busybox-static
+cronie-anacron
+distro-release-OpenMandriva
+dracut
+dhcp-client
+dmraid
+e2fsprogs
+grub2
+iproute2
+grub2-efi
+efibootmgr
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
+nscd
+openssh-server
+openssh-clients
+omv-bug-report
+pciutils
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+rp-pppoe
+alsa-plugins-pulseaudio
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+aria2
+bash-completion
+bind-utils
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+dmraid
+dmraid-events
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+freerdp
+fuse2
+fuse-exfat
+gnupg
+html2text
+htop
+hw-probe
+krb5-workstation
+lame
+lftp
+libgphoto-common
+libmtp-utils
+lvm2
+nail
+nfs-utils
+nfs-utils-clients
+networkmanager-openvpn
+networkmanager-vpnc
+networkmanager-pptp
+open
+openldap-clients
+opensc
+p7zip
+pcsc-lite
+pptp-linux
+rng-tools
+rpcbind
+rsnapshot
+rsync
+samba-client
+samba-winbind
+saned
+sane-backends
+sane-backends-iscan
+sash
+xev
+radeontool
+dnfdragora
+dnfdragora-updater
+-> This is the REMOVE_LIST package list
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash
+calamares
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver
+dosfstools
+eject
+firewalld
+firewall-config
+hfsutils
+indexhtml
+info
+info-install
+inxi
+isomd5sum
+iso-codes
+irqbalance
+jfsutils
+hwdata
+libxdg-basedir
+lsof
+lm_sensors
+mailcap
+man-db
+mc
+monitor-edid
+memtest86+
+mkxauth
+mlocate
+mtools
+ntfsprogs
+os-prober
+pcmciautils
+plymouth-system-theme
+python-curl
+quota
+reiserfsprogs
+rtkit
+sharutils
+sound-theme-freedesktop
+sudo
+task-x11
+testdisk
+tmpwatch
+tuned
+upower
+usbmuxd
+urw-fonts
+uuidd
+vbetool
+wget
+whois
+x11-driver-input-vmmouse
+x11-driver-video-vboxvideo
+virtualbox-guest-additions
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xfsprogs
+xrandr
+xterm
+zip
+unzip
+acpi
+acpid
+at
+basesystem
+btrfs-progs
+busybox-static
+cronie-anacron
+distro-release-OpenMandriva
+dracut
+dhcp-client
+dmraid
+e2fsprogs
+grub2
+iproute2
+grub2-efi
+efibootmgr
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
+nscd
+openssh-server
+openssh-clients
+omv-bug-report
+pciutils
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+firewalld
+rfkill
+wpa_supplicant
+as10k1
+awesfx
+iwlwifi-agn-ucode
+ld10k1
+madwimax
+pcmcia-cis-firmware
+prism2-utils
+radeon-firmware
+sb16_csp
+us428control
+microcode-intel
+dri-drivers
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+rp-pppoe
+aria2
+bash-completion
+bind-utils
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+dmraid
+dmraid-events
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+freerdp
+fuse2
+fuse-exfat
+gnupg
+html2text
+htop
+hw-probe
+krb5-workstation
+lame
+lftp
+libgphoto-common
+libmtp-utils
+lvm2
+nail
+nfs-utils
+nfs-utils-clients
+networkmanager-openvpn
+networkmanager-vpnc
+networkmanager-pptp
+open
+openldap-clients
+opensc
+p7zip
+pcsc-lite
+pptp-linux
+rng-tools
+rpcbind
+rsnapshot
+rsync
+samba-client
+samba-winbind
+saned
+sane-backends
+sane-backends-iscan
+sash
+xev
+radeontool
+dnfdragora
+dnfdragora-updater
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-west_european
+fonts-ttf-poltawski-antiqua
+google-crosextra-carlito-fonts
+google-crosextra-caladea-fonts
+noto-sans-fonts
+noto-serif-fonts
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+alsa-plugins-pulseaudio
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+task-xfce-minimal
+eatmonkey
+slim
+orage
+gigolo
+midori
+parole
+xarchiver
+ristretto
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+tumbler
+xfbib
+xfburn
+xfmpc
+xfce4-appfinder
+xfce4-screenshooter
+task-pulseaudio
+x11-font-cyrillic
+x11-server-xorg
+x11-compose-cache
+x11-tools
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+avahi
+networkmanager-applet
+atk1.0-common
+canberra-gtk
+gamin
+GConf2
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+pango
+This is the install list basesystem-minimal
+distro-release-OpenMandriva
+distro-release-common
+distro-theme-OpenMandriva-grub2
+dnf
+dnf-automatic
+dnf-plugins-core
+locales
+locales-en
+ncurses
+openmandriva-repos
+openmandriva-repos-keys
+-> Updating chroot
+
+basesystem-minimal
+distro-release-OpenMandriva
+distro-release-common
+distro-theme-OpenMandriva-grub2
+dnf
+dnf-automatic
+dnf-plugins-core
+locales
+locales-en
+ncurses
+openmandriva-repos
+openmandriva-repos-keys
+WE ARE IN MKEUPDATECHROOT
+INMYADD
+ we are in myadd
+This is the install list basesystem-minimal
+distro-release-OpenMandriva
+distro-release-common
+distro-theme-OpenMandriva-grub2
+dnf
+dnf-automatic
+dnf-plugins-core
+locales
+locales-en
+ncurses
+openmandriva-repos
+openmandriva-repos-keys
+-> Installing user package selection
+ 
+OpenMandriva Rolling - x86_64                   3.6 MB/s |  12 MB     00:03    
+OpenMandriva Rolling - Unsupported - x86_64     683 kB/s | 5.0 MB     00:07    
+Last metadata expiration check: 0:00:06 ago on Fri Oct 25 11:36:39 2019.
+Package openmandriva-repos-4.1-0.1.x86_64 is already installed.
+Package openmandriva-repos-keys-4.1-0.1.noarch is already installed.
+Dependencies resolved.
+================================================================================
+ Package                         Arch   Version            Repository      Size
+================================================================================
+Installing:
+ basesystem-minimal              x86_64 1:4-14             rolling-x86_64 7.0 k
+ distro-release-OpenMandriva     x86_64 4.1-0.1            rolling-x86_64 8.4 k
+ distro-release-common           x86_64 4.1-0.1            rolling-x86_64  28 k
+ distro-theme-OpenMandriva-grub2 x86_64 1.4.45-1           rolling-x86_64 1.7 M
+ dnf                             noarch 4.2.6-2            rolling-x86_64 375 k
+ dnf-automatic                   noarch 4.2.6-2            rolling-x86_64  31 k
+ dnf-plugins-core                noarch 4.0.9-1            rolling-x86_64 120 k
+ locales                         x86_64 6:2.30-2           rolling-x86_64 302 k
+ locales-en                      x86_64 6:2.30-2           rolling-x86_64 399 k
+ ncurses                         x86_64 6.1-0.20190928.1   rolling-x86_64 203 k
+Installing dependencies:
+ acl                             x86_64 2.2.53-3           rolling-x86_64  51 k
+ bash                            x86_64 5.0.11-3           rolling-x86_64 913 k
+ bzip2                           x86_64 1.0.8-2            rolling-x86_64  76 k
+ chkconfig                       x86_64 1.11-3             rolling-x86_64 147 k
+ coreutils                       x86_64 8.31-1             rolling-x86_64 1.7 M
+ cpio                            x86_64 3.4.0-1            rolling-x86_64  26 k
+ dbus                            x86_64 1.12.16-1          rolling-x86_64 142 k
+ deltarpm                        x86_64 3.6.2-1            rolling-x86_64 145 k
+ efibootmgr                      x86_64 0.17-2             rolling-x86_64  36 k
+ efivar                          x86_64 37-1               rolling-x86_64  25 k
+ filesystem                      x86_64 4.0-0.3            rolling-x86_64 990 k
+ findutils                       x86_64 4.7.0-1            rolling-x86_64 473 k
+ gawk                            x86_64 5.0.1-1            rolling-x86_64 1.0 M
+ gettext-base                    x86_64 0.20.1-1           rolling-x86_64 458 k
+ glibc                           x86_64 6:2.30-2           rolling-x86_64 3.8 M
+ gnupg                           x86_64 2.2.17-1           rolling-x86_64 1.9 M
+ grep                            x86_64 3.3-1              rolling-x86_64 167 k
+ grub2                           x86_64 2.02-30            rolling-x86_64 3.3 M
+ grub2-efi                       x86_64 2.02-30            rolling-x86_64 790 k
+ gzip                            x86_64 1.10-2             rolling-x86_64 120 k
+ kmod                            x86_64 26-1               rolling-x86_64  86 k
+ lib64acl1                       x86_64 2.2.53-3           rolling-x86_64  17 k
+ lib64archive17                  x86_64 3.4.0-1            rolling-x86_64 314 k
+ lib64argon2_1                   x86_64 20190702-1         rolling-x86_64  39 k
+ lib64asm1                       x86_64 0.177-1            rolling-x86_64  17 k
+ lib64assuan0                    x86_64 2.5.3-2            rolling-x86_64  33 k
+ lib64attr1                      x86_64 2.4.48-5           rolling-x86_64  13 k
+ lib64audit1                     x86_64 2.8.5-1            rolling-x86_64  39 k
+ lib64blkid1                     x86_64 2.34-3             rolling-x86_64  87 k
+ lib64bz2_1                      x86_64 1.0.8-2            rolling-x86_64  36 k
+ lib64cap-ng0                    x86_64 0.7.10-1           rolling-x86_64  14 k
+ lib64cap2                       x86_64 2.27-2             rolling-x86_64  14 k
+ lib64com_err2                   x86_64 1.45.4-1           rolling-x86_64  12 k
+ lib64comps0                     x86_64 0.1.11-1           rolling-x86_64  56 k
+ lib64crypt1                     x86_64 4.4.10-1           rolling-x86_64  85 k
+ lib64crypto1.1                  x86_64 1.1.1c-1           rolling-x86_64 1.1 M
+ lib64cryptsetup12               x86_64 2.2.1-1            rolling-x86_64 202 k
+ lib64curl4                      x86_64 7.66.0-1           rolling-x86_64 196 k
+ lib64db18.1                     x86_64 18.1.32-1          rolling-x86_64 671 k
+ lib64dbus-1_3                   x86_64 1.12.16-1          rolling-x86_64 116 k
+ lib64devmapper1.02              x86_64 1.02.163-1         rolling-x86_64 128 k
+ lib64dnf2                       x86_64 0.33.0-1           rolling-x86_64 314 k
+ lib64dw1                        x86_64 0.177-1            rolling-x86_64 117 k
+ lib64efiboot1                   x86_64 37-1               rolling-x86_64  41 k
+ lib64efivar1                    x86_64 37-1               rolling-x86_64  47 k
+ lib64elf1                       x86_64 0.177-1            rolling-x86_64  39 k
+ lib64expat1                     x86_64 2.2.9-1            rolling-x86_64  63 k
+ lib64fdisk1                     x86_64 2.34-3             rolling-x86_64 127 k
+ lib64ffi6                       x86_64 3.2.1-11           rolling-x86_64  23 k
+ lib64fuse3_3                    x86_64 3.7.0-2            rolling-x86_64  62 k
+ lib64gcc1                       x86_64 9.2.1-0.20190824.1 rolling-x86_64 155 k
+ lib64gcrypt20                   x86_64 1.8.5-1            rolling-x86_64 402 k
+ lib64gdbm6                      x86_64 1.18.1-4           rolling-x86_64  34 k
+ lib64gdbm_compat4               x86_64 1.18.1-4           rolling-x86_64  11 k
+ lib64gio2.0_0                   x86_64 1:2.62.1-1         rolling-x86_64 623 k
+ lib64glib2.0_0                  x86_64 1:2.62.1-1         rolling-x86_64 471 k
+ lib64gmodule2.0_0               x86_64 1:2.62.1-1         rolling-x86_64  12 k
+ lib64gmp10                      x86_64 6.1.2-12           rolling-x86_64 245 k
+ lib64gnutls30                   x86_64 3.6.9-1            rolling-x86_64 709 k
+ lib64gobject2.0_0               x86_64 1:2.62.1-1         rolling-x86_64 130 k
+ lib64gpg-error0                 x86_64 1.36-3             rolling-x86_64  48 k
+ lib64gpgme11                    x86_64 1.13.1-1           rolling-x86_64 110 k
+ lib64gssapi_krb5_2              x86_64 1.16.3-1           rolling-x86_64 353 k
+ lib64hogweed5                   x86_64 1:3.5.1-1          rolling-x86_64 208 k
+ lib64idn2_0                     x86_64 2.2.0-1            rolling-x86_64  41 k
+ lib64intl8                      x86_64 0.20.1-1           rolling-x86_64  23 k
+ lib64ip4tc0                     x86_64 1.8.2-4            rolling-x86_64  18 k
+ lib64json-c4                    x86_64 0.13.1-4           rolling-x86_64  29 k
+ lib64k5crypto3                  x86_64 1.16.3-1           rolling-x86_64 183 k
+ lib64keyutils1                  x86_64 1.6-3              rolling-x86_64  13 k
+ lib64kmod2                      x86_64 26-1               rolling-x86_64  39 k
+ lib64krb5_3                     x86_64 1.16.3-1           rolling-x86_64 724 k
+ lib64krb5support0               x86_64 1.16.3-1           rolling-x86_64  50 k
+ lib64ksba8                      x86_64 1.3.5-4            rolling-x86_64  82 k
+ lib64ldap2.4_2                  x86_64 2.4.48-1           rolling-x86_64 172 k
+ lib64lua5.3                     x86_64 5.3.5-5            rolling-x86_64  97 k
+ lib64lz4_1                      x86_64 1.9.2-1            rolling-x86_64  74 k
+ lib64lzma5                      x86_64 5.2.4-4            rolling-x86_64  90 k
+ lib64lzo2_2                     x86_64 2.10-4             rolling-x86_64  63 k
+ lib64magic1                     x86_64 5.37-4             rolling-x86_64  61 k
+ lib64modulemd1                  x86_64 1.8.11-1           rolling-x86_64 112 k
+ lib64mount1                     x86_64 2.34-3             rolling-x86_64 111 k
+ lib64mpfr6                      x86_64 4.0.2-5            rolling-x86_64 240 k
+ lib64ncursesw6                  x86_64 6.1-0.20190928.1   rolling-x86_64 145 k
+ lib64nettle7                    x86_64 1:3.5.1-1          rolling-x86_64 180 k
+ lib64npth0                      x86_64 1.6-3              rolling-x86_64  11 k
+ lib64nsl2                       x86_64 1.2.0-2            rolling-x86_64  37 k
+ lib64nss_myhostname2            x86_64 243.20190913-3     rolling-x86_64  34 k
+ lib64nss_resolve2               x86_64 243.20190913-3     rolling-x86_64 126 k
+ lib64nss_systemd2               x86_64 243.20190913-3     rolling-x86_64 128 k
+ lib64p11-kit0                   x86_64 0.23.18.1-1        rolling-x86_64 179 k
+ lib64pam0                       x86_64 1:1.3.1-4          rolling-x86_64  27 k
+ lib64pam_misc0                  x86_64 1:1.3.1-4          rolling-x86_64  12 k
+ lib64panelw6                    x86_64 6.1-0.20190928.1   rolling-x86_64  10 k
+ lib64pcre1                      x86_64 8.43-1             rolling-x86_64 182 k
+ lib64pcre2-8_0                  x86_64 10.33-1            rolling-x86_64 219 k
+ lib64popt0                      x86_64 1:1.16-32          rolling-x86_64  26 k
+ lib64python3.7m_1               x86_64 3.7.4-1            rolling-x86_64 1.1 M
+ lib64qrencode4                  x86_64 4.0.2-1            rolling-x86_64  24 k
+ lib64readline8                  x86_64 8.0-2              rolling-x86_64 108 k
+ lib64repo0                      x86_64 1.10.6-1           rolling-x86_64  64 k
+ lib64rpm8                       x86_64 2:4.14.2.1-10      rolling-x86_64 215 k
+ lib64rpmbuild8                  x86_64 2:4.14.2.1-10      rolling-x86_64  67 k
+ lib64rpmsign8                   x86_64 2:4.14.2.1-10      rolling-x86_64  13 k
+ lib64sasl2                      x86_64 2.1.27-2           rolling-x86_64  47 k
+ lib64seccomp2                   x86_64 2.4.1-1            rolling-x86_64  42 k
+ lib64secret1_0                  x86_64 0.19.1-1           rolling-x86_64  71 k
+ lib64sigsegv2                   x86_64 2.12-4             rolling-x86_64  12 k
+ lib64smartcols1                 x86_64 2.34-3             rolling-x86_64  39 k
+ lib64solv1                      x86_64 0.7.6-1            rolling-x86_64 270 k
+ lib64solvext1                   x86_64 0.7.6-1            rolling-x86_64  92 k
+ lib64sqlite3_0                  x86_64 3.30.1-1           rolling-x86_64 764 k
+ lib64ssh2_1                     x86_64 1.9.0-2            rolling-x86_64  91 k
+ lib64ssl1.1                     x86_64 1.1.1c-1           rolling-x86_64 187 k
+ lib64stdc++6                    x86_64 9.2.1-0.20190824.1 rolling-x86_64 461 k
+ lib64systemd0                   x86_64 243.20190913-3     rolling-x86_64 253 k
+ lib64tasn1_6                    x86_64 4.14-1             rolling-x86_64  34 k
+ lib64tirpc3                     x86_64 1.1.4-2            rolling-x86_64  76 k
+ lib64udev1                      x86_64 243.20190913-3     rolling-x86_64  74 k
+ lib64unistring2                 x86_64 0.9.10-4           rolling-x86_64 381 k
+ lib64usb1.0_0                   x86_64 1.0.23-1           rolling-x86_64  42 k
+ lib64utempter0                  x86_64 1.1.6-20           rolling-x86_64 9.8 k
+ lib64uuid1                      x86_64 2.34-3             rolling-x86_64  18 k
+ lib64xml2_2                     x86_64 2.9.9-2            rolling-x86_64 632 k
+ lib64yaml0_2                    x86_64 0.2.2-1            rolling-x86_64  52 k
+ lib64z1                         x86_64 1.2.11-10          rolling-x86_64  58 k
+ lib64zck1                       x86_64 1.1.3-1            rolling-x86_64  33 k
+ lib64zstd1                      x86_64 1.4.3-1            rolling-x86_64 277 k
+ libc6                           x86_64 6:2.30-2           rolling-x86_64 2.5 M
+ libcap-utils                    x86_64 2.27-2             rolling-x86_64  24 k
+ libidn2-i18n                    noarch 2.2.0-1            rolling-x86_64  24 k
+ libsolv                         x86_64 0.7.6-1            rolling-x86_64  73 k
+ libtirpc                        x86_64 1.1.4-2            rolling-x86_64 8.3 k
+ lsb-release                     x86_64 2.0-53             rolling-x86_64  15 k
+ openldap                        x86_64 2.4.48-1           rolling-x86_64  19 k
+ openssl                         x86_64 1.1.1c-1           rolling-x86_64 460 k
+ pam                             x86_64 1:1.3.1-4          rolling-x86_64 390 k
+ pbzip2                          x86_64 1.1.13-4           rolling-x86_64  49 k
+ pigz                            x86_64 2.4-7              rolling-x86_64  64 k
+ popt-data                       noarch 1:1.16-32          rolling-x86_64  25 k
+ python                          x86_64 3.7.4-1            rolling-x86_64 7.1 M
+ python-dateutil                 noarch 2.8.0-1            rolling-x86_64 278 k
+ python-dnf                      noarch 4.2.6-2            rolling-x86_64 367 k
+ python-dnf-plugins-core         noarch 4.0.9-1            rolling-x86_64  65 k
+ python-gpg                      x86_64 1.13.1-1           rolling-x86_64 219 k
+ python-hawkey                   x86_64 0.33.0-1           rolling-x86_64  60 k
+ python-iniparse                 noarch 0.4-17             rolling-x86_64  39 k
+ python-libcomps                 x86_64 0.1.11-1           rolling-x86_64  40 k
+ python-libdnf                   x86_64 0.33.0-1           rolling-x86_64 471 k
+ python-rpm                      x86_64 2:4.14.2.1-10      rolling-x86_64  54 k
+ python-six                      noarch 1.12.0-1           rolling-x86_64  32 k
+ rootcerts                       noarch 1:20190516.00-1    rolling-x86_64 567 k
+ rootfiles                       noarch 11.0-21            rolling-x86_64  12 k
+ rpm                             x86_64 2:4.14.2.1-10      rolling-x86_64 467 k
+ rpm-openmandriva-setup          noarch 0.3.7.1-1          rolling-x86_64  14 k
+ sed                             x86_64 4.7-1              rolling-x86_64 191 k
+ setup                           noarch 2.9.3-2            rolling-x86_64 123 k
+ shadow                          x86_64 2:4.7-1            rolling-x86_64 905 k
+ systemd                         x86_64 243.20190913-3     rolling-x86_64 2.8 M
+ systemd-macros                  x86_64 243.20190913-3     rolling-x86_64 7.9 k
+ tar                             x86_64 3.4.0-1            rolling-x86_64  54 k
+ timezone                        x86_64 8:2019a-2          rolling-x86_64 377 k
+ util-linux                      x86_64 2.34-3             rolling-x86_64 1.8 M
+ wget                            x86_64 1.20.3-2           rolling-x86_64 635 k
+ which                           x86_64 2.21-5             rolling-x86_64  28 k
+ xz                              x86_64 5.2.4-4            rolling-x86_64 152 k
+Installing weak dependencies:
+ bash-completion                 noarch 2:2.8-4            rolling-x86_64 219 k
+ dnf-yum                         noarch 4.2.6-2            rolling-x86_64  33 k
+ gnupg-doc                       x86_64 2.2.17-1           rolling-x86_64 328 k
+ pinentry                        x86_64 1.1.0-8            rolling-x86_64  72 k
+ python-dbus                     x86_64 1.2.12-1           rolling-x86_64 123 k
+ rpm-plugin-systemd-inhibit      x86_64 2:4.14.2.1-10      rolling-x86_64  11 k
+ util-linux-doc                  x86_64 2.34-3             rolling-x86_64 281 k
+
+Transaction Summary
+================================================================================
+Install  183 Packages
+
+Total download size: 57 M
+Installed size: 234 M
+Downloading Packages:
+(1/183): basesystem-minimal-4-14-omv4000.x86_64  30 kB/s | 7.0 kB     00:00    
+(2/183): acl-2.2.53-3-omv4000.x86_64.rpm        172 kB/s |  51 kB     00:00    
+(3/183): bzip2-1.0.8-2-omv4000.x86_64.rpm       430 kB/s |  76 kB     00:00    
+(4/183): bash-completion-2.8-4-omv4000.noarch.r 692 kB/s | 219 kB     00:00    
+(5/183): chkconfig-1.11-3-omv4000.x86_64.rpm    663 kB/s | 147 kB     00:00    
+(6/183): cpio-3.4.0-1-omv4000.x86_64.rpm        315 kB/s |  26 kB     00:00    
+(7/183): dbus-1.12.16-1-omv4000.x86_64.rpm      759 kB/s | 142 kB     00:00    
+(8/183): deltarpm-3.6.2-1-omv4000.x86_64.rpm    446 kB/s | 145 kB     00:00    
+(9/183): bash-5.0.11-3-omv4001.x86_64.rpm       643 kB/s | 913 kB     00:01    
+(10/183): distro-release-OpenMandriva-4.1-0.1-o  40 kB/s | 8.4 kB     00:00    
+(11/183): coreutils-8.31-1-omv4000.x86_64.rpm   1.8 MB/s | 1.7 MB     00:00    
+(12/183): distro-release-common-4.1-0.1-omv4001 116 kB/s |  28 kB     00:00    
+(13/183): dnf-4.2.6-2-omv4000.noarch.rpm        1.3 MB/s | 375 kB     00:00    
+(14/183): dnf-automatic-4.2.6-2-omv4000.noarch. 191 kB/s |  31 kB     00:00    
+(15/183): dnf-yum-4.2.6-2-omv4000.noarch.rpm    312 kB/s |  33 kB     00:00    
+(16/183): dnf-plugins-core-4.0.9-1-omv4000.noar 596 kB/s | 120 kB     00:00    
+(17/183): efibootmgr-0.17-2-omv4000.x86_64.rpm  272 kB/s |  36 kB     00:00    
+(18/183): efivar-37-1-omv4000.x86_64.rpm        246 kB/s |  25 kB     00:00    
+(19/183): findutils-4.7.0-1-omv4000.x86_64.rpm  1.2 MB/s | 473 kB     00:00    
+(20/183): distro-theme-OpenMandriva-grub2-1.4.4 1.4 MB/s | 1.7 MB     00:01    
+(21/183): filesystem-4.0-0.3-omv4000.x86_64.rpm 1.2 MB/s | 990 kB     00:00    
+(22/183): gawk-5.0.1-1-omv4000.x86_64.rpm       1.6 MB/s | 1.0 MB     00:00    
+(23/183): gettext-base-0.20.1-1-omv4000.x86_64. 900 kB/s | 458 kB     00:00    
+(24/183): gnupg-doc-2.2.17-1-omv4000.x86_64.rpm 651 kB/s | 328 kB     00:00    
+(25/183): grep-3.3-1-omv4000.x86_64.rpm         395 kB/s | 167 kB     00:00    
+(26/183): gnupg-2.2.17-1-omv4000.x86_64.rpm     1.8 MB/s | 1.9 MB     00:01    
+(27/183): grub2-efi-2.02-30-omv4000.x86_64.rpm  904 kB/s | 790 kB     00:00    
+(28/183): glibc-2.30-2-omv4000.x86_64.rpm       1.7 MB/s | 3.8 MB     00:02    
+(29/183): gzip-1.10-2-omv4000.x86_64.rpm        267 kB/s | 120 kB     00:00    
+(30/183): kmod-26-1-omv4000.x86_64.rpm          228 kB/s |  86 kB     00:00    
+(31/183): lib64acl1-2.2.53-3-omv4000.x86_64.rpm  78 kB/s |  17 kB     00:00    
+(32/183): grub2-2.02-30-omv4000.x86_64.rpm      2.0 MB/s | 3.3 MB     00:01    
+(33/183): lib64archive17-3.4.0-1-omv4000.x86_64 1.1 MB/s | 314 kB     00:00    
+(34/183): lib64argon2_1-20190702-1-omv4000.x86_ 261 kB/s |  39 kB     00:00    
+(35/183): lib64assuan0-2.5.3-2-omv4000.x86_64.r 408 kB/s |  33 kB     00:00    
+(36/183): lib64asm1-0.177-1-omv4000.x86_64.rpm  161 kB/s |  17 kB     00:00    
+(37/183): lib64attr1-2.4.48-5-omv4000.x86_64.rp 138 kB/s |  13 kB     00:00    
+(38/183): lib64audit1-2.8.5-1-omv4000.x86_64.rp 401 kB/s |  39 kB     00:00    
+(39/183): lib64blkid1-2.34-3-omv4000.x86_64.rpm 670 kB/s |  87 kB     00:00    
+(40/183): lib64bz2_1-1.0.8-2-omv4000.x86_64.rpm 270 kB/s |  36 kB     00:00    
+(41/183): lib64cap-ng0-0.7.10-1-omv4001.x86_64. 114 kB/s |  14 kB     00:00    
+(42/183): lib64cap2-2.27-2-omv4000.x86_64.rpm   157 kB/s |  14 kB     00:00    
+(43/183): lib64com_err2-1.45.4-1-omv4000.x86_64 148 kB/s |  12 kB     00:00    
+(44/183): lib64comps0-0.1.11-1-omv4000.x86_64.r 598 kB/s |  56 kB     00:00    
+(45/183): lib64crypt1-4.4.10-1-omv4000.x86_64.r 803 kB/s |  85 kB     00:00    
+(46/183): lib64cryptsetup12-2.2.1-1-omv4000.x86 941 kB/s | 202 kB     00:00    
+(47/183): lib64curl4-7.66.0-1-omv4000.x86_64.rp 991 kB/s | 196 kB     00:00    
+(48/183): lib64dbus-1_3-1.12.16-1-omv4000.x86_6 555 kB/s | 116 kB     00:00    
+(49/183): lib64db18.1-18.1.32-1-omv4000.x86_64. 2.0 MB/s | 671 kB     00:00    
+(50/183): lib64crypto1.1-1.1.1c-1-omv4000.x86_6 1.9 MB/s | 1.1 MB     00:00    
+(51/183): lib64dw1-0.177-1-omv4000.x86_64.rpm   724 kB/s | 117 kB     00:00    
+(52/183): lib64devmapper1.02-1.02.163-1-omv4000 402 kB/s | 128 kB     00:00    
+(53/183): lib64dnf2-0.33.0-1-omv4000.x86_64.rpm 1.4 MB/s | 314 kB     00:00    
+(54/183): lib64efiboot1-37-1-omv4000.x86_64.rpm 398 kB/s |  41 kB     00:00    
+(55/183): lib64efivar1-37-1-omv4000.x86_64.rpm  425 kB/s |  47 kB     00:00    
+(56/183): lib64elf1-0.177-1-omv4000.x86_64.rpm  447 kB/s |  39 kB     00:00    
+(57/183): lib64expat1-2.2.9-1-omv4000.x86_64.rp 515 kB/s |  63 kB     00:00    
+(58/183): lib64ffi6-3.2.1-11-omv4000.x86_64.rpm 171 kB/s |  23 kB     00:00    
+(59/183): lib64fdisk1-2.34-3-omv4000.x86_64.rpm 821 kB/s | 127 kB     00:00    
+(60/183): lib64fuse3_3-3.7.0-2-omv4001.x86_64.r 454 kB/s |  62 kB     00:00    
+(61/183): lib64gcc1-9.2.1-0.20190824.1-omv4000. 945 kB/s | 155 kB     00:00    
+(62/183): lib64gcrypt20-1.8.5-1-omv4000.x86_64. 1.5 MB/s | 402 kB     00:00    
+(63/183): lib64gdbm6-1.18.1-4-omv4000.x86_64.rp 196 kB/s |  34 kB     00:00    
+(64/183): lib64gdbm_compat4-1.18.1-4-omv4000.x8  90 kB/s |  11 kB     00:00    
+(65/183): lib64gmodule2.0_0-2.62.1-1-omv4001.x8  99 kB/s |  12 kB     00:00    
+(66/183): lib64glib2.0_0-2.62.1-1-omv4001.x86_6 1.7 MB/s | 471 kB     00:00    
+(67/183): lib64gio2.0_0-2.62.1-1-omv4001.x86_64 1.8 MB/s | 623 kB     00:00    
+(68/183): lib64gmp10-6.1.2-12-omv4001.x86_64.rp 1.0 MB/s | 245 kB     00:00    
+(69/183): lib64gpg-error0-1.36-3-omv4000.x86_64 363 kB/s |  48 kB     00:00    
+(70/183): lib64gobject2.0_0-2.62.1-1-omv4001.x8 867 kB/s | 130 kB     00:00    
+(71/183): lib64gnutls30-3.6.9-1-omv4000.x86_64. 1.8 MB/s | 709 kB     00:00    
+(72/183): lib64gpgme11-1.13.1-1-omv4000.x86_64. 519 kB/s | 110 kB     00:00    
+(73/183): lib64gssapi_krb5_2-1.16.3-1-omv4000.x 1.3 MB/s | 353 kB     00:00    
+(74/183): lib64idn2_0-2.2.0-1-omv4000.x86_64.rp 415 kB/s |  41 kB     00:00    
+(75/183): lib64intl8-0.20.1-1-omv4000.x86_64.rp 240 kB/s |  23 kB     00:00    
+(76/183): lib64hogweed5-3.5.1-1-omv4000.x86_64. 1.0 MB/s | 208 kB     00:00    
+(77/183): lib64ip4tc0-1.8.2-4-omv4000.x86_64.rp 203 kB/s |  18 kB     00:00    
+(78/183): lib64json-c4-0.13.1-4-omv4000.x86_64. 245 kB/s |  29 kB     00:00    
+(79/183): lib64keyutils1-1.6-3-omv4000.x86_64.r 112 kB/s |  13 kB     00:00    
+(80/183): lib64k5crypto3-1.16.3-1-omv4000.x86_6 1.2 MB/s | 183 kB     00:00    
+(81/183): lib64kmod2-26-1-omv4000.x86_64.rpm    366 kB/s |  39 kB     00:00    
+(82/183): lib64krb5support0-1.16.3-1-omv4000.x8 470 kB/s |  50 kB     00:00    
+(83/183): lib64ksba8-1.3.5-4-omv4000.x86_64.rpm 634 kB/s |  82 kB     00:00    
+(84/183): lib64ldap2.4_2-2.4.48-1-omv4000.x86_6 942 kB/s | 172 kB     00:00    
+(85/183): lib64lua5.3-5.3.5-5-omv4000.x86_64.rp 695 kB/s |  97 kB     00:00    
+(86/183): lib64lz4_1-1.9.2-1-omv4000.x86_64.rpm 513 kB/s |  74 kB     00:00    
+(87/183): lib64lzma5-5.2.4-4-omv4000.x86_64.rpm 549 kB/s |  90 kB     00:00    
+(88/183): lib64krb5_3-1.16.3-1-omv4000.x86_64.r 1.4 MB/s | 724 kB     00:00    
+(89/183): lib64lzo2_2-2.10-4-omv4000.x86_64.rpm 450 kB/s |  63 kB     00:00    
+(90/183): lib64magic1-5.37-4-omv4001.x86_64.rpm 539 kB/s |  61 kB     00:00    
+(91/183): lib64modulemd1-1.8.11-1-omv4000.x86_6 891 kB/s | 112 kB     00:00    
+(92/183): lib64ncursesw6-6.1-0.20190928.1-omv40 890 kB/s | 145 kB     00:00    
+(93/183): lib64mount1-2.34-3-omv4000.x86_64.rpm 516 kB/s | 111 kB     00:00    
+(94/183): lib64mpfr6-4.0.2-5-omv4001.x86_64.rpm 1.0 MB/s | 240 kB     00:00    
+(95/183): lib64npth0-1.6-3-omv4000.x86_64.rpm    89 kB/s |  11 kB     00:00    
+(96/183): lib64nsl2-1.2.0-2-omv4000.x86_64.rpm  348 kB/s |  37 kB     00:00    
+(97/183): lib64nettle7-3.5.1-1-omv4000.x86_64.r 902 kB/s | 180 kB     00:00    
+(98/183): lib64nss_myhostname2-243.20190913-3-o 296 kB/s |  34 kB     00:00    
+(99/183): lib64nss_resolve2-243.20190913-3-omv4 1.0 MB/s | 126 kB     00:00    
+(100/183): lib64nss_systemd2-243.20190913-3-omv 906 kB/s | 128 kB     00:00    
+(101/183): lib64pam0-1.3.1-4-omv4000.x86_64.rpm 233 kB/s |  27 kB     00:00    
+(102/183): lib64p11-kit0-0.23.18.1-1-omv4001.x8 1.1 MB/s | 179 kB     00:00    
+(103/183): lib64pam_misc0-1.3.1-4-omv4000.x86_6 133 kB/s |  12 kB     00:00    
+(104/183): lib64panelw6-6.1-0.20190928.1-omv400  90 kB/s |  10 kB     00:00    
+(105/183): lib64pcre1-8.43-1-omv4000.x86_64.rpm 1.0 MB/s | 182 kB     00:00    
+(106/183): lib64popt0-1.16-32-omv4000.x86_64.rp 251 kB/s |  26 kB     00:00    
+(107/183): lib64pcre2-8_0-10.33-1-omv4000.x86_6 1.1 MB/s | 219 kB     00:00    
+(108/183): lib64qrencode4-4.0.2-1-omv4000.x86_6 191 kB/s |  24 kB     00:00    
+(109/183): lib64readline8-8.0-2-omv4000.x86_64. 652 kB/s | 108 kB     00:00    
+(110/183): lib64repo0-1.10.6-1-omv4000.x86_64.r 399 kB/s |  64 kB     00:00    
+(111/183): lib64rpm8-4.14.2.1-10-omv4000.x86_64 870 kB/s | 215 kB     00:00    
+(112/183): lib64rpmbuild8-4.14.2.1-10-omv4000.x 383 kB/s |  67 kB     00:00    
+(113/183): lib64python3.7m_1-3.7.4-1-omv4000.x8 2.1 MB/s | 1.1 MB     00:00    
+(114/183): lib64rpmsign8-4.14.2.1-10-omv4000.x8 147 kB/s |  13 kB     00:00    
+(115/183): lib64sasl2-2.1.27-2-omv4000.x86_64.r 415 kB/s |  47 kB     00:00    
+(116/183): lib64seccomp2-2.4.1-1-omv4000.x86_64 454 kB/s |  42 kB     00:00    
+(117/183): lib64secret1_0-0.19.1-1-omv4000.x86_ 723 kB/s |  71 kB     00:00    
+(118/183): lib64sigsegv2-2.12-4-omv4000.x86_64. 111 kB/s |  12 kB     00:00    
+(119/183): lib64smartcols1-2.34-3-omv4000.x86_6 326 kB/s |  39 kB     00:00    
+(120/183): lib64solvext1-0.7.6-1-omv4000.x86_64 923 kB/s |  92 kB     00:00    
+(121/183): lib64solv1-0.7.6-1-omv4000.x86_64.rp 1.4 MB/s | 270 kB     00:00    
+(122/183): lib64ssh2_1-1.9.0-2-omv4000.x86_64.r 467 kB/s |  91 kB     00:00    
+(123/183): lib64ssl1.1-1.1.1c-1-omv4000.x86_64. 767 kB/s | 187 kB     00:00    
+(124/183): lib64sqlite3_0-3.30.1-1-omv4001.x86_ 1.7 MB/s | 764 kB     00:00    
+(125/183): lib64tasn1_6-4.14-1-omv4000.x86_64.r 293 kB/s |  34 kB     00:00    
+(126/183): lib64systemd0-243.20190913-3-omv4000 808 kB/s | 253 kB     00:00    
+(127/183): lib64stdc++6-9.2.1-0.20190824.1-omv4 1.0 MB/s | 461 kB     00:00    
+(128/183): lib64tirpc3-1.1.4-2-omv4000.x86_64.r 406 kB/s |  76 kB     00:00    
+(129/183): lib64udev1-243.20190913-3-omv4000.x8 695 kB/s |  74 kB     00:00    
+(130/183): lib64usb1.0_0-1.0.23-1-omv4000.x86_6 320 kB/s |  42 kB     00:00    
+(131/183): lib64utempter0-1.1.6-20-omv4000.x86_  88 kB/s | 9.8 kB     00:00    
+(132/183): lib64uuid1-2.34-3-omv4000.x86_64.rpm 209 kB/s |  18 kB     00:00    
+(133/183): lib64unistring2-0.9.10-4-omv4001.x86 1.4 MB/s | 381 kB     00:00    
+(134/183): lib64yaml0_2-0.2.2-1-omv4000.x86_64. 461 kB/s |  52 kB     00:00    
+(135/183): lib64z1-1.2.11-10-omv4000.x86_64.rpm 504 kB/s |  58 kB     00:00    
+(136/183): lib64zck1-1.1.3-1-omv4000.x86_64.rpm 243 kB/s |  33 kB     00:00    
+(137/183): lib64zstd1-1.4.3-1-omv4000.x86_64.rp 622 kB/s | 277 kB     00:00    
+(138/183): lib64xml2_2-2.9.9-2-omv4000.x86_64.r 863 kB/s | 632 kB     00:00    
+(139/183): libidn2-i18n-2.2.0-1-omv4000.noarch.  90 kB/s |  24 kB     00:00    
+(140/183): libcap-utils-2.27-2-omv4000.x86_64.r  55 kB/s |  24 kB     00:00    
+(141/183): libsolv-0.7.6-1-omv4000.x86_64.rpm   291 kB/s |  73 kB     00:00    
+(142/183): libtirpc-1.1.4-2-omv4000.x86_64.rpm   43 kB/s | 8.3 kB     00:00    
+(143/183): libc6-2.30-2-omv4000.x86_64.rpm      2.3 MB/s | 2.5 MB     00:01    
+(144/183): lsb-release-2.0-53-omv4000.x86_64.rp 135 kB/s |  15 kB     00:00    
+(145/183): locales-2.30-2-omv4000.x86_64.rpm    797 kB/s | 302 kB     00:00    
+(146/183): locales-en-2.30-2-omv4000.x86_64.rpm 1.2 MB/s | 399 kB     00:00    
+(147/183): ncurses-6.1-0.20190928.1-omv4001.x86 1.3 MB/s | 203 kB     00:00    
+(148/183): openldap-2.4.48-1-omv4000.x86_64.rpm 223 kB/s |  19 kB     00:00    
+(149/183): pbzip2-1.1.13-4-omv4000.x86_64.rpm   365 kB/s |  49 kB     00:00    
+(150/183): openssl-1.1.1c-1-omv4000.x86_64.rpm  1.4 MB/s | 460 kB     00:00    
+(151/183): pam-1.3.1-4-omv4000.x86_64.rpm       1.3 MB/s | 390 kB     00:00    
+(152/183): pigz-2.4-7-omv4000.x86_64.rpm        417 kB/s |  64 kB     00:00    
+(153/183): pinentry-1.1.0-8-omv4000.x86_64.rpm  491 kB/s |  72 kB     00:00    
+(154/183): popt-data-1.16-32-omv4000.noarch.rpm 193 kB/s |  25 kB     00:00    
+(155/183): python-dbus-1.2.12-1-omv4000.x86_64. 663 kB/s | 123 kB     00:00    
+(156/183): python-dateutil-2.8.0-1-omv4000.noar 1.1 MB/s | 278 kB     00:00    
+(157/183): python-dnf-plugins-core-4.0.9-1-omv4 517 kB/s |  65 kB     00:00    
+(158/183): python-dnf-4.2.6-2-omv4000.noarch.rp 1.1 MB/s | 367 kB     00:00    
+(159/183): python-gpg-1.13.1-1-omv4000.x86_64.r 816 kB/s | 219 kB     00:00    
+(160/183): python-hawkey-0.33.0-1-omv4000.x86_6 384 kB/s |  60 kB     00:00    
+(161/183): python-libcomps-0.1.11-1-omv4000.x86 300 kB/s |  40 kB     00:00    
+(162/183): python-iniparse-0.4-17-omv4000.noarc 187 kB/s |  39 kB     00:00    
+(163/183): python-rpm-4.14.2.1-10-omv4000.x86_6 347 kB/s |  54 kB     00:00    
+(164/183): python-six-1.12.0-1-omv4000.noarch.r 164 kB/s |  32 kB     00:00    
+(165/183): python-libdnf-0.33.0-1-omv4000.x86_6 1.2 MB/s | 471 kB     00:00    
+(166/183): rootfiles-11.0-21-omv4000.noarch.rpm  85 kB/s |  12 kB     00:00    
+(167/183): rootcerts-20190516.00-1-omv4000.noar 978 kB/s | 567 kB     00:00    
+(168/183): rpm-4.14.2.1-10-omv4000.x86_64.rpm   963 kB/s | 467 kB     00:00    
+(169/183): rpm-openmandriva-setup-0.3.7.1-1-omv  34 kB/s |  14 kB     00:00    
+(170/183): rpm-plugin-systemd-inhibit-4.14.2.1-  30 kB/s |  11 kB     00:00    
+(171/183): setup-2.9.3-2-omv4000.noarch.rpm     474 kB/s | 123 kB     00:00    
+(172/183): sed-4.7-1-omv4000.x86_64.rpm         658 kB/s | 191 kB     00:00    
+(173/183): shadow-4.7-1-omv4000.x86_64.rpm      1.4 MB/s | 905 kB     00:00    
+(174/183): python-3.7.4-1-omv4000.x86_64.rpm    2.1 MB/s | 7.1 MB     00:03    
+(175/183): systemd-macros-243.20190913-3-omv400  30 kB/s | 7.9 kB     00:00    
+(176/183): tar-3.4.0-1-omv4000.x86_64.rpm       243 kB/s |  54 kB     00:00    
+(177/183): timezone-2019a-2-omv4000.x86_64.rpm  971 kB/s | 377 kB     00:00    
+(178/183): systemd-243.20190913-3-omv4000.x86_6 2.0 MB/s | 2.8 MB     00:01    
+(179/183): util-linux-doc-2.34-3-omv4000.x86_64 814 kB/s | 281 kB     00:00    
+(180/183): util-linux-2.34-3-omv4000.x86_64.rpm 2.5 MB/s | 1.8 MB     00:00    
+(181/183): which-2.21-5-omv4000.x86_64.rpm      145 kB/s |  28 kB     00:00    
+(182/183): xz-5.2.4-4-omv4000.x86_64.rpm        893 kB/s | 152 kB     00:00    
+(183/183): wget-1.20.3-2-omv4000.x86_64.rpm     931 kB/s | 635 kB     00:00    
+--------------------------------------------------------------------------------
+Total                                           3.2 MB/s |  57 MB     00:18     
+OpenMandriva Rolling - x86_64                   3.0 MB/s | 3.1 kB     00:00    
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Running scriptlet: filesystem-4.0-0.3.x86_64                              1/1 
+  Running scriptlet: timezone-8:2019a-2.x86_64                              1/1 
+  Preparing        :                                                        1/1 
+  Installing       : filesystem-4.0-0.3.x86_64                            1/183 
+  Running scriptlet: filesystem-4.0-0.3.x86_64                            1/183 
+warning: group uucp does not exist - using root
+warning: group mail does not exist - using root
+warning: group news does not exist - using root
+warning: group uucp does not exist - using root
+
+  Installing       : lib64ncursesw6-6.1-0.20190928.1.x86_64               2/183 
+  Installing       : lib64readline8-8.0-2.x86_64                          3/183 
+  Installing       : libc6-6:2.30-2.x86_64                                4/183 
+  Installing       : glibc-6:2.30-2.x86_64                                5/183 
+  Running scriptlet: glibc-6:2.30-2.x86_64                                5/183 
+  Installing       : bash-5.0.11-3.x86_64                                 6/183 
+  Installing       : lib64z1-1.2.11-10.x86_64                             7/183 
+  Installing       : lib64crypto1.1-1.1.1c-1.x86_64                       8/183 
+  Installing       : lib64gcc1-9.2.1-0.20190824.1.x86_64                  9/183 
+  Installing       : lib64lzma5-5.2.4-4.x86_64                           10/183 
+  Installing       : lib64bz2_1-1.0.8-2.x86_64                           11/183 
+  Installing       : setup-2.9.3-2.noarch                                12/183 
+  Installing       : lib64acl1-2.2.53-3.x86_64                           13/183 
+  Installing       : lib64gpg-error0-1.36-3.x86_64                       14/183 
+  Installing       : lib64blkid1-2.34-3.x86_64                           15/183 
+  Installing       : lib64cap2-2.27-2.x86_64                             16/183 
+  Installing       : lib64python3.7m_1-3.7.4-1.x86_64                    17/183 
+  Installing       : lib64ssl1.1-1.1.1c-1.x86_64                         18/183 
+  Installing       : lib64crypt1-4.4.10-1.x86_64                         19/183 
+  Installing       : lib64zstd1-1.4.3-1.x86_64                           20/183 
+  Installing       : lib64gcrypt20-1.8.5-1.x86_64                        21/183 
+  Installing       : sed-4.7-1.x86_64                                    22/183 
+  Installing       : lib64stdc++6-9.2.1-0.20190824.1.x86_64              23/183 
+  Installing       : lib64gmp10-6.1.2-12.x86_64                          24/183 
+  Installing       : lib64uuid1-2.34-3.x86_64                            25/183 
+  Installing       : lib64mount1-2.34-3.x86_64                           26/183 
+  Installing       : lib64assuan0-2.5.3-2.x86_64                         27/183 
+  Installing       : lib64asm1-0.177-1.x86_64                            28/183 
+  Installing       : lib64dw1-0.177-1.x86_64                             29/183 
+  Installing       : lib64elf1-0.177-1.x86_64                            30/183 
+  Installing       : lib64xml2_2-2.9.9-2.x86_64                          31/183 
+  Installing       : xz-5.2.4-4.x86_64                                   32/183 
+  Installing       : lib64udev1-243.20190913-3.x86_64                    33/183 
+  Installing       : lib64devmapper1.02-1.02.163-1.x86_64                34/183 
+  Installing       : lib64efivar1-37-1.x86_64                            35/183 
+  Installing       : lib64expat1-2.2.9-1.x86_64                          36/183 
+  Installing       : lib64ffi6-3.2.1-11.x86_64                           37/183 
+  Installing       : lib64krb5support0-1.16.3-1.x86_64                   38/183 
+  Installing       : lib64lz4_1-1.9.2-1.x86_64                           39/183 
+  Installing       : lib64systemd0-243.20190913-3.x86_64                 40/183 
+  Installing       : lib64dbus-1_3-1.12.16-1.x86_64                      41/183 
+  Installing       : lib64smartcols1-2.34-3.x86_64                       42/183 
+  Installing       : lib64k5crypto3-1.16.3-1.x86_64                      43/183 
+  Installing       : lib64zck1-1.1.3-1.x86_64                            44/183 
+  Installing       : kmod-26-1.x86_64                                    45/183 
+  Installing       : lib64attr1-2.4.48-5.x86_64                          46/183 
+  Installing       : coreutils-8.31-1.x86_64                             47/183 
+  Installing       : lib64cap-ng0-0.7.10-1.x86_64                        48/183 
+  Installing       : lib64audit1-2.8.5-1.x86_64                          49/183 
+  Installing       : lib64pam0-1:1.3.1-4.x86_64                          50/183 
+  Installing       : lib64pam_misc0-1:1.3.1-4.x86_64                     51/183 
+  Installing       : lib64com_err2-1.45.4-1.x86_64                       52/183 
+  Installing       : lib64db18.1-18.1.32-1.x86_64                        53/183 
+  Installing       : lib64gdbm6-1.18.1-4.x86_64                          54/183 
+  Installing       : lib64json-c4-0.13.1-4.x86_64                        55/183 
+  Installing       : lib64nettle7-1:3.5.1-1.x86_64                       56/183 
+  Installing       : lib64pcre1-8.43-1.x86_64                            57/183 
+  Installing       : lib64glib2.0_0-1:2.62.1-1.x86_64                    58/183 
+  Installing       : lib64gobject2.0_0-1:2.62.1-1.x86_64                 59/183 
+  Installing       : grep-3.3-1.x86_64                                   60/183 
+  Installing       : lib64sqlite3_0-3.30.1-1.x86_64                      61/183 
+  Installing       : lib64unistring2-0.9.10-4.x86_64                     62/183 
+  Installing       : systemd-macros-243.20190913-3.x86_64                63/183 
+  Installing       : rootcerts-1:20190516.00-1.noarch                    64/183 
+  Installing       : lib64gmodule2.0_0-1:2.62.1-1.x86_64                 65/183 
+  Installing       : lib64gio2.0_0-1:2.62.1-1.x86_64                     66/183 
+  Installing       : lib64secret1_0-0.19.1-1.x86_64                      67/183 
+  Installing       : lib64hogweed5-1:3.5.1-1.x86_64                      68/183 
+  Installing       : lib64gdbm_compat4-1.18.1-4.x86_64                   69/183 
+  Installing       : openssl-1.1.1c-1.x86_64                             70/183 
+  Installing       : wget-1.20.3-2.x86_64                                71/183 
+  Installing       : lib64kmod2-26-1.x86_64                              72/183 
+  Installing       : lib64p11-kit0-0.23.18.1-1.x86_64                    73/183 
+  Installing       : lib64comps0-0.1.11-1.x86_64                         74/183 
+  Installing       : efivar-37-1.x86_64                                  75/183 
+  Installing       : lib64efiboot1-37-1.x86_64                           76/183 
+  Installing       : efibootmgr-0.17-2.x86_64                            77/183 
+  Installing       : lib64usb1.0_0-1.0.23-1.x86_64                       78/183 
+  Installing       : lib64fdisk1-2.34-3.x86_64                           79/183 
+  Installing       : lib64mpfr6-4.0.2-5.x86_64                           80/183 
+  Installing       : pbzip2-1.1.13-4.x86_64                              81/183 
+  Installing       : bzip2-1.0.8-2.x86_64                                82/183 
+  Installing       : libcap-utils-2.27-2.x86_64                          83/183 
+  Installing       : lib64ksba8-1.3.5-4.x86_64                           84/183 
+  Installing       : acl-2.2.53-3.x86_64                                 85/183 
+  Installing       : openldap-2.4.48-1.x86_64                            86/183 
+  Installing       : lib64nss_myhostname2-243.20190913-3.x86_64          87/183 
+  Installing       : lib64nss_resolve2-243.20190913-3.x86_64             88/183 
+  Installing       : lib64nss_systemd2-243.20190913-3.x86_64             89/183 
+  Installing       : lib64ssh2_1-1.9.0-2.x86_64                          90/183 
+  Installing       : lib64magic1-5.37-4.x86_64                           91/183 
+  Installing       : pigz-2.4-7.x86_64                                   92/183 
+  Installing       : gzip-1.10-2.x86_64                                  93/183 
+  Installing       : bash-completion-2:2.8-4.noarch                      94/183 
+  Installing       : gnupg-doc-2.2.17-1.x86_64                           95/183 
+  Installing       : lsb-release-2.0-53.x86_64                           96/183 
+  Installing       : distro-release-common-4.1-0.1.x86_64                97/183 
+  Installing       : distro-release-OpenMandriva-4.1-0.1.x86_64          98/183 
+  Installing       : ncurses-6.1-0.20190928.1.x86_64                     99/183 
+  Installing       : util-linux-doc-2.34-3.x86_64                       100/183 
+  Installing       : findutils-4.7.0-1.x86_64                           101/183 
+  Installing       : lib64argon2_1-20190702-1.x86_64                    102/183 
+  Installing       : lib64cryptsetup12-2.2.1-1.x86_64                   103/183 
+  Installing       : lib64fuse3_3-3.7.0-2.x86_64                        104/183 
+  Installing       : lib64intl8-0.20.1-1.x86_64                         105/183 
+  Installing       : gettext-base-0.20.1-1.x86_64                       106/183 
+  Installing       : grub2-efi-2.02-30.x86_64                           107/183 
+  Installing       : lib64ip4tc0-1.8.2-4.x86_64                         108/183 
+  Installing       : lib64keyutils1-1.6-3.x86_64                        109/183 
+  Installing       : lib64krb5_3-1.16.3-1.x86_64                        110/183 
+  Installing       : lib64gssapi_krb5_2-1.16.3-1.x86_64                 111/183 
+  Installing       : lib64lua5.3-5.3.5-5.x86_64                         112/183 
+  Installing       : lib64lzo2_2-2.10-4.x86_64                          113/183 
+  Installing       : lib64archive17-3.4.0-1.x86_64                      114/183 
+  Installing       : cpio-3.4.0-1.x86_64                                115/183 
+  Installing       : tar-3.4.0-1.x86_64                                 116/183 
+  Installing       : lib64npth0-1.6-3.x86_64                            117/183 
+  Installing       : lib64panelw6-6.1-0.20190928.1.x86_64               118/183 
+  Installing       : python-3.7.4-1.x86_64                              119/183 
+  Installing       : python-six-1.12.0-1.noarch                         120/183 
+  Installing       : python-iniparse-0.4-17.noarch                      121/183 
+  Installing       : python-libcomps-0.1.11-1.x86_64                    122/183 
+  Installing       : lib64pcre2-8_0-10.33-1.x86_64                      123/183 
+  Installing       : lib64qrencode4-4.0.2-1.x86_64                      124/183 
+  Installing       : lib64sasl2-2.1.27-2.x86_64                         125/183 
+  Installing       : lib64ldap2.4_2-2.4.48-1.x86_64                     126/183 
+  Installing       : lib64seccomp2-2.4.1-1.x86_64                       127/183 
+  Installing       : lib64sigsegv2-2.12-4.x86_64                        128/183 
+  Installing       : gawk-5.0.1-1.x86_64                                129/183 
+  Installing       : lib64tasn1_6-4.14-1.x86_64                         130/183 
+  Installing       : lib64utempter0-1.1.6-20.x86_64                     131/183 
+  Installing       : lib64yaml0_2-0.2.2-1.x86_64                        132/183 
+  Installing       : lib64modulemd1-1.8.11-1.x86_64                     133/183 
+  Installing       : timezone-8:2019a-2.x86_64                          134/183 
+  Installing       : python-dateutil-2.8.0-1.noarch                     135/183 
+  Installing       : which-2.21-5.x86_64                                136/183 
+  Installing       : rootfiles-11.0-21.noarch                           137/183 
+  Installing       : popt-data-1:1.16-32.noarch                         138/183 
+  Installing       : lib64popt0-1:1.16-32.x86_64                        139/183 
+  Installing       : lib64rpm8-2:4.14.2.1-10.x86_64                     140/183 
+  Installing       : lib64solvext1-0.7.6-1.x86_64                       141/183 
+  Installing       : lib64solv1-0.7.6-1.x86_64                          142/183 
+  Installing       : libsolv-0.7.6-1.x86_64                             143/183 
+  Installing       : rpm-plugin-systemd-inhibit-2:4.14.2.1-10.x86_64    144/183 
+  Installing       : rpm-openmandriva-setup-0.3.7.1-1.noarch            145/183 
+  Installing       : rpm-2:4.14.2.1-10.x86_64                           146/183 
+  Running scriptlet: rpm-2:4.14.2.1-10.x86_64                           146/183 
+  Installing       : deltarpm-3.6.2-1.x86_64                            147/183 
+  Installing       : lib64rpmbuild8-2:4.14.2.1-10.x86_64                148/183 
+  Installing       : lib64rpmsign8-2:4.14.2.1-10.x86_64                 149/183 
+  Installing       : python-rpm-2:4.14.2.1-10.x86_64                    150/183 
+  Installing       : libtirpc-1.1.4-2.x86_64                            151/183 
+  Installing       : lib64tirpc3-1.1.4-2.x86_64                         152/183 
+  Installing       : lib64nsl2-1.2.0-2.x86_64                           153/183 
+  Installing       : pam-1:1.3.1-4.x86_64                               154/183 
+  Installing       : shadow-2:4.7-1.x86_64                              155/183 
+  Running scriptlet: shadow-2:4.7-1.x86_64                              155/183 
+  Running scriptlet: util-linux-2.34-3.x86_64                           156/183 
+  Installing       : util-linux-2.34-3.x86_64                           156/183 
+  Running scriptlet: util-linux-2.34-3.x86_64                           156/183 
+  Installing       : chkconfig-1.11-3.x86_64                            157/183 
+  Installing       : grub2-2.02-30.x86_64                               158/183 
+  Running scriptlet: grub2-2.02-30.x86_64                               158/183 
+  Installing       : distro-theme-OpenMandriva-grub2-1.4.45-1.x86_64    159/183 
+  Running scriptlet: distro-theme-OpenMandriva-grub2-1.4.45-1.x86_64    159/183 
+  Running scriptlet: pinentry-1.1.0-8.x86_64                            160/183 
+  Installing       : pinentry-1.1.0-8.x86_64                            160/183 
+  Installing       : basesystem-minimal-1:4-14.x86_64                   161/183 
+  Installing       : locales-6:2.30-2.x86_64                            162/183 
+  Running scriptlet: locales-6:2.30-2.x86_64                            162/183 
+  Installing       : libidn2-i18n-2.2.0-1.noarch                        163/183 
+  Installing       : lib64idn2_0-2.2.0-1.x86_64                         164/183 
+  Installing       : lib64gnutls30-3.6.9-1.x86_64                       165/183 
+  Installing       : gnupg-2.2.17-1.x86_64                              166/183 
+  Installing       : lib64gpgme11-1.13.1-1.x86_64                       167/183 
+  Installing       : systemd-243.20190913-3.x86_64                      168/183 
+  Running scriptlet: systemd-243.20190913-3.x86_64                      168/183 
+warning: group systemd-journal does not exist - using root
+
+  Installing       : dbus-1.12.16-1.x86_64                              169/183 
+  Running scriptlet: dbus-1.12.16-1.x86_64                              169/183 
+  Installing       : python-dbus-1.2.12-1.x86_64                        170/183 
+  Installing       : python-gpg-1.13.1-1.x86_64                         171/183 
+  Installing       : lib64curl4-7.66.0-1.x86_64                         172/183 
+  Installing       : lib64repo0-1.10.6-1.x86_64                         173/183 
+  Installing       : lib64dnf2-0.33.0-1.x86_64                          174/183 
+  Installing       : python-hawkey-0.33.0-1.x86_64                      175/183 
+  Installing       : python-dnf-4.2.6-2.noarch                          176/183 
+  Installing       : python-dnf-plugins-core-4.0.9-1.noarch             177/183 
+  Installing       : dnf-plugins-core-4.0.9-1.noarch                    178/183 
+  Installing       : python-libdnf-0.33.0-1.x86_64                      179/183 
+  Installing       : dnf-yum-4.2.6-2.noarch                             180/183 
+  Installing       : dnf-4.2.6-2.noarch                                 181/183 
+  Installing       : dnf-automatic-4.2.6-2.noarch                       182/183 
+  Installing       : locales-en-6:2.30-2.x86_64                         183/183 
+  Running scriptlet: locales-en-6:2.30-2.x86_64                         183/183 
+  Running scriptlet: glibc-6:2.30-2.x86_64                              183/183 
+  Running scriptlet: grub2-2.02-30.x86_64                               183/183 
+  Running scriptlet: systemd-243.20190913-3.x86_64                      183/183Executing systemd preset on: console-getty.service
+Executing systemd preset on: debug-shell.service
+Executing systemd preset on: halt.target
+Executing systemd preset on: kexec.target
+Executing systemd preset on: poweroff.target
+Executing systemd preset on: exit.target
+Executing systemd preset on: systemd-networkd.socket
+Executing systemd preset on: systemd-networkd.service
+Executing systemd preset on: dnf-makecache.timer
+Executing systemd preset on: dnf-automatic.timer
+Executing systemd preset on: dnf-automatic-notifyonly.timer
+Executing systemd preset on: dnf-automatic-download.timer
+ 
+  Verifying        : acl-2.2.53-3.x86_64                                  1/183 
+  Verifying        : basesystem-minimal-1:4-14.x86_64                     2/183 
+  Verifying        : bash-5.0.11-3.x86_64                                 3/183 
+  Verifying        : bash-completion-2:2.8-4.noarch                       4/183 
+  Verifying        : bzip2-1.0.8-2.x86_64                                 5/183 
+  Verifying        : chkconfig-1.11-3.x86_64                              6/183 
+  Verifying        : coreutils-8.31-1.x86_64                              7/183 
+  Verifying        : cpio-3.4.0-1.x86_64                                  8/183 
+  Verifying        : dbus-1.12.16-1.x86_64                                9/183 
+  Verifying        : deltarpm-3.6.2-1.x86_64                             10/183 
+  Verifying        : distro-release-OpenMandriva-4.1-0.1.x86_64          11/183 
+  Verifying        : distro-release-common-4.1-0.1.x86_64                12/183 
+  Verifying        : distro-theme-OpenMandriva-grub2-1.4.45-1.x86_64     13/183 
+  Verifying        : dnf-4.2.6-2.noarch                                  14/183 
+  Verifying        : dnf-automatic-4.2.6-2.noarch                        15/183 
+  Verifying        : dnf-plugins-core-4.0.9-1.noarch                     16/183 
+  Verifying        : dnf-yum-4.2.6-2.noarch                              17/183 
+  Verifying        : efibootmgr-0.17-2.x86_64                            18/183 
+  Verifying        : efivar-37-1.x86_64                                  19/183 
+  Verifying        : filesystem-4.0-0.3.x86_64                           20/183 
+  Verifying        : findutils-4.7.0-1.x86_64                            21/183 
+  Verifying        : gawk-5.0.1-1.x86_64                                 22/183 
+  Verifying        : gettext-base-0.20.1-1.x86_64                        23/183 
+  Verifying        : glibc-6:2.30-2.x86_64                               24/183 
+  Verifying        : gnupg-2.2.17-1.x86_64                               25/183 
+  Verifying        : gnupg-doc-2.2.17-1.x86_64                           26/183 
+  Verifying        : grep-3.3-1.x86_64                                   27/183 
+  Verifying        : grub2-2.02-30.x86_64                                28/183 
+  Verifying        : grub2-efi-2.02-30.x86_64                            29/183 
+  Verifying        : gzip-1.10-2.x86_64                                  30/183 
+  Verifying        : kmod-26-1.x86_64                                    31/183 
+  Verifying        : lib64acl1-2.2.53-3.x86_64                           32/183 
+  Verifying        : lib64archive17-3.4.0-1.x86_64                       33/183 
+  Verifying        : lib64argon2_1-20190702-1.x86_64                     34/183 
+  Verifying        : lib64asm1-0.177-1.x86_64                            35/183 
+  Verifying        : lib64assuan0-2.5.3-2.x86_64                         36/183 
+  Verifying        : lib64attr1-2.4.48-5.x86_64                          37/183 
+  Verifying        : lib64audit1-2.8.5-1.x86_64                          38/183 
+  Verifying        : lib64blkid1-2.34-3.x86_64                           39/183 
+  Verifying        : lib64bz2_1-1.0.8-2.x86_64                           40/183 
+  Verifying        : lib64cap-ng0-0.7.10-1.x86_64                        41/183 
+  Verifying        : lib64cap2-2.27-2.x86_64                             42/183 
+  Verifying        : lib64com_err2-1.45.4-1.x86_64                       43/183 
+  Verifying        : lib64comps0-0.1.11-1.x86_64                         44/183 
+  Verifying        : lib64crypt1-4.4.10-1.x86_64                         45/183 
+  Verifying        : lib64crypto1.1-1.1.1c-1.x86_64                      46/183 
+  Verifying        : lib64cryptsetup12-2.2.1-1.x86_64                    47/183 
+  Verifying        : lib64curl4-7.66.0-1.x86_64                          48/183 
+  Verifying        : lib64db18.1-18.1.32-1.x86_64                        49/183 
+  Verifying        : lib64dbus-1_3-1.12.16-1.x86_64                      50/183 
+  Verifying        : lib64devmapper1.02-1.02.163-1.x86_64                51/183 
+  Verifying        : lib64dnf2-0.33.0-1.x86_64                           52/183 
+  Verifying        : lib64dw1-0.177-1.x86_64                             53/183 
+  Verifying        : lib64efiboot1-37-1.x86_64                           54/183 
+  Verifying        : lib64efivar1-37-1.x86_64                            55/183 
+  Verifying        : lib64elf1-0.177-1.x86_64                            56/183 
+  Verifying        : lib64expat1-2.2.9-1.x86_64                          57/183 
+  Verifying        : lib64fdisk1-2.34-3.x86_64                           58/183 
+  Verifying        : lib64ffi6-3.2.1-11.x86_64                           59/183 
+  Verifying        : lib64fuse3_3-3.7.0-2.x86_64                         60/183 
+  Verifying        : lib64gcc1-9.2.1-0.20190824.1.x86_64                 61/183 
+  Verifying        : lib64gcrypt20-1.8.5-1.x86_64                        62/183 
+  Verifying        : lib64gdbm6-1.18.1-4.x86_64                          63/183 
+  Verifying        : lib64gdbm_compat4-1.18.1-4.x86_64                   64/183 
+  Verifying        : lib64gio2.0_0-1:2.62.1-1.x86_64                     65/183 
+  Verifying        : lib64glib2.0_0-1:2.62.1-1.x86_64                    66/183 
+  Verifying        : lib64gmodule2.0_0-1:2.62.1-1.x86_64                 67/183 
+  Verifying        : lib64gmp10-6.1.2-12.x86_64                          68/183 
+  Verifying        : lib64gnutls30-3.6.9-1.x86_64                        69/183 
+  Verifying        : lib64gobject2.0_0-1:2.62.1-1.x86_64                 70/183 
+  Verifying        : lib64gpg-error0-1.36-3.x86_64                       71/183 
+  Verifying        : lib64gpgme11-1.13.1-1.x86_64                        72/183 
+  Verifying        : lib64gssapi_krb5_2-1.16.3-1.x86_64                  73/183 
+  Verifying        : lib64hogweed5-1:3.5.1-1.x86_64                      74/183 
+  Verifying        : lib64idn2_0-2.2.0-1.x86_64                          75/183 
+  Verifying        : lib64intl8-0.20.1-1.x86_64                          76/183 
+  Verifying        : lib64ip4tc0-1.8.2-4.x86_64                          77/183 
+  Verifying        : lib64json-c4-0.13.1-4.x86_64                        78/183 
+  Verifying        : lib64k5crypto3-1.16.3-1.x86_64                      79/183 
+  Verifying        : lib64keyutils1-1.6-3.x86_64                         80/183 
+  Verifying        : lib64kmod2-26-1.x86_64                              81/183 
+  Verifying        : lib64krb5_3-1.16.3-1.x86_64                         82/183 
+  Verifying        : lib64krb5support0-1.16.3-1.x86_64                   83/183 
+  Verifying        : lib64ksba8-1.3.5-4.x86_64                           84/183 
+  Verifying        : lib64ldap2.4_2-2.4.48-1.x86_64                      85/183 
+  Verifying        : lib64lua5.3-5.3.5-5.x86_64                          86/183 
+  Verifying        : lib64lz4_1-1.9.2-1.x86_64                           87/183 
+  Verifying        : lib64lzma5-5.2.4-4.x86_64                           88/183 
+  Verifying        : lib64lzo2_2-2.10-4.x86_64                           89/183 
+  Verifying        : lib64magic1-5.37-4.x86_64                           90/183 
+  Verifying        : lib64modulemd1-1.8.11-1.x86_64                      91/183 
+  Verifying        : lib64mount1-2.34-3.x86_64                           92/183 
+  Verifying        : lib64mpfr6-4.0.2-5.x86_64                           93/183 
+  Verifying        : lib64ncursesw6-6.1-0.20190928.1.x86_64              94/183 
+  Verifying        : lib64nettle7-1:3.5.1-1.x86_64                       95/183 
+  Verifying        : lib64npth0-1.6-3.x86_64                             96/183 
+  Verifying        : lib64nsl2-1.2.0-2.x86_64                            97/183 
+  Verifying        : lib64nss_myhostname2-243.20190913-3.x86_64          98/183 
+  Verifying        : lib64nss_resolve2-243.20190913-3.x86_64             99/183 
+  Verifying        : lib64nss_systemd2-243.20190913-3.x86_64            100/183 
+  Verifying        : lib64p11-kit0-0.23.18.1-1.x86_64                   101/183 
+  Verifying        : lib64pam0-1:1.3.1-4.x86_64                         102/183 
+  Verifying        : lib64pam_misc0-1:1.3.1-4.x86_64                    103/183 
+  Verifying        : lib64panelw6-6.1-0.20190928.1.x86_64               104/183 
+  Verifying        : lib64pcre1-8.43-1.x86_64                           105/183 
+  Verifying        : lib64pcre2-8_0-10.33-1.x86_64                      106/183 
+  Verifying        : lib64popt0-1:1.16-32.x86_64                        107/183 
+  Verifying        : lib64python3.7m_1-3.7.4-1.x86_64                   108/183 
+  Verifying        : lib64qrencode4-4.0.2-1.x86_64                      109/183 
+  Verifying        : lib64readline8-8.0-2.x86_64                        110/183 
+  Verifying        : lib64repo0-1.10.6-1.x86_64                         111/183 
+  Verifying        : lib64rpm8-2:4.14.2.1-10.x86_64                     112/183 
+  Verifying        : lib64rpmbuild8-2:4.14.2.1-10.x86_64                113/183 
+  Verifying        : lib64rpmsign8-2:4.14.2.1-10.x86_64                 114/183 
+  Verifying        : lib64sasl2-2.1.27-2.x86_64                         115/183 
+  Verifying        : lib64seccomp2-2.4.1-1.x86_64                       116/183 
+  Verifying        : lib64secret1_0-0.19.1-1.x86_64                     117/183 
+  Verifying        : lib64sigsegv2-2.12-4.x86_64                        118/183 
+  Verifying        : lib64smartcols1-2.34-3.x86_64                      119/183 
+  Verifying        : lib64solv1-0.7.6-1.x86_64                          120/183 
+  Verifying        : lib64solvext1-0.7.6-1.x86_64                       121/183 
+  Verifying        : lib64sqlite3_0-3.30.1-1.x86_64                     122/183 
+  Verifying        : lib64ssh2_1-1.9.0-2.x86_64                         123/183 
+  Verifying        : lib64ssl1.1-1.1.1c-1.x86_64                        124/183 
+  Verifying        : lib64stdc++6-9.2.1-0.20190824.1.x86_64             125/183 
+  Verifying        : lib64systemd0-243.20190913-3.x86_64                126/183 
+  Verifying        : lib64tasn1_6-4.14-1.x86_64                         127/183 
+  Verifying        : lib64tirpc3-1.1.4-2.x86_64                         128/183 
+  Verifying        : lib64udev1-243.20190913-3.x86_64                   129/183 
+  Verifying        : lib64unistring2-0.9.10-4.x86_64                    130/183 
+  Verifying        : lib64usb1.0_0-1.0.23-1.x86_64                      131/183 
+  Verifying        : lib64utempter0-1.1.6-20.x86_64                     132/183 
+  Verifying        : lib64uuid1-2.34-3.x86_64                           133/183 
+  Verifying        : lib64xml2_2-2.9.9-2.x86_64                         134/183 
+  Verifying        : lib64yaml0_2-0.2.2-1.x86_64                        135/183 
+  Verifying        : lib64z1-1.2.11-10.x86_64                           136/183 
+  Verifying        : lib64zck1-1.1.3-1.x86_64                           137/183 
+  Verifying        : lib64zstd1-1.4.3-1.x86_64                          138/183 
+  Verifying        : libc6-6:2.30-2.x86_64                              139/183 
+  Verifying        : libcap-utils-2.27-2.x86_64                         140/183 
+  Verifying        : libidn2-i18n-2.2.0-1.noarch                        141/183 
+  Verifying        : libsolv-0.7.6-1.x86_64                             142/183 
+  Verifying        : libtirpc-1.1.4-2.x86_64                            143/183 
+  Verifying        : locales-6:2.30-2.x86_64                            144/183 
+  Verifying        : locales-en-6:2.30-2.x86_64                         145/183 
+  Verifying        : lsb-release-2.0-53.x86_64                          146/183 
+  Verifying        : ncurses-6.1-0.20190928.1.x86_64                    147/183 
+  Verifying        : openldap-2.4.48-1.x86_64                           148/183 
+  Verifying        : openssl-1.1.1c-1.x86_64                            149/183 
+  Verifying        : pam-1:1.3.1-4.x86_64                               150/183 
+  Verifying        : pbzip2-1.1.13-4.x86_64                             151/183 
+  Verifying        : pigz-2.4-7.x86_64                                  152/183 
+  Verifying        : pinentry-1.1.0-8.x86_64                            153/183 
+  Verifying        : popt-data-1:1.16-32.noarch                         154/183 
+  Verifying        : python-3.7.4-1.x86_64                              155/183 
+  Verifying        : python-dateutil-2.8.0-1.noarch                     156/183 
+  Verifying        : python-dbus-1.2.12-1.x86_64                        157/183 
+  Verifying        : python-dnf-4.2.6-2.noarch                          158/183 
+  Verifying        : python-dnf-plugins-core-4.0.9-1.noarch             159/183 
+  Verifying        : python-gpg-1.13.1-1.x86_64                         160/183 
+  Verifying        : python-hawkey-0.33.0-1.x86_64                      161/183 
+  Verifying        : python-iniparse-0.4-17.noarch                      162/183 
+  Verifying        : python-libcomps-0.1.11-1.x86_64                    163/183 
+  Verifying        : python-libdnf-0.33.0-1.x86_64                      164/183 
+  Verifying        : python-rpm-2:4.14.2.1-10.x86_64                    165/183 
+  Verifying        : python-six-1.12.0-1.noarch                         166/183 
+  Verifying        : rootcerts-1:20190516.00-1.noarch                   167/183 
+  Verifying        : rootfiles-11.0-21.noarch                           168/183 
+  Verifying        : rpm-2:4.14.2.1-10.x86_64                           169/183 
+  Verifying        : rpm-openmandriva-setup-0.3.7.1-1.noarch            170/183 
+  Verifying        : rpm-plugin-systemd-inhibit-2:4.14.2.1-10.x86_64    171/183 
+  Verifying        : sed-4.7-1.x86_64                                   172/183 
+  Verifying        : setup-2.9.3-2.noarch                               173/183 
+  Verifying        : shadow-2:4.7-1.x86_64                              174/183 
+  Verifying        : systemd-243.20190913-3.x86_64                      175/183 
+  Verifying        : systemd-macros-243.20190913-3.x86_64               176/183 
+  Verifying        : tar-3.4.0-1.x86_64                                 177/183 
+  Verifying        : timezone-8:2019a-2.x86_64                          178/183 
+  Verifying        : util-linux-2.34-3.x86_64                           179/183 
+  Verifying        : util-linux-doc-2.34-3.x86_64                       180/183 
+  Verifying        : wget-1.20.3-2.x86_64                               181/183 
+  Verifying        : which-2.21-5.x86_64                                182/183 
+  Verifying        : xz-5.2.4-4.x86_64                                  183/183 
+
+Installed:
+  basesystem-minimal-1:4-14.x86_64                                              
+  distro-release-OpenMandriva-4.1-0.1.x86_64                                    
+  distro-release-common-4.1-0.1.x86_64                                          
+  distro-theme-OpenMandriva-grub2-1.4.45-1.x86_64                               
+  dnf-4.2.6-2.noarch                                                            
+  dnf-automatic-4.2.6-2.noarch                                                  
+  dnf-plugins-core-4.0.9-1.noarch                                               
+  locales-6:2.30-2.x86_64                                                       
+  locales-en-6:2.30-2.x86_64                                                    
+  ncurses-6.1-0.20190928.1.x86_64                                               
+  bash-completion-2:2.8-4.noarch                                                
+  dnf-yum-4.2.6-2.noarch                                                        
+  gnupg-doc-2.2.17-1.x86_64                                                     
+  pinentry-1.1.0-8.x86_64                                                       
+  python-dbus-1.2.12-1.x86_64                                                   
+  rpm-plugin-systemd-inhibit-2:4.14.2.1-10.x86_64                               
+  util-linux-doc-2.34-3.x86_64                                                  
+  acl-2.2.53-3.x86_64                                                           
+  bash-5.0.11-3.x86_64                                                          
+  bzip2-1.0.8-2.x86_64                                                          
+  chkconfig-1.11-3.x86_64                                                       
+  coreutils-8.31-1.x86_64                                                       
+  cpio-3.4.0-1.x86_64                                                           
+  dbus-1.12.16-1.x86_64                                                         
+  deltarpm-3.6.2-1.x86_64                                                       
+  efibootmgr-0.17-2.x86_64                                                      
+  efivar-37-1.x86_64                                                            
+  filesystem-4.0-0.3.x86_64                                                     
+  findutils-4.7.0-1.x86_64                                                      
+  gawk-5.0.1-1.x86_64                                                           
+  gettext-base-0.20.1-1.x86_64                                                  
+  glibc-6:2.30-2.x86_64                                                         
+  gnupg-2.2.17-1.x86_64                                                         
+  grep-3.3-1.x86_64                                                             
+  grub2-2.02-30.x86_64                                                          
+  grub2-efi-2.02-30.x86_64                                                      
+  gzip-1.10-2.x86_64                                                            
+  kmod-26-1.x86_64                                                              
+  lib64acl1-2.2.53-3.x86_64                                                     
+  lib64archive17-3.4.0-1.x86_64                                                 
+  lib64argon2_1-20190702-1.x86_64                                               
+  lib64asm1-0.177-1.x86_64                                                      
+  lib64assuan0-2.5.3-2.x86_64                                                   
+  lib64attr1-2.4.48-5.x86_64                                                    
+  lib64audit1-2.8.5-1.x86_64                                                    
+  lib64blkid1-2.34-3.x86_64                                                     
+  lib64bz2_1-1.0.8-2.x86_64                                                     
+  lib64cap-ng0-0.7.10-1.x86_64                                                  
+  lib64cap2-2.27-2.x86_64                                                       
+  lib64com_err2-1.45.4-1.x86_64                                                 
+  lib64comps0-0.1.11-1.x86_64                                                   
+  lib64crypt1-4.4.10-1.x86_64                                                   
+  lib64crypto1.1-1.1.1c-1.x86_64                                                
+  lib64cryptsetup12-2.2.1-1.x86_64                                              
+  lib64curl4-7.66.0-1.x86_64                                                    
+  lib64db18.1-18.1.32-1.x86_64                                                  
+  lib64dbus-1_3-1.12.16-1.x86_64                                                
+  lib64devmapper1.02-1.02.163-1.x86_64                                          
+  lib64dnf2-0.33.0-1.x86_64                                                     
+  lib64dw1-0.177-1.x86_64                                                       
+  lib64efiboot1-37-1.x86_64                                                     
+  lib64efivar1-37-1.x86_64                                                      
+  lib64elf1-0.177-1.x86_64                                                      
+  lib64expat1-2.2.9-1.x86_64                                                    
+  lib64fdisk1-2.34-3.x86_64                                                     
+  lib64ffi6-3.2.1-11.x86_64                                                     
+  lib64fuse3_3-3.7.0-2.x86_64                                                   
+  lib64gcc1-9.2.1-0.20190824.1.x86_64                                           
+  lib64gcrypt20-1.8.5-1.x86_64                                                  
+  lib64gdbm6-1.18.1-4.x86_64                                                    
+  lib64gdbm_compat4-1.18.1-4.x86_64                                             
+  lib64gio2.0_0-1:2.62.1-1.x86_64                                               
+  lib64glib2.0_0-1:2.62.1-1.x86_64                                              
+  lib64gmodule2.0_0-1:2.62.1-1.x86_64                                           
+  lib64gmp10-6.1.2-12.x86_64                                                    
+  lib64gnutls30-3.6.9-1.x86_64                                                  
+  lib64gobject2.0_0-1:2.62.1-1.x86_64                                           
+  lib64gpg-error0-1.36-3.x86_64                                                 
+  lib64gpgme11-1.13.1-1.x86_64                                                  
+  lib64gssapi_krb5_2-1.16.3-1.x86_64                                            
+  lib64hogweed5-1:3.5.1-1.x86_64                                                
+  lib64idn2_0-2.2.0-1.x86_64                                                    
+  lib64intl8-0.20.1-1.x86_64                                                    
+  lib64ip4tc0-1.8.2-4.x86_64                                                    
+  lib64json-c4-0.13.1-4.x86_64                                                  
+  lib64k5crypto3-1.16.3-1.x86_64                                                
+  lib64keyutils1-1.6-3.x86_64                                                   
+  lib64kmod2-26-1.x86_64                                                        
+  lib64krb5_3-1.16.3-1.x86_64                                                   
+  lib64krb5support0-1.16.3-1.x86_64                                             
+  lib64ksba8-1.3.5-4.x86_64                                                     
+  lib64ldap2.4_2-2.4.48-1.x86_64                                                
+  lib64lua5.3-5.3.5-5.x86_64                                                    
+  lib64lz4_1-1.9.2-1.x86_64                                                     
+  lib64lzma5-5.2.4-4.x86_64                                                     
+  lib64lzo2_2-2.10-4.x86_64                                                     
+  lib64magic1-5.37-4.x86_64                                                     
+  lib64modulemd1-1.8.11-1.x86_64                                                
+  lib64mount1-2.34-3.x86_64                                                     
+  lib64mpfr6-4.0.2-5.x86_64                                                     
+  lib64ncursesw6-6.1-0.20190928.1.x86_64                                        
+  lib64nettle7-1:3.5.1-1.x86_64                                                 
+  lib64npth0-1.6-3.x86_64                                                       
+  lib64nsl2-1.2.0-2.x86_64                                                      
+  lib64nss_myhostname2-243.20190913-3.x86_64                                    
+  lib64nss_resolve2-243.20190913-3.x86_64                                       
+  lib64nss_systemd2-243.20190913-3.x86_64                                       
+  lib64p11-kit0-0.23.18.1-1.x86_64                                              
+  lib64pam0-1:1.3.1-4.x86_64                                                    
+  lib64pam_misc0-1:1.3.1-4.x86_64                                               
+  lib64panelw6-6.1-0.20190928.1.x86_64                                          
+  lib64pcre1-8.43-1.x86_64                                                      
+  lib64pcre2-8_0-10.33-1.x86_64                                                 
+  lib64popt0-1:1.16-32.x86_64                                                   
+  lib64python3.7m_1-3.7.4-1.x86_64                                              
+  lib64qrencode4-4.0.2-1.x86_64                                                 
+  lib64readline8-8.0-2.x86_64                                                   
+  lib64repo0-1.10.6-1.x86_64                                                    
+  lib64rpm8-2:4.14.2.1-10.x86_64                                                
+  lib64rpmbuild8-2:4.14.2.1-10.x86_64                                           
+  lib64rpmsign8-2:4.14.2.1-10.x86_64                                            
+  lib64sasl2-2.1.27-2.x86_64                                                    
+  lib64seccomp2-2.4.1-1.x86_64                                                  
+  lib64secret1_0-0.19.1-1.x86_64                                                
+  lib64sigsegv2-2.12-4.x86_64                                                   
+  lib64smartcols1-2.34-3.x86_64                                                 
+  lib64solv1-0.7.6-1.x86_64                                                     
+  lib64solvext1-0.7.6-1.x86_64                                                  
+  lib64sqlite3_0-3.30.1-1.x86_64                                                
+  lib64ssh2_1-1.9.0-2.x86_64                                                    
+  lib64ssl1.1-1.1.1c-1.x86_64                                                   
+  lib64stdc++6-9.2.1-0.20190824.1.x86_64                                        
+  lib64systemd0-243.20190913-3.x86_64                                           
+  lib64tasn1_6-4.14-1.x86_64                                                    
+  lib64tirpc3-1.1.4-2.x86_64                                                    
+  lib64udev1-243.20190913-3.x86_64                                              
+  lib64unistring2-0.9.10-4.x86_64                                               
+  lib64usb1.0_0-1.0.23-1.x86_64                                                 
+  lib64utempter0-1.1.6-20.x86_64                                                
+  lib64uuid1-2.34-3.x86_64                                                      
+  lib64xml2_2-2.9.9-2.x86_64                                                    
+  lib64yaml0_2-0.2.2-1.x86_64                                                   
+  lib64z1-1.2.11-10.x86_64                                                      
+  lib64zck1-1.1.3-1.x86_64                                                      
+  lib64zstd1-1.4.3-1.x86_64                                                     
+  libc6-6:2.30-2.x86_64                                                         
+  libcap-utils-2.27-2.x86_64                                                    
+  libidn2-i18n-2.2.0-1.noarch                                                   
+  libsolv-0.7.6-1.x86_64                                                        
+  libtirpc-1.1.4-2.x86_64                                                       
+  lsb-release-2.0-53.x86_64                                                     
+  openldap-2.4.48-1.x86_64                                                      
+  openssl-1.1.1c-1.x86_64                                                       
+  pam-1:1.3.1-4.x86_64                                                          
+  pbzip2-1.1.13-4.x86_64                                                        
+  pigz-2.4-7.x86_64                                                             
+  popt-data-1:1.16-32.noarch                                                    
+  python-3.7.4-1.x86_64                                                         
+  python-dateutil-2.8.0-1.noarch                                                
+  python-dnf-4.2.6-2.noarch                                                     
+  python-dnf-plugins-core-4.0.9-1.noarch                                        
+  python-gpg-1.13.1-1.x86_64                                                    
+  python-hawkey-0.33.0-1.x86_64                                                 
+  python-iniparse-0.4-17.noarch                                                 
+  python-libcomps-0.1.11-1.x86_64                                               
+  python-libdnf-0.33.0-1.x86_64                                                 
+  python-rpm-2:4.14.2.1-10.x86_64                                               
+  python-six-1.12.0-1.noarch                                                    
+  rootcerts-1:20190516.00-1.noarch                                              
+  rootfiles-11.0-21.noarch                                                      
+  rpm-2:4.14.2.1-10.x86_64                                                      
+  rpm-openmandriva-setup-0.3.7.1-1.noarch                                       
+  sed-4.7-1.x86_64                                                              
+  setup-2.9.3-2.noarch                                                          
+  shadow-2:4.7-1.x86_64                                                         
+  systemd-243.20190913-3.x86_64                                                 
+  systemd-macros-243.20190913-3.x86_64                                          
+  tar-3.4.0-1.x86_64                                                            
+  timezone-8:2019a-2.x86_64                                                     
+  util-linux-2.34-3.x86_64                                                      
+  wget-1.20.3-2.x86_64                                                          
+  which-2.21-5.x86_64                                                           
+  xz-5.2.4-4.x86_64                                                             
+
+Complete!
+Executing systemd preset on: dnf-automatic-install.timer
+INMYRMV
+ we are in myrmv
+ 
+-> No rpms need to be removed
+-> Making a user spin
+Change Flag = 
+Finished eval
+Finished eval
+Finished eval
+-> Removing the common include lines for the remove package includes
+-> Creating colin's OpenMandriva spin from /home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+  Which includes 
+
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.add
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.rmv
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_control.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_drivers.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_fonts.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso_minimal.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_locales.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_ppp.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_pulseaudio.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_utils.lst
+-> Removing from colin's OpenMandriva spin from /home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+  Which removes 
+
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso_minimal.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_control.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_drivers.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_ppp.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_utils.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_fonts.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_locales.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_pulseaudio.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.add
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.rmv
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_iso_minimal.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_core.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_control.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_drivers.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_ppp.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_utils.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_fonts.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_locales.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv_pulseaudio.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/omdv-xfce4.lst
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.add
+/home/colin/omdv-build-chroot-x86_64/iso-pkg-lists-rolling/my.rmv
+-> This is the INSTALL_LIST package list
+task-xfce-minimal
+eatmonkey
+slim
+orage
+gigolo
+midori
+parole
+xarchiver
+ristretto
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+tumbler
+xfbib
+xfburn
+xfmpc
+xfce4-appfinder
+xfce4-screenshooter
+task-pulseaudio
+x11-font-cyrillic
+x11-server-xorg
+x11-compose-cache
+x11-tools
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+avahi
+networkmanager-applet
+atk1.0-common
+canberra-gtk
+gamin
+GConf2
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+pango
+firewalld
+rfkill
+wpa_supplicant
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+as10k1
+awesfx
+iwlwifi-agn-ucode
+ld10k1
+madwimax
+pcmcia-cis-firmware
+prism2-utils
+radeon-firmware
+sb16_csp
+us428control
+microcode-intel
+dri-drivers
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-west_european
+fonts-ttf-poltawski-antiqua
+google-crosextra-carlito-fonts
+google-crosextra-caladea-fonts
+noto-sans-fonts
+noto-serif-fonts
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash
+calamares
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver
+dosfstools
+eject
+firewalld
+firewall-config
+hfsutils
+indexhtml
+info
+info-install
+inxi
+isomd5sum
+iso-codes
+irqbalance
+jfsutils
+hwdata
+libxdg-basedir
+lsof
+lm_sensors
+mailcap
+man-db
+mc
+monitor-edid
+memtest86+
+mkxauth
+mlocate
+mtools
+ntfsprogs
+os-prober
+pcmciautils
+plymouth-system-theme
+python-curl
+quota
+reiserfsprogs
+rtkit
+sharutils
+sound-theme-freedesktop
+sudo
+task-x11
+testdisk
+tmpwatch
+tuned
+upower
+usbmuxd
+urw-fonts
+uuidd
+vbetool
+wget
+whois
+x11-driver-input-vmmouse
+x11-driver-video-vboxvideo
+virtualbox-guest-additions
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xfsprogs
+xrandr
+xterm
+zip
+unzip
+acpi
+acpid
+at
+basesystem
+btrfs-progs
+busybox-static
+cronie-anacron
+distro-release-OpenMandriva
+dracut
+dhcp-client
+dmraid
+e2fsprogs
+grub2
+iproute2
+grub2-efi
+efibootmgr
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
+nscd
+openssh-server
+openssh-clients
+omv-bug-report
+pciutils
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+rp-pppoe
+alsa-plugins-pulseaudio
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+aria2
+bash-completion
+bind-utils
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+dmraid
+dmraid-events
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+freerdp
+fuse2
+fuse-exfat
+gnupg
+html2text
+htop
+hw-probe
+krb5-workstation
+lame
+lftp
+libgphoto-common
+libmtp-utils
+lvm2
+nail
+nfs-utils
+nfs-utils-clients
+networkmanager-openvpn
+networkmanager-vpnc
+networkmanager-pptp
+open
+openldap-clients
+opensc
+p7zip
+pcsc-lite
+pptp-linux
+rng-tools
+rpcbind
+rsnapshot
+rsync
+samba-client
+samba-winbind
+saned
+sane-backends
+sane-backends-iscan
+sash
+xev
+radeontool
+dnfdragora
+dnfdragora-updater
+-> This is the REMOVE_LIST package list
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash
+calamares
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver
+dosfstools
+eject
+firewalld
+firewall-config
+hfsutils
+indexhtml
+info
+info-install
+inxi
+isomd5sum
+iso-codes
+irqbalance
+jfsutils
+hwdata
+libxdg-basedir
+lsof
+lm_sensors
+mailcap
+man-db
+mc
+monitor-edid
+memtest86+
+mkxauth
+mlocate
+mtools
+ntfsprogs
+os-prober
+pcmciautils
+plymouth-system-theme
+python-curl
+quota
+reiserfsprogs
+rtkit
+sharutils
+sound-theme-freedesktop
+sudo
+task-x11
+testdisk
+tmpwatch
+tuned
+upower
+usbmuxd
+urw-fonts
+uuidd
+vbetool
+wget
+whois
+x11-driver-input-vmmouse
+x11-driver-video-vboxvideo
+virtualbox-guest-additions
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xfsprogs
+xrandr
+xterm
+zip
+unzip
+acpi
+acpid
+at
+basesystem
+btrfs-progs
+busybox-static
+cronie-anacron
+distro-release-OpenMandriva
+dracut
+dhcp-client
+dmraid
+e2fsprogs
+grub2
+iproute2
+grub2-efi
+efibootmgr
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
+nscd
+openssh-server
+openssh-clients
+omv-bug-report
+pciutils
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+firewalld
+rfkill
+wpa_supplicant
+as10k1
+awesfx
+iwlwifi-agn-ucode
+ld10k1
+madwimax
+pcmcia-cis-firmware
+prism2-utils
+radeon-firmware
+sb16_csp
+us428control
+microcode-intel
+dri-drivers
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+rp-pppoe
+aria2
+bash-completion
+bind-utils
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+dmraid
+dmraid-events
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+freerdp
+fuse2
+fuse-exfat
+gnupg
+html2text
+htop
+hw-probe
+krb5-workstation
+lame
+lftp
+libgphoto-common
+libmtp-utils
+lvm2
+nail
+nfs-utils
+nfs-utils-clients
+networkmanager-openvpn
+networkmanager-vpnc
+networkmanager-pptp
+open
+openldap-clients
+opensc
+p7zip
+pcsc-lite
+pptp-linux
+rng-tools
+rpcbind
+rsnapshot
+rsync
+samba-client
+samba-winbind
+saned
+sane-backends
+sane-backends-iscan
+sash
+xev
+radeontool
+dnfdragora
+dnfdragora-updater
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-west_european
+fonts-ttf-poltawski-antiqua
+google-crosextra-carlito-fonts
+google-crosextra-caladea-fonts
+noto-sans-fonts
+noto-serif-fonts
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+alsa-plugins-pulseaudio
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+task-xfce-minimal
+eatmonkey
+slim
+orage
+gigolo
+midori
+parole
+xarchiver
+ristretto
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+tumbler
+xfbib
+xfburn
+xfmpc
+xfce4-appfinder
+xfce4-screenshooter
+task-pulseaudio
+x11-font-cyrillic
+x11-server-xorg
+x11-compose-cache
+x11-tools
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+avahi
+networkmanager-applet
+atk1.0-common
+canberra-gtk
+gamin
+GConf2
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+pango
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash
+calamares
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver
+dosfstools
+eject
+firewalld
+firewall-config
+hfsutils
+indexhtml
+info
+info-install
+inxi
+isomd5sum
+iso-codes
+irqbalance
+jfsutils
+hwdata
+libxdg-basedir
+lsof
+lm_sensors
+mailcap
+man-db
+mc
+monitor-edid
+memtest86+
+mkxauth
+mlocate
+mtools
+ntfsprogs
+os-prober
+pcmciautils
+plymouth-system-theme
+python-curl
+quota
+reiserfsprogs
+rtkit
+sharutils
+sound-theme-freedesktop
+sudo
+task-x11
+testdisk
+tmpwatch
+tuned
+upower
+usbmuxd
+urw-fonts
+uuidd
+vbetool
+wget
+whois
+x11-driver-input-vmmouse
+x11-driver-video-vboxvideo
+virtualbox-guest-additions
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xfsprogs
+xrandr
+xterm
+zip
+unzip
+acpi
+acpid
+at
+basesystem
+btrfs-progs
+busybox-static
+cronie-anacron
+distro-release-OpenMandriva
+dracut
+dhcp-client
+dmraid
+e2fsprogs
+grub2
+iproute2
+grub2-efi
+efibootmgr
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+lvm2
+mdadm
+nscd
+openssh-server
+openssh-clients
+omv-bug-report
+pciutils
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-theme-OpenMandriva-grub2
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-automatic
+openmandriva-repos
+openmandriva-repos-keys
+firewalld
+rfkill
+wpa_supplicant
+as10k1
+awesfx
+iwlwifi-agn-ucode
+ld10k1
+madwimax
+pcmcia-cis-firmware
+prism2-utils
+radeon-firmware
+sb16_csp
+us428control
+microcode-intel
+dri-drivers
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+rp-pppoe
+aria2
+bash-completion
+bind-utils
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+dmraid
+dmraid-events
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+freerdp
+fuse2
+fuse-exfat
+gnupg
+html2text
+htop
+hw-probe
+krb5-workstation
+lame
+lftp
+libgphoto-common
+libmtp-utils
+lvm2
+nail
+nfs-utils
+nfs-utils-clients
+networkmanager-openvpn
+networkmanager-vpnc
+networkmanager-pptp
+open
+openldap-clients
+opensc
+p7zip
+pcsc-lite
+pptp-linux
+rng-tools
+rpcbind
+rsnapshot
+rsync
+samba-client
+samba-winbind
+saned
+sane-backends
+sane-backends-iscan
+sash
+xev
+radeontool
+dnfdragora
+dnfdragora-updater
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-west_european
+fonts-ttf-poltawski-antiqua
+google-crosextra-carlito-fonts
+google-crosextra-caladea-fonts
+noto-sans-fonts
+noto-serif-fonts
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+alsa-plugins-pulseaudio
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+task-xfce-minimal
+eatmonkey
+slim
+orage
+gigolo
+midori
+parole
+xarchiver
+ristretto
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+tumbler
+xfbib
+xfburn
+xfmpc
+xfce4-appfinder
+xfce4-screenshooter
+task-pulseaudio
+x11-font-cyrillic
+x11-server-xorg
+x11-compose-cache
+x11-tools
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+avahi
+networkmanager-applet
+atk1.0-common
+canberra-gtk
+gamin
+GConf2
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+pango
+This is the install list GConf2
+acpi
+acpid
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-plugins-pulseaudio
+alsa-utils
+aria2
+as10k1
+at
+atk1.0-common
+avahi
+awesfx
+basesystem
+basesystem-minimal
+basesystem-minimal
+basesystem-minimal
+bash-completion
+bind-utils
+bootsplash
+btrfs-progs
+busybox-static
+calamares
+canberra-gtk
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+cronie-anacron
+dhcp-client
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-common
+distro-release-common
+distro-release-common
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-screensaver
+dmraid
+dmraid
+dmraid-events
+dnf
+dnf
+dnf
+dnf-automatic
+dnf-automatic
+dnf-automatic
+dnf-plugins-core
+dnf-plugins-core
+dnf-plugins-core
+dnfdragora
+dnfdragora-updater
+dosfstools
+dracut
+dri-drivers
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+e2fsprogs
+eatmonkey
+edidbins
+efibootmgr
+eject
+firewall-config
+firewalld
+firewalld
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-poltawski-antiqua
+fonts-ttf-west_european
+freerdp
+fuse-exfat
+fuse2
+gamin
+gigolo
+gnupg
+google-crosextra-caladea-fonts
+google-crosextra-carlito-fonts
+grub2
+grub2-efi
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+hfsutils
+html2text
+htop
+hw-probe
+hwdata
+indexhtml
+info
+info-install
+inxi
+iproute2
+irqbalance
+iso-codes
+isomd5sum
+iwlwifi-agn-ucode
+jfsutils
+kernel-firmware
+kernel-firmware-extra
+kernel-release-desktop
+krb5-workstation
+lame
+ld10k1
+lftp
+libgphoto-common
+libmtp-utils
+libxdg-basedir
+lm_sensors
+locales
+locales
+locales
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-en
+locales-en
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+lsof
+lvm2
+lvm2
+madwimax
+mailcap
+man-db
+mc
+mdadm
+memtest86+
+microcode-intel
+midori
+mkxauth
+mlocate
+monitor-edid
+mtools
+nail
+nano
+ncurses
+ncurses
+ncurses
+networkmanager-applet
+networkmanager-openvpn
+networkmanager-pptp
+networkmanager-vpnc
+nfs-utils
+nfs-utils-clients
+noto-sans-fonts
+noto-serif-fonts
+nscd
+ntfsprogs
+omv-bug-report
+open
+openldap-clients
+openmandriva-repos
+openmandriva-repos
+openmandriva-repos
+openmandriva-repos-keys
+openmandriva-repos-keys
+openmandriva-repos-keys
+opensc
+openssh-clients
+openssh-server
+orage
+os-prober
+p7zip
+pango
+parole
+pciutils
+pcmcia-cis-firmware
+pcmciautils
+pcsc-lite
+plymouth-system-theme
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+pptp-linux
+prism2-utils
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+python-curl
+quota
+radeon-firmware
+radeontool
+reiserfsprogs
+rfkill
+ristretto
+rng-tools
+rp-pppoe
+rpcbind
+rsnapshot
+rsync
+rtkit
+samba-client
+samba-winbind
+sane-backends
+sane-backends-iscan
+saned
+sash
+sb16_csp
+sharutils
+slim
+sound-theme-freedesktop
+sudo
+task-pulseaudio
+task-x11
+task-xfce-minimal
+testdisk
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+timezone
+tmpwatch
+tumbler
+tuned
+unzip
+upower
+urw-fonts
+us428control
+usb_modeswitch
+usbmuxd
+usbutils
+uuidd
+vbetool
+vim-enhanced
+virtualbox-guest-additions
+wget
+whois
+wireless-tools
+wpa_supplicant
+x11-compose-cache
+x11-data-bitmaps
+x11-data-cursor-themes
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-input-vmmouse
+x11-driver-video
+x11-driver-video-vboxvideo
+x11-font-cyrillic
+x11-font-misc
+x11-font-type1
+x11-server-xorg
+x11-tools
+xarchiver
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xev
+xfbib
+xfburn
+xfce4-appfinder
+xfce4-screenshooter
+xfmpc
+xfsprogs
+xrandr
+xterm
+zip
+-> Updating chroot
+
+GConf2
+acpi
+acpid
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-plugins-pulseaudio
+alsa-utils
+aria2
+as10k1
+at
+atk1.0-common
+avahi
+awesfx
+basesystem
+basesystem-minimal
+basesystem-minimal
+basesystem-minimal
+bash-completion
+bind-utils
+bootsplash
+btrfs-progs
+busybox-static
+calamares
+canberra-gtk
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+cronie-anacron
+dhcp-client
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-common
+distro-release-common
+distro-release-common
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-screensaver
+dmraid
+dmraid
+dmraid-events
+dnf
+dnf
+dnf
+dnf-automatic
+dnf-automatic
+dnf-automatic
+dnf-plugins-core
+dnf-plugins-core
+dnf-plugins-core
+dnfdragora
+dnfdragora-updater
+dosfstools
+dracut
+dri-drivers
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+e2fsprogs
+eatmonkey
+edidbins
+efibootmgr
+eject
+firewall-config
+firewalld
+firewalld
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-poltawski-antiqua
+fonts-ttf-west_european
+freerdp
+fuse-exfat
+fuse2
+gamin
+gigolo
+gnupg
+google-crosextra-caladea-fonts
+google-crosextra-carlito-fonts
+grub2
+grub2-efi
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+hfsutils
+html2text
+htop
+hw-probe
+hwdata
+indexhtml
+info
+info-install
+inxi
+iproute2
+irqbalance
+iso-codes
+isomd5sum
+iwlwifi-agn-ucode
+jfsutils
+kernel-firmware
+kernel-firmware-extra
+kernel-release-desktop
+krb5-workstation
+lame
+ld10k1
+lftp
+libgphoto-common
+libmtp-utils
+libxdg-basedir
+lm_sensors
+locales
+locales
+locales
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-en
+locales-en
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+lsof
+lvm2
+lvm2
+madwimax
+mailcap
+man-db
+mc
+mdadm
+memtest86+
+microcode-intel
+midori
+mkxauth
+mlocate
+monitor-edid
+mtools
+nail
+nano
+ncurses
+ncurses
+ncurses
+networkmanager-applet
+networkmanager-openvpn
+networkmanager-pptp
+networkmanager-vpnc
+nfs-utils
+nfs-utils-clients
+noto-sans-fonts
+noto-serif-fonts
+nscd
+ntfsprogs
+omv-bug-report
+open
+openldap-clients
+openmandriva-repos
+openmandriva-repos
+openmandriva-repos
+openmandriva-repos-keys
+openmandriva-repos-keys
+openmandriva-repos-keys
+opensc
+openssh-clients
+openssh-server
+orage
+os-prober
+p7zip
+pango
+parole
+pciutils
+pcmcia-cis-firmware
+pcmciautils
+pcsc-lite
+plymouth-system-theme
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+pptp-linux
+prism2-utils
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+python-curl
+quota
+radeon-firmware
+radeontool
+reiserfsprogs
+rfkill
+ristretto
+rng-tools
+rp-pppoe
+rpcbind
+rsnapshot
+rsync
+rtkit
+samba-client
+samba-winbind
+sane-backends
+sane-backends-iscan
+saned
+sash
+sb16_csp
+sharutils
+slim
+sound-theme-freedesktop
+sudo
+task-pulseaudio
+task-x11
+task-xfce-minimal
+testdisk
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+timezone
+tmpwatch
+tumbler
+tuned
+unzip
+upower
+urw-fonts
+us428control
+usb_modeswitch
+usbmuxd
+usbutils
+uuidd
+vbetool
+vim-enhanced
+virtualbox-guest-additions
+wget
+whois
+wireless-tools
+wpa_supplicant
+x11-compose-cache
+x11-data-bitmaps
+x11-data-cursor-themes
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-input-vmmouse
+x11-driver-video
+x11-driver-video-vboxvideo
+x11-font-cyrillic
+x11-font-misc
+x11-font-type1
+x11-server-xorg
+x11-tools
+xarchiver
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xev
+xfbib
+xfburn
+xfce4-appfinder
+xfce4-screenshooter
+xfmpc
+xfsprogs
+xrandr
+xterm
+zip
+WE ARE IN MKEUPDATECHROOT
+INMYADD
+ we are in myadd
+This is the install list GConf2
+acpi
+acpid
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-plugins-pulseaudio
+alsa-utils
+aria2
+as10k1
+at
+atk1.0-common
+avahi
+awesfx
+basesystem
+basesystem-minimal
+basesystem-minimal
+basesystem-minimal
+bash-completion
+bind-utils
+bootsplash
+btrfs-progs
+busybox-static
+calamares
+canberra-gtk
+cdialog
+cdrkit
+cdrkit-genisoimage
+cifs-utils
+command-not-found
+cronie-anacron
+dhcp-client
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-OpenMandriva
+distro-release-common
+distro-release-common
+distro-release-common
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-grub2
+distro-theme-OpenMandriva-screensaver
+dmraid
+dmraid
+dmraid-events
+dnf
+dnf
+dnf
+dnf-automatic
+dnf-automatic
+dnf-automatic
+dnf-plugins-core
+dnf-plugins-core
+dnf-plugins-core
+dnfdragora
+dnfdragora-updater
+dosfstools
+dracut
+dri-drivers
+dump
+dvb-apps
+dvbsnoop
+dvbtune
+dvd+rw-tools
+e2fsprogs
+eatmonkey
+edidbins
+efibootmgr
+eject
+firewall-config
+firewalld
+firewalld
+fonts-ttf-decoratives
+fonts-ttf-dejavu
+fonts-ttf-droid
+fonts-ttf-liberation
+fonts-ttf-poltawski-antiqua
+fonts-ttf-west_european
+freerdp
+fuse-exfat
+fuse2
+gamin
+gigolo
+gnupg
+google-crosextra-caladea-fonts
+google-crosextra-carlito-fonts
+grub2
+grub2-efi
+gtk2-modules
+gvfs
+gvfs-archive
+gvfs-fuse
+gvfs-gphoto2
+gvfs-smb
+hfsutils
+html2text
+htop
+hw-probe
+hwdata
+indexhtml
+info
+info-install
+inxi
+iproute2
+irqbalance
+iso-codes
+isomd5sum
+iwlwifi-agn-ucode
+jfsutils
+kernel-firmware
+kernel-firmware-extra
+kernel-release-desktop
+krb5-workstation
+lame
+ld10k1
+lftp
+libgphoto-common
+libmtp-utils
+libxdg-basedir
+lm_sensors
+locales
+locales
+locales
+locales
+locales-af
+locales-ar
+locales-cs
+locales-da
+locales-de
+locales-en
+locales-en
+locales-en
+locales-en
+locales-es
+locales-fr
+locales-he
+locales-hu
+locales-it
+locales-nl
+locales-no
+locales-pl
+locales-pt
+locales-ro
+locales-ru
+locales-tr
+locales-uk
+lsof
+lvm2
+lvm2
+madwimax
+mailcap
+man-db
+mc
+mdadm
+memtest86+
+microcode-intel
+midori
+mkxauth
+mlocate
+monitor-edid
+mtools
+nail
+nano
+ncurses
+ncurses
+ncurses
+networkmanager-applet
+networkmanager-openvpn
+networkmanager-pptp
+networkmanager-vpnc
+nfs-utils
+nfs-utils-clients
+noto-sans-fonts
+noto-serif-fonts
+nscd
+ntfsprogs
+omv-bug-report
+open
+openldap-clients
+openmandriva-repos
+openmandriva-repos
+openmandriva-repos
+openmandriva-repos-keys
+openmandriva-repos-keys
+openmandriva-repos-keys
+opensc
+openssh-clients
+openssh-server
+orage
+os-prober
+p7zip
+pango
+parole
+pciutils
+pcmcia-cis-firmware
+pcmciautils
+pcsc-lite
+plymouth-system-theme
+ppp
+ppp-dhcp
+ppp-pppoatm
+ppp-radius
+pptp-linux
+prism2-utils
+pulseaudio
+pulseaudio-module-bluetooth
+pulseaudio-module-x11
+pulseaudio-module-zeroconf
+pulseaudio-utils
+python-curl
+quota
+radeon-firmware
+radeontool
+reiserfsprogs
+rfkill
+ristretto
+rng-tools
+rp-pppoe
+rpcbind
+rsnapshot
+rsync
+rtkit
+samba-client
+samba-winbind
+sane-backends
+sane-backends-iscan
+saned
+sash
+sb16_csp
+sharutils
+slim
+sound-theme-freedesktop
+sudo
+task-pulseaudio
+task-x11
+task-xfce-minimal
+testdisk
+thunar-archive-plugin
+thunar-media-tags-plugin
+thunar-shares-plugin
+thunar-thumbnailers
+timezone
+tmpwatch
+tumbler
+tuned
+unzip
+upower
+urw-fonts
+us428control
+usb_modeswitch
+usbmuxd
+usbutils
+uuidd
+vbetool
+vim-enhanced
+virtualbox-guest-additions
+wget
+whois
+wireless-tools
+wpa_supplicant
+x11-compose-cache
+x11-data-bitmaps
+x11-data-cursor-themes
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-input-vmmouse
+x11-driver-video
+x11-driver-video-vboxvideo
+x11-font-cyrillic
+x11-font-misc
+x11-font-type1
+x11-server-xorg
+x11-tools
+xarchiver
+xdg-compliance
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-utils
+xev
+xfbib
+xfburn
+xfce4-appfinder
+xfce4-screenshooter
+xfmpc
+xfsprogs
+xrandr
+xterm
+zip
+-> Installing user package selection
+ 
+OpenMandriva Rolling - x86_64                   6.9 kB/s | 1.5 kB     00:00    
+OpenMandriva Rolling - Unsupported - x86_64     9.3 kB/s | 1.5 kB     00:00    
+Package basesystem-minimal-1:4-14.x86_64 is already installed.
+Package bash-completion-2:2.8-4.noarch is already installed.
+Package distro-release-OpenMandriva-4.1-0.1.x86_64 is already installed.
+Package distro-release-common-4.1-0.1.x86_64 is already installed.
+Package distro-theme-OpenMandriva-grub2-1.4.45-1.x86_64 is already installed.
+Package dnf-4.2.6-2.noarch is already installed.
+Package dnf-automatic-4.2.6-2.noarch is already installed.
+Package dnf-plugins-core-4.0.9-1.noarch is already installed.
+No match for argument: eatmonkey
+Package efibootmgr-0.17-2.x86_64 is already installed.
+Package util-linux-2.34-3.x86_64 is already installed.
+Package gnupg-2.2.17-1.x86_64 is already installed.
+Package grub2-2.02-30.x86_64 is already installed.
+Package grub2-efi-2.02-30.x86_64 is already installed.
+Package locales-6:2.30-2.x86_64 is already installed.
+Package locales-en-6:2.30-2.x86_64 is already installed.
+Package ncurses-6.1-0.20190928.1.x86_64 is already installed.
+Package openmandriva-repos-4.1-0.1.x86_64 is already installed.
+Package openmandriva-repos-keys-4.1-0.1.noarch is already installed.
+Package timezone-8:2019a-2.x86_64 is already installed.
+Package wget-1.20.3-2.x86_64 is already installed.
+INMYRMV
+ we are in myrmv
+ 
+-> No rpms need to be removed
+-> dracut is not installed inside chroot.
+Exiting.
+-> Something went wrong.
+Exiting
+-> Make some helpful logs
+-> Unmounting all.
+-> Unmounting all.

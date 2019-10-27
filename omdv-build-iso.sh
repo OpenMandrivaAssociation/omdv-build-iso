@@ -106,9 +106,9 @@ main() {
 			minimal)
 				TYPE=minimal
 				;;
-#			sway)
-#				TYPE=sway
-#				;;
+			sway)
+				TYPE=sway
+				;;
             mate)
                 TYPE=mate
                 ;;
@@ -374,10 +374,9 @@ mkeUsrListRepo () {
 	# Assign the config build list
 	if [ "$TYPE" = 'my.add' ]; then
 		FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/omdv-minimal.lst"
-		printf "%s\n" " " "-> You are creating a user build" \
-			"This build will use the the omdv_minimal_iso.lst to create a basic iso" \ 
-			"A git repository with basic build lists will be created in directory named "$UHOME/$LREPODIR".\ 
-            "The directory is maintained as a git repository, this script will never overwrite it \
+		printf "%s\n" " " "-> You are creating a user build" "This build will use the the omdv_minimal_iso.lst to create a basic iso"
+			printf "%s\n" "A git repository with basic build lists will be created in directory named "$UHOME/$LREPODIR"." \
+			"The directory is maintained as a git repository, this script will never overwrite it" \
             "Additional packages or files to be included on the iso may be added to the file my.add" \
 			"Packages or files that you wish to be removed may be added to the file my.rmv" \
 			"In addition you will need to provide the name of the executable for the Window Manager

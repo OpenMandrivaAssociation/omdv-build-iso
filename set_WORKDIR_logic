@@ -1,0 +1,40 @@
+setWorkdir() {
+	# Set the $WORKDIR
+	# If ABF=1 then $WORKDIR codes to /bin on a local system so if you try and test with ABF=1 /bin is rm -rf ed.
+	# To avoid this and to allow testing use the --debug flag to indicate that the default ABF $WORKDIR path should not be used
+	# To ensure that the WORKDIR does not get set to /usr/bin if the script is started we check the WORKDIR path used by abf and
+	# To allow testing the default ABF WORKDIR is set to a different path if the DEBUG option is set and the user is non-root.
+
+	if [ "$IN_ABF" = '1'  ] &&  [ ! -d '/home/omv/docker-iso-worker' ] && [ -z "$DEBUG" ]; then
+		printf "%s\n" "-> DO NOT RUN THIS SCRIPT WITH ABF=1 ON A LOCAL SYSTEM WITHOUT SETTING THE DEBUG OPTION"
+		exit 1
+	elif [  "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ]; then
+		printf "%s\n" "-> Debugging ABF build locally"
+		#Here we are with ABF=1 and in DEBUG mode,  running on a local system.
+		# Avoid setting the usual ABF WORKDIR
+		# if WORKDIR is not defined then set a default'
+		if [ -z "$WORKDIR" ]; then
+			echo "$SUDOVAR"
+			WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+			printf "%s\n" "-> The build directory is $WORKDIR"
+		fi
+	fi
+
+	if [ "$IN_ABF" = '1' ] && [ -d '/home/omv/docker-iso-worker' ]; then
+		# We really are in ABF
+		WORKDIR=$(realpath "$(dirname "$0")")
+	fi
+	if [ "$IN_ABF" = '0' ]; then
+		if [ -z "$WORKDIR" ]; then
+			WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
+		fi
+		mkdir -p ${UHOME}/ISOBUILD
+		BUILDSAV=${UHOME}/ISOBUILD
+	fi
+	printf "%s\n" "-> The work directory is $WORKDIR"
+	# Define these earlier so that files can be moved easily for the various save options
+	# this is where rpms are installed
+	CHROOTNAME="$WORKDIR/BASE"
+	# this is where ISO files are created
+	ISOROOTNAME="$WORKDIR/ISO"
+}

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+ COMPTYPE=$1
+ case "$COMPTYPE" in
+		gzip)
+			;&
+          xz)
+            ;&
+        zstd)
+            echo "Running sed"
+            ;;
+           *)
+        printf "%s\n" "Error: Illegal compressor name"
+        ;;
+    esac
