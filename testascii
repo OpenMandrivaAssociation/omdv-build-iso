@@ -1,0 +1,2 @@
+			Allows a list of comma separated repoid's to enable.  i.e. --repolist=unsupported,updates,restricted To obtain a list of
+			repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation
