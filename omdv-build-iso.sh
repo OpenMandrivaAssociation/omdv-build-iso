@@ -1412,10 +1412,15 @@ createMemDisk () {
 	# Job done just remember to move it back again
 	chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O "$ARCHFMT" -d "$ARCHLIB" -m memdisk_img -o "/ISO/EFI/BOOT/$EFINAME" -p '(memdisk)/boot/grub' \
 	 search iso9660 normal memdisk tar boot linux part_msdos part_gpt part_apple configfile help loadenv ls reboot chain multiboot fat udf \
-	 ext2 btrfs ntfs reiserfs xfs lvm ata cat test echo multiboot multiboot2 all_video efifwsetup efinet font gfxmenu gfxterm gfxterm_menu \
-	 gfxterm_background gzio halt hfsplus jpeg mdraid09 mdraid1x minicmd part_apple part_msdos part_gpt part_bsd password_pbkdf2 png reboot \
-	 search search_fs_uuid search_fs_file search_label sleep tftp video xfs lua loopback regexp
+	 ext2 btrfs ntfs reiserfs xfs lvm ata cat test echo multiboot multiboot2 all_video efifwsetup efinet font gcry_rijndael gcry_rsa gcry_serpent \
+	 gcry_sha256 gcry_twofish gcry_whirlpoolgfxmenu gfxterm gfxterm_menu gfxterm_background gzio halt hfsplus jpeg mdraid09 mdraid1x minicmd part_apple \
+	 part_msdos part_gpt part_bsd password_pbkdf2 png probe reboot \
+	 search search_fs_uuid search_fs_file search_label sleep tftp video xfs loopback regexp
 
+	if [ $? != 0 ]; then
+		printf "%s\n" "-> Failed to create grub2 EFI image." "Exiting."
+		errorCatch
+	fi
 	# Move back the ISO filesystem after building the EFI image.
 	mv -f "$CHROOTNAME/ISO/" "$ISOROOTNAME"
 
