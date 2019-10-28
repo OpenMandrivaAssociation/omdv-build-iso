@@ -215,7 +215,7 @@ main() {
             USEMIRRORS=usemirrors
             ;;
         --makelistrepo)
-            $MAKELISTREPO=makelistrepo
+            MAKELISTREPO=makelistrepo
             ;;
 		 --help)
 			usage_help
@@ -313,9 +313,9 @@ mkeUsrListRepo () {
             MkeListRepo
             DtctCmmt
             printf "%s\n" "Created local user list repo $LREPODIR" 
-            exit
         fi
     fi
+    exit 0
 }
 	
 	allowedOptions
@@ -382,7 +382,7 @@ mkeUsrListRepo () {
 			"In addition you will need to provide the name of the executable for the Window Manager
 			and the name you wish to assign to the desktop file associated with it"
 		userISONme
-		if [ -n "$UISONAME" == "$LREPONAME" ] && [ -d "$UHOME"/"LREPODIR" ]; then
+		if [ "$UISONAME" == "$LREPODIR" ] && [ ! -d "$UHOME"/"$LREPODIR" ]; then
            mkeUsrListRepo
         else 
             printf "%s\n" "Your list repo name does not match your iso name this is not an error but an list repo will not be created." \
@@ -969,12 +969,11 @@ MkeListRepo() {
 DtctCmmt() {
     if [ -d $COMMITDIR/iso-pkg-lists-$TREE ]; then
     cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
-
 	CHNGFLG=$(git diff)
-	if [ -n "$CHNGFLG" ]; then
-		MkeCmmtMsg
-		git commit -a -m "$CMMTMSG"
-	fi
+        if [ -n "$CHNGFLG" ]; then
+            MkeCmmtMsg
+            git commit -a -m "$CMMTMSG"
+        fi
 	fi
 }
 
