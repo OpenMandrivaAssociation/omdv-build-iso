@@ -382,7 +382,7 @@ mkeUsrListRepo () {
 			"In addition you will need to provide the name of the executable for the Window Manager
 			and the name you wish to assign to the desktop file associated with it"
 		userISONme
-		if [ -n "$UISONAME" == "$LREPONAME" ] && [ -d "$UHOME"/"LREPODIR"; then
+		if [ -n "$UISONAME" == "$LREPONAME" ] && [ -d "$UHOME"/"LREPODIR" ]; then
            mkeUsrListRepo
         else 
             printf "%s\n" "Your list repo name does not match your iso name this is not an error but an list repo will not be created." \
@@ -1461,7 +1461,7 @@ createChroot() {
 # There's a problem here if you have something like desktop and desktop-clang kernels as module detection fails if 
 # the boot kernel type is defined as desktop. You have to be careful about what you put in --boot-kernel-type
 # Somehow this has to be fixed perhaps with a lookup or translation table.
-	# Export installed and boot kernel
+set -x	# Export installed and boot kernel
 	pushd "$CHROOTNAME"/lib/modules > /dev/null 2>&1
 	BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]* | grep "$BOOT_KERNEL_TYPE" | head -n1 | sed -e 's,/$,,')"
 	export BOOT_KERNEL_ISO
@@ -1473,7 +1473,7 @@ createChroot() {
 	fi
 	export KERNEL_ISO
 	popd > /dev/null 2>&1
-	# remove rpm db files which may not match the target chroot environment
+set +x	# remove rpm db files which may not match the target chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 }
 
@@ -1797,24 +1797,23 @@ setupGrub2() {
 
 	printf "%s\n" "-> End building Grub2 El-Torito image."
 	printf "%s\n" "-> Installing liveinitrd for grub2"
-	
-	if [ -e "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" ] && [ -e "$CHROOTNAME/boot/liveinitrd.img" ]; then
-    cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
+set -x	
+	if [ -e "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" ] && [ -e "$CHROOTNAME/boot/liveinitrd.img" ]; then
+    cp -a "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
     cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd.img"
-    sed -i "s/%KCC_TYPE%/with ${BOOT_KERNEL_TYPE}/" "$ISOROOTNAME"/boot/grub/grub.cfg
+    sed -i "s/%KCC_TYPE%/with ${BOOT_KERNEL_ISO}/" "$ISOROOTNAME"/boot/grub/grub.cfg
         if [ -n "$BOOT_KERNEL_TYPE" ]; then
             cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
             cp -a "$CHROOTNAME/boot/liveinitrd1.img" "$ISOROOTNAME/boot/liveinitrd1.img"
                 # If dual kernels are used set up the grub2 menu to show them. This needs extra work
                 ALT_KERNEL=`echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}'` #Fix this to use shell substitution perhaps"
                 sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
-#        else
+        else
                 # Remove the uneeded menu entry
-#            sed -i '/linux1/,+4' "$ISOROOTNAME"/boot/grub/grub.cfg
-#        true
+            sed -i '/linux1/,+4 d' "$ISOROOTNAME"/boot/grub/grub.cfg
         fi	
 	else
-
+set +x
 		printf "%s\n" "-> vmlinuz or liveinitrd does not exists. Exiting."
 		errorCatch
 	fi
