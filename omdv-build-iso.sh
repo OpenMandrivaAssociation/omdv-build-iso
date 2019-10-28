@@ -1,11 +1,11 @@
 #!/bin/bash
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
+# Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Colin Close <itchka@compuserve.com>
 # Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
-# Modified on 2016 by: Tomasz Pawe³½ Gajc <tpgxyz@gmail.com>
+# Modified on 2016 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2016 by: Colin Close <itchka@compuserve.com>
 # Modified on 2017 by: Colin Close <itchka@compuserve.com>
 # Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
@@ -469,7 +469,7 @@ setWorkdir() {
 
 	if [ "$IN_ABF" = '1' ] && [ -d '/home/omv/docker-iso-worker' ]; then
 		# We really are in ABF
-		WORKDIR=$(realpath "$(dirname "$0")")
+		WORKDIR="$(realpath $(dirname "$0"))"
 	fi
 	if [ "$IN_ABF" = '0' ]; then
 		if [ -z "$WORKDIR" ]; then
@@ -487,7 +487,7 @@ setWorkdir() {
 }
 
 RemkWorkDir() {
-	echo "Remake dirs"
+	printf "%s\n" "Remake dirs"
 	rm -rf "$WORKDIR"
 	mkdir -p "$WORKDIR"
 	# Create the mount points
@@ -507,18 +507,18 @@ SaveDaTa() {
 		mv "$WORKDIR/sessrec" "$BUILDSAV/sessrec"
 	fi
 	if [ -n "$REBUILD" ]; then
-	mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
-	mv "$WORKDIR/grub2" "$BUILDSAV/grub2"
-	mv "$WORKDIR/boot" "$BUILDSAV/boot"
-	mv "$WORKDIR/data" "$BUILDSAV/data"
-	mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
-	printf "%s\n" "-> Saving rpms for rebuild"
-	mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
+		mv "$WORKDIR/grub2" "$BUILDSAV/grub2"
+		mv "$WORKDIR/boot" "$BUILDSAV/boot"
+		mv "$WORKDIR/data" "$BUILDSAV/data"
+		mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
+		printf "%s\n" "-> Saving rpms for rebuild"
+		mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
 	fi
 }
 
 RestoreDaTa() {
-	printf "%s\n"  "->	Cleaning WORKDIR"
+	printf "%s\n"  "-> Cleaning WORKDIR"
 	# Re-creates the WORKDIR and populates it with saved data
 	# In the case of a rebuild the $CHROOTNAME dir is recreated and the saved rpm cache is restored to it..
 	rm -rf "$WORKDIR"
@@ -587,7 +587,7 @@ trap errorCatch ERR SIGHUP SIGINT SIGTERM
 userISONme() {
 	printf "%s\n" "Please give a name to your iso e.g Enlight"
 	read -r in1
-	echo "$in1"
+	printf "%s\n" "$in1"
 	if [ -n "$in1" ]; then
 		printf "%s\n" "The isoname will be $in1" "Is this correct y or n ?"
 		cfrmISONme
@@ -597,7 +597,7 @@ userISONme() {
 
 cfrmISONme() {
 	read -r in2
-	echo $in2
+	printf "%s\n" $in2
 	if [ $in2 = 'yes' ] || [ $in2 = 'y' ]; then
 		UISONAME="$in1"
 		return 0
@@ -661,15 +661,17 @@ updateSystem() {
 	esac
 
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools  bc imagemagick kpartx gdisk gptfdisk parallel git"
+	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel git"
 
-	printf "%s\n" "-> Installing rpm files inside system environment"
+	printf "%s\n" '-> Installing rpm files inside system environment'
 	#--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
 	dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-	echo "-> Updating rpms files inside system environment"
+	# upgrade system after just in case
+	dnf upgrade --refresh --assumeyes
+	printf "%s\n" '-> Updating rpms files inside system environment'
 	if [ "$IN_ABF" = 0 ]; then
-		echo "-> Updating dnf.conf to cache packages for rebuild"
-		echo "keepcache=True" >> /etc/dnf/dnf.conf
+		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
+		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
 		if [ ! -d "$WORKDIR/dracut" ]; then
 			find "$WORKDIR"
 			touch "$WORKDIR/.new"
@@ -701,9 +703,9 @@ getPkgList() {
 		EX_PREF=omdv-build-iso-rolling
 		EXCLUDE_LIST="--exclude $EX_PREF/.abf.yml --exclude $EX_PREF/ChangeLog --exclude $EX_PREF/Developer_Info --exclude $EX_PREF/Makefile --exclude $EX_PREF/README --exclude $EX_PREF/TODO --exclude $EX_PREF/omdv-build-iso.sh --exclude $EX_PREF/omdv-build-iso.spec --exclude $EX_PREF/docs/*  --exclude $EX_PREF/tools/* --exclude $EX_PREF/ancient/*"
 		if [ -n "$KEEP" ]; then
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"`  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR} $(printf "%s\n" "$EXCLUDE_LIST")  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
 		else
-			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR}   `echo "$EXCLUDE_LIST"` --strip-components 1  -xvf -
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR} $(printf "%s\n" "$EXCLUDE_LIST") --strip-components 1  -xvf -
 		fi		
 		cd "$WORKDIR" || exit
 		if [ ! -e "$FILELISTS" ]; then
@@ -806,7 +808,7 @@ MkeCmmtMsg() {
 	else
 		SEQNUM=1
 	fi
-	echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
+	printf "%s\n" "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
 	SESSNO=$(cat "$WORKDIR"/sessrec/.build_id)
 	CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
 }
@@ -912,7 +914,7 @@ diffPkgLists() {
 			SEQNUM=$(cat "$WORKDIR"/sessrec/.seqnum)
 		else
 			SEQNUM=1
-			echo "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
+			printf "%s\n" "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
 		fi
 		__newdiffname="${SESSNO}_${SEQNUM}.diff"
 		printf "%s" "$ALL" >"$WORKDIR"/sessrec/"$__newdiffname"
@@ -978,7 +980,7 @@ updateUserSpin() {
 # Sets two variables
 # $INSTALL_LIST = All list files to be installed
 # $REMOVE_LIST = All list files to be removed
-# This function includes all the user adds and removes.
+# This func includes all the user adds and removes
 mkUserSpin() {
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
@@ -987,7 +989,7 @@ mkUserSpin() {
 	#"$TYPE"
 	printf "%s\n" "$ADDRPMINC" > "$WORKDIR/prime.list"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
-	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
+	ALLRPMINC=$(printf "%s\n" "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
 	printf "%s\n" "$ALLRPMINC" > "$WORKDIR/primary.list"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 	printf "%s\n" "-> Remove the common include lines for the remove package includes"
@@ -1113,18 +1115,18 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-        PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-        cd "$WORKDIR"
-        curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-        PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
-        for i in $PACKAGES; do
-            P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
-            if [ "$?" != '0' ]; then
-                printf "$s\n" "Can't find $TREE version of $i, please report"
-                exit 1
-            fi
-            wget $PKGS/$P
-        done
+	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+	cd "$WORKDIR"
+	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+	for i in $PACKAGES; do
+		P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
+		if [ "$?" != '0' ]; then
+			printf "$s\n" "Can't find $TREE version of $i, please report"
+			exit 1
+		fi
+		wget $PKGS/$P
+	done
 	fi
 
 	if [ -e "$WORKDIR"/.new ]; then
@@ -1139,7 +1141,7 @@ InstallRepos() {
 	else
 		printf "%s\n"  "/etc/yum.repos.d not present"
 	fi
-	echo ${EXTARCH}
+	printf "%s\n" ${EXTARCH}
 
 	# Use the master repository, not mirrors
 	if [ -e "$WORKDIR"/.new ]; then
@@ -1173,7 +1175,7 @@ InstallRepos() {
 	fi
 	## > or >> ?
 	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
+		printf "%s\n" "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
 	fi
 
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
@@ -1268,7 +1270,7 @@ createChroot() {
 	BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]*-${BOOT_KERNEL_TYPE}* | head -n1 | sed -e 's,/$,,')"
 	export BOOT_KERNEL_ISO
 	if [ -n "$BOOT_KERNEL_TYPE" ]; then
-		echo "$BOOT_KERNEL_TYPE" > "$CHROOTNAME/boot_kernel"
+		printf "%s\n" "$BOOT_KERNEL_TYPE" > "$CHROOTNAME/boot_kernel"
 		KERNEL_ISO=$(ls -d --sort=time [0-9]* | grep -v "$BOOT_KERNEL_TYPE" | head -n1 | sed -e 's,/$,,')
 	else
 		KERNEL_ISO=$(ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,')
@@ -1643,18 +1645,18 @@ setupISOenv() {
 	printf "%s\n" "-> Creating /etc/minsysreqs"
 
 	if [ "${TYPE,,}" = "minimal" ]; then
-		echo "ram = 512" >> "$CHROOTNAME/etc/minsysreqs"
-		echo "hdd = 5" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "ram = 512" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "hdd = 5" >> "$CHROOTNAME/etc/minsysreqs"
 	elif [ "$EXTARCH" = "x86_64" ] || [ "$EXTARCH" = "znver1" ]; then
-		echo "ram = 1536" >> "$CHROOTNAME/etc/minsysreqs"
-		echo "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "ram = 1536" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
 	else
-		echo "ram = 1024" >> "$CHROOTNAME/etc/minsysreqs"
-		echo "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "ram = 1024" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
 	fi
 
 	# Count imagesize and put in in /etc/minsysreqs
-	echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
+	printf "%s\n" "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# Set up displaymanager
 	if [[ ( ${TYPE,,} != "minimal" || ${TYPE,,} != "my.add" ) && ! -z ${DISPLAYMANAGER,,} ]]; then
@@ -1945,7 +1947,7 @@ EOF
 
 	# Remove rpm db files to save some space
 	rm -rf "$CHROOTNAME"/var/lib/rpm/__db.*
-	echo 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
+	printf "%s\n" 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
 		| tee "$CHROOTNAME"/etc/.updated >"$CHROOTNAME"/var/.updated
 }
 
@@ -1965,7 +1967,7 @@ createSquash() {
 		# It's likely that the img will be written to one of the mounted drives so it's unlikely
 		# that there will be enough diskspace to complete the operation.
 		if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
-			umount -l "$(echo "$ISOROOTNAME/run/os-prober/dev/*")"
+			umount -l "$(printf "%s\n" "$ISOROOTNAME/run/os-prober/dev/*")"
 			if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
 				printf "%s\n" "-> Cannot unount os-prober mounts aborting."
 				errorCatch
