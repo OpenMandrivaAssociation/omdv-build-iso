@@ -10,10 +10,10 @@ basesystem
 btrfs-progs
 busybox-static #min-iso
 distro-release-OpenMandriva
-#dracut
-#dhcp-client
-#dmraid
-#e2fsprogs
+dracut
+dhcp-client
+dmraid
+e2fsprogs
 #grub2
 #iproute2
 #grub2-efi
