@@ -13,12 +13,11 @@
 %include .///omdv_pulseaudio.lst
 
 # Desktop Specifics
-calamares
-weston
 wayland-tools
 sway
 swaylock
 swayidle
+firefox
 
 # Needed Task/Meta Packages
 task-pulseaudio
