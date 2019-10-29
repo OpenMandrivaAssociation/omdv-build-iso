@@ -3,7 +3,36 @@
 %include .///omdv_control.lst
 %include .///omdv_drivers.lst
 %include .///omdv_ppp.lst
-%include .///omdv_iso_minimal.lst
+#%include .///omdv_iso_minimal.lst
+
+
+acpi
+acpid
+at
+basesystem
+btrfs-progs
+busybox-static #min-iso
+cronie-anacron
+distro-release-OpenMandriva
+dracut
+dhcp-client
+dmraid
+e2fsprogs
+grub2
+iproute2
+grub2-efi
+efibootmgr
+#kernel-release-desktop-latest
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+nscd
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
 
 # more includes lists for common sets that are not task/meta pkgs
 #%include .///omdv_fonts.lst
