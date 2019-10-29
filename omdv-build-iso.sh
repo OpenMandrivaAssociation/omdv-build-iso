@@ -815,10 +815,10 @@ updateSystem() {
         #--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
         dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 	# upgrade system after just in case
-	if [ IN_ABF == '0' ]; then
+#	if [ IN_ABF == '0' ]; then
 		dnf upgrade --refresh --assumeyes
 		printf "%s\n" '-> Updating rpms files inside system environment'
-	fi
+#	fi
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
             if [ ! -d "$WORKDIR/dracut" ]; then
