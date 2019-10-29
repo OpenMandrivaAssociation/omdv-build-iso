@@ -60,20 +60,14 @@ x11-font-misc
 
 # tools
 openssl
-openssh-server
 alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
-dosfstools
-firewalld
 hfsutils
 ntfsprogs
 monitor-edid
 tuned
 wget
 uuidd
-whois
 sudo
-reiserfsprogs
-bash-completion
 gnupg
