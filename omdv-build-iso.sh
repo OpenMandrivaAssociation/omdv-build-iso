@@ -2,11 +2,11 @@
 #set -x
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Pawe³ Gajc <tpgxyz@gmail.com>
+# Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2015 by: Colin Close <itchka@compuserve.com>
 # Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
-# Modified on 2016 by: Tomasz Pawe³½ Gajc <tpgxyz@gmail.com>
+# Modified on 2016 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
 # Modified on 2016 by: Colin Close <itchka@compuserve.com>
 # Modified on 2017 by: Colin Close <itchka@compuserve.com>
 # Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
@@ -601,7 +601,7 @@ setWorkdir() {
 }
 
 RemkWorkDir() {
-	echo "Remake dirs"
+	printf "%s\n" "Remake dirs"
 	rm -rf "$WORKDIR"
 	mkdir -p ${WORKDIR}
 	# Create the mount points
@@ -635,7 +635,7 @@ SaveDaTa() {
 }
 
 RestoreDaTa() {
-	printf "%s\n"  "->	Cleaning WORKDIR"
+	printf "%s\n"  "-> Cleaning WORKDIR"
 	# Re-creates the WORKDIR and populates it with saved data
 	# In the case of a rebuild the $CHROOTNAME dir is recreated and the saved rpm cache is restored to it..
 	rm -rf "$WORKDIR"
@@ -706,7 +706,7 @@ trap errorCatch ERR SIGHUP SIGINT SIGTERM
 userISONme() {
 	printf "%s\n" "Please give a name to your iso e.g Enlight" "This will also be the name of the WM desktop file associated with it"
 	read -r in1
-	echo "$in1"
+	printf "%s\n" "$in1"
 	if [ -n "$in1" ]; then
 		printf "%s\n" "The isoname will be $in1" "Is this correct y or n ?"
 		cfrmISONme
@@ -725,7 +725,7 @@ userISONme() {
 
 cfrmISONme() {
 	read -r in2
-	echo $in2
+	printf "%s\n" $in2
 	if [ $in2 = 'yes' ] || [ $in2 = 'y' ]; then
 		UISONAME="$in1"
 		return 0
@@ -801,7 +801,7 @@ updateSystem() {
 	esac
 
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools  bc imagemagick kpartx gdisk gptfdisk parallel git"
+	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel git"
 	if [ `rpm -q $RPM_LIST | wc -l`  == "`wc -w <<< ${RPM_LIST}`" ]; then
        printf "%s\n" "->All the correct system files are installed "
         if [ ! -d "$WORKDIR/dracut" ]; then
@@ -814,7 +814,13 @@ updateSystem() {
         printf "%s\n" "-> Installing rpm files inside system environment"
         #--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
         dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-        echo "-> Updating rpms files inside system environment"
+	# upgrade system after just in case
+	if [ IN_ABF == '0' ]; then
+		dnf upgrade --refresh --assumeyes
+		printf "%s\n" '-> Updating rpms files inside system environment'
+	fi
+		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
+		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
             if [ ! -d "$WORKDIR/dracut" ]; then
                 find "$WORKDIR"
                 touch "$WORKDIR/.new"
@@ -853,6 +859,8 @@ getPkgList() {
                 export GIT_BRNCH=${TREE,,}
                 # ISO_VER defaults to user build entry
             fi
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR} $(printf "%s\n" "$EXCLUDE_LIST")  --exclude omdv-build-iso-rolling/iso-package-lists-${TREE}/* --strip-components 1  -xvf -
+			wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.zip | bsdtar  --cd ${WORKDIR} $(printf "%s\n" "$EXCLUDE_LIST") --strip-components 1  -xvf -
                 cd "$WORKDIR" ||  exit
         EX_PREF=./
         EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
@@ -997,7 +1005,7 @@ MkeCmmtMsg() {
         else
             SEQNUM=1
         fi
-	echo "$SEQNUM" >"${COMMITDIR}/sessrec/.seqnum"
+	printf "%s\n" "$SEQNUM" >"${COMMITDIR}/sessrec/.seqnum"
 	SESSNO=$(cat ${COMMITDIR}/sessrec/.build_id)
 	CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
 	fi
@@ -1077,6 +1085,7 @@ createPkgList() {
 	shopt -u lastpipe
 	set -m
 	> /dev/null
+			printf "%s\n" "$SEQNUM" >"$WORKDIR/sessrec/.seqnum"
 }
 
 # Usage: mkOmSpin [main install file path} i.e. [path]/omdv-kde4.lst.
@@ -1144,7 +1153,7 @@ fi
 # Sets two variables
 # $INSTALL_LIST = All list files to be installed
 # $REMOVE_LIST = All list files to be removed
-# This function includes all the user adds and removes.
+# This func includes all the user adds and removes
 mkUserSpin() {
 if [ -n "$DEBUG" ]; then
 echo "mkUserSpin"
@@ -1153,8 +1162,7 @@ fi
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	getIncFiles "$FILELISTS" ADDRPMINC
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
-    # Combine the main and the users files"
-	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
+	ALLRPMINC=$(printf "%s\n" "$ADDRPMINC" "$UADDRPMINC" | sort -u)
 	# Now for the remove list
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 	printf "%s\n" "-> Removing the common include lines for the remove package includes"
@@ -1310,18 +1318,18 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-        PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-        cd "$WORKDIR"
-        curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-        PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
-        for i in $PACKAGES; do
-            P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
-            if [ "$?" != '0' ]; then
-                printf "%s\n" "Can't find $TREE version of $i, please report"
-                exit 1
-            fi
-            wget $PKGS/$P
-        done
+	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+	cd "$WORKDIR"
+	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+	for i in $PACKAGES; do
+		P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
+		if [ "$?" != '0' ]; then
+			printf "$s\n" "Can't find $TREE version of $i, please report"
+			exit 1
+		fi
+		wget $PKGS/$P
+	done
     fi
 
 	if [ -e "$WORKDIR"/.new ]; then
@@ -1383,6 +1391,7 @@ InstallRepos() {
         if [ -n "$TESTREPO" ]; then
             dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
         fi
+		printf "%s\n" "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
     fi
 		# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
@@ -1490,7 +1499,7 @@ set -x	# Export installed and boot kernel
 	BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]* | grep "$BOOT_KERNEL_TYPE" | head -n1 | sed -e 's,/$,,')"
 	export BOOT_KERNEL_ISO
 	if [ -n "$BOOT_KERNEL_TYPE" ]; then
-		echo "$BOOT_KERNEL_TYPE" > "$CHROOTNAME/boot_kernel"
+		printf "%s\n" "$BOOT_KERNEL_TYPE" > "$CHROOTNAME/boot_kernel"
 		KERNEL_ISO=$(ls -d --sort=time [0-9]* | grep -v "$BOOT_KERNEL_TYPE" | head -n1 | sed -e 's,/$,,')
 	else
 		KERNEL_ISO=$(ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,')
@@ -1635,10 +1644,15 @@ createMemDisk () {
 	# Job done just remember to move it back again
 	chroot "$CHROOTNAME"  /usr/bin/grub2-mkimage -O "$ARCHFMT" -d "$ARCHLIB" -m memdisk_img -o "/ISO/EFI/BOOT/$EFINAME" -p '(memdisk)/boot/grub' \
 	 search iso9660 normal memdisk tar boot linux part_msdos part_gpt part_apple configfile help loadenv ls reboot chain multiboot fat udf \
-	 ext2 btrfs ntfs reiserfs xfs lvm ata cat test echo multiboot multiboot2 all_video efifwsetup efinet font gfxmenu gfxterm gfxterm_menu \
-	 gfxterm_background gzio halt hfsplus jpeg mdraid09 mdraid1x minicmd part_apple part_msdos part_gpt part_bsd password_pbkdf2 png reboot \
-	 search search_fs_uuid search_fs_file search_label sleep tftp video xfs lua loopback regexp
+	 ext2 btrfs ntfs reiserfs xfs lvm ata cat test echo multiboot multiboot2 all_video efifwsetup efinet font gcry_rijndael gcry_rsa gcry_serpent \
+	 gcry_sha256 gcry_twofish gcry_whirlpool gfxmenu gfxterm gfxterm_menu gfxterm_background gzio halt hfsplus jpeg mdraid09 mdraid1x minicmd part_apple \
+	 part_msdos part_gpt part_bsd password_pbkdf2 png probe reboot \
+	 search search_fs_uuid search_fs_file search_label sleep tftp video xfs loopback regexp
 
+	if [ $? != 0 ]; then
+		printf "%s\n" "-> Failed to create grub2 EFI image." "Exiting."
+		errorCatch
+	fi
 	# Move back the ISO filesystem after building the EFI image.
 	mv -f "$CHROOTNAME/ISO/" "$ISOROOTNAME"
 
@@ -1873,18 +1887,18 @@ setupISOenv() {
 	printf "%s\n" "-> Creating /etc/minsysreqs"
 
 	if [ "${TYPE,,}" = "minimal" ]; then
-		echo "ram = 512" >> "$CHROOTNAME/etc/minsysreqs"
-		echo "hdd = 5" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "ram = 512" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "hdd = 5" >> "$CHROOTNAME/etc/minsysreqs"
 	elif [ "$EXTARCH" = "x86_64" ] || [ "$EXTARCH" = "znver1" ]; then
-		echo "ram = 1536" >> "$CHROOTNAME/etc/minsysreqs"
-		echo "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "ram = 1536" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
 	else
-		echo "ram = 1024" >> "$CHROOTNAME/etc/minsysreqs"
-		echo "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "ram = 1024" >> "$CHROOTNAME/etc/minsysreqs"
+		printf "%s\n" "hdd = 10" >> "$CHROOTNAME/etc/minsysreqs"
 	fi
 
 	# Count imagesize and put in in /etc/minsysreqs
-	echo "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
+	printf "%s\n" "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# Set up displaymanager
 	if [[ ( ${TYPE,,} != "minimal" || ${TYPE,,} != "my.add" ) && ! -z ${DISPLAYMANAGER,,} ]]; then
@@ -2194,7 +2208,7 @@ EOF
 
 	# Remove rpm db files to save some space
 	rm -rf "$CHROOTNAME"/var/lib/rpm/__db.*
-	echo 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
+	printf "%s\n" 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
 		| tee "$CHROOTNAME"/etc/.updated >"$CHROOTNAME"/var/.updated
 }
 
@@ -2214,7 +2228,7 @@ createSquash() {
 		# It's likely that the img will be written to one of the mounted drives so it's unlikely
 		# that there will be enough diskspace to complete the operation.
 		if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
-			umount -l "$(echo "$ISOROOTNAME/run/os-prober/dev/*")"
+			umount -l "$(printf "%s\n" "$ISOROOTNAME/run/os-prober/dev/*")"
 			if [ -f "$ISOROOTNAME/run/os-prober/dev/*" ]; then
 				printf "%s\n" "-> Cannot unount os-prober mounts aborting."
 				errorCatch
