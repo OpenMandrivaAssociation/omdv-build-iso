@@ -8,8 +8,6 @@
 # more includes lists for common sets that are not task/meta pkgs
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-%include .///omdv_locales.lst
-%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
 
 # Desktop Specifics
@@ -28,14 +26,8 @@ sddm
 # Needed Task/Meta Packages
 x11-font-cyrillic
 # keep to check
-x11-server-xorg
-x11-server-xwayland
-x11-compose-cache
-x11-tools
-#x11-docs
 x11-font-type1
 x11-font-misc
-x11-data-cursor-themes
 
 # tools
 openssl
