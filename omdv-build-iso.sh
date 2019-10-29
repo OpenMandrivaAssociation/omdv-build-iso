@@ -861,7 +861,8 @@ getPkgList() {
                 printf "%s\n" "-> "$FILELISTS" does not exist. Exiting"
                 errorCatch
             fi
-            if [ ! -f "$COMMITDIR"/"${FILELISTS#"$WORKDIR/"}" ]; then
+            echo "THE CHROOT FILES ARE POPUKATED GHERE"
+            if [ ! -f "$COMMITDIR"/"${FILELISTS#$WORKDIR/}" ]; then
                 popREPOdir
             else
                 printf "%s\n" "-> Copying users local package lists from "$LREPODIR" to workdir"
@@ -874,15 +875,23 @@ mkeREPOdir() {
 #set -x
 		if [  "$IN_ABF" = '0' ]; then 
             if [ -n "$LREPODIR" ]; then
-                if [ "$LREPODIR" == "$(< "${UHOME}"/.rpodir)" ] && [ ! -d "$UHOME"/"$LREPODIR" ]; then
-                    mkdir -p "$UHOME"/"$LREPODIR"/sessrec
-                    printf  "$LREPODIR" > "$UHOME"/.rpodir
-                    COMMITDIR="$UHOME"/"$LREPODIR"
+                if [ "$LREPODIR" == "$(< "${UHOME}"/.rpodir)" ]; then 
+                     COMMITDIR="$UHOME"/"$LREPODIR"
                 else
-                    mkdir -p "$UHOME/$LREPODIR"/sessrec
-                    echo "$LREPODIR" > "${UHOME}"/.rpodir
+                    printf "%s\n" "$LREPODIR" > "$UHOME"/.rpodir 
                     COMMITDIR="$UHOME"/"$LREPODIR"
                 fi
+            elif [ -f "$UHOME"/.rpodir ]; then
+                LREPODIR="$(< "${UHOME}"/.rpodir)"
+                
+                #elif [ ! -d "$UHOME"/"$LREPODIR" ]; then
+                #    mkdir -p "$UHOME"/"$LREPODIR"/sessrec              
+                #elif [ -f "$UHOME"/.rpodir ]; then
+                #    LREPODIR="$(< "${UHOME}"/.rpodir)"
+               #     printf "%s\n" "$LREPODIR" > "$UHOME"/.rpodir
+                    printf "%s\n" "$LREPODIR"
+              #      mkdir -p "$UHOME/$LREPODIR"/sessrec
+                    COMMITDIR="$UHOME"/"$LREPODIR"
             else
                 LREPODIR="$WHO"s-user-iso
                 mkdir -p "$UHOME"/"$LREPODIR"/sessrec
@@ -1008,6 +1017,7 @@ getIncFiles() {
 	local __incflist="$2" # Carries returned variable
 	local __addrpminc # It's critical that this is local otherwise the content of previous runs corrupts the current list.
 	getEntrys() {
+	local 9oi9__addrpminc # It's critical that this is local otherwise the content of previous runs corrupts the current list.
 		# Recursively fetch included files
 		while read -r r; do
 			[ -z "$r" ] && continue
@@ -1018,6 +1028,7 @@ getIncFiles() {
 		done < <(cat "$1" | grep '^[A-Za-z0-9 \t]*%include' | awk -F\./// '{print $2}' |  sed '/ #/d ; /^\s$/d ; /^$/d') > /dev/null 2>&1
 		# The above may appear as a useless use of cat but it's removal results in a permission denied error (even as sudo)
 		# Though the function still works fine. A bug for another day
+	#	eval $__addrpminco="'$__addrpminc'"
 	}
 	getEntrys "$1"
 	# Add the primary file to the list
@@ -1078,7 +1089,7 @@ mkOmSpin() {
 	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
 	createPkgList "$ADDRPMINC" INSTALL_LIST
 	if [ -n "$DEVMODE" ]; then
-		printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist"
+		printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist" > /dev/null 2>&1
 	fi
 	mkUpdateChroot "$INSTALL_LIST"
 }
@@ -1091,6 +1102,9 @@ mkOmSpin() {
 # It is used to add user updates after the main chroot
 # has been created with mkUserSpin.
 updateUserSpin() {
+if [ -n "$DEBUG" ]; then
+echo "updateUserSpin"
+fi
 	printf "%s\n" "-> Updating user spin"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
 	# re-assign just for consistancy
@@ -1104,7 +1118,7 @@ updateUserSpin() {
 	# This should signal an error to the user
 	RMRPMINC_TMP=$(comm -12 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$RMRPMINC" | sort))
 	if [ -n RMRPMINC_TMP ]; then
-	printf "%s\n" -> Error: "->> The are identical include files in the add and remove lists" "->> You probably don't want this"
+	printf "%s\n" -> "Error: ->> The are identical include files in the add and remove lists" "->> You probably don't want this"
 	fi
 	printf "%s\n" "-> Creating the package lists"
 	createPkgList "$ALLRPMINC" INSTALL_LIST
@@ -1114,7 +1128,7 @@ updateUserSpin() {
 		printf '%s\n' "$RMRPMINC" >"$WORKDIR/remove_incfile.list" " "
 	fi
 	# Remove any packages that occur in both lists
-	INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u))
+	INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u)) > /dev/null 2>&1
     printf "%s\n" "-> This is the install package list" "$INSTALL_LIST" "->End of install pkg list" " "
 	printf "%s\n" "-> This is the remove package list" "$REMOVE_LIST" "End of remove pkg list"
 	if [ -n "$DEVMODE" ]; then
@@ -1132,6 +1146,9 @@ updateUserSpin() {
 # $REMOVE_LIST = All list files to be removed
 # This function includes all the user adds and removes.
 mkUserSpin() {
+if [ -n "$DEBUG" ]; then
+echo "mkUserSpin"
+fi
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	getIncFiles "$FILELISTS" ADDRPMINC
@@ -1169,6 +1186,9 @@ mkUserSpin() {
 
 # Usage: MyAdd
 MyAdd() {
+if [ -n "$DEBUG" ]; then
+echo "MyAdd"
+fi
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		if [ -n "$PLLL" ]; then
@@ -1185,6 +1205,9 @@ MyAdd() {
 
 # Usage: MyRmv
 MyRmv() {
+if [ -n "$DEBUG" ]; then
+echo "MyRmv"
+fi
 	if [ -n "$__remove_list" ]; then
         # Before we do anything here we have to consider that the user may have 
         # added packages to the remove list which have been breaking the build. 
@@ -1424,6 +1447,7 @@ createChroot() {
         elif [ ! -f "$CHROOTNAME/.noclean" ]; then
             printf "%s\n" "Creating an user chroot"
             mkUserSpin
+            touch "$CHROOTNAME/.noclean"
         fi
 
         if [ "$IN_ABF" = '0' ]; then
@@ -1439,7 +1463,8 @@ createChroot() {
                 mkUserSpin 
             fi
         fi
-        touch "$CHROOTNAME/.noclean"
+
+        
         printf "%s\n" "I am here"
         
         # Did it return 0k
