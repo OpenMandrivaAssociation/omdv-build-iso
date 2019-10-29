@@ -6,21 +6,22 @@
 %include .///omdv_iso_minimal.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-%include .///omdv_fonts.lst
-%include .///omdv_pulseaudio.lst
+#%include .///omdv_fonts.lst
+#%include .///omdv_gstreamer.lst
+#%include .///omdv_pulseaudio.lst
 
 # Desktop Specifics
-wayland-tools
+#wayland-tools
 sway
 swaylock
 swayidle
-firefox
+#firefox
 
 # Needed Task/Meta Packages
-task-pulseaudio
-x11-font-cyrillic
-edidbins
-sddm
+#task-pulseaudio
+#x11-font-cyrillic
+#edidbins
+#sddm
 
 # Needed Task/Meta Packages
 x11-font-cyrillic
