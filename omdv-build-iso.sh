@@ -1325,7 +1325,7 @@ InstallRepos() {
 	for i in $PACKAGES; do
 		P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 		if [ "$?" != '0' ]; then
-			printf "$s\n" "Can't find $TREE version of $i, please report"
+			printf "%s\n" "Can't find $TREE version of $i, please report"
 			exit 1
 		fi
 		wget $PKGS/$P
