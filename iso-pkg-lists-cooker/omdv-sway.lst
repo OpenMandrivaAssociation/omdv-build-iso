@@ -14,21 +14,21 @@ dracut
 dhcp-client
 dmraid
 e2fsprogs
-#grub2
+grub2
 #iproute2
-#grub2-efi
+grub2-efi
 #efibootmgr
 ##kernel-release-desktop-latest
-#kernel-release-desktop
-#kernel-firmware
-#kernel-firmware-extra
-#nscd
-#timezone
-#usbutils
-#usb_modeswitch
-#vim-enhanced
-#nano
-#wireless-tools
+kernel-release-desktop
+kernel-firmware
+kernel-firmware-extra
+nscd
+timezone
+usbutils
+usb_modeswitch
+vim-enhanced
+nano
+wireless-tools
 
 # more includes lists for common sets that are not task/meta pkgs
 #%include .///omdv_fonts.lst
