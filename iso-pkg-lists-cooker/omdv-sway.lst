@@ -1,62 +1,58 @@
 # basic includes file lists
-#%include .///omdv_core.lst
-#%include .///omdv_control.lst
-#%include .///omdv_drivers.lst
-#%include .///omdv_ppp.lst
-#%include .///omdv_iso_minimal.lst
-
-
-basesystem
-btrfs-progs
-busybox-static #min-iso
-distro-release-OpenMandriva
-dracut
-dhcp-client
-dmraid
-e2fsprogs
-grub2
-#iproute2
-grub2-efi
-#efibootmgr
-##kernel-release-desktop-latest
-kernel-release-desktop
-kernel-firmware
-kernel-firmware-extra
-nscd
-timezone
-usbutils
-usb_modeswitch
-vim-enhanced
-nano
-wireless-tools
+%include .///omdv_core.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_iso_minimal.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-#%include .///omdv_fonts.lst
-#%include .///omdv_gstreamer.lst
-#%include .///omdv_pulseaudio.lst
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_locales.lst
+%include .///omdv_man-pages.lst
+%include .///omdv_pulseaudio.lst
 
 # Desktop Specifics
-#wayland-tools
+calamares
 sway
 swaylock
 swayidle
-#firefox
+firefox
 
 # Needed Task/Meta Packages
-#task-pulseaudio
-#x11-font-cyrillic
-#edidbins
-#sddm
+task-pulseaudio
+x11-font-cyrillic
+edidbins
+sddm
 
 # Needed Task/Meta Packages
 x11-font-cyrillic
 # keep to check
+x11-server-xorg
+x11-server-xwayland
+x11-compose-cache
+x11-tools
+#x11-docs
 x11-font-type1
 x11-font-misc
+x11-data-cursor-themes
 
 # tools
 openssl
+openssh-server
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+dosfstools
+firewalld
+hfsutils
+ntfsprogs
 monitor-edid
+tuned
+wget
 uuidd
+whois
 sudo
+reiserfsprogs
+bash-completion
 gnupg
