@@ -116,7 +116,6 @@ main() {
 				TYPE=my.add
 				;;
 			*)
-			
 				printf "%s\n" "$TYPE is not supported."
 				usage_help
 				;;
@@ -326,14 +325,9 @@ main() {
 ########################
 # TODO:
 # Test --auto-update switch
-# Generally update/upgrade nneds lloking at
-# Do we need a skip list?
-# sort out the chnage flag
-# note that it could be activated before the chroot is build so it needs to be qualified
-# Add functionality to search downloaded repo for user defined type
-# Modify --type so that if a package list exists use it else default to my.add
-# Also add the ability to add isoname and wmname to the list file thus 
-# removing the need for the interactive session and opening up use on abf
+# Add  --auto-upgrade
+# Investigate why we can't mount our isos in plasma
+
 CarryOn() {
 	InstallRepos
 	updateSystem
@@ -511,8 +505,8 @@ usage_help() {
 		optprtf "--tree=     " "Branch of software repository: cooker, lx4"
 		optprtf "--version=" "Version for software repository: 4.0"
 		optprtf "--release_id=" "Release identifer: alpha, beta, rc, final"
-		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal, user. NOTE: When type is set to user an interactive session will be invoked where the user will be asked for the iso name and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered." 
-		hlpprtf "\t\t\tBy default the system build a minimal iso from a list repo with the user selected name. Subsequently the user may add additional include lines, packages or local filenames directories for inclusion to the my.add file in their repository named in the first step. As a special feature the list repo can be created ahead of the build if the iso name is the same as the name passed to the --lrepodir option. If this is the case the script will exit after creating the list repo to allow the user to add packages or includes to the my.add file in the repo before building the iso. If the --list repo option is set and the name of the users iso matches the name the entry used for the --listrepo option then a list repository will be created with that name and the program will exit. This allows the user to add any desired opackages and includes to the my.add list file before building the iso. On subsequent runs the program will not exit but continue on to build the iso. See also the --makelistrepo option."
+		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal, user. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}user${normal} an interactive session will be invoked where the user will be asked for the iso name and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. These values are saved in a sub-directory of the list repo directory and are restored on each run." 
+		hlpprtf "\t\t\tBy default the system build a minimal iso from a list repo with the user selected name. Subsequently the user may add additional include lines, packages or local filenames directories for inclusion to the my.add file in the repository named in the first step. The list repo is created ahead of the build so the script will exit after creating the intial repo to allow the user to add packages or includes to the my.add file before building the iso. On subsequent runs the program will not exit but continue on to build the iso. See also the --makelistrepo option. Switching between user created repos is accomplished by setting the --listrepodir to the desired directory."
 		printf "%b" "--displaymanager=" "\tDisplay Manager used in desktop environemt: sddm , none\n"
 		optprtf "--workdir=" "Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
 		optprtf "--outputdir=" "Set destination directory to where put final ISO file. The default is ~/omdv-buildchroot-<arch>/results"
@@ -528,7 +522,7 @@ usage_help() {
 		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
 		printf "%b\n" "\t\t\t\t${ulon}${bold}USER BUILDS - REMASTERING${normal}"
 		printf "%b\n"
-		hlpprtf "\t\t\tProvision is made for custom builds in the form of two files in the package list directories. These are my.add and my.rmv you can add packages names to either of these files and they will be added or removed. You may also add full paths to local rpm files and these will be installed as well. Including other package lists is also supported see the package list files for the 'include' syntax. The my.rmv file can be used to temporarily remove packages from the package lists that are failing to install without the need to modify the original lists. The files are stored in a directory which is set up as a git repository; each time the script is run this directory is checked for changes and if any are found they committed to the git repository using a commmit message which contains the build-id and the number of times the script has been run thus providing a full record of the session. Note that changes to ALL the files are recorded and it is not mandatory that you use my.add or my.rmv it is just more convenient. my.rmv is the only way to remove packages from the chroot when using the --noclean and --rebuild options. To enable the user to create different custom builds and return to them easily the --lrepodir=<dirpath> option is provided. The dirpath defaults to ~/ISOROOT but may be pointed to any directory path on the system. The directory once created is never deleted by the script. It is for the user to remove redundant data directories. The script records the last used data directory and restores the content to the chroot unless --lrepodir is set to another value\; then a new directory is created with files downloaded from the github repository corresponding to the repository you wish to build against.\n" 
+		hlpprtf "\t\t\tProvision is made for custom builds in the form of two files in the package list directories. These are my.add and my.rmv you can add packages names to either of these files and they will be added or removed. You may also add full paths to local rpm files and these will be installed as well. Including other package lists is also supported see the package list files with the folloing include syntax | %include .///omdv-<listname>.lst |. The my.rmv file can be used to temporarily remove packages from the package lists that are failing to install or are simple not required without the need to modify the original lists. The files are stored in a directory which is set up as a git repository; each time the script is run this directory is checked for changes and if any are found they committed to the git repository using a commmit message which contains the build-id and the number of times the script has been run for that build id thus providing a full record of the session. Note that changes to ALL the files are recorded and it is not mandatory that you use my.add or my.rmv it is just more convenient. my.rmv is the only way to remove packages from the chroot when using the --noclean and --rebuild options. To enable the user to create different custom builds and return to them easily the --lrepodir=<dirpath> option is provided. The dirpath defaults to ~/<user_name>s-user-iso but may be pointed to any directory path in the users home directory. The directory once created is never deleted by the script. It is for the user to remove redundant data directories. The script records the last used data directory and restores the content to the chroot unless --lrepodir is set to another value; then a new directory is created (if it does not already exist) with files downloaded from the github repository corresponding to the repository you wish to build against.\n" 
         optprtf "--lrepodir=" "The lrepodir option sets the path to the storage directory for the package lists and other iso files. Once set the path for this directory will be remembered until the value of the lrepodir dir is changedl This initiates a fresh build with virgin files from the OMA repos."
 		optprtf "--quicken" "Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
 		optprtf "--noclean" "Do not clean build chroot and keep cached rpms. Updates chroot with new packages. Option will not re-install the packages it will only retain them"
@@ -642,19 +636,11 @@ RemkWorkDir() {
 	mkdir -p "${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts"
 	# Create the ISO directory
 	mkdir -p ${ISOROOTNAME}
-	# Create the session record directorygetpkglist
-#	mkdir -p ${LREPODIR}/sessrec
-    #Call the function instead
-#    mkeREPOdir
 	touch ${WORKDIR}/.new
 }
 
 SaveDaTa() {
 	printf "%s\n" "-> Saving config data"
-#	if [ -n "$KEEP" ]; then
-#		mv "$WORKDIR/iso-pkg-lists-${TREE,,}" "$BUILDSAV/iso-pkg-lists-${TREE,,}"
-#		mv "$LREPODIR/sessrec" "$BUILDSAV/sessrec"
-#	fi
     if [ -n "$KEEP" ] || [ -n "$REBUILD" ]; then
         printf "%s\n" "-> Saving system files for rebuild"
         mv "$WORKDIR/dracut" "$BUILDSAV/dracut"
@@ -694,7 +680,9 @@ RestoreDaTa() {
 	else
 		# Clean out the dnf dir
 		cd "$BUILDSAV"||exit
+		if [ -d dnf ]; then
 		/bin/rm -r ./dnf
+		fi
 	fi
 	touch "$WORKDIR/.new"
 }
@@ -718,19 +706,11 @@ errorCatch() {
 	unset UEFI
 	unset MIRRORLIST
 	unset BOOT_KERNEL_ISO
-	#Maybe need to clear the COMMITDIR with user interaction
 	# (crazy) umountAll() ?
 	umount -l /mnt
 	losetup -D
-#	if [ -z $DEBUG ] || [ -z $NOCLEAN ] || [ -z $REBUILD ]; then
-		# for some reason the next line deletes irrespective of flags
-		#	rm -rf $(dirname "$FILELISTS")
 		umountAll "$CHROOTNAME"
-		#	rm -rf "$CHROOTNAME"
-#    else
 		umountAll "$CHROOTNAME"
-#	fi
-	#if $1 is set - clean exit
 	exit 1
 }
 
@@ -857,7 +837,6 @@ updateSystem() {
         fi
 	else
         printf "%s\n" "-> Installing rpm files inside system environment"
-        #--prefer /distro-theme-OpenMandriva-grub2/ --prefer /distro-release-OpenMandriva/ --auto
         dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 	# upgrade system after just in case
 #	if [ IN_ABF == '0' ]; then
@@ -1063,7 +1042,7 @@ MkeCmmtMsg() {
 
 
 
-## (crazy) move to arry's for the .lst stuff that is...Go for it then crazy (itchka)
+## (crazy) move to arry's for the .lst stuff that is.
 # Usage: getIncFiles [filename] xyz.* $"[name of variable to return]
 # Returns a sorted list of include files
 # Function: Gets all the include lines for the specified package file
@@ -1075,7 +1054,6 @@ getIncFiles() {
 	local __incflist="$2" # Carries returned variable
 	local __addrpminc # It's critical that this is local otherwise the content of previous runs corrupts the current list.
 	getEntrys() {
-#	local __addrpminc # It's critical that this is local otherwise the content of previous runs corrupts the current list.
 		# Recursively fetch included files
 		while read -r r; do
 			[ -z "$r" ] && continue
@@ -1269,12 +1247,10 @@ fi
 	if [ -n "$__remove_list" ]; then
         # Before we do anything here we have to consider that the user may have 
         # added packages to the remove list which have been breaking the build. 
-        # What needs to be done is to remove any duplicates that appear in both lists.
-        # Any common packages must be removed from BOTH lists
-        # This needs to be done somewhere else
-        # Also removing stuff that isn't yet installed also needs to be dealt with
-        # 
-		printf "%s" "-> Removing user specified rpms and orphans" " "
+        # Any duplicates that appear in both lists removed from BOTH lists
+        # This works even if the packages are not installed
+
+        printf "%s" "-> Removing user specified rpms and orphans" " "
 		/usr/bin/dnf autoremove -y  --installroot "$CHROOTNAME" "$__remove_list"
 	else
 		printf "%s\n" " " "-> No rpms need to be removed"
@@ -1347,10 +1323,7 @@ FilterLogs() {
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
 		MISSING=`grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"`: 
-		#if [ -n "$MISSING" ]; then
-		#echo "$MISSING" "ERROR! Is your repo enabled"
-		#fi
-	fi
+    fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
 		printf "%s\n" " " "-> DEPENDENCY FAILURES"
@@ -1359,8 +1332,7 @@ FilterLogs() {
 	fi
 	# List the available repos and their status
 	dnf repolist -C --installroot "$CHROOTNAME" --quiet  --all > REPO_STATUS.txt
-	#Clean-up
-	# rm -f "$WORKDIR/install.log"
+	
 }
 
 InstallRepos() {
@@ -1451,16 +1423,14 @@ InstallRepos() {
 # file and their dependencies in /target/dir
 
 	# Start rpm packages installation
-	# CHGFLAG=1 Indicates a global change in the iso lists
-
-	# If we are IN_ABF=1 then build a standard iso
+		# If we are IN_ABF=1 then build a standard iso
 	# If we are IN_ABF=1 and DEBUG is set then we are running the ABF mode locally.
 	# In this mode the NOCLEAN flag is allowed.
 	# If set this will build a standard iso initially once built subsequent runs
 	# with NOCLEAN set will update the chroot with any changed file entries.
     # If we are IN_ABF=0 then
 	# If the NOCLEAN flag and the .noclean file does not exist and there is no /lib/modules in the chroot 
-	#then an iso will be built using the standard files
+	# then an iso will be built using the standard files
 	# plus the contents of the two user files my.add and my.rmv.
 	
 	# Once built subsequent runs with NOCLEAN set will update the chroot with
@@ -1470,15 +1440,8 @@ InstallRepos() {
 	# Files that were added to the user files will be downloaded.
 	
 createChroot() {
-# The CHGFLAG section needs fixing or removing
-#	if [ -n "$CHGFLAG" ]; then
-#		if [[ ( -f "$CHROOTNAME"/.noclean && -d "$CHROOTNAME/lib/modules") || -n "$REBUILD" ]]; then
-#			printf "%s\n" "-> Updating existing chroot $CHROOTNAME"
-#			#what will we call here
-#		else
-#			printf "%s\n" "-> Creating chroot $CHROOTNAME"
-#		fi
-		# Make sure /proc, /sys and friends can be mounted so %post scripts can use them
+
+        # Make sure /proc, /sys and friends can be mounted so %post scripts can use them
 		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
 		if [ -n "$REBUILD" ]; then
@@ -1490,7 +1453,6 @@ createChroot() {
 		else
 			printf "%s\n" "-> Rebuilding."
 		fi
-#	fi
 
 	mount --bind /proc "$CHROOTNAME"/proc
 	mount --bind /sys "$CHROOTNAME"/sys
@@ -1763,7 +1725,7 @@ createUEFI() {
 	# making the loop devices unavailable to the main kernel though additional devices may be used in the docker instance.
 	# Yet another side effect is that the host OS automounts all the loop devices which then makes it impossible
 	# to unmount them from inside the container. This problem can be overcome by adding the following rule to the docker-80.rules file
-	#SUBSYSTEM=="block", DEVPATH=="/devices/virtual/block/loop*", ENV{ID_FS_UUID}="2222-2222", ENV{UDISKS_PRESENTATION_HIDE}="1", ENV{UDISKS_IGNORE}="1"
+	# SUBSYSTEM=="block", DEVPATH=="/devices/virtual/block/loop*", ENV{ID_FS_UUID}="2222-2222", ENV{UDISKS_PRESENTATION_HIDE}="1", ENV{UDISKS_IGNORE}="1"
 	# The indentifiers in the files system image are used to ensure that the rule is unique to this script
 
 	losetup -f  > /dev/null 2>&1
