@@ -266,7 +266,7 @@ main() {
     fi
     
     # Don't leave potentially dangerous stuff if we had to error out...
-    trap errorCatch ERR SIGHUP SIGINT SIGTERM
+   # trap errorCatch ERR SIGHUP SIGINT SIGTERM
     
 	# Set the local build prefix
 	if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then
@@ -438,7 +438,6 @@ hlpprtf() {
 COLUMNS=`tput cols`
 FINAL=$(( COLUMNS - 80 ))
 OP=`printf "%b\n\t\t\t" "$1" | fmt -w "$FINAL"`
-# echo "$OP"
 printf "%s\n" "$OP"
 }
 
@@ -525,7 +524,7 @@ setWorkdir() {
 	# this is where ISO files are created
 	ISOROOTNAME="$WORKDIR/ISO"
 	mkdir -p ${CHROOTNAME}
-	mkdir ${ISOROOTNAME}
+	mkdir -p ${ISOROOTNAME}
 }
 
 mkeWkingEnv() {
@@ -877,9 +876,6 @@ showInfo() {
 	if [ -n "$KEEP" ]; then
 		printf "%s\n" "-> The session diffs will be retained"
 	fi
-	if [ -n "$ENSKPLST" ]; then
-		printf "%\n" "-> urpmi skip list enabled"
-	fi
 	printf "%s\n" "###" " "
 }
 
@@ -959,7 +955,7 @@ MkeListRepo() {
 MkeCmmtMsg() {
 # Create a sequential commit message
     if [ ! -d ${COMMITDIR}/sessrec ]; then
-    mkdir ${COMMITDIR}/sessrec
+    mkdir -p ${COMMITDIR}/sessrec
     else
         if  [ -f ${COMMITDIR}/sessrec/.seqnum ]; then
             SEQNUM=`cat ${COMMITDIR}/sessrec/.seqnum`
@@ -1364,7 +1360,7 @@ fi
             #| tee "$WORKDIR/dnfopt.log"
         else
             /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
-            >"$WORKDIR/dnfopt.log"
+            #>"$WORKDIR/dnfopt.log"
             #| tee "$WORKDIR/dnfopt.log"
             printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
         fi
@@ -1454,7 +1450,7 @@ fi
 	printf "%s\n" -> "Remove any duplicate includes"
 	# This should signal an error to the user
 	RMRPMINC_TMP=$(comm -12 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$RMRPMINC" | sort))
-	if [ -n RMRPMINC_TMP ]; then
+	if [ -n $RMRPMINC_TMP ]; then
 	printf "%s\n" -> "Error: ->> The are identical include files in the add and remove lists" "->> You probably don't want this"
 	fi
 	printf "%s\n" "-> Creating the package lists"
@@ -2161,7 +2157,7 @@ EOF
 	#if [[ "$IN_ABF" = 0  || ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]]; then
 	#if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
 	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
-	mkdir "$CHROOTNAME"/var/cache/dnf
+	mkdir -p "$CHROOTNAME"/var/cache/dnf
 	#fi
 	
 	# (crazy) NOTE: this be after last think touched /home/live
