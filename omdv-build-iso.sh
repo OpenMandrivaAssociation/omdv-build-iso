@@ -320,22 +320,22 @@ main() {
 	setWorkdir     # Sets the workdirectory location depending on whether 
 # START ISO BUILD
     mkeWkingEnv    # Creates the working environment
-    #RemkWorkDir   #
-    #SaveDaTa
-    #RestoreDaTa
-    SetFileList    # Sets the current list repo paths REORDER FUNCTION TO REFLECT THIS CHANGE
+    #RemkWorkDir   # Remake the working directory if you are rebuilding an iso.
+    #SaveDaTa      # Saves useful chroot data for rebuilds
+    #RestoreDaTa   # Restores data to the chroot for rebuild
+    SetFileList    # Sets the current list repo paths. 
+    #userISONme    # Interactive menu to set user iso name and the windoe manager executable.
+	#cfrmISONme    # Support for interactive menu.
+	#cfrmWMNme     # Support for interactive menu.
 	mkeREPOdir     # Creates users personal repo must always be first as it stores variables from one run to the next.
-	mKeBuild_id    # Creates a unique build id
-	#userISONme    # Interactive menu to set user iso name and the windoe manager executable
-	#cfrmISONme    # Support for interactive menu
-	#cfrmWMNme     # Support for interactive menu
-	mkISOLabel     # Creates the iso labelling data and the UUIDS
-	showInfo       # Shows major options chosen
-	getPkgList     # Gets the package lists from git hub from barnch set by --isover
-	MkeListRepo    # Create git repo for pkg lists
+	mKeBuild_id    # Creates a unique build id.
+	mkISOLabel     # Creates the iso labelling data and the UUIDS.
+	showInfo       # Shows major options chosen.
+	getPkgList     # Gets the package lists from git hub from barnch set by --isover.
+	MkeListRepo    # Create git repo for pkg lists.
 	#MkeCmmtMsg    # Creates a uniquely labelled commit message for git commits.
-	DtctCmmt       # Check for changes and set change flag 
-    CarryOn        # An entry point for the  
+	DtctCmmt       # Check for changes and set change flag.
+    CarryOn        # An entry point for the user build setup. 
 } #End of main
 
 ########################
@@ -638,144 +638,84 @@ RestoreDaTa() {
 	touch "$WORKDIR/.new"
 }
 
-
-mkeREPOdir() {
-# This function create the directory pointed to by the --listrepodir=< repo name> option
-# if it does not exist. A small file (.repo) is written to the users home directory.
-# This file is read on startup (if it exists) and the LREPODIR  or NEWTYPE is set to the value contained in it
-# One of these variables is used to set the COMMITDIR variable dependent on whether a standard or user iso is to be built.
-# The variable that determines this is the TYPE variable.
-# If the directory listed in the .repo file does not exit then it is created.
-        if [  "$IN_ABF" = '0' ]; then 
-            if [ -n "$LREPODIR" ]; then
-                if [ "$LREPODIR" == "$(< "${UHOME}"/.rpodir)" ] && [ -d "$UHOME"/"$LREPODIR" ]; then
-                    COMMITDIR="$UHOME"/"$LREPODIR"
-                    printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 1"
-                else
-                    mkdir -p "$UHOME"/"$LREPODIR"/sessrec
-                    printf "%s\n" "$LREPODIR" > "$UHOME"/.rpodir 
-                    COMMITDIR="$UHOME"/"$LREPODIR"
-                    printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 2"
-                fi
-            elif [ -n "$NEWTYPE" ] && [ "$NEWTYPE" != "error" ] && [ ! -d "$UHOME"/"$NEWTYPE"/iso-pkg-lists-"${TREE,,}"/omdv-minimal.lst ]; then
-                mkdir -p "$UHOME"/"$NEWTYPE"/sessrec
-                echo "$NEWTYPE" > "${UHOME}"/.rpodir
-                COMMITDIR="$UHOME"/"$NEWTYPE"
-                printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 4"
-            elif [ -f "$UHOME"/.rpodir ]; then
-                LREPODIR="$(< "${UHOME}"/.rpodir)"         
-                printf "%s\n" "$LREPODIR"
-                COMMITDIR="$UHOME"/"$LREPODIR"
-                printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 3"
-            else        
-                LREPODIR="$WHO"s-user-iso
-                mkdir -p "$UHOME"/"$LREPODIR"/sessrec
-                echo "$LREPODIR" > "${UHOME}"/.rpodir
-                COMMITDIR="$UHOME"/"$LREPODIR"
-                printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 5"
-            fi
-        else
-            cd "$WORKDIR" || exit
-            COMMITDIR="${WORKDIR}"
-        fi
-}
-
-mKeBuild_id() {
-# Makes a unique? build id
-	printf "%s\n" "Create the BUILD_ID"
-	if [ "$IN_ABF" = '0' ]; then
-		if [ -f "$COMMITDIR"/sessrec/.build_id ]; then
-			# The BUILD_ID has already been saved. Used to create commit messages.
-			BUILD_ID=$(cat "$COMMITDIR"/sessrec/.build_id)
-		else
-			BUILD_ID=$(($RANDOM%9999+1000))
-			echo ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
-		fi
-	else
-		BUILD_ID=$(($RANDOM%9999+1000))
-	fi
-}
-
-
-
 SetFileList() {
  # Assign the config build list
  # This could work by just checking by checking whether the provided entry exists in the list of TYPES if it does not then this must be a user chosen name.
  # we would still call the interactive session but the contraint on the nameing would be removed.
 
-			case "$TYPE" in
-			plasma)
-				NEWTYPE=error
-				;;
-			plasma-wayland)
-				NEWTYPE=error
-				;;
-			mate)
-				NEWTYPE=error
-				;;
-			lxqt)
-				NEWTYPE=error
-				;;
-			icewm)
-				NEWTYPE=error
-				;;
-			xfce4)
-				NEWTYPE=error
-				;;
-			weston)
-				NEWTYPE=error
-				;;
-            gnome3)
-                NEWTYPE=error
-                ;;
-			minimal)
-				NEWTYPE=error
-				;;
-			sway)
-				NEWTYPE=error
-				;;
-            mate)
-                NEWTYPE=error
-                ;;
-               *)
-                NEWTYPE="$TYPE"
-				;;
-			esac
-			if [ "$NEWTYPE" = "error" ]; then
-                if [ "$TYPE" = 'plasma-wayland' ]; then
-                    FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
-                else
-                    FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
+    case "$TYPE" in
+    plasma)
+        NEWTYPE=error
+        ;;
+    plasma-wayland)
+        NEWTYPE=error
+        ;;
+    mate)
+        NEWTYPE=error
+        ;;
+    lxqt)
+        NEWTYPE=error
+        ;;
+    icewm)
+        NEWTYPE=error
+        ;;
+    xfce4)
+        NEWTYPE=error
+        ;;
+    weston)
+        NEWTYPE=error
+        ;;
+    gnome3)
+        NEWTYPE=error
+        ;;
+    minimal)
+        NEWTYPE=error
+        ;;
+    sway)
+        NEWTYPE=error
+        ;;
+    mate)
+        NEWTYPE=error
+        ;;
+        *)
+        NEWTYPE="$TYPE"
+        ;;
+    esac
+    if [ "$NEWTYPE" = "error" ]; then
+        if [ "$TYPE" = 'plasma-wayland' ]; then
+            FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
+        else
+            FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
-                fi
-            elif [ "$NEWTYPE" != "error" ] && [ $IN_ABF == '1' ]; then
-                printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
-                errorCatch
-            else    
-            printf "%s\n" "-> You are creating a user build" 
-            hlpprtf "\t\t\t\tThis build will use the the omdv_minimal_iso.lst to create a basic iso. In addition you will need to provide the name the executable for the Window Manager and the name you wish to assign to the desktop file associated with it. At this point a list repository will be created with that name and the program will exit. This allows the user to add any desired packages and includes to the my.add list file before building the iso. On subsequent runs the program will not exit but continue on to build the iso." " "
-            #Check here whether .wmdeskname and .wmname are stored and if so load them into their variables.
-            #Hmm if the content of .repo matches that of NEWTYPE then WHAT? Load the repo name and then check for .wmdeskname and .wmname if these do'nt exist then call userISOnme to set them. 
-            # then set COMMITDIR else if it doesn't match we need to create the COMMITDIR and call and THEN set .uisonme and .wmisoHmm ok
-                if [ -f "$UHOME/.repo" ]; then
-                    if [ "$NEWTYPE" == "$(< "$UHOME/.repo")" ]; then
-                        COMMITDIR=< "$UHOME/.repo"
-                    fi
-                else
-                        COMMITDIR="$UHOME/$NEWTYPE"
-                    #check whether the .wmdeskname and the .wmname have been saved if true then load them if false call the routines to create them
-                        if [ -f "$COMMITDIR"/sessrec/.wmdeskname ] && [ -f "$COMMITDIR"/sessrec/.wmname ]; then
-                            WMDESK="$(< "${COMMITDIR}"/sessrec/.wmdeskname)"
-                            WMNAME="$(< "${COMMITDIR}"/sessrec/.wmname)"  
-                        else
-                            userDSKTPNme
-                        fi
-                        # Set the default file list for the user build.
-                        FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/omdv-minimal.lst"
-                        mkeUsrListRepo
-                        hlpprtf "\t\tA git repository with basic build lists has been created in directory named $UHOME/$NEWTYPE. This directory is maintained as a git repository, this script will never overwrite it. Additional packages or files to be included on the iso may be added to the file my.add Packages or files that you wish to be removed may be added to the file my.rmv"
-                fi
+        fi
+    elif [ "$NEWTYPE" != "error" ] && [ $IN_ABF == '1' ]; then
+        printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
+        errorCatch
+    else    
+    printf "%s\n" "-> You are creating a user build" 
+    hlpprtf "\t\t\t\tThis build will use the the omdv_minimal_iso.lst to create a basic iso. In addition you will need to provide the name the executable for the Window Manager and the name you wish to assign to the desktop file associated with it. At this point a list repository will be created with that name and the program will exit. This allows the user to add any desired packages and includes to the my.add list file before building the iso. On subsequent runs the program will not exit but continue on to build the iso." " "
+    #Check here whether .wmdeskname and .wmname are stored and if so load them into their variables.
+    #Hmm if the content of .repo matches that of NEWTYPE then WHAT? Load the repo name and then check for .wmdeskname and .wmname if these do'nt exist then call userISOnme to set them. 
+    # then set COMMITDIR else if it doesn't match we need to create the COMMITDIR and call and THEN set .uisonme and .wmisoHmm ok
+        if [ -f "$UHOME/.repo" ]; then
+            if [ "$NEWTYPE" == "$(< "$UHOME/.repo")" ]; then
+                COMMITDIR=< "$UHOME/.repo"
             fi
+        else
+                COMMITDIR="$UHOME/$NEWTYPE"
+            #check whether the .wmdeskname and the .wmname have been saved if true then load them if false call the routines to create them
+                if [ -f "$COMMITDIR"/sessrec/.wmdeskname ] && [ -f "$COMMITDIR"/sessrec/.wmname ]; then
+                    WMDESK="$(< "${COMMITDIR}"/sessrec/.wmdeskname)"
+                    WMNAME="$(< "${COMMITDIR}"/sessrec/.wmname)"  
+                else
+                    userDSKTPNme
+                fi
+                # Set the default file list for the user build.
+                FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/omdv-minimal.lst"
+                mkeUsrListRepo
+                hlpprtf "\t\tA git repository with basic build lists has been created in directory named $UHOME/$NEWTYPE. This directory is maintained as a git repository, this script will never overwrite it. Additional packages or files to be included on the iso may be added to the file my.add Packages or files that you wish to be removed may be added to the file my.rmv"
+        fi
+    fi
 }
 
 userDSKTPNme() {
@@ -835,6 +775,63 @@ cfrmWMNme() {
     if [ $in2 = 'no' ] || [ $in2 = 'n' ]; then
         userDSKTPNme
     fi
+}
+
+mkeREPOdir() {
+# This function create the directory pointed to by the --listrepodir=< repo name> option
+# if it does not exist. A small file (.repo) is written to the users home directory.
+# This file is read on startup (if it exists) and the LREPODIR  or NEWTYPE is set to the value contained in it
+# One of these variables is used to set the COMMITDIR variable dependent on whether a standard or user iso is to be built.
+# The variable that determines this is the TYPE variable.
+# If the directory listed in the .repo file does not exit then it is created.
+        if [  "$IN_ABF" = '0' ]; then 
+            if [ -n "$LREPODIR" ]; then
+                if [ "$LREPODIR" == "$(< "${UHOME}"/.rpodir)" ] && [ -d "$UHOME"/"$LREPODIR" ]; then
+                    COMMITDIR="$UHOME"/"$LREPODIR"
+                    printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 1"
+                else
+                    mkdir -p "$UHOME"/"$LREPODIR"/sessrec
+                    printf "%s\n" "$LREPODIR" > "$UHOME"/.rpodir 
+                    COMMITDIR="$UHOME"/"$LREPODIR"
+                    printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 2"
+                fi
+            elif [ -n "$NEWTYPE" ] && [ "$NEWTYPE" != "error" ] && [ ! -d "$UHOME"/"$NEWTYPE"/iso-pkg-lists-"${TREE,,}"/omdv-minimal.lst ]; then
+                mkdir -p "$UHOME"/"$NEWTYPE"/sessrec
+                echo "$NEWTYPE" > "${UHOME}"/.rpodir
+                COMMITDIR="$UHOME"/"$NEWTYPE"
+                printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 4"
+            elif [ -f "$UHOME"/.rpodir ]; then
+                LREPODIR="$(< "${UHOME}"/.rpodir)"         
+                printf "%s\n" "$LREPODIR"
+                COMMITDIR="$UHOME"/"$LREPODIR"
+                printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 3"
+            else        
+                LREPODIR="$WHO"s-user-iso
+                mkdir -p "$UHOME"/"$LREPODIR"/sessrec
+                echo "$LREPODIR" > "${UHOME}"/.rpodir
+                COMMITDIR="$UHOME"/"$LREPODIR"
+                printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 5"
+            fi
+        else
+            cd "$WORKDIR" || exit
+            COMMITDIR="${WORKDIR}"
+        fi
+}
+
+mKeBuild_id() {
+# Makes a unique? build id
+	printf "%s\n" "Create the BUILD_ID"
+	if [ "$IN_ABF" = '0' ]; then
+		if [ -f "$COMMITDIR"/sessrec/.build_id ]; then
+			# The BUILD_ID has already been saved. Used to create commit messages.
+			BUILD_ID=$(cat "$COMMITDIR"/sessrec/.build_id)
+		else
+			BUILD_ID=$(($RANDOM%9999+1000))
+			echo ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
+		fi
+	else
+		BUILD_ID=$(($RANDOM%9999+1000))
+	fi
 }
 
 mkeUsrListRepo() {
@@ -946,7 +943,7 @@ getPkgList() {
     # If the user wishes to create a new spin they can achieve this by setting the --listrepodir commandline option to a new directory 
     # where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name 
     # with the --listrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
-    printf "%s\n\n"  "$FILELISTS $COMMITDIR" "$COMMITDIR"/"${FILELISTS#$WORKDIR/}"
+    printf "%s\n\n"  "$FILELISTS $COMMITDIR" 
         if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
             printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
             # download iso packages lists from https://github.com
@@ -967,16 +964,11 @@ getPkgList() {
                 printf "%s\n" "-> $FILELISTS does not exist. Exiting"
                 errorCatch
             fi
-
-            if [ ! -f "$COMMITDIR"/"${FILELISTS#$WORKDIR/}" ]; then
-                echo "THE CHROOT FILES ARE POPULATED HERE"
-                popREPOdir
-            else
-                printf "%s\n" "-> Copying users local package lists from "$COMMITDIR" to workdir"
-                cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
-            fi
-		else
-            printf "%s\n" "-> Copying users local package lists from "$LREPODIR" to workdir"
+        elif [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
+            echo "THE CHROOT FILES ARE POPULATED HERE"
+            popREPOdir
+        else
+            printf "%s\n" "-> Copying users local package lists from $COMMITDIR to workdir"
             cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
         fi
 }
@@ -996,7 +988,7 @@ MkeListRepo() {
 # Create git repo for the package lists so we can record user mode changes.
 	if [ ! -d "${COMMITDIR}/iso-pkg-lists-${TREE}/.git" ]; then
 		printf "%s\n" "-> Creating package list repo"
-		cd ${COMMITDIR}/iso-pkg-lists-${TREE}
+		cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
 		git init
 		git add .
 		git config user.email "omdv@abf.openmandriva.org"
@@ -1041,7 +1033,7 @@ InstallRepos() {
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
 	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-	cd "$WORKDIR"
+	cd "$WORKDIR" || exit
 	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
 	for i in $PACKAGES; do
@@ -1793,7 +1785,6 @@ setupGrub2() {
 		cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
 		cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
 		sed -i -e "s/title-text.*/title-text: \"Welcome to OpenMandriva Lx $VERSION ${EXTARCH} ${TYPE} BUILD ID: ${BUILD_ID}\"/g" "$ISOROOTNAME"/boot/grub/themes/OpenMandriva/theme.txt > /dev/null 2>&1
-
 		if [ $? != 0 ]; then
 			printf "%s\n" "-> WARNING Failed to update Grub2 theme." "Please add a grub theme to my.add if needed."
 			# errorCatch
@@ -2169,8 +2160,8 @@ EOF
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 		if [ "${TYPE,,}" = "$NEWTYPE" ]; then 
-            sed -i -e "s/.*executable:.*/    executable: "$WMNAME"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "$WMDESK"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+            sed -i -e "s/.*executable:.*/    executable: $WMNAME/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: $WMDESK/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi	
     fi
 	#remove rpm db files which may not match the non-chroot environment
@@ -2407,8 +2398,8 @@ FilterLogs() {
 		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$10}' >>"$WORKDIR/rpm-fail.log"
 
 		# Append the data
-		cat "$WORKDIR/install.log" | awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$18}'>> "$WORKDIR/rpm-fail.log"
-		cat "$WORKDIR/install.log" | awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$18}' >> "$WORKDIR/rpm-install.log"
+		 awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$18}' "$WORKDIR/install.log" >> "$WORKDIR/rpm-fail.log"
+		 awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$18}' "$WORKDIR/install.log" >> "$WORKDIR/rpm-install.log"
 	fi
 	# Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
