@@ -967,11 +967,12 @@ getPkgList() {
                 printf "%s\n" "-> $FILELISTS does not exist. Exiting"
                 errorCatch
             fi
-            echo "THE CHROOT FILES ARE POPULATED HERE"
+
             if [ ! -f "$COMMITDIR"/"${FILELISTS#$WORKDIR/}" ]; then
+                echo "THE CHROOT FILES ARE POPULATED HERE"
                 popREPOdir
             else
-                printf "%s\n" "-> Copying users local package lists from "$LREPODIR" to workdir"
+                printf "%s\n" "-> Copying users local package lists from "$COMMITDIR" to workdir"
                 cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
             fi
 		else
