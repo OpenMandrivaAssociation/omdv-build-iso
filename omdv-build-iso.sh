@@ -946,7 +946,7 @@ getPkgList() {
     # If the user wishes to create a new spin they can achieve this by setting the --listrepodir commandline option to a new directory 
     # where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name 
     # with the --listrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
-    printf "%s\n\n"  "$FILELISTS $COMMITDIR"
+    printf "%s\n\n"  "$FILELISTS $COMMITDIR" "$COMMITDIR"/"${FILELISTS#$WORKDIR/}"
         if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
             printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
             # download iso packages lists from https://github.com
