@@ -970,7 +970,8 @@ getPkgList() {
                 printf "%s\n" "-> $FILELISTS does not exist. Exiting"
                 errorCatch
             fi
-        elif [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
+        fi
+        if [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
             echo "THE CHROOT FILES ARE POPULATED HERE"
             popREPOdir
         else
@@ -2144,8 +2145,8 @@ EOF
 		fi
 
         if [ "${TYPE,,}" = 'cinnamon' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+            sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+            sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
 		if [ "${TYPE,,}" = 'lxqt' ]; then
@@ -2165,14 +2166,6 @@ EOF
         if [ "${TYPE,,}" = 'gnome3' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startgnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "gnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-		if [ "${TYPE,,}" = 'mate' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startmate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-		if [ "${TYPE,,}" = 'cinnamon' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 		if [ "${TYPE,,}" = "$NEWTYPE" ]; then 
             sed -i -e "s/.*executable:.*/    executable: $WMNAME/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
