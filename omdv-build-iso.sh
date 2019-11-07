@@ -658,6 +658,7 @@ SetFileList() {
         ;;
     cinnamon)
         NEWTYPE=error
+        ;;
     lxqt)
         NEWTYPE=error
         ;;
