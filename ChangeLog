@@ -1,14 +1,2578 @@
+2019-11-06 22:54:11 +0000 iso buider 
+
+	* Update to do Remove spurious file (HEAD -> addrepos, origin/master, origin/HEAD, master)
+
+2019-11-06 21:09:21 +0000 iso buider 
+
+	* Rewrite the method for creating user spins. Rename the interactive functions and their variables. Revise getPkgList function to ensure local repo is created Make some changes suggested by shell check. (origin/addrepos)
+
+2019-11-06 11:13:12 +0000 iso buider 
+
+	* Changes for Build Id 8516; Session No 3/n
+
+2019-11-06 11:05:19 +0000 iso buider 
+
+	* Changes for Build Id 8516; Session No 2/n
+
+2019-11-06 10:40:43 +0000 iso buider 
+
+	* Changes for Build Id 8516; Session No 1/n
+
+2019-11-03 00:11:47 +0000 iso buider 
+
+	* Use mkdir -p in some extra locations. Fix test Deal with broken redirection
+
+2019-11-02 15:49:33 +0000 iso buider 
+
+	* Reorder functions in execution order. Label function calls Remove duplicate modules from grub2 config
+
+2019-11-02 10:16:51 +0000 iso buider 
+
+	* Changes for Build Id 4959; Session No 6/n
+
+2019-11-02 02:01:01 +0000 Colin Close 
+
+	* Remove spurious files from repo
+
+2019-11-02 01:57:15 +0000 Colin Close 
+
+	* Clean up code ready for beta testing and merge with master
+
+2019-11-02 01:16:27 +0000 Colin Close 
+
+	* Create convenience function mkeWkingEnv from existing code and move to function area.
+
+2019-10-29 22:30:13 +0000 Colin Close 
+
+	* Fix typo
+
+2019-10-29 14:09:08 +0000 Colin Close 
+
+	* Disable conditional on dnf upgrade
+
+2019-10-29 14:03:51 +0000 Colin Close 
+
+	* Merge branch 'master' into addrepos
+
+2019-10-29 15:21:04 +0300 Alexander Stefanov 
+
+	* put all back (tag: known-good)
+
+2019-10-29 14:53:08 +0300 Alexander Stefanov 
+
+	* unmask stuff
+
+2019-10-29 14:10:10 +0300 Alexander Stefanov 
+
+	* dracut is a culprit
+
+2019-10-29 14:04:47 +0300 Alexander Stefanov 
+
+	* hide all
+
+2019-10-29 14:02:32 +0300 Alexander Stefanov 
+
+	* remove more deps
+
+2019-10-29 14:00:18 +0300 Alexander Stefanov 
+
+	* mask minimal
+
+2019-10-29 13:58:05 +0300 Alexander Stefanov 
+
+	* hide all stuff
+
+2019-10-29 10:47:33 +0000 iso buider 
+
+	* Fix the mkelistrepo logic
+
+2019-10-29 13:37:37 +0300 Alexander Stefanov 
+
+	* remove gstreamer
+
+2019-10-29 13:35:16 +0300 Alexander Stefanov 
+
+	* make sway image tiny
+
+2019-10-29 13:30:40 +0300 Alexander Stefanov 
+
+	* remove calamares and wayland stuff add firefox
+
+2019-10-28 23:17:26 +0100 tpgxyz 
+
+	* run dnf upgrade before iso build, clear out nasty echos
+
+2019-10-28 16:42:13 +0100 Tomasz Paweł Gajc 
+
+	* disable mdraid
+
+2019-10-28 15:36:05 +0100 Tomasz Paweł Gajc 
+
+	* fix typo
+
+2019-10-28 15:14:06 +0100 Tomasz Paweł Gajc 
+
+	* adjust grub modules, and cancel ISO build if EFI image build fails
+
+2019-10-28 01:59:16 +0000 iso buider 
+
+	* Fix the --makelistrepo option
+
+2019-10-28 01:13:06 +0000 iso buider 
+
+	* Fix sed on grub menu
+
+2019-10-27 23:29:34 +0000 iso buider 
+
+	* Changes for Build Id 7938; Session No 1/n
+
+2019-10-27 23:04:00 +0000 Colin Close 
+
+	* Add functionality to create the list repo ahead of the build Improve the user build in line info and allow use to enter commands to start an alternative WM. Users may now name their isos. Create two functions to help with formatting the help Help: Major revision and expansion Revise logic in the setWorkdir function. Add logic to control whether local systems files need update or not this is only applicable outside of use on ABF. Add some comments about script operations Add three new functions to support the creation and management of list repos. Finally nail the bug in genIncFiles where an extra reop was added to the list Quieten down the createPkgList function. Revise the  mkUserSpin function so that it actually works as intended. Provide some debugging lists in the function. Enabled by --devmode. Don't use xargs to feed dnf it's not necessary. Add new option --usemirrors. By default script uses abf-downloads option allow use of mirrors for times when abf-downloads is down. Add new option --baserepo . In normal operation repos are restored to the values the script was run with. This may not be desirable. The baserepo option enable the main repository only. Clean up the logic in the createChroot function. Make doubly sure /proc and friends directories are created.
+
+2019-10-22 07:59:45 +0100 Colin Close 
+
+	* Revise --compressor option Add --baserepo option Improve --debug option Add two small text processing function for help formatting Revise --keep option Add --usemirrors option Help: major revision
+
+2019-10-20 17:50:27 +0100 Colin Close 
+
+	* Re-enable ABF realpath code after local testing
+
+2019-10-20 17:43:31 +0100 Colin Close 
+
+	* debugging for abf
+
+2019-10-20 16:33:21 +0100 Colin Close 
+
+	* Fix things so the --compressor option works with dracut
+
+2019-10-20 15:42:42 +0100 Colin Close 
+
+	* Rationalise the WORKDIR logic Simplify the management of package lists in user mode. Remove unused function.
+
+2019-10-19 13:57:56 +0100 Colin Close 
+
+	* Reoganise and rewrite the help Remove an unused function Rationalise the $WORKDIR LOGIC. Add TYPE=mate option
+
+2019-10-18 20:50:36 +0100 Colin Close 
+
+	* Make the command line option show the version
+
+2019-10-18 19:40:38 +0100 Colin Close 
+
+	* Fixes for gnome3 and xfce4 lists
+
+2019-10-18 19:17:57 +0100 Colin Close 
+
+	* Fix gnome3 list Recommends keyword issue.
+
+2019-10-18 18:46:02 +0100 Colin Close 
+
+	* Fix the error log fields again!!
+
+2019-10-18 17:16:14 +0200 rugyada 
+
+	* Replacing ristretto with viewnior
+
+2019-10-18 10:46:16 +0100 Colin Close 
+
+	* Remove some unfortunate keywords.
+
+2019-10-18 10:42:53 +0100 Colin Close 
+
+	* Fix saving rpms for --rebuild
+
+2019-10-17 23:03:57 +0100 Colin Close 
+
+	* Add gnome3 build (bero will shoot me!!)
+
+2019-10-17 20:55:08 +0200 rugyada 
+
+	* Add breeze-gtk
+
+2019-10-17 19:08:38 +0200 AngryPenguinPL 
+
+	* create gnome list for iso
+
+2019-10-16 22:55:20 +0100 Colin Close 
+
+	* Final fixes for dual boot iso.
+
+2019-10-16 15:39:52 +0100 Colin Close 
+
+	* Syntax fix
+
+2019-10-16 15:33:39 +0100 Colin Close 
+
+	* Fix cosmetic bits for dual boot
+
+2019-10-16 13:23:12 +0100 Colin Close 
+
+	* Finish dual boot grub menu
+
+2019-10-16 12:06:04 +0100 Colin Close 
+
+	* Unfinished initial commit of dual kernel grub menu.
+
+2019-10-16 10:23:34 +0100 Colin Close 
+
+	* Add alternate kernel
+
+2019-10-16 09:10:13 +0100 Colin Close 
+
+	* Fix bsdtar -exclude paths
+
+2019-10-13 23:14:38 +0100 Colin Close 
+
+	* Try again with clang kernel
+
+2019-10-13 18:37:43 +0100 Colin Close 
+
+	* Make a dual boot iso for the new clan compiled iso
+
+2019-10-13 18:03:29 +0100 Colin Close 
+
+	* Add repolist command. Accepts a comma separated list of repoid's Fix bugs in user option code for --noclean, --keep and --rebuild. Use the dnf command without xargs. xargs dep removed Re-enable parallel for ABF so that missing packages can be ignored but logged.
+
+2019-10-09 19:27:09 +0200 rugyada 
+
+	* Comment out eatmonkey, ristretto
+
+2019-10-09 14:57:20 +0200 rugyada 
+
+	* Uncomment task-xfce
+
+2019-10-09 12:35:10 +0200 rugyada 
+
+	* Add some packages to list
+
+2019-10-07 22:20:12 +0100 itchka (Colin Close) 
+
+	* Disable debugging (tag: working)
+
+2019-10-07 21:10:00 +0100 itchka (Colin Close) 
+
+	* Revert previous commit
+
+2019-10-07 20:12:51 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-10-07 20:12:25 +0100 itchka (Colin Close) 
+
+	* Make sure we create the $WORKDIR when in ABF
+
+2019-10-07 21:09:25 +0200 Gabriel Craciunescu 
+
+	* we have a else case hmm?
+
+2019-10-07 20:00:16 +0100 itchka (Colin Close) 
+
+	* More debug
+
+2019-10-07 19:58:07 +0100 itchka (Colin Close) 
+
+	* Fix variable commenting
+
+2019-10-07 19:51:39 +0100 itchka (Colin Close) 
+
+	* Temporarily enable some debuging
+
+2019-10-07 20:39:11 +0200 Gabriel Craciunescu 
+
+	* typo
+
+2019-10-07 20:36:48 +0200 Gabriel Craciunescu 
+
+	* trying to fix error reported by ruru
+
+2019-10-07 19:00:56 +0100 itchka (Colin Close) 
+
+	* Fix path for repo rpms deletion
+
+2019-10-07 00:07:38 +0100 iso buider 
+
+	* Revise repo handling and restoration Create the .new file irrespective of the state of the ABF variable.
+
+2019-10-06 23:31:31 +0100 iso buider 
+
+	* Merge branch 'master' of ssh://github.com/OpenMandrivaAssociation/omdv-build-iso
+
+2019-10-06 23:29:14 +0100 iso buider 
+
+	* Fix .new file creation when ABF=1
+
+2019-10-06 19:41:05 +0200 Bernhard Rosenkränzer 
+
+	* Restore some fixes that were overwritten
+
+2019-10-06 19:38:53 +0200 Bernhard Rosenkränzer 
+
+	* Fix messed up indentation. Never mix tabs and spaces
+
+2019-10-06 00:05:10 +0100 Colin Close 
+
+	* Remove redundant function installRepos
+
+2019-10-05 23:55:18 +0100 Colin Close 
+
+	* Merge branch 'master' of ssh://github.com/OpenMandrivaAssociation/omdv-build-iso
+
+2019-10-05 23:34:22 +0100 Colin Close 
+
+	* Fix problem where mirrors were being used to download packages. Make sure that cooker repos are not enabled except when requested. Add new options 1. Use testing repo --testing 2. Use unsupported repo --unsupprepo 3. Enable a repo --enablerepo
+
+2019-10-05 19:49:22 +0200 Bernhard Rosenkränzer 
+
+	* Remove firewall-applet
+
+2019-10-05 19:31:53 +0200 Bernhard Rosenkränzer 
+
+	* Re-enable mirrors after building the iso
+
+2019-10-05 17:55:05 +0200 Bernhard Rosenkränzer 
+
+	* There's a space between # and baseurl
+
+2019-10-05 17:39:18 +0200 Bernhard Rosenkränzer 
+
+	* Deal with duplicate packages better
+
+2019-10-05 17:35:28 +0200 Bernhard Rosenkränzer 
+
+	* Don't use mirrors
+
+2019-10-05 17:33:51 +0200 Bernhard Rosenkränzer 
+
+	* Fix error message
+
+2019-10-05 17:03:33 +0200 Bernhard Rosenkränzer 
+
+	* Remove unneeded special-casing of cooker
+
+2019-08-28 03:18:51 +0200 AngryPenguinPL 
+
+	* obsolete (origin/rolling, rolling)
+
+2019-08-28 02:58:58 +0200 AngryPenguinPL 
+
+	* fix iso build by remove obsoletes
+
+2019-08-09 17:06:36 +0200 rugyada 
+
+	* We already have kuser and om-user-manager
+
+2019-08-09 17:05:43 +0200 rugyada 
+
+	* We already have kuser and om-user-manager
+
+2019-08-09 17:03:57 +0200 rugyada 
+
+	* We already have kuser and om-user-manager
+
+2019-07-20 15:14:32 +0200 rugyada 
+
+	* Create true folders instead of symlinks
+
+2019-07-20 14:51:57 +0200 rugyada 
+
+	* Delete iso-pkg-lists-rolling
+
+2019-07-20 14:51:40 +0200 rugyada 
+
+	* Delete iso-pkg-lists-4.0
+
+2019-06-18 14:41:11 +0200 rugyada 
+
+	* Add smplayer-themes
+
+2019-06-17 15:34:21 +0200 Tomasz Paweł Gajc 
+
+	* do not use --nogpgcheck when building ISO
+
+2019-06-17 15:31:00 +0200 Tomasz Paweł Gajc 
+
+	* add user manager to allow users to manage their accounts
+
+2019-06-12 03:37:16 +0200 Bernhard Rosenkränzer 
+
+	* Make output great again
+
+2019-06-12 03:34:35 +0200 Bernhard Rosenkränzer 
+
+	* First try at fixing i686 isos
+
+2019-06-12 03:22:13 +0200 Bernhard Rosenkränzer 
+
+	* No more openmandriva-repos-cooker
+
+2019-06-12 03:20:10 +0200 Bernhard Rosenkränzer 
+
+	* Use set -x, let's see why znver1 builds crash
+
+2019-06-12 03:19:11 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch '4.0' into rolling
+
+2019-06-12 03:19:01 +0200 Bernhard Rosenkränzer 
+
+	* Fix indentation messup, mixing tabs and spaces is evil
+
+2019-06-12 02:46:35 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' into rolling
+
+2019-06-12 02:46:20 +0200 Bernhard Rosenkränzer 
+
+	* No more openmandriva-repos-cooker
+
+2019-06-12 00:20:20 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch '4.0'
+
+2019-06-12 00:20:07 +0200 Bernhard Rosenkränzer 
+
+	* Adapt to new repo filenames
+
+2019-06-09 20:17:38 +0200 rugyada 
+
+	* Add om-cc and extra wallpapers
+
+2019-06-04 17:31:00 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' into 4.0
+
+2019-06-04 17:30:45 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' into rolling
+
+2019-06-04 17:29:44 +0200 Bernhard Rosenkränzer 
+
+	* Add 4.0 and rolling package lists
+
+2019-06-04 16:42:04 +0200 Bernhard Rosenkränzer 
+
+	* Add epson-inkjet-printer-escpr
+
+2019-06-02 13:27:53 +0200 Gabriel Craciunescu 
+
+	* added om-repo-picker
+
+2019-06-02 13:20:20 +0200 Gabriel Craciunescu 
+
+	* Revert "add kalarm and discover"
+
+2019-06-01 03:36:37 +0200 Bernhard Rosenkränzer 
+
+	* Revert "use iwd"
+
+2019-05-31 15:28:54 +0200 tpgxyz 
+
+	* use iwd
+
+2019-05-30 15:41:53 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #72 from OpenMandrivaAssociation/master
+
+2019-05-30 15:41:15 +0200 tpgxyz 
+
+	* add kalarm and discover
+
+2019-05-30 12:34:56 +0200 Tomasz Paweł Gajc 
+
+	* clean a little bit
+
+2019-05-30 12:25:33 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #71 from OpenMandrivaAssociation/master
+
+2019-05-30 12:25:09 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #70 from OpenMandrivaAssociation/master
+
+2019-05-25 22:58:30 +0200 tpgxyz 
+
+	* add falkon kde and plugins
+
+2019-05-25 19:20:53 +0200 tpgxyz 
+
+	* remove shared-desktop-ontologies
+
+2019-05-25 19:16:57 +0200 tpgxyz 
+
+	* kill that NetworkManager-wait-online
+
+2019-05-25 19:03:31 +0200 tpgxyz 
+
+	* pull dnf-plugins-core to manage dnf repositories
+
+2019-05-11 01:53:36 +0200 Bernhard Rosenkraenzer 
+
+	* Drop kalarm
+
+2019-05-09 19:32:38 +0200 Bernhard Rosenkraenzer 
+
+	* Drop obsolete sound-scripts
+
+2019-05-09 18:22:32 +0200 Bernhard Rosenkraenzer 
+
+	* Remove firefox* from Plasma iso
+
+2019-05-07 02:28:40 +0200 Bernhard Rosenkraenzer 
+
+	* Add libreoffice-kde5 -- seems to work ok in 6.2.4
+
+2019-05-07 02:26:18 +0200 Bernhard Rosenkraenzer 
+
+	* Put libreoffice back
+
+2019-04-01 23:27:35 +0000 Alexander Stefanov 
+
+	* add minimal
+
+2019-04-01 23:24:00 +0000 Alexander Stefanov 
+
+	* remove utils
+
+2019-04-01 23:14:29 +0000 Alexander Stefanov 
+
+	* add tools
+
+2019-04-01 23:10:23 +0000 Alexander Stefanov 
+
+	* add sway again
+
+2019-04-01 22:48:38 +0000 Alexander Stefanov 
+
+	* add sway to types
+
+2019-04-01 22:47:27 +0000 Alexander Stefanov 
+
+	* add sway
+
+2019-04-01 22:40:09 +0000 Alexander Stefanov 
+
+	* remove weston
+
+2019-04-02 00:36:54 +0300 Alexander Stefanov 
+
+	* add iproute2
+
+2019-03-17 22:03:09 +0100 Gabriel Craciunescu 
+
+	* drop non-free repos again
+
+2019-03-08 22:44:48 +0000 itchka (Colin Close) 
+
+	* Fix variable name
+
+2019-03-08 01:40:24 +0000 itchka (Colin Close) 
+
+	* Uncomment code
+
+2019-03-08 01:26:48 +0000 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-03-08 01:26:29 +0000 itchka (Colin Close) 
+
+	* Fix sed but needs more
+
+2019-03-08 01:02:22 +0000 itchka (Colin Close) 
+
+	* Remove kernel-release-desktop latest from lists Update Developer info
+
+2019-03-08 00:33:30 +0000 itchka (Colin Close) 
+
+	* Fix build id Fix data saving Fix commit message Fix noclean empty list
+
+2019-03-07 18:35:17 +0000 itchka (Colin Close) 
+
+	* use git for session recording Drop uneeded lx3 builder code Fix some screwed logic
+
+2019-03-06 23:17:10 +0000 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-03-06 23:16:53 +0000 itchka (Colin Close) 
+
+	* Sort broken test
+
+2019-02-19 18:58:35 +0100 Gabriel Craciunescu 
+
+	* TPM disable LO until is fixed , need do some testing
+
+2019-02-13 17:10:22 +0100 Gabriel Craciunescu 
+
+	* sync with theme changes
+
+2019-02-12 10:12:07 +0100 Tomasz Paweł Gajc 
+
+	* add lpadmin group
+
+2019-02-09 02:00:02 +0100 Gabriel Craciunescu 
+
+	* change menus again
+
+2019-02-09 01:34:18 +0100 Gabriel Craciunescu 
+
+	* main grub2 menu update
+
+2019-02-09 01:30:11 +0100 Gabriel Craciunescu 
+
+	* added menus ASPM and APST OFF
+
+2019-02-09 01:15:23 +0100 Gabriel Craciunescu 
+
+	* remove arrows
+
+2019-02-09 00:31:14 +0100 Gabriel Craciunescu 
+
+	* switch back to dragora updater
+
+2019-02-02 16:21:41 +0100 Gabriel Craciunescu 
+
+	* added kpat to live session
+
+2019-02-02 04:34:26 +0100 Gabriel Craciunescu 
+
+	* update main grub cfg
+
+2019-02-02 04:31:35 +0100 Gabriel Craciunescu 
+
+	* move some things out of boot_default
+
+2019-02-02 04:26:06 +0100 Gabriel Craciunescu 
+
+	* vt.global_cursor_default=0 onl needed for graphical target
+
+2019-02-02 03:18:23 +0100 Gabriel Craciunescu 
+
+	* clean locales
+
+2019-02-02 03:12:47 +0100 Gabriel Craciunescu 
+
+	* enable avahi-daemon , disable vboxadd
+
+2019-01-31 21:56:32 +0100 Gabriel Craciunescu 
+
+	* drop extraconfig/etc/polkit-1/
+
+2019-01-31 21:54:22 +0100 Gabriel Craciunescu 
+
+	* replace user-manager with kuser
+
+2019-01-31 14:41:58 +0100 Gabriel Craciunescu 
+
+	* added plasma-pk-updates
+
+2019-01-26 14:34:24 +0100 Gabriel Craciunescu 
+
+	* be sure systemd-networkd is gone
+
+2019-01-26 13:43:42 +0100 Gabriel Craciunescu 
+
+	* use systemctl to enable/disable .service and .socket
+
+2019-01-26 01:04:57 +0100 Gabriel Craciunescu 
+
+	* Revert "Temporarily back out to kernel4.17 for c64"
+
+2019-01-25 20:15:13 +0100 Gabriel Craciunescu 
+
+	* Revert "remove vt.global_cursor_default=0 from grub"
+
+2019-01-25 18:43:11 +0100 Gabriel Craciunescu 
+
+	* re-enable myspell
+
+2019-01-25 16:48:43 +0100 Bernhard Rosenkraenzer 
+
+	* Temporarily back out to kernel4.17 for c64
+
+2019-01-25 02:59:01 +0100 Gabriel Craciunescu 
+
+	* try with myspell-dictionary only
+
+2019-01-25 02:31:50 +0100 Gabriel Craciunescu 
+
+	* disable myspell until packages get fixed
+
+2019-01-24 19:03:48 +0100 Gabriel Craciunescu 
+
+	* add missing things , remove broken ones
+
+2019-01-20 23:48:13 +0100 Gabriel Craciunescu 
+
+	* remove vt.global_cursor_default=0 from grub
+
+2019-01-20 19:38:36 +0100 Gabriel Craciunescu 
+
+	* disable systemd-networkd.socket too
+
+2019-01-20 19:31:43 +0100 Gabriel Craciunescu 
+
+	* disable mdmonitor
+
+2019-01-20 18:24:58 +0100 Gabriel Craciunescu 
+
+	* Revert "temp set compress* to XZ"
+
+2019-01-18 19:55:06 +0100 Gabriel Craciunescu 
+
+	* temp set compress* to XZ
+
+2019-01-12 03:05:47 +0100 Gabriel Craciunescu 
+
+	* utils.lst: pull in dnfdragora
+
+2019-01-12 03:00:43 +0100 Gabriel Craciunescu 
+
+	* enable omdv_task-plasma-telepathy
+
+2019-01-12 02:59:14 +0100 Gabriel Craciunescu 
+
+	* enable kopete too
+
+2019-01-12 02:50:54 +0100 Gabriel Craciunescu 
+
+	* omdv_task-plasma.lst: drop discover*
+
+2019-01-11 20:21:34 +0100 Gabriel Craciunescu 
+
+	* omdv_utils.lst: add fuse2
+
+2019-01-11 13:35:39 +0100 Gabriel Craciunescu 
+
+	* drop group wheel from live
+
+2019-01-11 11:03:53 +0100 tpgxyz 
+
+	* use OpenDNS servers
+
+2019-01-11 10:28:18 +0100 tpgxyz 
+
+	* bring back systemd-resolved when NM is fixed
+
+2019-01-09 18:11:03 +0100 Gabriel Craciunescu 
+
+	* one more typo
+
+2019-01-09 17:58:48 +0100 Gabriel Craciunescu 
+
+	* fix typo
+
+2019-01-09 16:17:25 +0100 Gabriel Craciunescu 
+
+	* append $BUILD_ID to not final iso builds
+
+2019-01-09 16:06:42 +0100 Gabriel Craciunescu 
+
+	* since now booting hadling LANG , start with empty config
+
+2019-01-09 16:04:41 +0100 Gabriel Craciunescu 
+
+	* lets try today without non-free repos again
+
+2019-01-09 15:56:11 +0100 Gabriel Craciunescu 
+
+	* undate Troubleshooting menu for CLI mode
+
+2019-01-09 03:19:36 +0100 Gabriel Craciunescu 
+
+	* Revert "drop non-free repo"
+
+2019-01-09 02:57:48 +0100 Gabriel Craciunescu 
+
+	* parser breaks now after big tasks gone , lets see that way
+
+2019-01-09 02:28:27 +0100 Gabriel Craciunescu 
+
+	* implement half of bug #2402
+
+2019-01-09 02:14:24 +0100 Gabriel Craciunescu 
+
+	* add nano ..
+
+2019-01-09 02:12:25 +0100 Gabriel Craciunescu 
+
+	* drop non-free repo
+
+2019-01-09 02:11:27 +0100 Gabriel Craciunescu 
+
+	* install vim-enhanced btw , -minimal one broken for almost everything
+
+2019-01-09 02:02:29 +0100 Gabriel Craciunescu 
+
+	* stick udisks deps in
+
+2019-01-09 01:40:59 +0100 Gabriel Craciunescu 
+
+	* be sure calamares-locale service is enabled
+
+2019-01-09 01:01:52 +0100 Gabriel Craciunescu 
+
+	* remove ancient sysconfig/desktop stuff
+
+2019-01-09 00:50:06 +0100 Gabriel Craciunescu 
+
+	* move chown of live users home at the end of the function()
+
+2019-01-09 00:18:24 +0100 Gabriel Craciunescu 
+
+	* main menu match style here too
+
+2019-01-09 00:17:40 +0100 Gabriel Craciunescu 
+
+	* use --> in submenus to match the style
+
+2019-01-09 00:16:05 +0100 Gabriel Craciunescu 
+
+	* try to fix the main menu
+
+2019-01-09 00:14:54 +0100 Gabriel Craciunescu 
+
+	* should fix menus
+
+2019-01-08 23:47:10 +0100 Gabriel Craciunescu 
+
+	* I think I guessed that wrong
+
+2019-01-08 23:17:44 +0100 Gabriel Craciunescu 
+
+	* more urpm* stuff to drop
+
+2019-01-08 20:23:41 +0100 Gabriel Craciunescu 
+
+	* fix typo
+
+2019-01-08 20:17:08 +0100 Gabriel Craciunescu 
+
+	* be sure we have an NS written to resolv.conf
+
+2019-01-08 20:10:11 +0100 Gabriel Craciunescu 
+
+	* switch grub2 menus
+
+2019-01-08 20:04:48 +0100 Gabriel Craciunescu 
+
+	* add live user to lpadmin group
+
+2019-01-08 20:02:58 +0100 Gabriel Craciunescu 
+
+	* use gfxmode=auto only for -efi
+
+2019-01-08 19:59:50 +0100 Gabriel Craciunescu 
+
+	* Merge branch 'wipe-old' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-01-08 02:51:29 +0100 Gabriel Craciunescu 
+
+	* omdv_task-x11.lst: fix typo
+
+2019-01-08 02:42:11 +0100 Gabriel Craciunescu 
+
+	* drop broken Trolltech.conf (origin/wipe-old)
+
+2019-01-08 02:40:10 +0100 Gabriel Craciunescu 
+
+	* drop hawaii , that DE gone upstream
+
+2019-01-08 02:33:29 +0100 Gabriel Craciunescu 
+
+	* spec: bump version
+
+2019-01-08 02:32:29 +0100 Gabriel Craciunescu 
+
+	* bump script version to 4.0
+
+2019-01-08 02:31:19 +0100 Gabriel Craciunescu 
+
+	* Makefile: drop 3.0 support
+
+2019-01-08 02:30:01 +0100 Gabriel Craciunescu 
+
+	* move 3.0 to ancient/ folder
+
+2019-01-08 02:29:21 +0100 Gabriel Craciunescu 
+
+	* mv to dnf cache not urpmi
+
+2019-01-08 02:24:38 +0100 Gabriel Craciunescu 
+
+	* do not symlink systemd stuff to /etc/resolv.conf
+
+2019-01-08 02:23:24 +0100 Gabriel Craciunescu 
+
+	* wipe lot 3.0 code  throw in some fixme's
+
+2019-01-08 01:48:20 +0100 Gabriel Craciunescu 
+
+	* mkISOLabel() drop 3.0 , added some fixme's
+
+2019-01-08 01:35:05 +0100 Gabriel Craciunescu 
+
+	* drop enable-skip-list , fix usage_help()
+
+2019-01-08 01:28:53 +0100 Gabriel Craciunescu 
+
+	* drop --urpmi-debug
+
+2019-01-08 01:25:26 +0100 Gabriel Craciunescu 
+
+	* drop kde4 and hawaii DE's
+
+2019-01-08 01:23:40 +0100 Gabriel Craciunescu 
+
+	* drop 3.0 TREE support
+
+2019-01-07 19:16:20 +0100 Gabriel Craciunescu 
+
+	* omdv-plasma.lst: replace with fake task round 1
+
+2019-01-07 18:57:12 +0100 Gabriel Craciunescu 
+
+	* start adding fake tasks
+
+2019-01-06 15:36:53 +0100 Gabriel Craciunescu 
+
+	* xfce4: add gvfs
+
+2019-01-06 15:35:28 +0100 Gabriel Craciunescu 
+
+	* lxqt: add gvfs drop gconf
+
+2019-01-06 15:32:09 +0100 Gabriel Craciunescu 
+
+	* drop gfvs from here
+
+2019-01-06 00:04:01 +0100 Gabriel Craciunescu 
+
+	* Makefile: drop openmandriva2014.0 support
+
+2019-01-05 23:59:18 +0100 Gabriel Craciunescu 
+
+	* move openmandriva2014.0 to ancient/
+
+2019-01-05 23:51:37 +0100 Gabriel Craciunescu 
+
+	* set gfxmode to auto
+
+2019-01-05 23:49:15 +0100 Gabriel Craciunescu 
+
+	* added some foobar script to glue together the menus
+
+2019-01-04 18:57:00 +0100 Gabriel Craciunescu 
+
+	* handle Lang/Keyboard
+
+2019-01-04 18:39:22 +0100 Gabriel Craciunescu 
+
+	* added static Keyboard menu
+
+2019-01-04 18:25:58 +0100 Gabriel Craciunescu 
+
+	* added static main grub menu
+
+2019-01-04 18:22:54 +0100 Gabriel Craciunescu 
+
+	* added static Troubleshooting menu
+
+2019-01-04 18:21:03 +0100 Gabriel Craciunescu 
+
+	* added static 'Other' grub menu
+
+2019-01-04 18:17:45 +0100 Gabriel Craciunescu 
+
+	* added language menu
+
+2019-01-04 10:44:13 +0100 Tomasz Paweł Gajc 
+
+	* fix some errors
+
+2019-01-04 02:20:38 +0100 Gabriel Craciunescu 
+
+	* drop 2014 from docs
+
+2019-01-04 02:18:59 +0100 Gabriel Craciunescu 
+
+	* drop 2014 support
+
+2019-01-04 02:11:52 +0100 Gabriel Craciunescu 
+
+	* grub2/grub2-bios.cfg: drop install mode
+
+2018-12-31 22:21:51 +0100 Gabriel Craciunescu 
+
+	* forgot hostname
+
+2018-12-31 22:13:10 +0100 Gabriel Craciunescu 
+
+	* try to fix extraconfig mess
+
+2018-12-31 21:39:13 +0100 Gabriel Craciunescu 
+
+	* SERVICES_{ENABLE/DISABLE} clean up
+
+2018-12-31 21:34:15 +0100 Gabriel Craciunescu 
+
+	* do not use scsi MQ but dm SQ use both SQ or both MQ
+
+2018-12-31 13:09:26 +0100 Gabriel Craciunescu 
+
+	* drop paprefs  see: https://github.com/OpenMandrivaAssociation/task-pulseaudio/commit/6baff2e8a515368e39fad8a4026a8d64e7248888
+
+2018-12-11 09:31:11 +0100 Tomasz Paweł Gajc 
+
+	* more silent boot process
+
+2018-12-11 09:26:29 +0100 Tomasz Paweł Gajc 
+
+	* more silent boot
+
+2018-11-29 12:31:21 +0100 Tomasz Paweł Gajc 
+
+	* add packagekit
+
+2018-11-29 01:26:14 +0100 Bernhard Rosenkraenzer 
+
+	* No need for wvdial anymore, this isn't 1970
+
+2018-11-29 01:25:40 +0100 Bernhard Rosenkraenzer 
+
+	* Back to kernel-release now that c64 is up and running
+
+2018-11-28 23:32:43 +0100 Bernhard Rosenkraenzer 
+
+	* Back to 4.17
+
+2018-11-28 23:01:01 +0100 Bernhard Rosenkraenzer 
+
+	* Try 4.18.3
+
+2018-11-28 22:25:26 +0100 Bernhard Rosenkraenzer 
+
+	* drop --omit multipath to see if it causes the build failure
+
+2018-11-28 17:02:35 +0100 Bernhard Rosenkraenzer 
+
+	* Disable multipath
+
+2018-11-28 15:17:16 +0100 Bernhard Rosenkraenzer 
+
+	* Use kernel 4.17 for c64
+
+2018-11-28 10:18:46 +0100 Bernhard Rosenkraenzer 
+
+	* Switch to kernel4.18 until c64 is back
+
+2018-11-28 01:05:27 +0100 Bernhard Rosenkraenzer 
+
+	* Use -rc kernel for now, let's see if it works on c64
+
+2018-11-27 14:30:44 +0100 Bernhard Rosenkraenzer 
+
+	* Don't install stuff from non-free
+
+2018-11-27 10:49:10 +0100 Bernhard Rosenkraenzer 
+
+	* Fix x86_64 hardcodes
+
+2018-11-26 19:22:51 +0100 tpgxyz 
+
+	* fix enable non-free repositories
+
+2018-11-26 11:36:59 +0100 Tomasz Paweł Gajc 
+
+	* remove leftovers, add some additional printfs
+
+2018-11-26 01:06:26 +0100 Gabriel Craciunescu 
+
+	* mkUpdateChroot(): fix PLLL
+
+2018-11-24 15:26:59 +0000 itchka (Colin Close) 
+
+	* Make -parallel available for test builds
+
+2018-11-24 14:39:10 +0000 itchka (Colin Close) 
+
+	* Fix bad path
+
+2018-11-24 14:26:11 +0000 Colin Close 
+
+	* Install repos from rpm instead of git. Fix some wrong variable names. Add lx4 to the --tree options Add list repo functionality for users Remove some set -+x cruft
+
+2018-11-21 12:35:12 +0100 Tomasz Paweł Gajc 
+
+	* disable packagekit
+
+2018-11-16 00:56:45 +0100 alex 
+
+	* add missed space
+
+2018-11-13 10:45:45 +0100 Tomasz Paweł Gajc 
+
+	* rename to rng-tools
+
+2018-11-07 23:31:14 +0100 Tomasz Paweł Gajc 
+
+	* fix disabling services
+
+2018-10-31 04:45:32 +0300 ABF repo bot 
+
+	* MassBuild#182: Increase release tag
+
+2018-10-27 00:54:22 +0200 tpgxyz 
+
+	* remove soundwrapper
+
+2018-10-25 10:54:46 +0200 Tomasz Paweł Gajc 
+
+	* add znver1 repos
+
+2018-10-25 10:28:21 +0200 Tomasz Paweł Gajc 
+
+	* forcearch as EXTARCH
+
+2018-10-24 14:49:22 +0200 Tomasz Paweł Gajc 
+
+	* fix bug #2380
+
+2018-10-24 12:21:05 +0200 Tomasz Paweł Gajc 
+
+	* silent boot a bit
+
+2018-10-24 12:07:31 +0200 Tomasz Paweł Gajc 
+
+	* reduce stdloglvl to errors
+
+2018-10-18 19:59:30 +0200 Gabriel Craciunescu 
+
+	* enable 30m Timeout for kscreenlocker
+
+2018-10-18 16:12:47 +0200 Gabriel Craciunescu 
+
+	* Added code to disable or change Timeout value of kscreenlocker
+
+2018-10-18 08:53:42 +0200 Tomasz Paweł Gajc 
+
+	* add plasma-wayland for baloo and automount fixes
+
+2018-10-18 03:39:45 +0200 Gabriel Craciunescu 
+
+	* disable plasma automounter for live , breaks calamares too
+
+2018-10-18 02:46:58 +0200 Gabriel Craciunescu 
+
+	* fix the baloo FIXME for plasma5
+
+2018-10-18 02:35:53 +0200 Gabriel Craciunescu 
+
+	* do not add kde4 stuff to plasma5
+
+2018-10-18 02:33:30 +0200 Gabriel Craciunescu 
+
+	* clean up , long comment , whitespace , etc
+
+2018-10-18 02:14:35 +0200 Gabriel Craciunescu 
+
+	* fix up plasma-wayland stuff
+
+2018-10-18 02:11:38 +0200 Gabriel Craciunescu 
+
+	* fix typo , lxqtt -> lxqt
+
+2018-10-18 00:08:58 +0100 itchka (Colin Close) 
+
+	* Make it possible to build a wayland iso. Still work to be done
+
+2018-10-17 00:45:22 +0200 Gabriel Craciunescu 
+
+	* try to fixup sed calls for displaymanager.conf
+
+2018-10-16 22:45:39 +0200 Gabriel Craciunescu 
+
+	* devel list want git not snv
+
+2018-10-14 18:33:18 +0100 itchka (Colin Close) 
+
+	* Disable udisks2 service on iso otherwise calamares cannot repartition disks due to Plasmas automounting the partitions.
+
+2018-10-14 16:30:40 +0200 Gabriel Craciunescu 
+
+	* fonts: drop noto-serif-thai too
+
+2018-10-14 12:17:39 +0200 Gabriel Craciunescu 
+
+	* drivers, utils: cleanup
+
+2018-10-14 12:09:46 +0200 Gabriel Craciunescu 
+
+	* drivers: drop fwcutter add FIXME
+
+2018-10-14 12:04:21 +0200 Gabriel Craciunescu 
+
+	* control: disable cpupower
+
+2018-10-14 11:46:51 +0200 Gabriel Craciunescu 
+
+	* plasma: drop g* stuff and cleanup
+
+2018-10-14 11:43:28 +0200 Gabriel Craciunescu 
+
+	* plasma: drop task-lxqt
+
+2018-10-14 11:41:43 +0200 Gabriel Craciunescu 
+
+	* lxqt: pull pavucontrol-qt
+
+2018-10-14 11:39:52 +0200 Gabriel Craciunescu 
+
+	* pulse: cleanup
+
+2018-10-14 11:37:28 +0200 Gabriel Craciunescu 
+
+	* fonts: drop cjk-fonts
+
+2018-10-14 11:35:16 +0200 Gabriel Craciunescu 
+
+	* plasma , drop fcitx
+
+2018-10-14 03:43:33 +0200 Gabriel Craciunescu 
+
+	* revert the 'fix diplaymanager settings' part
+
+2018-10-14 03:53:03 +0200 tpgxyz 
+
+	* fix shellcheck errors, fix diplaymanager settings
+
+2018-10-13 01:47:39 +0200 Tomasz Paweł Gajc 
+
+	* try to fix disabled NM service
+
+2018-10-12 12:29:59 +0200 Tomasz Paweł Gajc 
+
+	* fallback to i686 for not cooker
+
+2018-10-12 12:17:04 +0200 Tomasz Paweł Gajc 
+
+	* set 15 as default compression for zstd
+
+2018-10-11 22:22:14 +0100 itchka (Colin Close) 
+
+	* Fix syntax error
+
+2018-10-11 21:35:12 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2018-10-11 21:34:48 +0100 itchka (Colin Close) 
+
+	* Fix ABF build sessrec error
+
+2018-09-28 16:58:52 +0200 tpgxyz 
+
+	* add openmandriva-repos,cooker,keys
+
+2018-09-28 13:12:37 +0200 tpgxyz 
+
+	* enable some services
+
+2018-09-27 15:06:10 +0200 Tomasz Paweł Gajc 
+
+	* enable dnf services
+
+2018-09-25 13:18:19 +0200 Tomasz Paweł Gajc 
+
+	* shellcheck
+
+2018-09-25 10:01:53 +0200 Tomasz Paweł Gajc 
+
+	* Update README
+
+2018-09-21 11:17:43 +0200 tpgxyz 
+
+	* remove comgt
+
+2018-09-19 16:02:24 +0200 Tomasz Paweł Gajc 
+
+	* remove nss_tcb
+
+2018-09-19 16:01:58 +0200 Tomasz Paweł Gajc 
+
+	* remove nss_tcb
+
+2018-09-19 16:01:35 +0200 Tomasz Paweł Gajc 
+
+	* remove nss_tcb
+
+2018-09-19 16:00:51 +0200 Tomasz Paweł Gajc 
+
+	* remove nss_tcb
+
+2018-09-14 10:41:08 +0200 Tomasz Paweł Gajc 
+
+	* remove grub2 locale copy as it is useless
+
+2018-09-14 10:22:59 +0200 Tomasz Paweł Gajc 
+
+	* remove unionfs-utils
+
+2018-09-14 09:43:44 +0200 Tomasz Paweł Gajc 
+
+	* kill urpmi
+
+2018-09-07 16:00:16 +0200 Tomasz Paweł Gajc 
+
+	* KDE4 is no lognger supported on cooker
+
+2018-09-07 15:59:29 +0200 Tomasz Paweł Gajc 
+
+	* Update omdv_iso.lst
+
+2018-09-07 15:44:28 +0200 Tomasz Paweł Gajc 
+
+	* get back firewalld
+
+2018-09-07 15:43:03 +0200 Tomasz Paweł Gajc 
+
+	* KDE4 is not available on cooker
+
+2018-08-25 17:23:35 +0200 Bernhard Rosenkränzer 
+
+	* Fix incorrect use of distro-sync
+
+2018-08-25 17:21:27 +0200 Bernhard Rosenkränzer 
+
+	* Fix remaining indentation issue
+
+2018-08-25 17:20:06 +0200 Bernhard Rosenkränzer 
+
+	* Get rid of broken and non-working  usage
+
+2018-08-24 00:35:55 +0200 Bernhard Rosenkränzer 
+
+	* Get rid of some more obsolete firmware packages
+
+2018-08-23 20:28:18 +0200 Bernhard Rosenkränzer 
+
+	* No more libreoffice-style-oxygen
+
+2018-08-23 15:00:17 +0200 Bernhard Rosenkränzer 
+
+	* Somewhat fix the horrible hack used to set up the host
+
+2018-08-23 14:53:52 +0200 Bernhard Rosenkränzer 
+
+	* Use rpm -E %_target_cpu instead of uname -m so we can detect znver1
+
+2018-08-23 14:52:37 +0200 Bernhard Rosenkränzer 
+
+	* Fix inconsistent and messed up indentation
+
+2018-08-23 14:05:19 +0200 Bernhard Rosenkränzer 
+
+	* Don't run dnf through parallel, that's asking for trouble
+
+2018-08-23 14:03:12 +0200 Bernhard Rosenkränzer 
+
+	* Set LANG and LC_ALL to C to avoid error spewage in the chroot before locales are installed
+
+2018-08-23 14:01:40 +0200 Bernhard Rosenkränzer 
+
+	* Drop vpnpptp-allde
+
+2018-08-22 23:24:37 +0200 Bernhard Rosenkränzer 
+
+	* Drop cagibi from non-KDE4 package lists
+
+2018-08-22 22:54:00 +0200 Bernhard Rosenkränzer 
+
+	* Get rid of mdv-rpm-summary, doesn't work in the post-urpmi world
+
+2018-08-14 18:46:40 +0200 tpgxyz 
+
+	* add dnf-automatic to iso
+
+2018-08-08 09:50:04 +0100 Colin Close 
+
+	* Add --exclude *.i686
+
+2018-08-06 10:53:05 +0200 Tomasz Paweł Gajc 
+
+	* remove drakx crap
+
+2018-08-06 10:46:48 +0200 Tomasz Paweł Gajc 
+
+	* get rid of drakx crap
+
+2018-08-03 16:22:47 +0200 Tomasz Paweł Gajc 
+
+	* add znver1, remove some crap coding
+
+2018-07-27 18:45:43 +0200 Tomasz Paweł Gajc 
+
+	* use zstd as default compress algorithm
+
+2018-07-27 18:44:12 +0200 Tomasz Paweł Gajc 
+
+	* use maximum comression level for zstd iso
+
+2018-07-18 10:09:53 +0100 itchka (Colin Close) 
+
+	* dracut does not support --noprelink
+
+2018-06-21 10:43:48 +0200 Tomasz Paweł Gajc 
+
+	* get rid of clementine
+
+2018-06-19 12:31:51 +0200 Tomasz Paweł Gajc 
+
+	* use --setopt=install_weak_deps=False for dnf install
+
+2018-06-18 23:25:24 +0100 itchka (Colin Close) 
+
+	* Nothing pulling in dracut
+
+2018-06-18 23:12:46 +0100 itchka (Colin Close) 
+
+	* Repo rpm not required Created by build script
+
+2018-06-18 18:45:51 +0100 itchka (Colin Close) 
+
+	* Fix log
+
+2018-06-18 18:10:57 +0100 itchka (Colin Close) 
+
+	* Log output fix
+
+2018-06-18 17:17:57 +0100 Colin Close 
+
+	* Merge branch 'master' of ssh://github.com/OpenMandrivaAssociation/omdv-build-iso
+
+2018-06-18 17:16:55 +0100 Colin Close 
+
+	* Merge branch 'master' of ssh://github.com/OpenMandrivaAssociation/omdv-build-iso
+
+2018-06-18 14:39:09 +0100 itchka (Colin Close) 
+
+	* Add --refresh to dnf install options
+
+2018-06-18 12:15:42 +0100 itchka (Colin Close) 
+
+	* Fix xargs install
+
+2018-06-18 10:44:35 +0200 Tomasz Paweł Gajc 
+
+	* remove gtk-qt-engine and gtk-engines2 #gtk dep
+
+2018-06-18 10:42:21 +0200 Tomasz Paweł Gajc 
+
+	* remove gtk-engines2
+
+2018-06-18 10:38:38 +0200 Tomasz Paweł Gajc 
+
+	* remove gtk-qt-engine
+
+2018-06-18 10:32:40 +0200 Tomasz Paweł Gajc 
+
+	* rmove not needed packages
+
+2018-06-15 15:06:27 +0200 Tomasz Paweł Gajc 
+
+	* overlay is compiled in
+
+2018-06-15 13:40:35 +0200 Tomasz Paweł Gajc 
+
+	* do not pull urpmi
+
+2018-06-08 09:43:43 +0200 Tomasz Paweł Gajc 
+
+	* fix depfail.log
+
+2018-06-03 22:16:38 +0100 Colin Close 
+
+	* Correct nonfree repo labelling to non-free
+
+2018-06-03 00:56:07 +0100 Colin Close 
+
+	* Remove comment on funtion name
+
+2018-06-03 00:30:37 +0100 Colin Close 
+
+	* Fix error caused by crash recovery
+
+2018-06-03 00:10:54 +0100 Colin Close 
+
+	* Make urpm repo install a function
+
+2018-06-02 21:07:45 +0100 Colin Close 
+
+	* Add dracut to cooker minimal
+
+2018-06-01 22:30:05 +0100 Colin Close 
+
+	* Fix path to dnf
+
+2018-06-01 16:25:04 +0100 Colin Close 
+
+	* Fix dnf arch issue
+
+2018-06-01 16:09:45 +0100 Colin Close 
+
+	* Media update no longer needed?
+
+2018-06-01 08:31:39 +0100 Colin Close 
+
+	* Try alternate method
+
+2018-06-01 08:21:48 +0100 Colin Close 
+
+	* Set and unset some debugging
+
+2018-06-01 08:13:53 +0100 Colin Close 
+
+	* Add temporary fix to install dnf
+
+2018-05-31 22:05:08 +0100 Colin Close 
+
+	* Mak dnf update scipt conditional.
+
+2018-05-31 21:05:32 +0100 Colin Close 
+
+	* Install dnf on isobuilder
+
+2018-05-31 08:07:09 +0100 Colin Close 
+
+	* Fix comment error
+
+2018-05-31 08:04:42 +0100 Colin Close 
+
+	* Remove cruft
+
+2018-05-31 07:38:27 +0100 Colin Close 
+
+	* Fix GIT_BRNCH variable
+
+2018-05-31 07:22:55 +0100 Colin Close 
+
+	* More debug
+
+2018-05-31 07:13:53 +0100 Colin Close 
+
+	* More debug
+
+2018-05-31 07:07:21 +0100 Colin Close 
+
+	* Get some debug
+
+2018-05-31 06:56:06 +0100 Colin Close 
+
+	* Usae mkdir instead of install
+
+2018-05-30 23:44:17 +0100 Colin Close 
+
+	* Simplify repo config generation.
+
+2018-05-30 09:00:27 +0100 Colin Close 
+
+	* Basically working but lot's of fixes still required Not fully tested as dnf is not updating meta-data properly
+
+2018-05-29 22:31:03 +0100 Colin Close 
+
+	* Fix misnamed variable amongst other things
+
+2018-05-27 22:43:52 +0100 itchka (Colin Close) 
+
+	* Fixes for dnf upgrade
+
+2018-04-16 10:38:41 +0100 itchka (Colin Close) 
+
+	* Add testing repo switch
+
+2018-04-16 10:02:36 +0100 itchka (Colin Close) 
+
+	* Initial commit of dnf version. Not complete
+
+2018-03-10 08:19:51 +0000 itchka (Colin Close) 
+
+	* Fix a few typos and clean up
+
+2018-03-10 00:17:34 +0000 itchka (Colin Close) 
+
+	* Fix commenting and missing $
+
+2018-03-09 23:18:20 +0000 itchka (Colin Close) 
+
+	* Clean up after merge Fix group stuff Add shadow etc cleanup function.
+
+2018-03-09 23:14:29 +0000 itchka (Colin Close) 
+
+	* Merge branch 'cc_user_ver'
+
+2018-03-07 08:15:09 +0000 itchka (Colin Close) 
+
+	* Correct naming (origin/cc_user_ver)
+
+2018-03-05 19:42:15 +0000 itchka (Colin Close) 
+
+	* Add calligra-plan
+
+2018-03-05 18:34:36 +0000 itchka (Colin Close) 
+
+	* Add virtualbox guest additions
+
+2018-03-05 14:22:42 +0000 itchka (Colin Close) 
+
+	* Add vboxsf group and add to live user Makes vbox shared clipboard work
+
+2018-03-05 14:21:11 +0000 itchka (Colin Close) 
+
+	* Add breeze-gtk Use external version of krita
+
+2018-02-25 17:46:28 +0000 itchka (Colin Close) 
+
+	* Add nopasswd group to live user
+
+2018-02-23 17:09:41 +0000 itchka (Colin Close) 
+
+	* Add nopasswd group for systemd
+
+2018-02-23 17:08:59 +0000 itchka (Colin Close) 
+
+	* Fix up grub default
+
+2018-02-21 16:36:57 +0000 itchka (Colin Close) 
+
+	* Update to latest master
+
+2018-02-21 10:57:41 +0000 itchka (Colin Close) 
+
+	* Don't have a variable named PARALLEL
+
+2018-02-21 10:57:12 +0000 itchka (Colin Close) 
+
+	* Restore pkg lists
+
+2018-02-18 12:48:04 +0000 itchka (Colin Close) 
+
+	* Can't have a variable called PARALLEL doh
+
+2018-02-17 18:07:46 +0000 itchka (Colin Close) 
+
+	* Add MAXERRORS fro parallel
+
+2018-02-17 18:00:50 +0000 itchka (Colin Close) 
+
+	* Added --parallel for ABF=1 to get exit codes Added clear dependency failure logging
+
+2018-02-16 11:05:28 +0000 itchka (Colin Close) 
+
+	* Don't use SQL commenting it doesn't work!!!
+
+2018-02-16 08:05:49 +0000 itchka (Colin Close) 
+
+	* Print logs if errors >= N
+
+2018-02-16 02:16:30 +0000 itchka (Colin Close) 
+
+	* Really fix logging
+
+2018-02-15 21:42:05 +0000 itchka (Colin Close) 
+
+	* Fix logging
+
+2018-02-15 15:36:43 +0000 itchka (Colin Close) 
+
+	* Add --auto to urpmi command for parallels Not needed locally why?
+
+2018-02-15 14:45:48 +0000 itchka (Colin Close) 
+
+	* Add logging
+
+2018-02-15 14:44:53 +0000 itchka (Colin Close) 
+
+	* Try parallel for cooker builds. and get some extra logging
+
+2018-02-15 08:18:28 +0000 itchka (Colin Close) 
+
+	* Fix typo
+
+2018-02-15 08:05:13 +0000 itchka (Colin Close) 
+
+	* Temporary fixes for cooker build
+
+2018-02-14 15:45:51 +0000 itchka (Colin Close) 
+
+	* Create functions for saving and cleaning build directories
+
+2018-02-14 15:43:09 +0000 itchka (Colin Close) 
+
+	* Temporary changes to build lists for cooker iso
+
+2018-01-16 14:55:50 +0100 Tomasz Paweł Gajc 
+
+	* disable some services
+
+2018-01-03 23:23:05 +0100 tpgxyz 
+
+	* add some sanity checks
+
+2018-01-03 23:17:53 +0100 tpgxyz 
+
+	* fix enabling services
+
+2017-12-11 22:43:26 +0000 itchka (Colin Close) 
+
+	* Update package lists
+
+2017-12-11 22:42:54 +0000 itchka (Colin Close) 
+
+	* Fix ABF building
+
+2017-12-05 16:30:27 +0100 Tomasz Paweł Gajc 
+
+	* add back rfkill
+
+2017-11-30 22:45:48 +0100 Bernhard Rosenkränzer 
+
+	* Drop rfkill
+
+2017-11-30 22:19:25 +0100 Bernhard Rosenkränzer 
+
+	* Drop libreoffice-kde4 from cooker -- 6.0 has moved on
+
+2017-11-24 15:33:08 +0100 Tomasz Paweł Gajc 
+
+	* add scsi_mod.use_blk_mq=1
+
+2017-11-17 18:12:00 +0100 Tomasz Paweł Gajc 
+
+	* fix indentation
+
+2017-11-17 17:01:50 +0000 itchka (Colin Close) 
+
+	* Revert last change
+
+2017-11-17 16:59:43 +0000 itchka (Colin Close) 
+
+	* Revert previous change
+
+2017-11-17 10:45:33 +0000 itchka (Colin Close) 
+
+	* Make sure we start at 1024 x 768 fro calamares
+
+2017-11-17 10:39:40 +0000 itchka (Colin Close) 
+
+	* Make sure we start at 1024 x 768 res
+
+2017-11-11 22:26:36 +0000 itchka (Colin Close) 
+
+	* Add vboxvideo to initrd. Fixes oops in VBox.
+
+2017-10-22 22:04:04 +0100 itchka (Colin Close) 
+
+	* Fix getting build lists from github
+
+2017-10-21 23:31:07 +0100 itchka (Colin Close) 
+
+	* Update systemd services.
+
+2017-10-21 09:20:33 +0100 itchka (Colin Close) 
+
+	* Allow select of git branch for build lists Improve add and remove package logic
+
+2017-10-17 18:18:46 +0200 Tomasz Paweł Gajc 
+
+	* force enable systemd-timesyncd
+
+2017-09-24 14:10:41 +0200 Tomasz Paweł Gajc 
+
+	* use microcode-intel
+
+2017-09-24 14:10:16 +0200 Tomasz Paweł Gajc 
+
+	* use microcode-intel
+
+2017-09-15 11:44:35 +0100 Tomasz Paweł Gajc 
+
+	* use modified realdev
+
+2017-09-11 22:21:00 +0200 tpgxyz 
+
+	* fix indentation and lot of typos
+
+2017-09-11 15:46:45 +0100 Tomasz Paweł Gajc 
+
+	* wtf is this crap
+
+2017-09-11 14:21:49 +0100 Tomasz Paweł Gajc 
+
+	* fix it
+
+2017-09-11 14:12:47 +0100 Tomasz Paweł Gajc 
+
+	* update
+
+2017-09-11 13:53:28 +0100 Tomasz Paweł Gajc 
+
+	* clean already existing chroot when not rebuilding
+
+2017-09-08 02:12:15 +0200 tpgxyz 
+
+	* sync sources
+
+2017-09-08 02:11:14 +0200 tpgxyz 
+
+	* new version 0.1.4
+
+2017-09-08 02:10:35 +0200 tpgxyz 
+
+	* add phonon4qt5-gstreamer
+
+2017-08-14 12:34:42 +0100 Tomasz Paweł Gajc 
+
+	* update rpm packages inside system environment
+
+2017-08-14 09:17:36 +0100 Tomasz Paweł Gajc 
+
+	* bump version, use Zstandard compression by default
+
+2017-08-14 09:16:48 +0100 Tomasz Paweł Gajc 
+
+	* use Zstandard compression for squashfs image
+
+2017-07-16 19:36:12 +0100 itchka (Colin Close) 
+
+	* Revert stupid memdisk gen change Rationalise and fix user iso naming
+
+2017-07-13 23:22:30 +0100 itchka (Colin Close) 
+
+	* Start updating docs
+
+2017-07-13 14:38:29 +0100 itchka (Colin Close) 
+
+	* Final fix for diffing Fix user ISO label
+
+2017-07-13 13:02:10 +0100 itchka (Colin Close) 
+
+	* Allow the user to name their ISO
+
+2017-07-13 12:54:37 +0100 itchka (Colin Close) 
+
+	* Separate functions from control logic
+
+2017-07-13 12:43:31 +0100 itchka (Colin Close) 
+
+	* Clean up more error messages Remove quotes from some more $SUDO's
+
+2017-07-12 14:14:01 +0100 itchka (Colin Close) 
+
+	* Add a default build to my.add
+
+2017-07-11 11:51:48 +0100 itchka (Colin Close) 
+
+	* Update themes in lxqt.list
+
+2017-07-11 11:17:48 +0100 itchka (Colin Close) 
+
+	* Add an uprmi --auto-update option for chroot Fix up saving of rpms for rebuild mode Work on DEVMODE
+
+2017-07-10 19:57:37 +0100 itchka (Colin Close) 
+
+	* Merge branch 'cc_user_ver' of github.com:OpenMandrivaAssociation/omdv-build-iso into cc_user_ver just do it
+
+2017-07-10 19:54:58 +0100 itchka (Colin Close) 
+
+	* Finally the getIncFiles function works properly
+
+2017-07-09 22:30:41 +0100 Colin Close 
+
+	* Start of Updating docs
+
+2017-07-08 23:05:49 +0100 Colin Close 
+
+	* Add update functionality. some doc work
+
+2017-07-08 12:25:22 +0100 itchka (Colin Close) 
+
+	* Make sure .noclean is created even though build without .noclean Allows --noclean to be run either at or after an initial build. Fix more printfs
+
+2017-07-08 12:18:41 +0100 itchka (Colin Close) 
+
+	* Finally fully fix getIncFiles function
+
+2017-07-08 12:12:56 +0100 itchka (Colin Close) 
+
+	* Fix initialisation of localmd5change function
+
+2017-07-08 01:07:12 +0100 itchka (Colin Close) 
+
+	* Fix printf syntax; fix conditional syntax
+
+2017-07-08 00:57:09 +0100 itchka (Colin Close) 
+
+	* Move default defs to where $WORKDIR is valid
+
+2017-07-07 18:21:21 +0100 itchka (Colin Close) 
+
+	* Now call getPkgList. Syntax stuff
+
+2017-07-07 18:16:17 +0100 itchka (Colin Close) 
+
+	* Fix buildIso syntax etc. Fix postBuild
+
+2017-07-07 18:04:31 +0100 itchka (Colin Close) 
+
+	* Fixes for losetup in createUEFI
+
+2017-07-07 17:58:28 +0100 itchka (Colin Close) 
+
+	* Fixes for mkUpdateChroot + $SUDO syntax fixes
+
+2017-07-07 17:48:13 +0100 itchka (Colin Close) 
+
+	* Fixes to userSpin functions
+
+2017-07-07 17:34:54 +0100 itchka (Colin Close) 
+
+	* "" Fixes and clean-up.
+
+2017-07-07 17:20:57 +0100 itchka (Colin Close) 
+
+	* Rationalise logic in createChroot
+
+2017-07-07 17:08:16 +0100 itchka (Colin Close) 
+
+	* Rationalise ABF detection and start-up logic
+
+2017-07-07 16:55:59 +0100 itchka (Colin Close) 
+
+	* Clean up getIncfiles logs
+
+2017-07-07 16:42:56 +0100 itchka (Colin Close) 
+
+	* Fixed the diffing functions
+
+2017-07-07 16:28:13 +0100 itchka (Colin Close) 
+
+	* Fix getPkgLst to get latest lists from GitHub
+
+2017-07-07 16:22:41 +0100 itchka (Colin Close) 
+
+	* Finish urpmi-debug ioption.
+
+2017-07-07 16:14:19 +0100 itchka (Colin Close) 
+
+	* Interpret tilde in work and output dirs. Make urpmi_debug a separate option
+
+2017-07-07 11:01:51 +0100 itchka (Colin Close) 
+
+	* Fix for failing loop devices. Also needs udev rule on server for full fix
+
+2017-06-30 10:51:12 +0100 itchka (Colin Close) 
+
+	* Run through shellcheck linter
+
+2017-06-29 14:05:14 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #53 from OpenMandrivaAssociation/master
+
+2017-06-29 13:04:40 +0100 Tomasz Paweł Gajc 
+
+	* add danish locales
+
+2017-06-29 13:04:13 +0100 Tomasz Paweł Gajc 
+
+	* add danish locales
+
+2017-06-28 00:58:29 +0100 itchka (Colin Close) 
+
+	* Clean-ups
+
+2017-06-27 23:55:41 +0100 itchka (Colin Close) 
+
+	* Comment extra line
+
+2017-06-27 23:45:07 +0100 itchka (Colin Close) 
+
+	* Simplify...
+
+2017-06-27 01:38:43 +0100 itchka (Colin Close) 
+
+	* Correct path
+
+2017-06-27 01:20:24 +0100 itchka (Colin Close) 
+
+	* Correct typo
+
+2017-06-26 22:53:25 +0100 itchka (Colin Close) 
+
+	* Make sure the loop devices are released
+
+2017-06-26 21:47:07 +0100 itchka (Colin Close) 
+
+	* Sort out $ISODIR
+
+2017-06-26 18:05:21 +0100 itchka (Colin Close) 
+
+	* Sort out post create
+
+2017-06-26 17:47:32 +0100 itchka (Colin Close) 
+
+	* Clean up a bit tmp debug post function
+
+2017-06-26 17:24:41 +0100 itchka (Colin Close) 
+
+	* squashfs-tools was NOT installed by default
+
+2017-06-26 16:56:43 +0100 itchka (Colin Close) 
+
+	* Hard code the user in docker
+
+2017-06-26 16:42:22 +0100 itchka (Colin Close) 
+
+	* Correct path names to those of new builder
+
+2017-06-26 16:13:48 +0100 itchka (Colin Close) 
+
+	* Revert xorriso force
+
+2017-06-26 15:19:01 +0100 itchka (Colin Close) 
+
+	* Force xorriso
+
+2017-06-26 14:46:46 +0100 itchka (Colin Close) 
+
+	* Temporary fix for issue when there is bad rpm sigs
+
+2017-06-26 13:42:55 +0100 itchka (Colin Close) 
+
+	* xorriso debugging
+
+2017-06-26 13:07:39 +0100 itchka (Colin Close) 
+
+	* Put debug in correct place!
+
+2017-06-26 09:57:26 +0100 itchka (Colin Close) 
+
+	* Add debugging to check why xorriso is not being installed
+
+2017-06-26 09:43:50 +0100 itchka (Colin Close) 
+
+	* Remove andother package from $RPM_LIST
+
+2017-06-26 09:30:07 +0100 itchka (Colin Close) 
+
+	* Update $RPM_LIST contents some files already installed.
+
+2017-06-23 01:54:19 +0100 itchka (Colin Close) 
+
+	* Single quotes not enough
+
+2017-06-23 01:52:49 +0100 itchka (Colin Close) 
+
+	* Single quotes not enough
+
+2017-06-23 01:51:29 +0100 itchka (Colin Close) 
+
+	* Single quotes not enough
+
+2017-06-23 01:20:35 +0100 itchka (Colin Close) 
+
+	* Reverting didn't fix
+
+2017-06-23 00:51:37 +0100 itchka (Colin Close) 
+
+	* Add missing variable
+
+2017-06-22 14:28:47 +0100 itchka (Colin Close) 
+
+	* Use explicit values for $IN_ABF
+
+2017-06-19 14:21:35 +0100 itchka (Colin Close) 
+
+	* Correct spelling
+
+2017-06-19 12:30:57 +0100 itchka (Colin Close) 
+
+	* Really make sure we are IN_ABF
+
+2017-06-19 12:19:51 +0100 itchka (Colin Close) 
+
+	* Correct misnamed variable
+
+2017-06-19 10:19:53 +0100 itchka (Colin Close) 
+
+	* Make sure the build lists do not get corrupted when using ABF.
+
+2017-06-19 09:20:54 +0100 itchka (Colin Close) 
+
+	* Restore omdv-build-iso to the needed file list.
+
+2017-06-19 09:09:44 +0100 itchka (Colin Close) 
+
+	* Remove delay. Problem was with ABF
+
+2017-06-19 07:36:11 +0100 itchka (Colin Close) 
+
+	* Revert previous commit. Add a delay instead
+
+2017-06-19 07:23:14 +0100 itchka (Colin Close) 
+
+	* Try to fix the loop device issue in the ABF isobuilder
+
+2017-06-15 21:36:35 +0100 itchka (Colin Close) 
+
+	* Initial fix for the missing directory issue
+
+2017-06-15 19:20:43 +0100 itchka (Colin Close) 
+
+	* Fix logic build script is started as root on ABF not as a user.
+
+2017-06-15 18:58:40 +0100 itchka (Colin Close) 
+
+	* Debug stuff
+
+2017-06-15 18:50:39 +0100 itchka (Colin Close) 
+
+	* Fix SUDOVAR ordering so UHOME gets set properly.
+
+2017-06-15 17:59:22 +0100 itchka (Colin Close) 
+
+	* Fix comment
+
+2017-06-15 17:45:57 +0100 itchka (Colin Close) 
+
+	* Find user in a way that the container understands.
+
+2017-06-15 15:43:24 +0100 itchka (Colin Close) 
+
+	* Nake sure $SUDO_USER is available.
+
+2017-06-14 12:24:30 +0100 itchka (Colin Close) 
+
+	* Don't do the localMd5Change function when in ABF Clean out debug stuff and clean some formatting Make sure no ENSKPLST code gets run unless its enabled
+
+2017-06-14 02:25:31 +0100 itchka (Colin Close) 
+
+	* More revs to WORKDIR logic
+
+2017-06-14 02:14:59 +0100 itchka (Colin Close) 
+
+	* Turn on shell debugging
+
+2017-06-14 02:05:34 +0100 itchka (Colin Close) 
+
+	* Fix -z
+
+2017-06-14 01:58:53 +0100 itchka (Colin Close) 
+
+	* Add some logging for debug
+
+2017-06-14 01:49:49 +0100 itchka (Colin Close) 
+
+	* Add change from master
+
+2017-06-14 00:54:07 +0100 itchka (Colin Close) 
+
+	* Make WORKDIR logic more robust Introduce DEVMODE to replace DEBUG in some circs Allow the addition of an urpmi skip.list Will support updating chroot in future.
+
+2017-06-13 10:21:32 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' into cc_user_ver
+
+2017-06-08 16:33:12 +0100 itchka (Colin Close) 
+
+	* Fix problem where first file in install list did not install Fix missing $ in user mode. Clean up spacing Fix missing shift in case statement
+
+2017-06-04 13:32:25 +0100 itchka (Colin Close) 
+
+	* Bring in changes to pkglists and dracut from master
+
+2017-06-04 13:16:47 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2017-06-01 11:01:52 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #52 from OpenMandrivaAssociation/master
+
+2017-05-31 19:43:17 +0200 Bernhard Rosenkränzer 
+
+	* calligra-l10n is obsolete
+
+2017-05-29 11:58:18 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #51 from OpenMandrivaAssociation/master
+
+2017-05-29 11:57:53 +0200 Tomasz Paweł Gajc 
+
+	* add lame
+
+2017-05-29 11:56:49 +0200 Tomasz Paweł Gajc 
+
+	* add lame
+
+2017-05-29 11:53:13 +0200 Tomasz Paweł Gajc 
+
+	* update gst plugins
+
+2017-05-29 11:52:38 +0200 Tomasz Paweł Gajc 
+
+	* add missing gst plugins
+
+2017-05-16 14:53:46 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #50 from OpenMandrivaAssociation/master
+
+2017-05-16 14:52:12 +0200 Tomasz Paweł Gajc 
+
+	* update module list
+
+2017-05-13 23:17:50 +0100 itchka (Colin Close) 
+
+	* Fix missing ""'s
+
+2017-05-13 22:57:00 +0100 itchka (Colin Close) 
+
+	* Fix missing '=' Which fixes ABF build
+
+2017-05-13 22:44:42 +0100 itchka (Colin Close) 
+
+	* Testing ABF $WORKFIR creation
+
+2017-05-13 02:25:37 +0100 itchka (Colin Close) 
+
+	* More testing
+
+2017-05-13 02:17:44 +0100 itchka (Colin Close) 
+
+	* Testing
+
+2017-05-13 01:59:45 +0100 itchka (Colin Close) 
+
+	* Fix ABF $WORKDIR creation
+
+2017-05-13 01:48:18 +0100 itchka (Colin Close) 
+
+	* Try another way
+
+2017-05-13 01:30:10 +0100 itchka (Colin Close) 
+
+	* Can somebody enlighten me regards user on isobuilder
+
+2017-05-13 01:09:25 +0100 itchka (Colin Close) 
+
+	* Minor fix after abf testing
+
+2017-05-12 23:33:59 +0100 itchka (Colin Close) 
+
+	* Prevent the testing repo from being used by default Rewrite front end $WORKDIR logic to ensure that if ABF=1 then users can't run the program locally without setting the --debug option. Give the $IN_ABF two states "0" and "1" Fix misspelt CHGFLAG variable. Rationalise and fix the localMd5Change function so that the CHNFLAG works Add error channel dumping to CreatePkgLists to remove spurious error message. Fix misspelt variable in getIncFiles Don't remove duplicate files in my.add and my.rmv, it's unecessary Fix up xargs in mkUpdateChroot by adding "-n 1" Fix the nonsense logic in createChroot. Unmount the EFI $IMGNAME if mounted in umountall also supressed error messages for missing mounts. Substitute printf for the majority of error and informational messages and tidy up presentation of same. Remove additional from dracut conf
+
+2017-05-12 08:51:28 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso Not sure
+
+2017-05-11 10:23:19 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #48 from OpenMandrivaAssociation/master
+
+2017-05-11 10:23:04 +0200 Tomasz Paweł Gajc 
+
+	* fix module list
+
+2017-05-08 11:16:39 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #47 from OpenMandrivaAssociation/master
+
+2017-05-08 11:16:20 +0200 Tomasz Paweł Gajc 
+
+	* kde-l10n are gone
+
+2017-05-08 11:15:50 +0200 Tomasz Paweł Gajc 
+
+	* kde-l10n are gone
+
+2017-05-04 09:30:17 +0100 itchka (Colin Close) 
+
+	* Make test repo a cli option
+
+2017-04-29 14:27:54 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #46 from OpenMandrivaAssociation/master
+
+2017-04-29 14:27:20 +0200 tpg 
+
+	* adjust kernel module list for dracut
+
+2017-03-06 22:05:50 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #45 from OpenMandrivaAssociation/master
+
+2017-03-06 22:05:25 +0100 tpg 
+
+	* fix checks in ABF
+
+2017-03-06 18:34:20 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #44 from OpenMandrivaAssociation/master
+
+2017-03-06 18:33:34 +0100 tpg 
+
+	* catch loopback error
+
+2017-03-06 18:11:49 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #43 from OpenMandrivaAssociation/master
+
+2017-03-06 18:11:25 +0100 tpg 
+
+	* fix build
+
+2017-03-06 18:06:44 +0100 tpg 
+
+	* get rid of that stupid '! -z', learn to use -n
+
+2017-03-06 14:45:47 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #42 from OpenMandrivaAssociation/master
+
+2017-03-06 14:45:21 +0100 Tomasz Paweł Gajc 
+
+	* create img dir
+
+2017-03-03 21:41:42 +0000 Alexander Stefanov-Khryukin 
+
+	* hawaii no longer available in repos, project merged with papyros-shell to liriOS
+
+2017-03-03 21:35:48 +0000 Alexander Stefanov-Khryukin 
+
+	* cd can fail for a variety of reasons: misspelled paths, missing directories, missing permissions, broken symlinks and more.
+
+2017-03-03 21:31:15 +0000 Alexander Stefanov-Khryukin 
+
+	* -n doesn't work with unquoted arguments. Quote or use [[ ]]. https://github.com/koalaman/shellcheck/wiki/SC2070
+
+2017-03-03 21:23:11 +0000 Alexander Stefanov-Khryukin 
+
+	* remove trailing spaces, fix typo CROOTNAME === > CHROOTNAME
+
+2017-03-03 17:49:28 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #41 from OpenMandrivaAssociation/master
+
+2017-03-03 17:44:24 +0100 Tomasz Paweł Gajc 
+
+	* fix that crazy user spin madness
+
+2017-03-03 01:51:29 +0100 Tomasz Paweł Gajc 
+
+	* fix it
+
+2017-03-03 01:41:08 +0100 Tomasz Paweł Gajc 
+
+	* use right comparator
+
+2016-12-30 19:11:48 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #40 from OpenMandrivaAssociation/master
+
+2016-12-30 19:11:22 +0100 tpg 
+
+	* stop audit polluting journal logs
+
+2016-12-16 21:11:40 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #39 from OpenMandrivaAssociation/master
+
+2016-12-16 21:11:26 +0100 tpg 
+
+	* krita translations are now  in main package
+
+2016-12-16 21:11:02 +0100 tpg 
+
+	* krita translations are now  in main package
+
+2016-12-08 21:45:27 +0100 Tomasz Paweł Gajc 
+
+	* Merge pull request #38 from OpenMandrivaAssociation/master
+
+2016-12-08 21:44:58 +0100 tpg 
+
+	* add fuse-exfat
+
+2016-08-10 23:29:18 +0100 Crispin Boylan 
+
+	* Merge branch 'master' into 3.0
+
+2016-08-10 23:28:50 +0100 Crispin Boylan 
+
+	* Attempt final fix for 1764, ensure we use a second level timestamp.  Also stop systemd running the ldconfig cache unnecessarily (fix from redhat)
+
+2016-07-26 10:58:47 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #36 from OpenMandrivaAssociation/master
+
+2016-07-26 10:58:30 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #34 from OpenMandrivaAssociation/cc_user_ver
+
+2016-07-25 20:39:45 +0100 itchka (Colin Close) 
+
+	* Remove commented out conditional
+
+2016-07-25 05:52:34 +0100 itchka (Colin Close) 
+
+	* Fix 2014.0 booting
+
+2016-07-25 05:51:26 +0100 itchka (Colin Close) 
+
+	* Fix $VERSION test
+
+2016-07-24 13:55:48 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #35 from OpenMandrivaAssociation/master
+
+2016-07-24 13:55:28 +0200 tpg 
+
+	* get rid of old power management tools, use tuned instead
+
+2016-07-23 17:25:11 +0100 itchka (Colin Close) 
+
+	* Fix up rpm removal to use parallel
+
+2016-07-23 17:23:04 +0100 itchka (Colin Close) 
+
+	* Fix package list
+
+2016-07-23 15:53:52 +0100 itchka (Colin Close) 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2016-07-18 11:31:24 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #33 from OpenMandrivaAssociation/master
+
+2016-07-18 11:26:20 +0200 Tomasz Paweł Gajc 
+
+	* update fc-cache option
+
+2016-07-18 10:55:00 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #32 from OpenMandrivaAssociation/master
+
+2016-07-18 10:54:47 +0200 Tomasz Paweł Gajc 
+
+	* move fontconfig cache to $XDG_CACHE_HOME
+
+2016-07-17 18:26:55 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #31 from OpenMandrivaAssociation/master
+
+2016-07-17 18:23:58 +0200 tpg 
+
+	* again try to fix #1764
+
+2016-07-17 14:59:48 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #30 from OpenMandrivaAssociation/master
+
+2016-07-17 14:59:23 +0200 tpg 
+
+	* be more verbose when running fc-cache
+
+2016-07-17 13:06:16 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #29 from OpenMandrivaAssociation/master
+
+2016-07-17 13:05:58 +0200 tpg 
+
+	* fix bug #1807
+
+2016-07-17 13:00:07 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #28 from OpenMandrivaAssociation/master
+
+2016-07-17 12:59:45 +0200 tpg 
+
+	* yet another approach to fix bug #1764
+
+2016-07-17 12:26:04 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #27 from OpenMandrivaAssociation/master
+
+2016-07-17 12:25:39 +0200 tpg 
+
+	* remove old files from ancient era
+
+2016-07-17 00:01:31 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #26 from OpenMandrivaAssociation/master
+
+2016-07-17 00:01:06 +0200 tpg 
+
+	* regenerate font cache for live user
+
+2016-07-16 23:52:22 +0200 tpg 
+
+	* run fc-cache for all fonts
+
+2016-07-15 19:35:13 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #25 from OpenMandrivaAssociation/master
+
+2016-07-15 19:34:46 +0200 tpg 
+
+	* new version 0.1.3
+
+2016-07-15 19:32:38 +0200 tpg 
+
+	* new version 0.1.3
+
+2016-07-15 19:31:47 +0200 tpg 
+
+	* generated changelog
+
 2016-07-15 19:31:19 +0200 tpg 
 
-	* add krita locales, remove extra configs (HEAD -> master, origin/master, origin/HEAD)
+	* add krita locales, remove extra configs
+
+2016-07-13 22:15:53 +0100 itchka (Colin Close) 
+
+	* Use parallels for user mode for better error control and reporting. Add logging some extra logging. Missed some code
+
+2016-07-13 21:41:55 +0100 itchka (Colin Close) 
+
+	* Allow commenting of includes. Fix trailing space which broke parallels
+
+2016-07-13 21:35:23 +0100 itchka (Colin Close) 
+
+	* Fix up diffing so that backup files are ignored
+
+2016-07-13 21:32:03 +0100 itchka (Colin Close) 
+
+	* When --noclean is used add ability to clean chroot and optionally the session records but retain any user modded build lists. Local mode only
+
+2016-07-13 14:17:01 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #24 from OpenMandrivaAssociation/master
 
 2016-07-13 14:16:48 +0200 Tomasz Paweł Gajc 
 
 	* fix udev lib dir
 
+2016-07-13 12:30:04 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #23 from OpenMandrivaAssociation/master
+
 2016-07-13 12:29:39 +0200 Tomasz Paweł Gajc 
 
 	* update options to handle ACPI and backlight
+
+2016-07-07 21:35:07 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #22 from OpenMandrivaAssociation/master
 
 2016-07-07 21:34:21 +0200 tpg 
 
@@ -18,6 +2582,10 @@
 
 	* fix file list
 
+2016-07-07 15:34:15 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #21 from OpenMandrivaAssociation/master
+
 2016-07-07 15:32:22 +0200 Tomasz Paweł Gajc 
 
 	* fix typo
@@ -25,6 +2593,10 @@
 2016-07-07 15:30:46 +0200 Tomasz Paweł Gajc 
 
 	* update rule
+
+2016-07-07 15:11:37 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #20 from OpenMandrivaAssociation/master
 
 2016-07-07 15:10:14 +0200 Tomasz Paweł Gajc 
 
@@ -42,6 +2614,10 @@
 
 	* use kernel-release for openmandriva2014.x
 
+2016-07-05 00:01:41 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #19 from OpenMandrivaAssociation/master
+
 2016-07-05 00:01:14 +0200 tpg 
 
 	* use tree rather than version for MIRRORLIST
@@ -50,13 +2626,25 @@
 
 	* add some debug related to GRUB_UUID
 
+2016-06-21 14:24:15 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #18 from OpenMandrivaAssociation/master
+
 2016-06-21 14:24:01 +0200 Tomasz Paweł Gajc 
 
 	* always verify rpms
 
+2016-06-20 23:43:34 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #17 from OpenMandrivaAssociation/master
+
 2016-06-20 23:43:10 +0200 tpg (Tomasz Pawe³ Gajc) 
 
 	* update source
+
+2016-06-20 22:57:55 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #16 from OpenMandrivaAssociation/master
 
 2016-06-20 22:50:33 +0200 tpg (Tomasz Pawe³ Gajc) 
 
@@ -74,6 +2662,10 @@
 
 	* fix indentation one more time, get rid of doubled variables, add fallback urpmi mirrorlist to ABF
 
+2016-06-16 20:20:31 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #15 from OpenMandrivaAssociation/master
+
 2016-06-16 20:18:40 +0200 tpg (Tomasz Pawe³ Gajc) 
 
 	* add Noto CJK fonts, add fcitx-ui
@@ -82,9 +2674,21 @@
 
 	* add CJK and Thai fonts
 
+2016-06-08 10:01:12 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #14 from OpenMandrivaAssociation/master
+
 2016-06-08 07:21:56 +0100 Crispin Boylan 
 
 	* bug 1194 - dont set vconsole.keymap during live boot as it overrids correct value in /etc/vconsole.conf
+
+2016-06-08 07:21:56 +0100 Crispin Boylan 
+
+	* bug 1194 - dont set vconsole.keymap during live boot as it overrids correct value in /etc/vconsole.conf
+
+2016-06-08 01:01:01 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #13 from OpenMandrivaAssociation/master
 
 2016-06-08 01:00:34 +0200 tpg (Tomasz Pawe³ Gajc) 
 
@@ -130,9 +2734,29 @@
 
 	* Push temporary fix for omspin
 
+2016-06-06 00:47:15 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #11 from OpenMandrivaAssociation/master
+
 2016-06-06 00:46:45 +0200 tpg (Tomasz Pawe³ Gajc) 
 
 	* looks like fcitx were lost in merge
+
+2016-06-06 00:40:05 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* looks like fcitx were lost in merge
+
+2016-06-06 00:36:13 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* add missing files for user spin...
+
+2016-06-05 23:09:45 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* Merge branch 'master' into 2.0
+
+2016-06-05 23:09:20 +0200 tpg (Tomasz Pawe³ Gajc) 
+
+	* Merge remote-tracking branch 'origin/3.0'
 
 2016-06-05 23:05:12 +0200 tpg (Tomasz Pawe³ Gajc) 
 
@@ -153,6 +2777,10 @@
 2016-06-05 21:47:35 +0200 tpg (Tomasz Pawe³ Gajc) 
 
 	* fix adding urpmi medias
+
+2016-06-05 12:03:36 +0100 Crispin Boylan 
+
+	* Update source
 
 2016-06-05 12:02:43 +0100 Crispin Boylan 
 
