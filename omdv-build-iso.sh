@@ -656,6 +656,8 @@ SetFileList() {
     mate)
         NEWTYPE=error
         ;;
+    cinnamon)
+        NEWTYPE=error
     lxqt)
         NEWTYPE=error
         ;;
@@ -2138,6 +2140,11 @@ EOF
 		if [ "${TYPE,,}" = 'mate' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "mate-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		fi
+
+        if [ "${TYPE,,}" = 'cinnamon' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
 		if [ "${TYPE,,}" = 'lxqt' ]; then
