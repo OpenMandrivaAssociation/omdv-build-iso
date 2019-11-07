@@ -88,6 +88,9 @@ main() {
 			mate)
 				TYPE=mate
 				;;
+			cinnamon)
+				TYPE=cinnamon
+				;;
 			lxqt)
 				TYPE=lxqt
 				;;
@@ -100,9 +103,9 @@ main() {
 			weston)
 				TYPE=weston
 				;;
-            gnome3)
-                TYPE=gnome3
-                ;;
+            		gnome3)
+                		TYPE=gnome3
+                		;;
 			minimal)
 				TYPE=minimal
 				;;
