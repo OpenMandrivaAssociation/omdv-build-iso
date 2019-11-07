@@ -271,7 +271,7 @@ main() {
     fi
     
 	# Set the local build prefix
-	if [ -d /home/omv ] && [ -d '/home/omv/docker-iso-worker' ]; then
+	if [ -d /home/omv ] && [ -d /home/omv/docker-iso-worker ]; then
 		WHO=omv
 	else
 		# SUDO_USER is an environment variable from the shell it gets set if you run as sudo
