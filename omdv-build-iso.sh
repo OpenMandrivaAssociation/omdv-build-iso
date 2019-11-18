@@ -103,26 +103,26 @@ main() {
 			weston)
 				TYPE=weston
 				;;
-            		gnome3)
-                		TYPE=gnome3
-                		;;
+			gnome3)
+				TYPE=gnome3
+				;;
 			minimal)
 				TYPE=minimal
 				;;
 			sway)
 				TYPE=sway
 				;;
-            mate)
-                TYPE=mate
-                ;;
+			mate)
+				TYPE=mate
+				;;
 			user)
 				TYPE=my.add
 				;;
 			*)
-                TYPE=$lc
-                printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
-                #printf "%s\n" "$TYPE is not supported."
-				#usage_help
+				TYPE=$lc
+				printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
+#				printf "%s\n" "$TYPE is not supported."
+#				usage_help
 				;;
 			esac
 			;;
@@ -265,11 +265,11 @@ main() {
 	fi
 
 	if [ -n "$DEBUG" ]; then
-        set -x
-    else
-        set +x
-    fi
-    
+	    set -x
+	else
+	    set +x
+	fi
+
 	# Set the local build prefix
 	if [ -d /home/omv ] && [ -d /home/omv/docker-iso-worker ]; then
 		WHO=omv
@@ -437,18 +437,18 @@ usage_help() {
 
 hlpprtf() {
 #Indents text; add tabs '\t' at start of text to control indent
-COLUMNS=`tput cols`
+COLUMNS=$(tput cols)
 FINAL=$(( COLUMNS - 80 ))
-OP=`printf "%b\n\t\t\t" "$1" | fmt -w "$FINAL"`
+OP=$(printf "%b\n\t\t\t" "$1" | fmt -w "$FINAL")
 printf "%s\n" "$OP"
 }
 
 optprtf() {
 #Formats text for formatting program options in the help
-COLUMNS=`tput cols`
+COLUMNS=$(tput cols)
 FINAL=$(( COLUMNS - 100 ))
-OPT=`printf "%s" "$1"` 
-OPT1=`printf "%b" "\t\t$2" | fmt -w  "$FINAL" -c `
+OPT=$(printf "%s" "$1")
+OPT1=$(printf "%b" "\t\t$2" | fmt -w  "$FINAL" -c)
 printf "%s" "$OPT"; printf "%s\n" "${OPT1//$'\n'$'\t'/$'\n'$'\t'$'\t'}" 
 }
 bold=$(tput bold)
@@ -888,8 +888,8 @@ mkISOLabel() {
 	printf "%s" "$PRODUCT_ID"
 
 	LABEL="$PRODUCT_ID.$EXTARCH"
-	[ $(echo "$LABEL" | wc -m) -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
-	[ $(echo "$LABEL" | wc -m) -gt 32 ] && LABEL="$(echo "$LABEL" |cut -b1-32)"
+	[ $(printf "%s\n" "$LABEL" | wc -m) -gt 32 ] && LABEL="OpenMandrivaLx_$VERSION"
+	[ $(printf "%s\n" "$LABEL" | wc -m) -gt 32 ] && LABEL="$(printf "%s\n" "$LABEL" |cut -b1-32)"
 }
 
 showInfo() {
@@ -936,59 +936,61 @@ showInfo() {
 }
 
 getPkgList() {
-    # Package list handling has two modes. When the script is run on ABF the package lists are obtained from the git repos.
-    # The branch used will can be changed by using the --isover switch to get the lists from a different branch of the repo.
-    # When operated outside of ABF it is assumed that the user will wish to modify the lists to create their own custom iso.
-    # In this case the package lists are initially downloaded from GitHub and the versions that match the repo given on the command line
-    # is copied to the directory pointed to by the LREPODIR variable. The LREPODIR variable is automatically set to a default if the user 
-    # does not provide a name. The directory name is stored in an hidden file .rpodir in the users home directory.
-    # A git repository is created in the LREPODIR and an an initial commit made with an automatically generated commit message which 
-    # contains the "Build ID" and a session count which uniquely labels each commit. 
-    # Should the user alter the files then on a subsequent iso build the files from the directory pointed to by the LREPODIR variable 
-    # will be copied to the current working directory and a commit generated for the users changes. 
-    # If the user wishes to create a new spin they can achieve this by setting the --listrepodir commandline option to a new directory 
-    # where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name 
-    # with the --listrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
-    printf "%s\n\n"  "$FILELISTS $COMMITDIR" 
-        if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-            printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-            # download iso packages lists from https://github.com
-            # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-            if [ -n "$ISO_VER" ]; then
-                export GIT_BRNCH="$ISO_VER"
-            elif [ ${TREE,,} == "cooker" ]; then
-                export GIT_BRNCH=master
-            else
-                export GIT_BRNCH=${TREE,,}
-                # ISO_VER defaults to user build entry
-            fi
-                cd "$WORKDIR" ||  exit
-        EX_PREF=./
-        EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
-                wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1 
-            if [ ! -e "$FILELISTS" ]; then
-                printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-                errorCatch
-            fi
-        fi
-        if [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
-            echo "THE CHROOT FILES ARE POPULATED HERE"
-            popREPOdir
-        else
-            printf "%s\n" "-> Copying users local package lists from $COMMITDIR to workdir"
-            cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
-        fi
+# Package list handling has two modes. When the script is run on ABF the package lists are obtained from the git repos.
+# The branch used will can be changed by using the --isover switch to get the lists from a different branch of the repo.
+# When operated outside of ABF it is assumed that the user will wish to modify the lists to create their own custom iso.
+# In this case the package lists are initially downloaded from GitHub and the versions that match the repo given on the command line
+# is copied to the directory pointed to by the LREPODIR variable. The LREPODIR variable is automatically set to a default if the user 
+# does not provide a name. The directory name is stored in an hidden file .rpodir in the users home directory.
+# A git repository is created in the LREPODIR and an an initial commit made with an automatically generated commit message which 
+# contains the "Build ID" and a session count which uniquely labels each commit. 
+# Should the user alter the files then on a subsequent iso build the files from the directory pointed to by the LREPODIR variable 
+# will be copied to the current working directory and a commit generated for the users changes. 
+# If the user wishes to create a new spin they can achieve this by setting the --listrepodir commandline option to a new directory 
+# where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name 
+# with the --listrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
+
+	printf "%s\n\n"  "$FILELISTS $COMMITDIR" 
+	if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+		printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+# download iso packages lists from https://github.com
+# GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+		if [ -n "$ISO_VER" ]; then
+			export GIT_BRNCH="$ISO_VER"
+		elif [ ${TREE,,} == "cooker" ]; then
+			export GIT_BRNCH=master
+		else
+			export GIT_BRNCH=${TREE,,}
+# ISO_VER defaults to user build entry
+		fi
+		cd "$WORKDIR" ||  exit
+		EX_PREF=./
+		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
+		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1 
+		if [ ! -e "$FILELISTS" ]; then
+			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
+			errorCatch
+		fi
+	fi
+
+	if [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
+		printf "%s\n" "THE CHROOT FILES ARE POPULATED HERE"
+		popREPOdir
+	else
+		printf "%s\n" "-> Copying users local package lists from $COMMITDIR to workdir"
+		cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
+	fi
 }
 
 popREPOdir() {
 # This function serves to populate a newly created package list repo after itdirectory creation by mkeREPOdir
 # It is called conditionally (once and only once) when the package lists have been downloaded from the git repo.
-        cp -r ${WORKDIR}/iso-pkg-lists-${TREE}/ ${COMMITDIR}/
-        if  [ ! -f ${COMMITDIR}/iso-pkg-lists-${TREE}/my.add ]; then
-            printf "%s\n" "There's been an error"
-            hlpprtf "\t\t\tPlease check whether the directory named in the hidden file .rpodir in your home directory still exists and if it does it may still have the .git directory which will allow you to recover your package lists. If no files exist please delete the .rpodir file and the directory named in it and start with a fresh build"
-            errorCatch
-        fi
+	cp -r ${WORKDIR}/iso-pkg-lists-${TREE}/ ${COMMITDIR}/
+	if  [ ! -f ${COMMITDIR}/iso-pkg-lists-${TREE}/my.add ]; then
+		printf "%s\n" "There's been an error"
+		hlpprtf "\t\t\tPlease check whether the directory named in the hidden file .rpodir in your home directory still exists and if it does it may still have the .git directory which will allow you to recover your package lists. If no files exist please delete the .rpodir file and the directory named in it and start with a fresh build"
+		errorCatch
+	fi
 }
 
 MkeListRepo() {
@@ -1007,30 +1009,30 @@ MkeListRepo() {
 
 MkeCmmtMsg() {
 # Create a sequential commit message
-    if [ ! -d ${COMMITDIR}/sessrec ]; then
-    mkdir -p ${COMMITDIR}/sessrec
-    else
-        if  [ -f ${COMMITDIR}/sessrec/.seqnum ]; then
-            SEQNUM=`cat ${COMMITDIR}/sessrec/.seqnum`
-            SEQNUM=$((SEQNUM+1))
-        else
-            SEQNUM=1
-        fi
-	printf "%s\n" "$SEQNUM" >"${COMMITDIR}/sessrec/.seqnum"
-	SESSNO=$(cat ${COMMITDIR}/sessrec/.build_id)
-	CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
+	if [ ! -d ${COMMITDIR}/sessrec ]; then
+		mkdir -p ${COMMITDIR}/sessrec
+	else
+		if  [ -f ${COMMITDIR}/sessrec/.seqnum ]; then
+			SEQNUM=$(cat ${COMMITDIR}/sessrec/.seqnum)
+			SEQNUM=$((SEQNUM+1))
+		else
+			SEQNUM=1
+		fi
+		printf "%s\n" "$SEQNUM" >"${COMMITDIR}/sessrec/.seqnum"
+		SESSNO=$(cat ${COMMITDIR}/sessrec/.build_id)
+		CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
 	fi
 }
 
 DtctCmmt() {
 # Detect whether the lists have changed and if so set the change flag, generate commit msg and commit the changes.
-    if [ -d $COMMITDIR/iso-pkg-lists-$TREE ]; then
-    cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
-	CHNGFLG=$(git diff)
-        if [ -n "$CHNGFLG" ]; then
-            MkeCmmtMsg
-            git commit -a -m "$CMMTMSG"
-        fi
+	if [ -d $COMMITDIR/iso-pkg-lists-$TREE ]; then
+		cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
+		CHNGFLG=$(git diff)
+		if [ -n "$CHNGFLG" ]; then
+			MkeCmmtMsg
+			git commit -a -m "$CMMTMSG"
+		fi
 	fi
 }
 
@@ -1039,19 +1041,19 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-	PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
-	cd "$WORKDIR" || exit
-	curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-	PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
-	for i in $PACKAGES; do
-		P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
-		if [ "$?" != '0' ]; then
-			printf "%s\n" "Can't find $TREE version of $i, please report"
-			exit 1
-		fi
-		wget $PKGS/$P
-	done
-    fi
+		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+		cd "$WORKDIR" || exit
+		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+		PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+		for i in $PACKAGES; do
+			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
+			if [ "$?" != '0' ]; then
+				printf "%s\n" "Can't find $TREE version of $i, please report"
+				exit 1
+			fi
+			wget $PKGS/$P
+		done
+	fi
 
 	if [ -e "$WORKDIR"/.new ]; then
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
@@ -1068,16 +1070,16 @@ InstallRepos() {
 
 	# Use the master repository, not mirrors
 	if [ -e "$WORKDIR"/.new ]; then
-        if [ -n "$USEMIRRORS" ]; then
-            printf "->WARNING<- YOU HAVE ELECTED TO DOWNLOAD THE PACKAGES FOR THIS BUILD FROM A MIRROR. PACKAGE VERSIONS MAY NOT BE UP TO DATE"
-        else
-        sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
-        fi
+		if [ -n "$USEMIRRORS" ]; then
+			printf "->WARNING<- YOU HAVE ELECTED TO DOWNLOAD THE PACKAGES FOR THIS BUILD FROM A MIRROR. PACKAGE VERSIONS MAY NOT BE UP TO DATE"
+		else
+			sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
+		fi
 	# we must make sure that the rpmcache is retained
-	echo "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
-    # This setting will be overwritten when the repos are re-installed at the end; however
-    # because the repo rpms are installed with rpm -Uvh the cache wont be cleared as dnf won't be run so the vache must be removed.
-    fi
+	printf "%s\n" "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
+# This setting will be overwritten when the repos are re-installed at the end; however
+# because the repo rpms are installed with rpm -Uvh the cache wont be cleared as dnf won't be run so the vache must be removed.
+	fi
 
 	#Check the repofiles and gpg keys exist in chroot
 	if [ ! -s "$CHROOTNAME/etc/yum.repos.d/openmandriva-cooker-${EXTARCH}.repo" ] || [ ! -s "$CHROOTNAME/etc/pki/rpm-gpg/RPM-GPG-KEY-OpenMandriva" ]; then
@@ -1095,30 +1097,32 @@ InstallRepos() {
 	if [ ! -e "$WORKDIR"/.new ]; then
 		/bin/rm -rf "$WORKDIR"/*.rpm
 	fi
+
 	# This must only happen on the second invocatiom.
 	if [ -n "$BASEREPO" ]; then
-        printf "%s\n" "->Enabling the main repo only"
-    else
-        if [ -n "$UNSUPPREPO" ]; then
-            dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
-        fi
-        # Some pre-processing required here because of the structure of repoid's
-        if [ -n "$ENABLEREPO" ]; then
-                ENABLEREPO=`tr "," " " <<< $ENABLEREPO`
-            #for rpo in ${ENABLEREPO//,/]; do
-            dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
-            #done
-        fi
-        if [ -n "$TESTREPO" ]; then
-            dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
-        fi
+		printf "%s\n" "->Enabling the main repo only"
+	else
+		if [ -n "$UNSUPPREPO" ]; then
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
+		fi
+	# Some pre-processing required here because of the structure of repoid's
+		if [ -n "$ENABLEREPO" ]; then
+			ENABLEREPO=$(tr "," " " <<< $ENABLEREPO)
+			#for rpo in ${ENABLEREPO//,/]; do
+			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
+			#done
+	fi
+
+	if [ -n "$TESTREPO" ]; then
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
+	fi
 		printf "%s\n" "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
-    fi
-		# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
+	fi
+# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
 
 updateSystem() {
-	# Remember it's the local system we are updating here not the chroot
+# Remember it's the local system we are updating here not the chroot
 
 	ARCH="$(rpm -E '%{_target_cpu}')"
 	HOST_ARCHEXCLUDE=""
@@ -1138,17 +1142,17 @@ updateSystem() {
 
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel git"
-	if [ `rpm -q $RPM_LIST | wc -l`  == "`wc -w <<< ${RPM_LIST}`" ]; then
-       printf "%s\n" "->All the correct system files are installed "
-        if [ ! -d "$WORKDIR/dracut" ]; then
-            find "$WORKDIR"
-            touch "$WORKDIR/.new"
-        else
-            printf "%s\n" "-> Your build lists have been retained" # Files already copied
-        fi
+	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
+	    printf "%s\n" "->All the correct system files are installed "
+	if [ ! -d "$WORKDIR/dracut" ]; then
+	    find "$WORKDIR"
+	    touch "$WORKDIR/.new"
 	else
-        printf "%s\n" "-> Installing rpm files inside system environment"
-        dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
+	    printf "%s\n" "-> Your build lists have been retained" # Files already copied
+	fi
+	else
+	    printf "%s\n" "-> Installing rpm files inside system environment"
+	    dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 	# upgrade system after just in case
 #	if [ IN_ABF == '0' ]; then
 		dnf upgrade --refresh --assumeyes
@@ -1156,13 +1160,13 @@ updateSystem() {
 #	fi
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
-            if [ ! -d "$WORKDIR/dracut" ]; then
-                find "$WORKDIR"
-                touch "$WORKDIR/.new"
-            else
-                printf "%s\n" "-> Your build lists have been retained" # Files already copied
-            fi
-    fi
+	    if [ ! -d "$WORKDIR/dracut" ]; then
+		find "$WORKDIR"
+		touch "$WORKDIR/.new"
+	    else
+		printf "%s\n" "-> Your build lists have been retained" # Files already copied
+	    fi
+	fi
 	# Make our directory writeable by current sudo user
 	chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
 }
@@ -1188,67 +1192,67 @@ updateSystem() {
 	# This uses the preserved rpm cache to speed up the rebuild.
 	# Files that were added to the user files will be downloaded.
 createChroot() {
-        # Make sure /proc, /sys and friends can be mounted so %post scripts can use them
-		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
+# Make sure /proc, /sys and friends can be mounted so %post scripts can use them
+	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
-		if [ -n "$REBUILD" ]; then
-			ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
-			if [ -z "$ANYRPMS" ]; then
-				printf "%s\n" "-> You must run with --noclean before you use --rebuild"
-				errorCatch
-			fi
-		else
-			printf "%s\n" "-> Rebuilding."
+	if [ -n "$REBUILD" ]; then
+		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
+		if [ -z "$ANYRPMS" ]; then
+			printf "%s\n" "-> You must run with --noclean before you use --rebuild"
+			errorCatch
 		fi
+	else
+		printf "%s\n" "-> Rebuilding."
+	fi
 
 	mount --bind /proc "$CHROOTNAME"/proc
 	mount --bind /sys "$CHROOTNAME"/sys
 	mount --bind /dev "$CHROOTNAME"/dev
 	mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
+	if [ "$IN_ABF" = '1' ]; then
+# Just build a chroot if DEBUG is not we will have 
+# been thrown out long before we have got here.
+		printf "%s\n" "Creating chroot"
+		mkOmSpin
+	elif [ ! -f "$CHROOTNAME/.noclean" ]; then
+		printf "%s\n" "Creating an user chroot"
+		mkUserSpin
+		touch "$CHROOTNAME/.noclean"
+	fi
 
-        if [ "$IN_ABF" = '1' ]; then
-            # Just build a chroot if DEBUG is not we will have 
-            # been thrown out long before we have got here.
-            printf "%s\n" "Creating chroot"
-            mkOmSpin
-        elif [ ! -f "$CHROOTNAME/.noclean" ]; then
-            printf "%s\n" "Creating an user chroot"
-            mkUserSpin
-            touch "$CHROOTNAME/.noclean"
-        fi
+	if [ "$IN_ABF" = '0' ]; then
+		if [ -n "$REBUILD" ]; then
+			printf  "%s\n" "-> Rebuilding."
+			mkUserSpin "$FILELISTS"
+		elif [ -n "$AUTO_UPDATE" ]; then
+			/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
+		elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ]; then
+			printf "%s\n" "-> Updating user spin"
+			updateUserSpin
+		else
+			mkUserSpin
+		fi
+	fi
 
-        if [ "$IN_ABF" = '0' ]; then
-            if [ -n "$REBUILD" ]; then
-                printf  "%s\n" "-> Rebuilding."
-                mkUserSpin "$FILELISTS"
-            elif [ -n "$AUTO_UPDATE" ]; then
-                /usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
-            elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ]; then
-                printf "%s\n" "-> Updating user spin"
-                updateUserSpin
-            else 
-                mkUserSpin 
-            fi
-        fi
-        # Did it return 0k
-        if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
-            printf "%s\n" "-> Can not install packages from $FILELISTS"
-            errorCatch
-        fi
-        
-        # Check CHROOT
-        if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
-            printf "%s\n" "-> Broken chroot installation." "Exiting"
-            /bin/rm -f $CHROOTNAME/.noclean
-            errorCatch
+# Did it return 0k
+	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
+		printf "%s\n" "-> Can not install packages from $FILELISTS"
+		errorCatch
+	fi
+
+# Check CHROOT
+	if [ ! -d  "$CHROOTNAME"/lib/modules ]; then
+		printf "%s\n" "-> Broken chroot installation." "Exiting"
+		/bin/rm -f $CHROOTNAME/.noclean
+		errorCatch
 	fi
 
 # There's a problem here if you have something like desktop and desktop-clang kernels as module detection fails if 
 # the boot kernel type is defined as desktop. You have to be careful about what you put in --boot-kernel-type
 # Somehow this has to be fixed perhaps with a lookup or translation table.
 # Export installed and boot kernel
-	pushd "$CHROOTNAME"/lib/modules > /dev/null 2>&1
+	cd "$CHROOTNAME"/lib/modules > /dev/null 2>&1
 	BOOT_KERNEL_ISO="$(ls -d --sort=time [0-9]* | grep "$BOOT_KERNEL_TYPE" | head -n1 | sed -e 's,/$,,')"
 	export BOOT_KERNEL_ISO
 	if [ -n "$BOOT_KERNEL_TYPE" ]; then
@@ -1258,7 +1262,7 @@ createChroot() {
 		KERNEL_ISO=$(ls -d --sort=time [0-9]* |head -n1 | sed -e 's,/$,,')
 	fi
 	export KERNEL_ISO
-	popd > /dev/null 2>&1
+	cd - > /dev/null 2>&1
 # remove rpm db files which may not match the target chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 }
@@ -1289,6 +1293,8 @@ getIncFiles() {
 	local __infile="$1"   # The main build file
 	local __incflist="$2" # Carries returned variable
 	local __addrpminc # It's critical that this is local otherwise the content of previous runs corrupts the current list.
+
+# wow, cool a nested function...
 	getEntrys() {
 		# Recursively fetch included files
 		while read -r r; do
@@ -1300,13 +1306,14 @@ getIncFiles() {
 		done < <(cat "$1" | grep '^[A-Za-z0-9 \t]*%include' | awk -F'.///' '{print $2}' |  sed '/ #/d ; /^\s$/d ; /^$/d') > /dev/null 2>&1
 		# The above may appear as a useless use of cat but it's removal results in a permission denied error (even as sudo) 
 		# this is presumably because the contents of $1 is actually a path to a file.
-    }
+	}
+
 	getEntrys "$1"
 	# Add the primary file to the list
-   	__addrpminc+=$'\n'"$__infile"
+	__addrpminc+=$'\n'"$__infile"
 	# Sort and remove dupes.
-   	__addrpminc=$(printf "%s" "$__addrpminc" | sort -u | uniq -u)
-   	# Export
+	__addrpminc=$(printf "%s" "$__addrpminc" | sort -u | uniq -u)
+	# Export
 	eval $__incflist="'$__addrpminc'"
 }
 
@@ -1392,8 +1399,8 @@ mkUpdateChroot() {
 			if [ -n "$PLLL" ]; then
 				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 			else
-                /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
-                printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
+				/usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+				printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 			fi
 		fi
 	fi
@@ -1403,35 +1410,34 @@ mkUpdateChroot() {
 # which means using a solvedb setup. We can however make use of it's fail utility.. Add some logging too.
 # Usage: MyAdd
 MyAdd() {
-if [ -n "$DEBUG" ]; then
-echo "MyAdd"
-fi
+	if [ -n "$DEBUG" ]; then
+		printf "%s\n" "MyAdd"
+	fi
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		if [ -n "$PLLL" ]; then
-            printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log" 
-            #| tee "$WORKDIR/dnfopt.log"
-        else
-            /usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
-            #>"$WORKDIR/dnfopt.log"
-            #| tee "$WORKDIR/dnfopt.log"
-            printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
-        fi
-    fi
+			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log" 
+#			| tee "$WORKDIR/dnfopt.log"
+		else
+			/usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+#			>"$WORKDIR/dnfopt.log"
+#			| tee "$WORKDIR/dnfopt.log"
+			printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
+		fi
+	fi
 }
 
 # Usage: MyRmv
 MyRmv() {
-if [ -n "$DEBUG" ]; then
-echo "MyRmv"
-fi
+	if [ -n "$DEBUG" ]; then
+		printf "%s\n" "MyRmv"
+	fi
 	if [ -n "$__remove_list" ]; then
-        # Before we do anything here we have to consider that the user may have 
-        # added packages to the remove list which have been breaking the build. 
-        # Any duplicates that appear in both lists removed from BOTH lists
-        # This works even if the packages are not installed
-
-        printf "%s" "-> Removing user specified rpms and orphans" " "
+# Before we do anything here we have to consider that the user may have 
+# added packages to the remove list which have been breaking the build. 
+# Any duplicates that appear in both lists removed from BOTH lists
+# This works even if the packages are not installed
+		printf "%s" "-> Removing user specified rpms and orphans" " "
 		/usr/bin/dnf autoremove -y  --installroot "$CHROOTNAME" "$__remove_list"
 	else
 		printf "%s\n" " " "-> No rpms need to be removed"
@@ -1444,15 +1450,15 @@ fi
 # $REMOVE_LIST = All list files to be removed
 # This function includes all the user adds and removes.
 mkUserSpin() {
-if [ -n "$DEBUG" ]; then
-echo "mkUserSpin"
-fi
+	if [ -n "$DEBUG" ]; then
+		printf "%s\n" "mkUserSpin"
+	fi
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
-	echo "$FILELISTS"
+	printf "%s\n" "$FILELISTS"
 	getIncFiles "$FILELISTS" ADDRPMINC
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
-    # Combine the main and the users files"
+	# Combine the main and the users files"
 	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
 	# Now for the remove list
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
@@ -1462,15 +1468,15 @@ fi
 	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
 	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
 	if [ -n "$DEVMODE" ]; then
-	printf "%s\n" "$ALLRPMINC" > "$WORKDIR/primary.list"
-	printf "%s\n" "$ADDRPMINC" > "$WORKDIR/prime.list"
-	printf "%s\n" "$RMRPMINC" | grep -v "$FILELISTS"
-	printf "%s\n" "$RMRPMINC" > "$WORKDIR/rmprime.list"
+		printf "%s\n" "$ALLRPMINC" > "$WORKDIR/primary.list"
+		printf "%s\n" "$ADDRPMINC" > "$WORKDIR/prime.list"
+		printf "%s\n" "$RMRPMINC" | grep -v "$FILELISTS"
+		printf "%s\n" "$RMRPMINC" > "$WORKDIR/rmprime.list"
 	fi
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
-    INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u))
+	INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u))
 	if [ -n "$DEVMODE" ]; then
 		printf '%s\n' "$INSTALL_LIST" >"$WORKDIR/user_add_rpmlist"
 		printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_rm_rpmlist"
@@ -1488,15 +1494,15 @@ fi
 # It is used to add user updates after the main chroot
 # has been created with mkUserSpin.
 updateUserSpin() {
-if [ -n "$DEBUG" ]; then
-echo "updateUserSpin"
-fi
+	if [ -n "$DEBUG" ]; then
+		printf '%s\n' "updateUserSpin"
+	fi
 	printf "%s\n" "-> Updating user spin"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
 	# re-assign just for consistancy
 	ALLRPMINC="$UADDRPMINC"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
-    printf "%s\n" " " "-> This is the user include list"
+	printf "%s\n" " " "-> This is the user include list"
 	printf "%s\n" "$ALLRPMINC" "-> End of user include list" " "
 	printf "%s\n" " " "-> This is the remove include list"
 	printf "%s\n" "$RMRPMINC" "-> End of remove list" " "
@@ -1515,7 +1521,7 @@ fi
 	fi
 	# Remove any packages that occur in both lists
 	INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u)) > /dev/null 2>&1
-    printf "%s\n" "-> This is the install package list" "$INSTALL_LIST" "->End of install pkg list" " "
+	printf "%s\n" "-> This is the install package list" "$INSTALL_LIST" "->End of install pkg list" " "
 	printf "%s\n" "-> This is the remove package list" "$REMOVE_LIST" "End of remove pkg list"
 	if [ -n "$DEVMODE" ]; then
 		printf '%s\n\t' "$INSTALL_LIST" >"$WORKDIR/user_update_add_rpmlist" " "
@@ -1573,9 +1579,9 @@ createInitrd() {
 
 	# Building liveinitrd
 	chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$BOOT_KERNEL_ISO"
-    if [ -n "$BOOT_KERNEL_TYPE" ]; then
-        chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
-    fi
+	if [ -n "$BOOT_KERNEL_TYPE" ]; then
+	    chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
+	fi
 	if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 		printf "%s\n" "-> File $CHROOTNAME/boot/liveinitrd.img does not exist. Exiting."
 		errorCatch
@@ -1613,7 +1619,7 @@ createInitrd() {
 
 # Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
-createMemDisk () {
+createMemDisk() {
 	if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
 		ARCHFMT=x86_64-efi
 		ARCHPFX=X64
@@ -1855,21 +1861,20 @@ setupGrub2() {
 	printf "%s\n" "-> Installing liveinitrd for grub2"
 
 	if [ -e "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" ] && [ -e "$CHROOTNAME/boot/liveinitrd.img" ]; then
-    cp -a "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
-    cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd.img"
-    sed -i "s/%KCC_TYPE%/with ${BOOT_KERNEL_ISO}/" "$ISOROOTNAME"/boot/grub/grub.cfg
-        if [ -n "$BOOT_KERNEL_TYPE" ]; then
-            cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
-            cp -a "$CHROOTNAME/boot/liveinitrd1.img" "$ISOROOTNAME/boot/liveinitrd1.img"
-                # If dual kernels are used set up the grub2 menu to show them. This needs extra work
-                ALT_KERNEL=$(echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}') #Fix this to use shell substitution perhaps"
-                sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
-        else
-                # Remove the uneeded menu entry
-            sed -i '/linux1/,+4 d' "$ISOROOTNAME"/boot/grub/grub.cfg
-        fi	
+		cp -a "$CHROOTNAME/boot/vmlinuz-$BOOT_KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz0"
+		cp -a "$CHROOTNAME/boot/liveinitrd.img" "$ISOROOTNAME/boot/liveinitrd.img"
+		sed -i "s/%KCC_TYPE%/with ${BOOT_KERNEL_ISO}/" "$ISOROOTNAME"/boot/grub/grub.cfg
+		if [ -n "$BOOT_KERNEL_TYPE" ]; then
+			cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
+			cp -a "$CHROOTNAME/boot/liveinitrd1.img" "$ISOROOTNAME/boot/liveinitrd1.img"
+# If dual kernels are used set up the grub2 menu to show them. This needs extra work
+			ALT_KERNEL=$(echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}') #Fix this to use shell substitution perhaps"
+			sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
+		else
+# Remove the uneeded menu entry
+			sed -i '/linux1/,+4 d' "$ISOROOTNAME"/boot/grub/grub.cfg
+		fi
 	else
-
 		printf "%s\n" "-> vmlinuz or liveinitrd does not exists. Exiting."
 		errorCatch
 	fi
@@ -2033,7 +2038,7 @@ EOF
 	fi
 
 	# (crazy) not used ? cannot work like this ?
-	pushd "$CHROOTNAME"/etc/sysconfig/network-scripts > /dev/null 2>&1
+	cd "$CHROOTNAME"/etc/sysconfig/network-scripts > /dev/null 2>&1
 	for iface in eth0 wlan0; do
 		cat > ifcfg-$iface << EOF
 DEVICE=$iface
@@ -2042,7 +2047,7 @@ NM_CONTROLLED=yes
 BOOTPROTO=dhcp
 EOF
 	done
-	popd > /dev/null 2>&1
+	cd - > /dev/null 2>&1
 
 	printf "%s\n" "-> Starting services setup."
 
@@ -2144,9 +2149,9 @@ EOF
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-        if [ "${TYPE,,}" = 'cinnamon' ]; then
-            sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-            sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		if [ "${TYPE,,}" = 'cinnamon' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
 		if [ "${TYPE,,}" = 'lxqt' ]; then
@@ -2162,16 +2167,17 @@ EOF
 			sed -i -e "s/.*executable:.*/    executable: "startxfce4"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "xfce"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
-		
-        if [ "${TYPE,,}" = 'gnome3' ]; then
+
+		if [ "${TYPE,,}" = 'gnome3' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startgnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "gnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
+
 		if [ "${TYPE,,}" = "$NEWTYPE" ]; then 
-            sed -i -e "s/.*executable:.*/    executable: $WMNAME/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*executable:.*/    executable: $WMNAME/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: $WMDESK/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi	
-    fi
+		fi
+	fi
 	#remove rpm db files which may not match the non-chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 
@@ -2204,8 +2210,8 @@ EOF
 		printf "%s\n" "-> Please wait...rebuilding man page database"
 		chroot "$CHROOTNAME" /usr/bin/mandb --quiet
 	fi
-    
-    # Move the rpm cache out of the way for the iso build
+
+# Move the rpm cache out of the way for the iso build
 	#if [[ "$IN_ABF" = 0  || ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]]; then
 	#if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
 	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
@@ -2252,10 +2258,10 @@ createSquash() {
 				errorCatch
 			fi
 		fi
-        # copy the package lists and and the build options to the chroot
-        mkdir -p ${CHROOTNAME}/.build_info
-        cp ${COMMITDIR}/*   ${CHROOTNAME}/.build_info/pkglsts_build_id-${BUILD_ID}
-        dnf --installroot "${CHROOTNAME}" list --installed >${CHROOTNAME}/.build_info/installed_pkgs
+# copy the package lists and and the build options to the chroot
+		mkdir -p ${CHROOTNAME}/.build_info
+		cp ${COMMITDIR}/*   ${CHROOTNAME}/.build_info/pkglsts_build_id-${BUILD_ID}
+		dnf --installroot "${CHROOTNAME}" list --installed >${CHROOTNAME}/.build_info/installed_pkgs
 	fi
 
 	if [ -f "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
@@ -2340,11 +2346,12 @@ postBuild() {
 		md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
 		sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
 	else
-		pushd "$WORKDIR" > /dev/null 2>&1
+		cd "$WORKDIR" > /dev/null 2>&1
 		md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
 		sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
-		popd > /dev/null 2>&1
+		cd - > /dev/null 2>&1
 	fi
+
 	mkdir -p "$WORKDIR/results" "$WORKDIR/archives"
 	if [ -n "$OUTPUTDIR" ]; then
 		mv "$OUTPUTDIR"/*.iso* "$WORKDIR/results/"
@@ -2358,7 +2365,7 @@ postBuild() {
 
 	# If not in ABF move rpms back to the cache directories
 	if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
-        /bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
+		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
 		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
 	fi
 
@@ -2388,8 +2395,8 @@ errorCatch() {
 	# (crazy) umountAll() ?
 	umount -l /mnt
 	losetup -D
-		umountAll "$CHROOTNAME"
-		umountAll "$CHROOTNAME"
+	umountAll "$CHROOTNAME"
+	umountAll "$CHROOTNAME"
 	exit 1
 }
 
@@ -2399,28 +2406,28 @@ trap errorCatch ERR SIGHUP SIGINT SIGTERM
 FilterLogs() {
 	printf "%s\n" "-> Make some helpful logs"
 	if [ -f "$WORKDIR/install.log" ]; then
-		# Create the header
+# Create the header
 		printf "%s\n" "" "" "RPM Install Success" " " >"$WORKDIR/rpm-install.log"
 		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$10}' >>"$WORKDIR/rpm-install.log" #1>&2 >/dev/null
 		printf "%s\n" "" "" "RPM Install Failures" " " >"$WORKDIR/rpm-fail.log"
 		head -1 "$WORKDIR/install.log" | awk '{print$1"\t"$3"\t"$4"\t"$7"\t\t"$10}' >>"$WORKDIR/rpm-fail.log"
-
-		# Append the data
+# Append the data
 		 awk '$7  ~ /1/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$18}' "$WORKDIR/install.log" >> "$WORKDIR/rpm-fail.log"
 		 awk '$7  ~ /0/  {print$1"\t"$3"\t"$4"\t\t"$7"\t"$18}' "$WORKDIR/install.log" >> "$WORKDIR/rpm-install.log"
 	fi
-	# Make a dependency failure log
+
+# Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
-		MISSING=`grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"`: 
-    fi
+		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"):
+	fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
 		printf "%s\n" " " "-> DEPENDENCY FAILURES"
 		cat "$WORKDIR/depfail.log"
 		cat "$WORKDIR/rpm-install.log" 
 	fi
-	# List the available repos and their status
+# List the available repos and their status
 	dnf repolist -C --installroot "$CHROOTNAME" --quiet  --all > REPO_STATUS.txt
 	
 }
