@@ -185,7 +185,7 @@ main() {
             		 exit
             		;;
             	esac
-            ;;	
+            ;;
 		 --keep)
 			KEEP=keep
 			;;
@@ -248,10 +248,10 @@ main() {
 	# and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
 	# to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
-	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE \ "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD \ 
-	"WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \ 
-	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO \ 
-	"AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS \ 
+	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE \ "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD \
+	"WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
+	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO \
+	"AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS \
 	"LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO "MAKELISTREPO="$MAKELISTREPO "
 
 	# run only when root
@@ -314,19 +314,19 @@ main() {
 	# Functions that are not called directly are are commented out and are stored following the functions they are first called in
 	# though they may be called from alternate functions.
 	#
-	
+
 	#main  # Stared from the end of the script to ensure all functions are read
 	#usage_help ~ Does what it says on the tin
 	#hlpprtf # Block text formatting functions
 	#optprtf # Option formatting function
 	allowedOptions # Checks whether options are legal for operating environment
-	setWorkdir     # Sets the workdirectory location depending on whether 
+	setWorkdir     # Sets the workdirectory location depending on whether
 # START ISO BUILD
     mkeWkingEnv    # Creates the working environment
     #RemkWorkDir   # Remake the working directory if you are rebuilding an iso.
     #SaveDaTa      # Saves useful chroot data for rebuilds
     #RestoreDaTa   # Restores data to the chroot for rebuild
-    SetFileList    # Sets the current list repo paths. 
+    SetFileList    # Sets the current list repo paths.
     #userISONme    # Interactive menu to set user iso name and the windoe manager executable.
 	#cfrmISONme    # Support for interactive menu.
 	#cfrmWMNme     # Support for interactive menu.
@@ -338,7 +338,7 @@ main() {
 	MkeListRepo    # Create git repo for pkg lists.
 	#MkeCmmtMsg    # Creates a uniquely labelled commit message for git commits.
 	DtctCmmt       # Check for changes and set change flag.
-    CarryOn        # An entry point for the user build setup. 
+    CarryOn        # An entry point for the user build setup.
 } #End of main
 
 ########################
@@ -355,7 +355,7 @@ CarryOn() {
 	createChroot       # Creates chroot (proc dirs and mounts) Despatches to following funtions
 	#mkOmSpin          # Creates an iso in the ABF environment
 	#getIncFiles       # Recursively gets all the files included in a top level list and returns itin a variable
-	#createPkgList     # Creates a package list from a list of package list files and returns it in a variable. 
+	#createPkgList     # Creates a package list from a list of package list files and returns it in a variable.
 	#mkUpdateChroot    # Installs or updates the files in the chroot
 	#MyAdd             # Local users package list for adding files to build
 	#MyRmv             # Local users package list for removing files
@@ -381,12 +381,12 @@ usage_help() {
        printf "%b\n" ""
 		printf "%b\t" "Please run script with arguments" "usage $0 [options]"
 		printf "%b\n" "" "\t\t\t\t${ulon}${bold}GENERAL OPTIONS${normal}"
-		
+
 		optprtf "--arch=     " "Architecture of packages: i686, x86_64, znver1"
 		optprtf "--tree=     " "Branch of software repository: cooker, lx4"
 		optprtf "--version=" "Version for software repository: 4.0"
 		optprtf "--release_id=" "Release identifer: alpha, beta, rc, final"
-		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run." 
+		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
 		hlpprtf "\t\t\tBy default the system build a minimal iso from a list repo with the user selected name. Subsequently the user may add additional include lines, packages or local filenames directories for inclusion to the my.add file in the repository named in the first step. The list repo is created ahead of the build so the script will exit after creating the intial repo to allow the user to add packages or includes to the my.add file before building the iso. On subsequent runs the program will not exit but continue on to build the iso. See also the --makelistrepo option. Switching between user created repos is accomplished by setting the --listrepodir to the desired directory."
 		printf "%b" "--displaymanager=" "\tDisplay Manager used in desktop environemt: sddm , none\n"
 		optprtf "--workdir=" "Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
@@ -396,14 +396,14 @@ usage_help() {
 		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
 		printf "%b\n" "\t\t\t\t${ulon}${bold}REPOSITORY MANAGEMENT${normal}"
         hlpprtf "\t\t\tSeveral options allow the selection of additional repositories in addition to the default (main). Please note that is the following options are used the selected repositories will be left enabled on the iso. If you just want the default repositories on the iso use the --baserepo switch in addition to the other selectors."
-        optprtf "--testrepo" "Enables the testing repo for the main repository" 
-        optprtf "--unsupprepo" "Enables the unsupported repo" 
+        optprtf "--testrepo" "Enables the testing repo for the main repository"
+        optprtf "--unsupprepo" "Enables the unsupported repo"
         optprtf "--repolist" "Allows a list of comma separated repoid's to enable.  i.e. --repolist=unsupported,updates,restricted To obtain a list of repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation"
         optprtf "--baserepo" "Resets the above options to the default for the repo group (rock, rolling, cooker)"
 		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
 		printf "%b\n" "\t\t\t\t${ulon}${bold}USER BUILDS - REMASTERING${normal}"
 		printf "%b\n"
-		hlpprtf "\t\t\tProvision is made for custom builds in the form of two files in the package list directories. These are my.add and my.rmv you can add packages names to either of these files and they will be added or removed. You may also add full paths to local rpm files and these will be installed as well. Including other package lists is also supported see the package list files with the folloing include syntax | %include .///omdv-<listname>.lst |. The my.rmv file can be used to temporarily remove packages from the package lists that are failing to install or are simple not required without the need to modify the original lists. The files are stored in a directory which is set up as a git repository; each time the script is run this directory is checked for changes and if any are found they committed to the git repository using a commmit message which contains the build-id and the number of times the script has been run for that build id thus providing a full record of the session. Note that changes to ALL the files are recorded and it is not mandatory that you use my.add or my.rmv it is just more convenient. my.rmv is the only way to remove packages from the chroot when using the --noclean and --rebuild options. To enable the user to create different custom builds and return to them easily the --lrepodir=<dirpath> option is provided. The dirpath defaults to ~/<user_name>s-user-iso but may be pointed to any directory path in the users home directory. The directory once created is never deleted by the script. It is for the user to remove redundant data directories. The script records the last used data directory and restores the content to the chroot unless --lrepodir is set to another value; then a new directory is created (if it does not already exist) with files downloaded from the github repository corresponding to the repository you wish to build against.\n" 
+		hlpprtf "\t\t\tProvision is made for custom builds in the form of two files in the package list directories. These are my.add and my.rmv you can add packages names to either of these files and they will be added or removed. You may also add full paths to local rpm files and these will be installed as well. Including other package lists is also supported see the package list files with the folloing include syntax | %include .///omdv-<listname>.lst |. The my.rmv file can be used to temporarily remove packages from the package lists that are failing to install or are simple not required without the need to modify the original lists. The files are stored in a directory which is set up as a git repository; each time the script is run this directory is checked for changes and if any are found they committed to the git repository using a commmit message which contains the build-id and the number of times the script has been run for that build id thus providing a full record of the session. Note that changes to ALL the files are recorded and it is not mandatory that you use my.add or my.rmv it is just more convenient. my.rmv is the only way to remove packages from the chroot when using the --noclean and --rebuild options. To enable the user to create different custom builds and return to them easily the --lrepodir=<dirpath> option is provided. The dirpath defaults to ~/<user_name>s-user-iso but may be pointed to any directory path in the users home directory. The directory once created is never deleted by the script. It is for the user to remove redundant data directories. The script records the last used data directory and restores the content to the chroot unless --lrepodir is set to another value; then a new directory is created (if it does not already exist) with files downloaded from the github repository corresponding to the repository you wish to build against.\n"
         optprtf "--lrepodir=" "The lrepodir option sets the path to the storage directory for the package lists and other iso files. Once set the path for this directory will be remembered until the value of the lrepodir dir is changedl This initiates a fresh build with virgin files from the OMA repos."
 		optprtf "--quicken" "Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
 		optprtf "--noclean" "Do not clean build chroot and keep cached rpms. Updates chroot with new packages. Option will not re-install the packages it will only retain them"
@@ -411,16 +411,16 @@ usage_help() {
 		optprtf "--rebuild" "Recreates the build chroot and rebuilds from cached rpms and supplementary files. This allows a developer to modify the ""fixed"" iso setup files and preserve them from one run to the next"
 		optprtf "--isover" "Allows the user to fetch a personal repository of build lists from their own repository. Currently the repository must reside on github as a branch of the omdv-build-iso repository"
 		optprtf  "--usemirrors" "Use the mirrorlists to find packages; this option is only intended for use when the main ABF repositories are unavailable. It's possible that the iso will be built with out of date packages"
-		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}		
+		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
 		printf "%6b\n" "\t\t\t\t${ulon}${bold}DEVELOPER OPTIONS${normal}"
 		optprtf "--debug   " "Enable debug output basically enables set -x. This option also allows ABF=1 to be used loacally for testing"
 		optprtf "--devmode" "Enables some developer aids see the README"
         optprtf "--parallel" "Runs each item in the build list as a single transaction. Used in conjunction with --maxerrors=<integer> (default=1) can be used when remastering isos to allow failures due to missing or broken packages. This feature is intended for debugging iso builds and is helpful in tracking down broken dependencies. A list of failed packages is produced at the end of the run after the iso is built."
-		optprtf "--compressor" "This option allows a choice for the compressor to be used when the mksquashfs file is created. Valid choices are gzip, xz, lzo, lz4 and zstd." 
+		optprtf "--compressor" "This option allows a choice for the compressor to be used when the mksquashfs file is created. Valid choices are gzip, xz, lzo, lz4 and zstd."
 		optprtf "--keep  " "Retains only the build lists from one run to another. This means that if you modify the package lists within the working directory (usually omdv-build-chroot-<arch>) they will be restored unconditionally on the next run irrespective of any other flags. This can be used to create lists for new compilations. The build lists are stored in a git repository and each time there is a change a commit is performed thus keeping a record of the users session."
-		optprtf "--makelistrepo" "Just make a list repo if one does not already exist the --listrepodir, --arch and --tree options must be set. Optionally the --isover option may be set to direct the script to an alternative branch on GitHub. The script will create the repo and then exit" 
-		printf "%b\n" 
-	
+		optprtf "--makelistrepo" "Just make a list repo if one does not already exist the --listrepodir, --arch and --tree options must be set. Optionally the --isover option may be set to direct the script to an alternative branch on GitHub. The script will create the repo and then exit"
+		printf "%b\n"
+
 		printf "%b\n" "\t${ulon}${bold}For example:${normal}" " "
 		printf "%b\n" "\tBuild a x86_64 bit iso containg the plasma desktop with sddm as the display manager from the cooker repository"
 		printf "%b\n" "\t${bold}omdv-build-iso.sh --arch=x86_64 --tree=cooker --version=4.0 --release_id=alpha --type=plasma --displaymanager=sddm${normal}" " "
@@ -449,7 +449,7 @@ COLUMNS=$(tput cols)
 FINAL=$(( COLUMNS - 100 ))
 OPT=$(printf "%s" "$1")
 OPT1=$(printf "%b" "\t\t$2" | fmt -w  "$FINAL" -c)
-printf "%s" "$OPT"; printf "%s\n" "${OPT1//$'\n'$'\t'/$'\n'$'\t'$'\t'}" 
+printf "%s" "$OPT"; printf "%s\n" "${OPT1//$'\n'$'\t'/$'\n'$'\t'$'\t'}"
 }
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -503,7 +503,7 @@ setWorkdir() {
         fi
         # Make the directory for saving data between runs
         mkdir -p "${UHOME}"/ISOBUILD
-		BUILDSAV="${UHOME}"/ISOBUILD 
+		BUILDSAV="${UHOME}"/ISOBUILD
     else
         if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
             # We really are in ABF
@@ -544,7 +544,7 @@ mkeWkingEnv() {
 
  if [ "$IN_ABF" = '0' ]; then
     if [ -n "$NOCLEAN" ] && [ -d "$WORKDIR" ]; then #if NOCLEAN option selected then retain the chroot.
-		if [ ! -d "$COMMITDIR"/sessrec ]; then 
+		if [ ! -d "$COMMITDIR"/sessrec ]; then
             touch "$WORKDIR"/.new
         else
 			printf "%s\n" "-> You have chosen not to clean the base installation" \
@@ -569,7 +569,7 @@ mkeWkingEnv() {
             RestoreDaTa  # RestoreDaTa also cleans and recreates the $WORKDIR
 
         fi
-     fi   
+     fi
  else
         # Expressly for debugging ABF=1 outside of the ABF builder
         if [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ] && [ -n "$NOCLEAN" ]; then
@@ -697,11 +697,11 @@ SetFileList() {
     elif [ "$NEWTYPE" != "error" ] && [ $IN_ABF == '1' ]; then
         printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
         errorCatch
-    else    
-    printf "%s\n" "-> You are creating a user build" 
+    else
+    printf "%s\n" "-> You are creating a user build"
     hlpprtf "\t\t\t\tThis build will use the the omdv_minimal_iso.lst to create a basic iso. In addition you will need to provide the name the executable for the Window Manager and the name you wish to assign to the desktop file associated with it. At this point a list repository will be created with that name and the program will exit. This allows the user to add any desired packages and includes to the my.add list file before building the iso. On subsequent runs the program will not exit but continue on to build the iso." " "
     #Check here whether .wmdeskname and .wmname are stored and if so load them into their variables.
-    #Hmm if the content of .repo matches that of NEWTYPE then WHAT? Load the repo name and then check for .wmdeskname and .wmname if these do'nt exist then call userISOnme to set them. 
+    #Hmm if the content of .repo matches that of NEWTYPE then WHAT? Load the repo name and then check for .wmdeskname and .wmname if these do'nt exist then call userISOnme to set them.
     # then set COMMITDIR else if it doesn't match we need to create the COMMITDIR and call and THEN set .uisonme and .wmisoHmm ok
         if [ -f "$UHOME/.repo" ]; then
             if [ "$NEWTYPE" == "$(< "$UHOME/.repo")" ]; then
@@ -712,7 +712,7 @@ SetFileList() {
             #check whether the .wmdeskname and the .wmname have been saved if true then load them if false call the routines to create them
                 if [ -f "$COMMITDIR"/sessrec/.wmdeskname ] && [ -f "$COMMITDIR"/sessrec/.wmname ]; then
                     WMDESK="$(< "${COMMITDIR}"/sessrec/.wmdeskname)"
-                    WMNAME="$(< "${COMMITDIR}"/sessrec/.wmname)"  
+                    WMNAME="$(< "${COMMITDIR}"/sessrec/.wmname)"
                 else
                     userDSKTPNme
                 fi
@@ -790,14 +790,14 @@ mkeREPOdir() {
 # One of these variables is used to set the COMMITDIR variable dependent on whether a standard or user iso is to be built.
 # The variable that determines this is the TYPE variable.
 # If the directory listed in the .repo file does not exit then it is created.
-        if [  "$IN_ABF" = '0' ]; then 
+        if [  "$IN_ABF" = '0' ]; then
             if [ -n "$LREPODIR" ]; then
                 if [ "$LREPODIR" == "$(< "${UHOME}"/.rpodir)" ] && [ -d "$UHOME"/"$LREPODIR" ]; then
                     COMMITDIR="$UHOME"/"$LREPODIR"
                     printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 1"
                 else
                     mkdir -p "$UHOME"/"$LREPODIR"/sessrec
-                    printf "%s\n" "$LREPODIR" > "$UHOME"/.rpodir 
+                    printf "%s\n" "$LREPODIR" > "$UHOME"/.rpodir
                     COMMITDIR="$UHOME"/"$LREPODIR"
                     printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 2"
                 fi
@@ -807,11 +807,11 @@ mkeREPOdir() {
                 COMMITDIR="$UHOME"/"$NEWTYPE"
                 printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 4"
             elif [ -f "$UHOME"/.rpodir ]; then
-                LREPODIR="$(< "${UHOME}"/.rpodir)"         
+                LREPODIR="$(< "${UHOME}"/.rpodir)"
                 printf "%s\n" "$LREPODIR"
                 COMMITDIR="$UHOME"/"$LREPODIR"
                 printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 3"
-            else        
+            else
                 LREPODIR="$WHO"s-user-iso
                 mkdir -p "$UHOME"/"$LREPODIR"/sessrec
                 echo "$LREPODIR" > "${UHOME}"/.rpodir
@@ -856,7 +856,7 @@ mkeUsrListRepo() {
                 printf "%s\n" "Building user iso $NEWTYPE"
                 CarryOn
             fi
-            printf "%s\n" " " "Created local user list repo $NEWTPE" " " 
+            printf "%s\n" " " "Created local user list repo $NEWTPE" " "
             hlpprtf "\t\t\tYou may now add package names, list files to include or paths to local package files that you wish to include in your iso to the my.add file in the list repo directory above. Running the script a second time will build an iso inclUding the packages you have added."
         fi
     fi
@@ -940,17 +940,17 @@ getPkgList() {
 # The branch used will can be changed by using the --isover switch to get the lists from a different branch of the repo.
 # When operated outside of ABF it is assumed that the user will wish to modify the lists to create their own custom iso.
 # In this case the package lists are initially downloaded from GitHub and the versions that match the repo given on the command line
-# is copied to the directory pointed to by the LREPODIR variable. The LREPODIR variable is automatically set to a default if the user 
+# is copied to the directory pointed to by the LREPODIR variable. The LREPODIR variable is automatically set to a default if the user
 # does not provide a name. The directory name is stored in an hidden file .rpodir in the users home directory.
-# A git repository is created in the LREPODIR and an an initial commit made with an automatically generated commit message which 
-# contains the "Build ID" and a session count which uniquely labels each commit. 
-# Should the user alter the files then on a subsequent iso build the files from the directory pointed to by the LREPODIR variable 
-# will be copied to the current working directory and a commit generated for the users changes. 
-# If the user wishes to create a new spin they can achieve this by setting the --listrepodir commandline option to a new directory 
-# where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name 
+# A git repository is created in the LREPODIR and an an initial commit made with an automatically generated commit message which
+# contains the "Build ID" and a session count which uniquely labels each commit.
+# Should the user alter the files then on a subsequent iso build the files from the directory pointed to by the LREPODIR variable
+# will be copied to the current working directory and a commit generated for the users changes.
+# If the user wishes to create a new spin they can achieve this by setting the --listrepodir commandline option to a new directory
+# where a new set of default files with their git repo will be created. Should the user wish to switch to their original iso using that directory name
 # with the --listrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
 
-	printf "%s\n\n"  "$FILELISTS $COMMITDIR" 
+	printf "%s\n\n"  "$FILELISTS $COMMITDIR"
 	if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
 		printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
 # download iso packages lists from https://github.com
@@ -966,7 +966,7 @@ getPkgList() {
 		cd "$WORKDIR" ||  exit
 		EX_PREF=./
 		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
-		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1 
+		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1
 		if [ ! -e "$FILELISTS" ]; then
 			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 			errorCatch
@@ -1182,10 +1182,10 @@ updateSystem() {
 	# If set this will build a standard iso initially once built subsequent runs
 	# with NOCLEAN set will update the chroot with any changed file entries.
     # If we are IN_ABF=0 then
-	# If the NOCLEAN flag and the .noclean file does not exist and there is no /lib/modules in the chroot 
+	# If the NOCLEAN flag and the .noclean file does not exist and there is no /lib/modules in the chroot
 	# then an iso will be built using the standard files
 	# plus the contents of the two user files my.add and my.rmv.
-	
+
 	# Once built subsequent runs with NOCLEAN set will update the chroot with
 	# any changed entries in the user files only.
 	# if --rebuild is set then rebuild the chroot using the standard and user file lists.
@@ -1211,7 +1211,7 @@ createChroot() {
 	mount --bind /dev/pts "$CHROOTNAME"/dev/pts
 
 	if [ "$IN_ABF" = '1' ]; then
-# Just build a chroot if DEBUG is not we will have 
+# Just build a chroot if DEBUG is not we will have
 # been thrown out long before we have got here.
 		printf "%s\n" "Creating chroot"
 		mkOmSpin
@@ -1248,7 +1248,7 @@ createChroot() {
 		errorCatch
 	fi
 
-# There's a problem here if you have something like desktop and desktop-clang kernels as module detection fails if 
+# There's a problem here if you have something like desktop and desktop-clang kernels as module detection fails if
 # the boot kernel type is defined as desktop. You have to be careful about what you put in --boot-kernel-type
 # Somehow this has to be fixed perhaps with a lookup or translation table.
 # Export installed and boot kernel
@@ -1304,7 +1304,7 @@ getIncFiles() {
 			getEntrys "$WORKDIR/iso-pkg-lists-$TREE/$r"
 			# Avoid sub-shells make sure commented out includes are removed.
 		done < <(cat "$1" | grep '^[A-Za-z0-9 \t]*%include' | awk -F'.///' '{print $2}' |  sed '/ #/d ; /^\s$/d ; /^$/d') > /dev/null 2>&1
-		# The above may appear as a useless use of cat but it's removal results in a permission denied error (even as sudo) 
+		# The above may appear as a useless use of cat but it's removal results in a permission denied error (even as sudo)
 		# this is presumably because the contents of $1 is actually a path to a file.
 	}
 
@@ -1338,7 +1338,7 @@ createPkgList() {
 	local __pkgs # The list of packages
 	local __pkglst # The current package list
 	while read -r __pkglst; do
-		__pkgs+=$'\n'$(cat "$__pkglst") >/dev/null 2>1 
+		__pkgs+=$'\n'$(cat "$__pkglst") >/dev/null 2>1
 	done < <(printf '%s\n' "$1") >/dev/null 2>&1
 	# sanitise regex compliments of TPG
 	__pkgs=$(printf '%s\n' "$__pkgs" | grep -v '%include' | sed -e 's,		, ,g;s,  *, ,g;s,^ ,,;s, $,,;s,#.*,,' | sed -n '/^$/!p' | sed 's/ $//')
@@ -1385,7 +1385,7 @@ mkUpdateChroot() {
 		# they haven't been installed yet. So removing rpms only needs to be invoked first if the NOCLEAN flag is set indicating a built chroot. The problem
 		# is that the replacepkgs flag does not install if the package has not been installed that are already there so the package has to be removed first
 		# otherwise parts of the install list will fail. A replace list could be provided. A simple fix for the moment turn both operations into functions
-		# and call then through logic which determines whether --noclean has been invoked. 
+		# and call then through logic which determines whether --noclean has been invoked.
 		if [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME/.noclean" ]; then
 			MyRmv
 			MyAdd
@@ -1416,7 +1416,7 @@ MyAdd() {
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		if [ -n "$PLLL" ]; then
-			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log" 
+			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log"
 #			| tee "$WORKDIR/dnfopt.log"
 		else
 			/usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
@@ -1433,8 +1433,8 @@ MyRmv() {
 		printf "%s\n" "MyRmv"
 	fi
 	if [ -n "$__remove_list" ]; then
-# Before we do anything here we have to consider that the user may have 
-# added packages to the remove list which have been breaking the build. 
+# Before we do anything here we have to consider that the user may have
+# added packages to the remove list which have been breaking the build.
 # Any duplicates that appear in both lists removed from BOTH lists
 # This works even if the packages are not installed
 		printf "%s" "-> Removing user specified rpms and orphans" " "
@@ -1547,7 +1547,7 @@ createInitrd() {
 	fi
 
 	cp -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
-	
+
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
 
@@ -1630,12 +1630,12 @@ createMemDisk() {
 		ARCHFMT=i386-efi
 		ARCHPFX=IA32
 	fi
-    
+
     # Create the ISO directory
 	mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
 	# and the grub diectory
 	mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
-	
+
 	ARCHLIB="/usr/lib/grub/$ARCHFMT"
 	EFINAME=BOOT"$ARCHPFX.efi"
 	printf "%s\n" "-> Setting up UEFI memdisk image."
@@ -1719,7 +1719,7 @@ createUEFI() {
 	EFIDISKSIZE=$((  $EFIFILESIZE + $PARTTABLESIZE + 1 ))
 
 	# Create the image.
-	printf "%s\n" "-> Creating EFI image with size $EFIDISKSIZE" 
+	printf "%s\n" "-> Creating EFI image with size $EFIDISKSIZE"
 
 	# mkfs.vfat can create the image and filesystem directly
 	mkfs.vfat -n "OPENMDVASS" -C -F 16 -s 1 -S 512 -M 0xFF -i 22222222 "$IMGNME" "$EFIDISKSIZE"
@@ -1760,7 +1760,7 @@ createUEFI() {
 	# Unmout the filesystem with EFI image
 	umount /mnt
 	# Be sure to delete the loop device
-	losetup -D 
+	losetup -D
 	# Make sure that the image is copied to the ISOROOT
 	cp -f  "$IMGNME" "$ISOROOTNAME"
 	# Clean up
@@ -2173,7 +2173,7 @@ EOF
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "gnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = "$NEWTYPE" ]; then 
+		if [ "${TYPE,,}" = "$NEWTYPE" ]; then
 			sed -i -e "s/.*executable:.*/    executable: $WMNAME/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: $WMDESK/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
@@ -2217,7 +2217,7 @@ EOF
 	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
 	mkdir -p "$CHROOTNAME"/var/cache/dnf
 	#fi
-	
+
 	# (crazy) NOTE: this be after last think touched /home/live
 	chroot "$CHROOTNAME" /bin/chown -R ${live_user}:${live_user} /home/${live_user}
 	# Rebuild linker cache
@@ -2238,7 +2238,7 @@ EOF
 
 # Clean out the backups of passwd, group and shadow
 ClnShad() {
-	/bin/rm -f "$CHROOTNAME"/etc/passwd- "$CHROOTNAME"/etc/group- "$CHROOTNAME"/etc/shadow-  
+	/bin/rm -f "$CHROOTNAME"/etc/passwd- "$CHROOTNAME"/etc/group- "$CHROOTNAME"/etc/shadow-
 	/bin/rm -f "$WORKDIR"/.new
 }
 
@@ -2425,11 +2425,11 @@ FilterLogs() {
 		cat "$WORKDIR/rpm-fail.log"
 		printf "%s\n" " " "-> DEPENDENCY FAILURES"
 		cat "$WORKDIR/depfail.log"
-		cat "$WORKDIR/rpm-install.log" 
+		cat "$WORKDIR/rpm-install.log"
 	fi
 # List the available repos and their status
 	dnf repolist -C --installroot "$CHROOTNAME" --quiet  --all > REPO_STATUS.txt
-	
+
 }
 
 main "$@"
