@@ -4,15 +4,15 @@ To build a new iso you need a list of packages to install. The install list can 
 Note that there are clues as to what lists you need to make a working iso the "minimal" list being your starting point.
 Some other fundamentals:
 All the building takes place in a specified directory call the WORKDIRECTORY. You can set the name for this directory or you can let the system choose the name for you. If you elect to do this the directory will be created in your ~/home directory and will be called omdv-build-chroot-<arch> Arch being the architecture of the iso you wish to create ie x86_64.
-This directory contains all the package lists and standard config files for the build. There is one additional directory called  
-You will need to maage these lists while you are creating iso's. You may wish to add or remove packages or even change some of the base packages that are in the original lists. 
+This directory contains all the package lists and standard config files for the build. There is one additional directory called
+You will need to maage these lists while you are creating iso's. You may wish to add or remove packages or even change some of the base packages that are in the original lists.
 There are a number of ways that you can manage these lists.
-1.  Modify the lists in the WORKDIRECTORY. 
+1.  Modify the lists in the WORKDIRECTORY.
 2.  Modify the lists in a separate LISTDIRECTORY
 3.  Use an external branch in the omdv-build-iso repository on GitHub
 
 It terms of safety option 3 is the best though it is inconvenient, option 2 is the best for local builds as it protects the data evein if the WORKDIRECTORY is deleted.
 Option 1 is reserved for quick and dirty hacks and although there are options to store the changes it relys on a commandline option which is all too easy to forget.
-Option 2 will be described here 
+Option 2 will be described here
 
-When you 
+When you
