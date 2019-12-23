@@ -29,3 +29,4 @@ This would allow a package list complete with dependencies to be generated which
 and would allow the use of multiple instances of rpm to be run thus speeding up iso creation. All this made redundant by dnf
 18. Try to build a multi-arch i686 EFI spin 
 19. Provide comprehensive usage instructions for local users. Done
+20. Implement secure boot.
