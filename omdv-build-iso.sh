@@ -1201,7 +1201,7 @@ InstallRepos1() {
 		awk '/enabled=/{c++;if(c==3){sub("enabled=0","enabled=1");c=0}}1' "$CHROOTNAME"/etc/yum.repos.d/${TREE,,}-"main"-"EXTARCH".repo
 	fi
 	if [ -n "$NOCLEAN" ]; then #we must make sure that the rpmcache is retained
-		echo "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
+		echo "keepcache=1" >>$CHROOTNAME/etc/dnf/dnf.conf
 	fi
 
 }
