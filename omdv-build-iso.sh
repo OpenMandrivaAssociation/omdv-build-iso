@@ -79,41 +79,8 @@ main() {
 			declare -l lc
 			lc=${k#*=}
 			case "$lc" in
-			plasma)
-				TYPE=plasma
-				;;
-			plasma-wayland)
-				TYPE=plasma-wayland
-				;;
-			mate)
-				TYPE=mate
-				;;
-			cinnamon)
-				TYPE=cinnamon
-				;;
-			lxqt)
-				TYPE=lxqt
-				;;
-			icewm)
-				TYPE=icewm
-				;;
-			xfce4)
-				TYPE=xfce4
-				;;
-			weston)
-				TYPE=weston
-				;;
-			gnome3)
-				TYPE=gnome3
-				;;
-			minimal)
-				TYPE=minimal
-				;;
-			sway)
-				TYPE=sway
-				;;
-			mate)
-				TYPE=mate
+			plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
+				TYPE="$lc"
 				;;
 			user)
 				TYPE=my.add
@@ -631,40 +598,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma)
-		NEWTYPE=error
-		;;
-	plasma-wayland)
-		NEWTYPE=error
-		;;
-	mate)
-		NEWTYPE=error
-		;;
-	cinnamon)
-		NEWTYPE=error
-		;;
-	lxqt)
-		NEWTYPE=error
-		;;
-	icewm)
-		NEWTYPE=error
-		;;
-	xfce4)
-		NEWTYPE=error
-		;;
-	weston)
-		NEWTYPE=error
-		;;
-	gnome3)
-		NEWTYPE=error
-		;;
-	minimal)
-		NEWTYPE=error
-		;;
-	sway)
-		NEWTYPE=error
-		;;
-	mate)
+	plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
 		NEWTYPE=error
 		;;
 	*)
@@ -935,47 +869,47 @@ getPkgList() {
 	# with the --listrepodir option will switch the default back to the original set of build lists. The number of directories is effectively unlimited.
 
 	printf "%s\n\n"  "$FILELISTS $COMMITDIR"
-    if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
-        printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
-        # download iso packages lists from https://github.com
-        # GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
-        if [ -n "$ISO_VER" ]; then
-            export GIT_BRNCH="$ISO_VER"
-        elif [ ${TREE,,} == "cooker" ]; then
-            export GIT_BRNCH=master
-        else
-            export GIT_BRNCH=${TREE,,}
+	if [ ! -d "$WORKDIR/iso-pkg-lists-${TREE,,}" ]; then
+		printf "%s\n" "-> Could not find $WORKDIR/iso-pkg-lists-${TREE,,}. Downloading from GitHub."
+		# download iso packages lists from https://github.com
+		# GitHub doesn't support git archive so we have to jump through hoops and get more file than we need
+		if [ -n "$ISO_VER" ]; then
+			export GIT_BRNCH="$ISO_VER"
+		elif [ ${TREE,,} == "cooker" ]; then
+			export GIT_BRNCH=master
+		else
+			export GIT_BRNCH=${TREE,,}
 			# ISO_VER defaults to user build entry
-        fi
-            cd "$WORKDIR" ||  exit
-    EX_PREF=./
-    EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
-            wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1 
-        if [ ! -e "$FILELISTS" ]; then
-            printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-            errorCatch
-        fi
-    fi
-    # If the list repo directory is empty populate it, create git repo and commit
-    # Otherwise copy contents of list repo directory to the WORKDIR.
-        if [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
-        printf "%s\n" "The local list repo directory is being populated"
-            popREPOdir
-        else
-            printf "%s\n" "-> Copying users local package lists from $COMMITDIR to workdir"
-            cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
-        fi
+		fi
+		cd "$WORKDIR" ||  exit
+		EX_PREF=./
+		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
+		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1 
+		if [ ! -e "$FILELISTS" ]; then
+			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
+			errorCatch
+		fi
+	fi
+	# If the list repo directory is empty populate it, create git repo and commit
+	# Otherwise copy contents of list repo directory to the WORKDIR.
+	if [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
+		printf "%s\n" "The local list repo directory is being populated"
+		popREPOdir
+	else
+		printf "%s\n" "-> Copying users local package lists from $COMMITDIR to workdir"
+		cp -R ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
+	fi
 }
 
 popREPOdir() {
 	# This function serves to populate a newly created package list repo after itdirectory creation by mkeREPOdir
 	# It is called conditionally (once and only once) when the package lists have been downloaded from the git repo.
-        cp -r ${WORKDIR}/iso-pkg-lists-${TREE}/ ${COMMITDIR}/
-        if  [ ! -f ${COMMITDIR}/iso-pkg-lists-${TREE}/my.add ]; then
-            printf "%s\n" "There's been an error"
-            hlpprtf "\t\t\tPlease check whether the directory named in the hidden file .rpodir in your home directory still exists and if it does it may still have the .git directory which will allow you to recover your package lists. If no files exist please delete the .rpodir file and the directory named in it and start with a fresh build"
-            errorCatch
-        fi
+	cp -r ${WORKDIR}/iso-pkg-lists-${TREE}/ ${COMMITDIR}/
+	if  [ ! -f ${COMMITDIR}/iso-pkg-lists-${TREE}/my.add ]; then
+		printf "%s\n" "There's been an error"
+		hlpprtf "\t\t\tPlease check whether the directory named in the hidden file .rpodir in your home directory still exists and if it does it may still have the .git directory which will allow you to recover your package lists. If no files exist please delete the .rpodir file and the directory named in it and start with a fresh build"
+		errorCatch
+	fi
 }
 
 MkeListRepo() {
