@@ -27,6 +27,7 @@ hw-probe #utils
 krb5-workstation #utils
 lame #utils
 lftp #utils
+libblockdev-plugins-all
 libgphoto-common #utils
 libmtp-utils #utils
 # core ?

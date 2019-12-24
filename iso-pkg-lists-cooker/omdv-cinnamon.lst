@@ -37,6 +37,7 @@ dconf
 gnome-keyring
 networkmanager-applet
 python-tinycss
+eog
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -108,3 +109,4 @@ breeze-gtk
 om-repo-picker
 om-control-center
 om-wallpapers-extra
+om-mirror-selector
