@@ -10,8 +10,8 @@ distro-theme-OpenMandriva-screensaver #iso
 dosfstools
 eject
 #freetype-tools #iso
-firewalld
-firewall-config
+ufw
+nx-firewall
 hfsutils #iso
 indexhtml
 info #iso
