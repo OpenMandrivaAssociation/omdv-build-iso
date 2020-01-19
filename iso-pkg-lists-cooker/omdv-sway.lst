@@ -47,7 +47,7 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 dosfstools
-firewalld
+ufw
 hfsutils
 ntfsprogs
 monitor-edid
