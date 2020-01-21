@@ -599,10 +599,10 @@ SetFileList() {
 
 	case "$TYPE" in
 	plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
-		NEWTYPE=error
+		NEWTYPE="$TYPE"
 		;;
 	*)
-		NEWTYPE="$TYPE"
+		NEWTYPE=error
 		;;
 	esac
 	if [ "$NEWTYPE" = "error" ]; then
