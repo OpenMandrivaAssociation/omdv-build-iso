@@ -100,3 +100,8 @@ oxygen-icons
 #packagekit
 packagekit-gstreamer-plugin
 packagekit-command-not-found
+
+discover
+discover-backend-kns
+discover-backend-packagekit
+discover-notifier
