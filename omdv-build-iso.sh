@@ -612,7 +612,7 @@ SetFileList() {
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
 		fi
-	elif [ "$NEWTYPE" = "error" ] && [ $IN_ABF == '1' ]; then
+	elif [ "$NEWTYPE" != "error" ] && [ $IN_ABF == '1' ]; then
 		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
 		errorCatch
 	else
