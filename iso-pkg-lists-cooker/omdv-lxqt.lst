@@ -127,8 +127,3 @@ breeze-gtk
 # special featured software
 #oma-welcome
 om-update-config
-
-discover
-discover-backend-kns
-discover-backend-packagekit
-discover-notifier
