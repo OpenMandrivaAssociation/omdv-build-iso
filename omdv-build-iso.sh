@@ -1185,7 +1185,7 @@ createChroot() {
 	# remove rpm db files which may not match the target chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 	# Cache stuff to make discover happy - but don't freak out on an iso that doesn't include PK
-	chroot "$CHROOTNAME" /bin/bash -c "mkdir -p /run/dbus; DB=\$(/bin/dbus-daemon --system --nofork --print-pid) & sleep 2s; /usr/libexec/packagekitd & sleep 5s; pkcon refresh force; /usr/libexec/packagekitd --immediate-exit; kill \$DB; rmdir /run/dbus" || :
+	chroot "$CHROOTNAME" /bin/bash -c "mkdir -p /run/dbus; DB=\$(/bin/dbus-daemon --system --nofork --print-pid) & sleep 2s; /usr/libexec/packagekitd & sleep 5s; pkcon -y -p refresh force; /usr/libexec/packagekitd --immediate-exit; kill \$DB; rmdir /run/dbus" || :
 }
 
 # Usage: mkOmSpin [main install file path} i.e. [path]/omdv-kde4.lst.
