@@ -1184,6 +1184,8 @@ createChroot() {
 	cd - > /dev/null 2>&1
 	# remove rpm db files which may not match the target chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
+	# Cache stuff to make discover happy - but don't freak out on an iso that doesn't include PK
+	chroot "$CHROOTNAME" pkcon refresh force || :
 }
 
 # Usage: mkOmSpin [main install file path} i.e. [path]/omdv-kde4.lst.
