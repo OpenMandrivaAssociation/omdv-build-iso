@@ -1,0 +1,60 @@
+aria2 #utils
+bash-completion #utils
+bind-utils #utils
+cdialog #utils old
+cdrkit #utils
+cdrkit-genisoimage #utils
+cifs-utils #utils
+command-not-found #utils
+# why this ?
+#davfs2 #utils
+dmraid #utils
+dmraid-events #utils
+dump #utils
+dvb-apps #utils
+dvbsnoop #utils
+dvbtune #utils
+dvd+rw-tools #utils
+freerdp #utils
+fuse2
+fuse-exfat #utils
+# wrong here
+gnupg #utils
+html2text #utils
+htop #utils
+## hmm ? core ?
+hw-probe #utils
+krb5-workstation #utils
+lame #utils
+lftp #utils
+libblockdev-plugins-all
+libgphoto-common #utils
+libmtp-utils #utils
+# core ?
+lvm2 #utils
+nail #utils
+nfs-utils #utils
+nfs-utils-clients #utils
+networkmanager-openvpn #utils
+networkmanager-vpnc #utils
+networkmanager-pptp #utils
+open #utils
+openldap-clients #utils
+opensc #utils
+p7zip #utils
+pcsc-lite #utils
+pptp-linux #utils
+rng-tools #utils
+rpcbind #utils
+rsnapshot #utils
+rsync #utils
+samba-client #utils
+samba-winbind #utils
+saned
+sane-backends
+sane-backends-iscan #utils
+sash #utils
+xev #utils
+radeontool
+## this is *wong* , the whole file is wrong
+dnfdragora
