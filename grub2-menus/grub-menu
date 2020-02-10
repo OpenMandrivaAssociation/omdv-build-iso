@@ -7,7 +7,6 @@ do_menu()
 	local i
 	## order matters..
 	local file=(grub-common-menu.cfg grub-language-menu.cfg grub-keyboard-menu.cfg grub-trouble-menu.cfg grub-other-menu.cfg)
-
 	for i in ${file[@]}
 	do
 
