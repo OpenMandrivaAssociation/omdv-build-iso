@@ -200,11 +200,12 @@ main() {
 	# and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
 	# to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
-	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE \ "DISPLAYMANAGER="$DISPLAYMANAGER "DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD \
-	"WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
-	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO \
-	"AUTO_UPDATE="$AUTO_UPDATE "DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS \
-	"LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO "MAKELISTREPO="$MAKELISTREPO "
+	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER \
+	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
+	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
+	"DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
+	"MAKELISTREPO="$MAKELISTREPO"
+
 
 	# run only when root
 	if [ "$(id -u)" != '0' ]; then
@@ -774,7 +775,7 @@ mkeUsrListRepo() {
 				printf "%s\n" "Building user iso $NEWTYPE"
 				CarryOn
 			fi
-			printf "%s\n" " " "Created local user list repo $NEWTPE" " "
+			printf "%s\n" " " "Created local user list repo $TYPE" " "
 			hlpprtf "\t\t\tYou may now add package names, list files to include or paths to local package files that you wish to include in your iso to the my.add file in the list repo directory above. Running the script a second time will build an iso inclUding the packages you have added."
 		fi
 	fi
@@ -1431,7 +1432,7 @@ updateUserSpin() {
 	printf "%s\n" -> "Remove any duplicate includes"
 	# This should signal an error to the user
 	RMRPMINC_TMP=$(comm -12 <(printf '%s\n' "$ALLRPMINC" | sort ) <(printf '%s\n' "$RMRPMINC" | sort))
-	if [ -n $RMRPMINC_TMP ]; then
+	if [ -n "$RMRPMINC_TMP" ]; then
 	printf "%s\n" -> "Error: ->> The are identical include files in the add and remove lists" "->> You probably don't want this"
 	fi
 	printf "%s\n" "-> Creating the package lists"
@@ -2341,7 +2342,8 @@ FilterLogs() {
 # Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
-		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"):
+		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"
+		echo "$MISSING" >missing-packages.log
 	fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
