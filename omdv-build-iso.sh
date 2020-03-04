@@ -2342,7 +2342,7 @@ FilterLogs() {
 # Make a dependency failure log
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
-		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log")
+		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log"
 		echo "$MISSING" >missing-packages.log
 	fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
