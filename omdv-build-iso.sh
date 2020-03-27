@@ -1457,7 +1457,7 @@ updateUserSpin() {
 
 createInitrd() {
 	# Check if dracut is installed
-	if [ ! -f "$CHROOTNAME/usr/sbin/dracut" ]; then
+	if [ ! -f "$CHROOTNAME/sbin/dracut" ]; then
 		printf "%s\n" "-> dracut is not installed inside chroot." "Exiting."
 		errorCatch
 	fi
@@ -1501,9 +1501,9 @@ createInitrd() {
 	fi
 
 	# Building liveinitrd
-	chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$BOOT_KERNEL_ISO"
+	chroot "$CHROOTNAME" /sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$BOOT_KERNEL_ISO"
 	if [ -n "$BOOT_KERNEL_TYPE" ]; then
-		chroot "$CHROOTNAME" /usr/sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
+		chroot "$CHROOTNAME" /sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
 	fi
 	if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 		printf "%s\n" "-> File $CHROOTNAME/boot/liveinitrd.img does not exist. Exiting."
@@ -1520,7 +1520,7 @@ createInitrd() {
 	rm -rf "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
 
 	# Building initrd
-	chroot "$CHROOTNAME" /usr/sbin/dracut -N -f "/boot/initrd-$KERNEL_ISO.img" "$KERNEL_ISO"
+	chroot "$CHROOTNAME" /sbin/dracut -N -f "/boot/initrd-$KERNEL_ISO.img" "$KERNEL_ISO"
 	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed creating initrd. Exiting."
 		errorCatch
@@ -1530,7 +1530,7 @@ createInitrd() {
 	if [ -n "$BOOT_KERNEL_TYPE" ]; then
 		# Building boot kernel initrd
 		printf "%s\n" "-> Building initrd-$BOOT_KERNEL_ISO inside chroot"
-		chroot "$CHROOTNAME" /usr/sbin/dracut -N -f "/boot/initrd-$BOOT_KERNEL_ISO.img" "$BOOT_KERNEL_ISO"
+		chroot "$CHROOTNAME" /sbin/dracut -N -f "/boot/initrd-$BOOT_KERNEL_ISO.img" "$BOOT_KERNEL_ISO"
 		if [ $? != 0 ]; then
 			printf "%s\n" "-> Failed creating boot kernel initrd. Exiting."
 			errorCatch
