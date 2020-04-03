@@ -18,7 +18,6 @@ grub2-efi
 efibootmgr
 #kernel-release-desktop-latest
 kernel-release-desktop
-#kernel-release-clang-desktop-clang
 kernel-firmware
 kernel-firmware-extra
 lvm2
