@@ -15,7 +15,6 @@ e2fsprogs
 grub2
 iproute2
 grub2-efi
-grub2-extra
 efibootmgr
 #kernel-release-desktop-latest
 kernel-release-desktop
