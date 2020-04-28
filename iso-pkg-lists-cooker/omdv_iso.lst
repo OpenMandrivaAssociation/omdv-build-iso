@@ -10,6 +10,7 @@ distro-theme-OpenMandriva-screensaver #iso
 dosfstools
 eject
 #freetype-tools #iso
+grub2-extra
 ufw
 nx-firewall
 hfsutils #iso
