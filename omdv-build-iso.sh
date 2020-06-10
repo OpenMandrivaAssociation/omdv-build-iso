@@ -79,7 +79,7 @@ main() {
 			declare -l lc
 			lc=${k#*=}
 			case "$lc" in
-			plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
+			plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate|edu)
 				TYPE="$lc"
 				;;
 			user)
@@ -339,7 +339,7 @@ usage_help() {
 		optprtf "--tree=     " "Branch of software repository: cooker, lx4"
 		optprtf "--version=" "Version for software repository: 4.0"
 		optprtf "--release_id=" "Release identifer: alpha, beta, rc, final"
-		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
+		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, edu, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
 		hlpprtf "\t\t\tBy default the system build a minimal iso from a list repo with the user selected name. Subsequently the user may add additional include lines, packages or local filenames directories for inclusion to the my.add file in the repository named in the first step. The list repo is created ahead of the build so the script will exit after creating the intial repo to allow the user to add packages or includes to the my.add file before building the iso. On subsequent runs the program will not exit but continue on to build the iso. See also the --makelistrepo option. Switching between user created repos is accomplished by setting the --listrepodir to the desired directory."
 		printf "%b" "--displaymanager=" "\tDisplay Manager used in desktop environemt: sddm , none\n"
 		optprtf "--workdir=" "Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
@@ -1914,7 +1914,7 @@ setupISOenv() {
 
 	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
-	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma-wayland" ]; then
+	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
 		# disable baloo in live session
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
 		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
@@ -2057,7 +2057,7 @@ EOF
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 		## NOTE these sed's need generate valid yaml .. - crazy -
-		if [ "${TYPE,,}" = 'plasma' ]; then
+		if [ "${TYPE,,}" = 'plasma' -o "${TYPE,,}" = 'edu' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
