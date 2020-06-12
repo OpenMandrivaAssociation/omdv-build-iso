@@ -1,6 +1,6 @@
 # basic includes file lists
 %include .///omdv_core.lst
-%include .///omdv_iso.lst
+%include .///omdv_iso_minimal.lst
 %include .///omdv_control.lst
 %include .///omdv_drivers.lst
 %include .///omdv_ppp.lst
@@ -15,11 +15,75 @@
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
-%include .///omdv_vlc.lst
+# include .///omdv_vlc.lst
 %include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
+# Bits from omdv_iso (as opposed to omdv_iso_minimal) that we want...
+alsa-plugins
+alsa-plugins-pulseaudio
+alsa-utils
+bootsplash #iso
+calamares #min-iso
+distro-theme-OpenMandriva
+distro-theme-OpenMandriva-screensaver #iso
+dosfstools
+eject
+ufw
+nx-firewall
+indexhtml
+info #iso
+info-install #iso
+inxi
+isomd5sum #iso
+iso-codes #iso
+irqbalance
+hwdata
+libxdg-basedir #iso
+lsof #iso
+lm_sensors #iso
+mailcap #iso
+man-db
+monitor-edid #iso
+memtest86+
+mkxauth #iso
+mlocate #iso
+mtools #iso
+ntfsprogs
+os-prober
+plymouth-system-theme
+python-curl
+rtkit #iso
+sharutils #iso
+sound-theme-freedesktop #iso
+sudo
+task-x11
+testdisk
+tmpwatch #iso
+tuned
+upower #iso
+usbmuxd #iso
+urw-fonts
+uuidd
+vbetool #iso
+wget
+whois #iso
+x11-driver-input-vmmouse #iso
+x11-driver-video-vboxvideo #iso
+virtualbox-guest-additions #Shared clipboard and files
+x11-data-bitmaps
+x11-driver-input-evdev
+x11-driver-input-synaptics
+x11-driver-video
+xdg-compliance #iso
+xdg-user-dirs #iso
+xdg-user-dirs-gtk #iso
+xdg-utils #iso
+xfsprogs
+xrandr
+zip
+unzip
 
 # install for Live only
 # and remove with calamares cleaner
@@ -153,6 +217,13 @@ rpm-build
 # students tend to love messengers...
 telegram-desktop
 quaternion
+
+# let's give kids something to play with too
+extremetuxracer
+kreversi
+khangman
+kbounce
+kbreakout
 
 # Let's try to be compatible with some legacy stuff...
 #wine
