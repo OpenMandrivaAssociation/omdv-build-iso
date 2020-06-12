@@ -599,7 +599,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
+	plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate|edu)
 		NEWTYPE=error
 		;;
 	*)
