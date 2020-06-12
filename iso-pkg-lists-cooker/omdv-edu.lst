@@ -152,6 +152,7 @@ rpm-build
 
 # students tend to love messengers...
 telegram-desktop
+quaternion
 
 # Let's try to be compatible with some legacy stuff...
-wine
+#wine
