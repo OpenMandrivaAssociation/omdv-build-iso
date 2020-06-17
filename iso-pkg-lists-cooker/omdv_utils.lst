@@ -15,7 +15,7 @@ dvb-apps #utils
 dvbsnoop #utils
 dvbtune #utils
 dvd+rw-tools #utils
-earlyoom
+# earlyoom
 freerdp #utils
 fuse2
 # fuse-exfat #utils
