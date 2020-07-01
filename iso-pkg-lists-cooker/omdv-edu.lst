@@ -26,13 +26,12 @@ alsa-plugins-pulseaudio
 alsa-utils
 bootsplash #iso
 calamares #min-iso
-distro-theme-OpenMandriva
-distro-theme-OpenMandriva-screensaver #iso
+distro-theme
 dosfstools
 eject
 ufw
 nx-firewall
-indexhtml
+distro-release-indexhtml
 info #iso
 info-install #iso
 inxi
