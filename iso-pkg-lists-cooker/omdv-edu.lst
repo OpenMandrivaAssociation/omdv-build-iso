@@ -50,7 +50,8 @@ memtest86+
 mkxauth #iso
 mlocate #iso
 mtools #iso
-ntfsprogs
+ntfs-3g
+ntfs-3g-system-compression
 os-prober
 plymouth-system-theme
 python-curl
