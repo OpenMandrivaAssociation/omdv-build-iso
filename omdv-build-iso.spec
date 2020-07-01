@@ -43,7 +43,7 @@ Tool to build OpenMandriva Lx ISO.
 %makeinstall_std
 
 %files
-%doc README ChangeLog
+%doc README.md ChangeLog
 %dir %{_datadir}/%{name}
 %{_bindir}/%{name}.sh
 %{_datadir}/%{name}/*

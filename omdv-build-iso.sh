@@ -178,7 +178,7 @@ main() {
 			usage_help
 			;;
 		*)
-			echo "Unknown argument $k" >/dev/stderr
+			printf "%s\n" "Unknown argument $k" >/dev/stderr
 			usage_help
 			exit 1
 			;;
@@ -212,7 +212,7 @@ main() {
 		# We need to be root for umount and friends to work...
 		# NOTE the following command will only work on OMDV for the first registered user
 		# this user is a member of the wheel group and has root privelidges
-		exec sudo -E $(echo ${SUDOVAR}) $0 "$@"
+		exec sudo -E $(printf "%s\n" ${SUDOVAR}) $0 "$@"
 		printf "%s\n" "-> Run me as root."
 		exit 1
 	fi
@@ -244,8 +244,8 @@ main() {
 	[ -z "${MAXERRORS}" ] && MAXERRORS=1
 
 	ARCHEXCLUDE=""
-	echo $EXTARCH |grep -qE "^arm" && EXTARCH=armv7hnl
-	echo $EXTARCH |grep -qE "i.86" && EXTARCH=i686
+	printf "%s\n" $EXTARCH |grep -qE "^arm" && EXTARCH=armv7hnl
+	printf "%s\n" $EXTARCH |grep -qE "i.86" && EXTARCH=i686
 
 	# Exclude 32-bit compat packages on multiarch capable systems
 	case $EXTARCH in
@@ -460,7 +460,7 @@ setWorkdir() {
 	else
 		if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
 			# We really are in ABF
-			echo "using realpath"
+			printf "%s\n" "using realpath"
 			WORKDIR=$(realpath "$(dirname "$0")")
 		elif [ -n "$DEBUG" ]; then
 			if [ -z "$WORKDIR" ]; then
@@ -752,7 +752,7 @@ mKeBuild_id() {
 			BUILD_ID=$(cat "$COMMITDIR"/sessrec/.build_id)
 		else
 			BUILD_ID=$(($RANDOM%9999+1000))
-			echo ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
+			printf "%s\n" ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
 		fi
 	else
 		BUILD_ID=$(($RANDOM%9999+1000))
@@ -964,7 +964,7 @@ InstallRepos() {
 		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-		PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-conf"
 		for i in $PACKAGES; do
 			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 			if [ "$?" != '0' ]; then
@@ -1047,8 +1047,8 @@ updateSystem() {
 	ARCH="$(rpm -E '%{_target_cpu}')"
 	HOST_ARCHEXCLUDE=""
 	[ -z "$ARCH" ] && ARCH="$(uname -m)"
-	echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
-	echo $ARCH |grep -qE "i.86" && ARCH=i686
+	printf "%s\n" $ARCH |grep -qE "^arm" && ARCH=armv7hnl
+	printf "%s\n" $ARCH |grep -qE "i.86" && ARCH=i686
 
 	# Exclude 32-bit compat packages on multiarch capable systems
 	case $ARCH in
@@ -1405,7 +1405,7 @@ mkUserSpin() {
 		printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_rm_rpmlist"
 	fi
 	# Remove any files from the install list which in the remove list
-	echo "This is the install list" " " "$INSTALL_LIST" " " "End of install list"
+	printf "%s\n" "This is the install list" " " "$INSTALL_LIST" " " "End of install list"
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
@@ -1549,7 +1549,7 @@ createMemDisk() {
 	elif [ "$EXTARCH" = 'aarch64' ]; then
 		ARCHFMT=arm64-efi
 		ARCHPFX=AA64
-	elif echo $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
+	elif printf "%s\n" $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
 		ARCHFMT=i386-efi
 		ARCHPFX=IA32
 	fi
@@ -1621,7 +1621,7 @@ createUEFI() {
 	elif [ "$EXTARCH" = 'aarch64' ]; then
 		ARCHFMT=arm64-efi
 		ARCHPFX=AA64
-	elif echo $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
+	elif printf "%s\n" $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
 		ARCHFMT=i386-efi
 		ARCHPFX=IA32
 	fi
@@ -1791,7 +1791,7 @@ setupGrub2() {
 			cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
 			cp -a "$CHROOTNAME/boot/liveinitrd1.img" "$ISOROOTNAME/boot/liveinitrd1.img"
 # If dual kernels are used set up the grub2 menu to show them. This needs extra work
-			ALT_KERNEL=$(echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}') #Fix this to use shell substitution perhaps"
+			ALT_KERNEL=$(printf "%s\n" "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}') #Fix this to use shell substitution perhaps"
 			sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
 		else
 # Remove the uneeded menu entry
@@ -2110,11 +2110,6 @@ EOF
 	# set up some default settings
 	printf '%s\n' "nameserver 208.67.222.222" "nameserver 208.67.220.220" >> "$CHROOTNAME"/run/systemd/resolve/resolv.conf
 
-	# ldetect stuff
-	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
-		chroot "$CHROOTNAME" /usr/sbin/update-ldetect-lst
-	fi
-
 	# fontconfig cache
 	if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
 		# set the timestamp on the directories to be a whole second
@@ -2343,7 +2338,7 @@ FilterLogs() {
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
 		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log")
-		echo "$MISSING" >missing-packages.log
+		printf "%s\n" "$MISSING" >missing-packages.log
 	fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
