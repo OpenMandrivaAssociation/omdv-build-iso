@@ -79,7 +79,7 @@ main() {
 			declare -l lc
 			lc=${k#*=}
 			case "$lc" in
-			plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
+			plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate|edu)
 				TYPE="$lc"
 				;;
 			user)
@@ -178,7 +178,7 @@ main() {
 			usage_help
 			;;
 		*)
-			echo "Unknown argument $k" >/dev/stderr
+			printf "%s\n" "Unknown argument $k" >/dev/stderr
 			usage_help
 			exit 1
 			;;
@@ -212,7 +212,7 @@ main() {
 		# We need to be root for umount and friends to work...
 		# NOTE the following command will only work on OMDV for the first registered user
 		# this user is a member of the wheel group and has root privelidges
-		exec sudo -E $(echo ${SUDOVAR}) $0 "$@"
+		exec sudo -E $(printf "%s\n" ${SUDOVAR}) $0 "$@"
 		printf "%s\n" "-> Run me as root."
 		exit 1
 	fi
@@ -244,8 +244,8 @@ main() {
 	[ -z "${MAXERRORS}" ] && MAXERRORS=1
 
 	ARCHEXCLUDE=""
-	echo $EXTARCH |grep -qE "^arm" && EXTARCH=armv7hnl
-	echo $EXTARCH |grep -qE "i.86" && EXTARCH=i686
+	printf "%s\n" $EXTARCH |grep -qE "^arm" && EXTARCH=armv7hnl
+	printf "%s\n" $EXTARCH |grep -qE "i.86" && EXTARCH=i686
 
 	# Exclude 32-bit compat packages on multiarch capable systems
 	case $EXTARCH in
@@ -339,7 +339,7 @@ usage_help() {
 		optprtf "--tree=     " "Branch of software repository: cooker, lx4"
 		optprtf "--version=" "Version for software repository: 4.0"
 		optprtf "--release_id=" "Release identifer: alpha, beta, rc, final"
-		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
+		optprtf "--type=     " "User environment type desired on ISO: plasma, mate, lxqt, icewm, xfce4, weston, gnome3, edu, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
 		hlpprtf "\t\t\tBy default the system build a minimal iso from a list repo with the user selected name. Subsequently the user may add additional include lines, packages or local filenames directories for inclusion to the my.add file in the repository named in the first step. The list repo is created ahead of the build so the script will exit after creating the intial repo to allow the user to add packages or includes to the my.add file before building the iso. On subsequent runs the program will not exit but continue on to build the iso. See also the --makelistrepo option. Switching between user created repos is accomplished by setting the --listrepodir to the desired directory."
 		printf "%b" "--displaymanager=" "\tDisplay Manager used in desktop environemt: sddm , none\n"
 		optprtf "--workdir=" "Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
@@ -460,7 +460,7 @@ setWorkdir() {
 	else
 		if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
 			# We really are in ABF
-			echo "using realpath"
+			printf "%s\n" "using realpath"
 			WORKDIR=$(realpath "$(dirname "$0")")
 		elif [ -n "$DEBUG" ]; then
 			if [ -z "$WORKDIR" ]; then
@@ -599,7 +599,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate)
+	plasma|plasma-wayland|mate|cinnamon|lxqt|icewm|xfce4|weston|gnome3|minimal|sway|mate|edu)
 		NEWTYPE=error
 		;;
 	*)
@@ -752,7 +752,7 @@ mKeBuild_id() {
 			BUILD_ID=$(cat "$COMMITDIR"/sessrec/.build_id)
 		else
 			BUILD_ID=$(($RANDOM%9999+1000))
-			echo ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
+			printf "%s\n" ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
 		fi
 	else
 		BUILD_ID=$(($RANDOM%9999+1000))
@@ -964,7 +964,7 @@ InstallRepos() {
 		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-		PACKAGES="openmandriva-repos openmandriva-repos-keys openmandriva-repos-pkgprefs dnf-conf"
+		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-conf"
 		for i in $PACKAGES; do
 			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 			if [ "$?" != '0' ]; then
@@ -1047,8 +1047,8 @@ updateSystem() {
 	ARCH="$(rpm -E '%{_target_cpu}')"
 	HOST_ARCHEXCLUDE=""
 	[ -z "$ARCH" ] && ARCH="$(uname -m)"
-	echo $ARCH |grep -qE "^arm" && ARCH=armv7hnl
-	echo $ARCH |grep -qE "i.86" && ARCH=i686
+	printf "%s\n" $ARCH |grep -qE "^arm" && ARCH=armv7hnl
+	printf "%s\n" $ARCH |grep -qE "i.86" && ARCH=i686
 
 	# Exclude 32-bit compat packages on multiarch capable systems
 	case $ARCH in
@@ -1405,7 +1405,7 @@ mkUserSpin() {
 		printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_rm_rpmlist"
 	fi
 	# Remove any files from the install list which in the remove list
-	echo "This is the install list" " " "$INSTALL_LIST" " " "End of install list"
+	printf "%s\n" "This is the install list" " " "$INSTALL_LIST" " " "End of install list"
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
@@ -1549,7 +1549,7 @@ createMemDisk() {
 	elif [ "$EXTARCH" = 'aarch64' ]; then
 		ARCHFMT=arm64-efi
 		ARCHPFX=AA64
-	elif echo $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
+	elif printf "%s\n" $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
 		ARCHFMT=i386-efi
 		ARCHPFX=IA32
 	fi
@@ -1621,7 +1621,7 @@ createUEFI() {
 	elif [ "$EXTARCH" = 'aarch64' ]; then
 		ARCHFMT=arm64-efi
 		ARCHPFX=AA64
-	elif echo $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
+	elif printf "%s\n" $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
 		ARCHFMT=i386-efi
 		ARCHPFX=IA32
 	fi
@@ -1791,7 +1791,7 @@ setupGrub2() {
 			cp -a "$CHROOTNAME/boot/vmlinuz-$KERNEL_ISO" "$ISOROOTNAME/boot/vmlinuz1"
 			cp -a "$CHROOTNAME/boot/liveinitrd1.img" "$ISOROOTNAME/boot/liveinitrd1.img"
 # If dual kernels are used set up the grub2 menu to show them. This needs extra work
-			ALT_KERNEL=$(echo "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}') #Fix this to use shell substitution perhaps"
+			ALT_KERNEL=$(printf "%s\n" "$KERNEL_ISO" | awk -F "-" '{print $2 "-gcc"}') #Fix this to use shell substitution perhaps"
 			sed -i "s/%BOOT_KCC_TYPE%/with ${ALT_KERNEL}/" "$ISOROOTNAME"/boot/grub/grub.cfg
 		else
 # Remove the uneeded menu entry
@@ -1914,7 +1914,7 @@ setupISOenv() {
 
 	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
-	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma-wayland" ]; then
+	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
 		# disable baloo in live session
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
 		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
@@ -2026,7 +2026,7 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix vboxadd NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 packagekit mdmonitor)
+	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix vboxadd NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 mdmonitor)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
@@ -2057,7 +2057,7 @@ EOF
 		sed -i -e "s/.*defaultDesktopEnvironment:.*/defaultDesktopEnvironment:/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 
 		## NOTE these sed's need generate valid yaml .. - crazy -
-		if [ "${TYPE,,}" = 'plasma' ]; then
+		if [ "${TYPE,,}" = 'plasma' -o "${TYPE,,}" = 'edu' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
@@ -2109,11 +2109,6 @@ EOF
 	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	# set up some default settings
 	printf '%s\n' "nameserver 208.67.222.222" "nameserver 208.67.220.220" >> "$CHROOTNAME"/run/systemd/resolve/resolv.conf
-
-	# ldetect stuff
-	if [ -x "$CHROOTNAME"/usr/sbin/update-ldetect-lst ]; then
-		chroot "$CHROOTNAME" /usr/sbin/update-ldetect-lst
-	fi
 
 	# fontconfig cache
 	if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
@@ -2343,7 +2338,7 @@ FilterLogs() {
 	if [ -f "$WORKDIR/dnfopt.log" ]; then
 		grep -hr -A1 '\[FAILED\]' "$WORKDIR/dnfopt.log" | sort -u > "$WORKDIR/depfail.log"
 		MISSING=$(grep -hr -A1 'No match for argument' "$WORKDIR/dnfopt.log")
-		echo "$MISSING" >missing-packages.log
+		printf "%s\n" "$MISSING" >missing-packages.log
 	fi
 	if [ "$IN_ABF" = '1' ] && [ -f "$WORKDIR/install.log" ]; then
 		cat "$WORKDIR/rpm-fail.log"
