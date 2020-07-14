@@ -11,5 +11,3 @@ umount $HOME/$1/BASE/dev/pts
 umount $HOME/$1/BASE/dev
 umount $HOME/$1/BASE/proc
 umount $HOME/$1/BASE/sys
-
-

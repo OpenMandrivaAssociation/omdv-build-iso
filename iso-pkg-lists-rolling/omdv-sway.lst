@@ -47,7 +47,8 @@ alsa-utils
 dosfstools
 ufw
 hfsutils
-ntfsprogs
+ntfs-3g
+ntfs-3g-system-compression
 monitor-edid
 tuned
 wget

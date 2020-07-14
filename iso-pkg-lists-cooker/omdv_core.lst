@@ -1,7 +1,9 @@
 basesystem-minimal
 distro-release-common
 distro-release-OpenMandriva
-distro-theme-OpenMandriva-grub2
+distro-theme
+distro-release-repos
+distro-release-repos-keys
 locales
 locales-en
 ncurses
@@ -9,5 +11,3 @@ dnf
 dnf-plugins-core
 dnf-plugins-extras-rpmconf
 dnf-automatic
-openmandriva-repos
-openmandriva-repos-keys

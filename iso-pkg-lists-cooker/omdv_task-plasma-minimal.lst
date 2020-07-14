@@ -6,7 +6,7 @@ baloo5
 breeze
 breeze-icons
 dbus-x11
-desktop-common-data
+distro-release-desktop
 dolphin
 falkon
 falkon-kde
@@ -53,4 +53,4 @@ solid
 udisks
 systemsettings
 xdg-desktop-portal-kde
-xsettings-kde
+xsettingsd
