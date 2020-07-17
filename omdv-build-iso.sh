@@ -1942,11 +1942,20 @@ Timeout=30
 EOF
 	fi
 
+	case "${TYPE}" in
+	edu)
+		SESSION="plasma"
+		;;
+	*)
+		SESSION="${TYPE}"
+		;;
+	esac
+
 	# Enable DM autologin
 	if [ "${TYPE,,}" != "minimal" ]; then
 		case ${DISPLAYMANAGER,,} in
 		"sddm")
-			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 			if [ "${TYPE,,}" = "lxqt" ]; then
 				# (tpg) use maldives theme on LXQt desktop
 				chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
