@@ -174,6 +174,12 @@ main() {
 		--makelistrepo)
 			MAKELISTREPO=makelistrepo
 			;;
+		--defaultlang=*)
+			DEFAULTLANG=${k#*=}
+			;;
+		--defaultkbd=*)
+			DEFAULTKBD=${k#*=}
+			;;
 		--help)
 			usage_help
 			;;
@@ -204,7 +210,7 @@ main() {
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
 	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
-	"MAKELISTREPO="$MAKELISTREPO"
+	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "DEFAULTKBD="$DEFAULTKBD"
 
 
 	# run only when root
@@ -237,6 +243,8 @@ main() {
 	DIST=omdv
 	[ -z "$EXTARCH" ] && EXTARCH="$(rpm -E '%{_target_cpu}')"
 	[ -z "$EXTARCH" ] && EXTARCH="$(uname -m)"
+	[ -z "${DEFAULTLANG}" ] && DEFAULTLANG="en_US.utf8"
+	[ -z "${DEFAULTKBD}" ] && DEFAULTKBD="us"
 	[ -z "${TREE}" ] && TREE=cooker
 	[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 	[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
@@ -1706,6 +1714,12 @@ setupGrub2() {
 	# Copy grub config files to the ISO build directory
 	# and set the UUID's
 	cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
+	if [ -n "$DEFAULTLANG" ]; then
+		sed -i -e "0,/\(set bootlang=\).*/s//\1'$DEFAULTLANG'/" "$ISOROOTNAME"/boot/grub/grub.cfg
+	fi
+	if [ -n "$DEFAULTKBD" ]; then
+		sed -i -e "0,/\(set bootkeymap=\).*/s//\1'$DEFAULTKBD'/" "$ISOROOTNAME"/boot/grub/grub.cfg
+	fi
 	sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
 	cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
 	printf "%s\n" "-> Setting GRUB_UUID to ${GRUB_UUID}"
