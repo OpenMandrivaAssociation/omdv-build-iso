@@ -1670,7 +1670,7 @@ createUEFI() {
 
 	losetup -f  > /dev/null 2>&1
 	# Make sure loop device is loaded
-	sleep 1
+	sleep 2
 	losetup -f "$IMGNME"
 	sleep 1
 	if [ $? != 0 ]; then
