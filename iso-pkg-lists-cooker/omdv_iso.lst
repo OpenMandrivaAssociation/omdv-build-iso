@@ -55,7 +55,7 @@ vbetool #iso
 wget
 whois #iso
 x11-driver-input-vmmouse #iso
-x11-driver-video-vboxvideo #iso
+#x11-driver-video-vboxvideo #iso
 virtualbox-guest-additions #Shared clipboard and files
 x11-data-bitmaps
 x11-driver-input-evdev
