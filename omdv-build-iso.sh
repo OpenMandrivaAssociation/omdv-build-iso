@@ -180,9 +180,6 @@ main() {
 		--defaultkbd=*)
 			DEFAULTKBD=${k#*=}
 			;;
-		--with-systemd-preset)
-			WITH_PRESET=1
-			;;
 		--help)
 			usage_help
 			;;
@@ -213,7 +210,7 @@ main() {
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
 	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
-	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "WITH_PRESET="$WITH_PRESET "DEFAULTKBD="$DEFAULTKBD"
+	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "DEFAULTKBD="$DEFAULTKBD"
 
 
 	# run only when root
@@ -1986,38 +1983,47 @@ EOF
 		esac
 	fi
 
+	# (crazy) not used ? cannot work like this ?
+	cd "$CHROOTNAME"/etc/sysconfig/network-scripts > /dev/null 2>&1
+	for iface in eth0 wlan0; do
+		cat > ifcfg-$iface << EOF
+DEVICE=$iface
+ONBOOT=yes
+NM_CONTROLLED=yes
+BOOTPROTO=dhcp
+EOF
+	done
+	cd - > /dev/null 2>&1
 
 	printf "%s\n" "-> Starting services setup."
 
-	if [[ "$WITH_PRESET" = 1 ]]; then
-		# (crazy) fixme after systemd is fixed..
-		# (tpg) enable services based on preset files from systemd and others
-		UNIT_DIR="$CHROOTNAME"/lib/systemd/system
-		if [ -f "$UNIT_DIR-preset/90-default.preset" ]; then
-			PRESETS=("$UNIT_DIR-preset"/*.preset)
-			for file in "${PRESETS[@]}"; do
-				while read line; do
-					if [[ -n "$line" && "$line" != [[:blank:]#]* && "${line,,}" = [[:blank:]enable]* ]]; then
-						SANITIZED="${line#*enable}"
-						for s_file in $(find "$UNIT_DIR" -type f -name "$SANITIZED"); do
-							DEST=$(grep -o 'WantedBy=.*' "$s_file"  | cut -f2- -d'=')
-							if [ -n "$DEST" ] && [ -d "$CHROOTNAME/etc/systemd/system" ] && [ ! -e "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}" ] ; then
-								[ ! -d "/etc/systemd/system/$DEST.wants" ] && mkdir -p "$CHROOTNAME/etc/systemd/system/$DEST.wants"
-								printf "%s\n" "-> Enabling ${s_file#$UNIT_DIR/} based on preset file"
-								chroot "$CHROOTNAME" /bin/systemctl enable ${s_file#$UNIT_DIR/}
-								#ln -sf "/${s_file#$CHROOTNAME/}" "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}"
-							else
-								printf "%s\n" "-> All preset based service already enabled , moving on.."
-							fi
-						done
-					fi
-				done < "$file"
-			done
-		else
-			# (crazy) that is wrong
-			printf "%s\n" "-> File $UNIT_DIR-preset/90-default.preset does not exist. Installation may be broken"
-			errorCatch
-		fi
+	# (crazy) fixme after systemd is fixed..
+	# (tpg) enable services based on preset files from systemd and others
+	UNIT_DIR="$CHROOTNAME"/lib/systemd/system
+	if [ -f "$UNIT_DIR-preset/90-default.preset" ]; then
+		PRESETS=("$UNIT_DIR-preset"/*.preset)
+		for file in "${PRESETS[@]}"; do
+			while read line; do
+				if [[ -n "$line" && "$line" != [[:blank:]#]* && "${line,,}" = [[:blank:]enable]* ]]; then
+					SANITIZED="${line#*enable}"
+					for s_file in $(find "$UNIT_DIR" -type f -name "$SANITIZED"); do
+						DEST=$(grep -o 'WantedBy=.*' "$s_file"  | cut -f2- -d'=')
+						if [ -n "$DEST" ] && [ -d "$CHROOTNAME/etc/systemd/system" ] && [ ! -e "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}" ] ; then
+							[ ! -d "/etc/systemd/system/$DEST.wants" ] && mkdir -p "$CHROOTNAME/etc/systemd/system/$DEST.wants"
+							printf "%s\n" "-> Enabling ${s_file#$UNIT_DIR/} based on preset file"
+							chroot "$CHROOTNAME" /bin/systemctl enable ${s_file#$UNIT_DIR/}
+							#ln -sf "/${s_file#$CHROOTNAME/}" "$CHROOTNAME/etc/systemd/system/$DEST.wants/${s_file#$UNIT_DIR/}"
+						else
+							printf "%s\n" "-> All preset based service already enabled , moving on.."
+						fi
+					done
+				fi
+			done < "$file"
+		done
+	else
+		# (crazy) that is wrong
+		printf "%s\n" "-> File $UNIT_DIR-preset/90-default.preset does not exist. Installation may be broken"
+		errorCatch
 	fi
 
 	# Enable services on demand
