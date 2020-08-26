@@ -547,7 +547,7 @@ RemkWorkDir() {
 	rm -rf "$WORKDIR"
 	mkdir -p ${WORKDIR}
 	# Create the mount points
-	mkdir -p "${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts"
+	mkdir -p ${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts
 	# Create the ISO directory
 	mkdir -p ${ISOROOTNAME}
 	touch ${WORKDIR}/.new
@@ -577,20 +577,20 @@ RestoreDaTa() {
 
 	if [ -n "$KEEP" ] || [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> Restoring system files"
-		mv "$BUILDSAV/dracut" "$WORKDIR/dracut"
-		mv "$BUILDSAV/grub2" "$WORKDIR/grub2"
-		mv "$BUILDSAV/boot" "$WORKDIR/boot"
-		mv "$BUILDSAV/data" "$WORKDIR/data"
-		mv "$BUILDSAV/extraconfig" "$WORKDIR/extraconfig"
+		mv "$BUILDSAV"/dracut "$WORKDIR"/dracut
+		mv "$BUILDSAV"/grub2 "$WORKDIR"/grub2
+		mv "$BUILDSAV"/boot "$WORKDIR"/boot
+		mv "$BUILDSAV"/data "$WORKDIR"/data
+		mv "$BUILDSAV"/extraconfig" "$WORKDIR"/extraconfig
 	fi
 	if [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> Restoring rpms for new build"
 		#Remake needed directories
-		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
-		mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
-		mkdir -p "$CHROOTNAME/var/cache/dnf"
-		mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
-		mv "$BUILDSAV/etc/dnf" "$CHROOTNAME/etc/dnf/"
+		mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev/pts
+		mkdir -p "$CHROOTNAME"/var/lib/rpm #For the rpmdb
+		mkdir -p "$CHROOTNAME"/var/cache/dnf
+		mv "$BUILDSAV"/dnf "$CHROOTNAME"/var/cache/
+		mv "$BUILDSAV"/etc/dnf "$CHROOTNAME"/etc/dnf/
 	else
 		# Clean out the dnf dir
 		cd "$BUILDSAV"||exit
@@ -1121,7 +1121,7 @@ updateSystem() {
 # Files that were added to the user files will be downloaded.
 createChroot() {
 	# Make sure /proc, /sys and friends can be mounted so %post scripts can use them
-	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
+	mkdir -p "$CHROOTNAME"/proc "$CHROOTNAME"/sys "$CHROOTNAME"/dev "$CHROOTNAME"/dev/pts
 
 	if [ -n "$REBUILD" ]; then
 		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
