@@ -2022,7 +2022,11 @@ EOF
 
 	# Enable services on demand
 	# (crazy) WARNING: calamares-locale service need to run for langauage settings grub menu's
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon irqbalance systemd-timedated systemd-timesyncd systemd-resolved dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer )
+	# ( crazy) DO NOT ENABLE THESE: dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer
+	# like discussed 1000000000000 times already this should not be activate by default, not here not in the rpm. Not only it break the boot time but people are still
+        # using 'paid' per MB/GB internet
+	## this -> 17.153s dnf-makecache.service ( on a device boots in 2.4 secs with a nvme , imagine that on slow HDD )
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path)
 
 
 	# ( crazy) we cannot symlink/rm for .service,.socket
@@ -2043,7 +2047,8 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix vboxadd NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 mdmonitor)
+	## be sure dnf* stuff is disabled!
+	SERVICES_DISABLE=(dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 mdmonitor)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
