@@ -543,11 +543,12 @@ mkeWkingEnv() {
 
 
 RemkWorkDir() {
+
 	printf "%s\n" "-> Remaking directories"
 	rm -rf "$WORKDIR"
 	mkdir -p ${WORKDIR}
 	# Create the mount points
-	mkdir -p "${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts"
+	mkdir -p ${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts
 	# Create the ISO directory
 	mkdir -p ${ISOROOTNAME}
 	touch ${WORKDIR}/.new
