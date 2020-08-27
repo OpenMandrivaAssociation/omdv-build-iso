@@ -2040,7 +2040,7 @@ EOF
 	# these have , or may have dependecies in the unit file meaning,
 	# if you rm/symlink foo it won't enable foo.dbus one or socket , same for disable.
 	for i in "${SERVICES_ENABLE[@]}"; do
-		if [[ $i  =~ ^.*path$|^.*target$ ]]; then
+		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
 			if [ -e "$CHROOTNAME/lib/systemd/system/$i" ]; then
 				printf "%s\n" "-> Enabling $i"
 				ln -sf "/lib/systemd/system/$i" "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i"
@@ -2058,7 +2058,7 @@ EOF
 	SERVICES_DISABLE=(dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 mdmonitor)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
-		if [[ $i  =~ ^.*path$|^.*target$ ]]; then
+		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
 			if [ -e "$CHROOTNAME/lib/systemd/system/$i" ]; then
 				printf "%s\n" "-> Disabling $i"
 				rm -rf "$CHROOTNAME/etc/systemd/system/multi-user.target.wants/$i"
