@@ -10,4 +10,3 @@ ncurses
 dnf
 dnf-plugins-core
 dnf-plugins-extras-rpmconf
-dnf-automatic
