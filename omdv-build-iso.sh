@@ -174,6 +174,12 @@ main() {
 		--makelistrepo)
 			MAKELISTREPO=makelistrepo
 			;;
+		--defaultlang=*)
+			DEFAULTLANG=${k#*=}
+			;;
+		--defaultkbd=*)
+			DEFAULTKBD=${k#*=}
+			;;
 		--help)
 			usage_help
 			;;
@@ -204,7 +210,7 @@ main() {
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
 	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
-	"MAKELISTREPO="$MAKELISTREPO"
+	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "DEFAULTKBD="$DEFAULTKBD"
 
 
 	# run only when root
@@ -237,6 +243,8 @@ main() {
 	DIST=omdv
 	[ -z "$EXTARCH" ] && EXTARCH="$(rpm -E '%{_target_cpu}')"
 	[ -z "$EXTARCH" ] && EXTARCH="$(uname -m)"
+	[ -z "${DEFAULTLANG}" ] && DEFAULTLANG="en_US.utf8"
+	[ -z "${DEFAULTKBD}" ] && DEFAULTKBD="us"
 	[ -z "${TREE}" ] && TREE=cooker
 	[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 	[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
@@ -535,11 +543,12 @@ mkeWkingEnv() {
 
 
 RemkWorkDir() {
+
 	printf "%s\n" "-> Remaking directories"
 	rm -rf "$WORKDIR"
 	mkdir -p ${WORKDIR}
 	# Create the mount points
-	mkdir -p "${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts"
+	mkdir -p ${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts
 	# Create the ISO directory
 	mkdir -p ${ISOROOTNAME}
 	touch ${WORKDIR}/.new
@@ -1186,7 +1195,7 @@ createChroot() {
 	# remove rpm db files which may not match the target chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 	# Cache stuff to make discover happy - but don't freak out on an iso that doesn't include PK
-	chroot "$CHROOTNAME" /bin/bash -c "mkdir -p /run/dbus; /bin/dbus-daemon --system --nofork --print-pid &>/run/dbus/dbusd-pid & sleep 3s; /usr/libexec/packagekitd & sleep 5s; pkcon -y -p refresh force" || :
+	chroot "$CHROOTNAME" /bin/bash -c "mkdir -p /run/dbus; /usr/bin/dbus-daemon --system --nofork --print-pid &>/run/dbus/dbusd-pid & sleep 3s; /usr/libexec/packagekitd & sleep 5s; pkcon -y -p refresh force" || :
 	chroot "$CHROOTNAME" /bin/bash -c "/usr/libexec/packagekitd --immediate-exit; kill \$(cat /run/dbus/dbusd-pid); rm -rf /run/dbus" || :
 }
 
@@ -1662,7 +1671,7 @@ createUEFI() {
 
 	losetup -f  > /dev/null 2>&1
 	# Make sure loop device is loaded
-	sleep 1
+	sleep 2
 	losetup -f "$IMGNME"
 	sleep 1
 	if [ $? != 0 ]; then
@@ -1706,6 +1715,12 @@ setupGrub2() {
 	# Copy grub config files to the ISO build directory
 	# and set the UUID's
 	cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
+	if [ -n "$DEFAULTLANG" ]; then
+		sed -i -e "0,/\(set bootlang=\).*/s//\1'$DEFAULTLANG'/" "$ISOROOTNAME"/boot/grub/grub.cfg
+	fi
+	if [ -n "$DEFAULTKBD" ]; then
+		sed -i -e "0,/\(set bootkeymap=\).*/s//\1'$DEFAULTKBD'/" "$ISOROOTNAME"/boot/grub/grub.cfg
+	fi
 	sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
 	cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
 	printf "%s\n" "-> Setting GRUB_UUID to ${GRUB_UUID}"
@@ -1942,11 +1957,20 @@ Timeout=30
 EOF
 	fi
 
+	case "${TYPE}" in
+	edu)
+		SESSION="plasma"
+		;;
+	*)
+		SESSION="${TYPE}"
+		;;
+	esac
+
 	# Enable DM autologin
 	if [ "${TYPE,,}" != "minimal" ]; then
 		case ${DISPLAYMANAGER,,} in
 		"sddm")
-			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${TYPE,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
 			if [ "${TYPE,,}" = "lxqt" ]; then
 				# (tpg) use maldives theme on LXQt desktop
 				chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
@@ -2005,7 +2029,11 @@ EOF
 
 	# Enable services on demand
 	# (crazy) WARNING: calamares-locale service need to run for langauage settings grub menu's
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon irqbalance systemd-timedated systemd-timesyncd systemd-resolved dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer )
+	# ( crazy) DO NOT ENABLE THESE: dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer
+	# like discussed 1000000000000 times already this should not be activate by default, not here not in the rpm. Not only it break the boot time but people are still
+        # using 'paid' per MB/GB internet
+	## this -> 17.153s dnf-makecache.service ( on a device boots in 2.4 secs with a nvme , imagine that on slow HDD )
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path)
 
 
 	# ( crazy) we cannot symlink/rm for .service,.socket
@@ -2026,7 +2054,8 @@ EOF
 	done
 
 	# Disable services
-	SERVICES_DISABLE=(pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix vboxadd NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 mdmonitor)
+	## be sure dnf* stuff is disabled!
+	SERVICES_DISABLE=(dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer pptp pppoe ntpd iptables ip6tables shorewall nfs-server mysqld abrtd mariadb mysql mysqld postfix NetworkManager-wait-online systemd-networkd systemd-networkd.socket nfs-utils chronyd udisks2 mdmonitor)
 
 	for i in "${SERVICES_DISABLE[@]}"; do
 		if [[ $i  =~ ^.*path$|^.*target$|^.*timer$ ]]; then
