@@ -24,7 +24,6 @@
 alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
-bootsplash #iso
 calamares #min-iso
 distro-theme
 dosfstools
