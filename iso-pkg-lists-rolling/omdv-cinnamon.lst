@@ -17,88 +17,27 @@
 # include .///omdv_vlc.lst
 
 # Desktop Specifics
-task-gnome
-task-gnome-minimal
-accountsservice
-adwaita-icon-theme
-gnome-desktop
-gnome-backgrounds
-gnome-control-center
-gnome-menus
-gnome-panel
-gnome-power-manager
-gnome-keyring
-gnome-screenshot
-gnome-shell
-gnome-system-monitor
+cinnamon
+cinnamon-desktop
+cinnamon-menus
+cinnamon-session
+cinnamon-control-center
+cinnamon-screensaver
+cinnamon-translations
+cinnamon-settings-daemon
+cjs
+muffin
+nemo
+json-glib
 gnome-terminal
-gnome-themes-standard
-nautilus
-networkmanager
-task-pulseaudio
-yelp
-task-x11
-task-pulseaudio
-
-cheese
+gsettings-desktop-schemas
+dbus-x11
+polkit-gnome
+dconf
+gnome-keyring
+networkmanager-applet
+python-tinycss
 eog
-evince
-file-roller
-gnome-calculator
-gedit
-gdm
-gnome-color-manager
-gnome-disk-utility
-gnome-packagekit
-#gnome-software
-gnome-terminal-nautilus
-
-empathy
-epiphany
-gnome-games
-#rhythmbox
-totem
-
-simple-scan
-shotwell
-sushi
-vino
-vinagre
-polari
-
-gnome-maps
-gnome-music
-gnome-photos
-
-bijiben
-gnome-characters
-gnome-clocks
-gnome-builder
-gnome-dictionary
-gnome-documents
-gnome-font-viewer
-gnome-sound-recorder
-gnome-usage
-gnome-weather
-baobab
-gnome-system-log
-gnome-search-tool
-gnome-commander
-gnome-calendar
-
-gucharmap
-mousetweaks
-
-# biz / office / utils
-brasero
-caribou
-caribou-gtk3
-evolution
-gnome-contacts
-gparted
-gthumb
-gimp
-inkscape
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -129,13 +68,11 @@ canberra-gtk #gtk dep
 gamin #gtk dep
 GConf2 #gtk dep
 gtk2-modules #gtk dep
-#gtk-xfce-engine
 gvfs
 gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
-#ia_ora-gnome #gtk dep
 pango #gtk dep
 
 # Support for talking to wrongPhone/wrongPad
@@ -154,6 +91,7 @@ pango #gtk dep
 #poppler-data
 #sasl-plug-gssapi
 sddm
+breeze-gtk
 
 #openssh-server #server
 #samba-server #server
@@ -171,3 +109,4 @@ sddm
 om-repo-picker
 om-control-center
 om-wallpapers-extra
+om-mirror-selector

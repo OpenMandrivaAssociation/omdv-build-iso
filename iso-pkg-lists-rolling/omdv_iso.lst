@@ -3,17 +3,15 @@
 alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
-bootsplash #iso
 calamares #min-iso
-distro-theme-OpenMandriva
-distro-theme-OpenMandriva-screensaver #iso
+distro-theme
 dosfstools
 eject
 #freetype-tools #iso
 ufw
 nx-firewall
 hfsutils #iso
-indexhtml
+distro-release-indexhtml
 info #iso
 info-install #iso
 inxi
@@ -57,6 +55,7 @@ vbetool #iso
 wget
 whois #iso
 x11-driver-input-vmmouse #iso
+#x11-driver-video-vboxvideo #iso
 virtualbox-guest-additions #Shared clipboard and files
 x11-data-bitmaps
 x11-driver-input-evdev

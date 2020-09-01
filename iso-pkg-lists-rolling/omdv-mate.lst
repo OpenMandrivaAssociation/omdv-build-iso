@@ -57,6 +57,8 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
+sddm
+breeze-gtk
 
 openssh-server #server
 samba-server #server
@@ -65,3 +67,8 @@ python-notify
 python-sip
 pyxdg
 
+# special featured software
+om-repo-picker
+om-control-center
+om-wallpapers-extra
+om-mirror-selector
