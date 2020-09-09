@@ -1654,7 +1654,7 @@ createUEFI() {
 	printf "%s\n" "-> Creating EFI image with size $EFIDISKSIZE"
 
 	# mkfs.vfat can create the image and filesystem directly
-	mkfs.vfat -n "OPENMDVASS" -C -F 16 -s 1 -S 512 -M 0xFF -i 22222222 "$IMGNME" "$EFIDISKSIZE"
+	mkfs.vfat -n "EFI" -C -F 32 -s 1 -S 512 -M 0xFF -i 22222222 "$IMGNME" "$EFIDISKSIZE"
 	# Loopback mount the image
 	# IMPORTANT NOTE: In OMDV 4.x.x series kernels the loop driver is compiled as a module
 	# This causes problems when building in an ABF iso container.
