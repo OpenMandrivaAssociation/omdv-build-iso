@@ -4,7 +4,7 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 calamares #min-iso
-distro-theme
+distro-release-theme
 dosfstools
 eject
 #freetype-tools #iso
