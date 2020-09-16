@@ -91,11 +91,10 @@ om-feeling-like
 om-update-config
 om-repo-picker
 om-control-center
-om-wallpapers-extra
 om-user-manager
 om-mirror-selector
 # oma-welcome got broken deps
-oxygen-icons 
+oxygen-icons
 
 #packagekit
 packagekit-gstreamer-plugin
