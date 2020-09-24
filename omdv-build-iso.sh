@@ -802,6 +802,8 @@ mkISOLabel() {
 
 	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
+	elif  [ "${RELEASE_ID,,}" = 'snapshot' ]; then
+		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	elif  [ "${RELEASE_ID,,}" = 'beta' ]; then
 		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	elif [ "${RELEASE_ID,,}" = 'alpha' ]; then
