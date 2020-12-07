@@ -49,7 +49,6 @@ sudo
 task-x11
 testdisk
 tmpwatch #iso
-tuned
 upower #iso
 usbmuxd #iso
 urw-fonts
