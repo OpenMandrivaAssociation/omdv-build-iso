@@ -52,7 +52,6 @@ hfsutils
 ntfs-3g
 ntfs-3g-system-compression
 monitor-edid
-tuned
 wget
 uuidd
 whois

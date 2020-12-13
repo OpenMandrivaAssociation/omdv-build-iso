@@ -4,14 +4,17 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 calamares #min-iso
-distro-theme
+distro-release-theme
 dosfstools
 eject
 #freetype-tools #iso
 ufw
 nx-firewall
 hfsutils #iso
+distro-release-desktop
 distro-release-indexhtml
+distro-release-repos-pkgprefs
+distro-release-theme
 info #iso
 info-install #iso
 inxi
@@ -46,7 +49,6 @@ sudo
 task-x11
 testdisk
 tmpwatch #iso
-tuned
 upower #iso
 usbmuxd #iso
 urw-fonts
