@@ -802,6 +802,8 @@ mkISOLabel() {
 
 	if [ "${RELEASE_ID,,}" = 'final' ]; then
 		PRODUCT_ID="OpenMandrivaLx.$VERSION"
+	elif  [ "${RELEASE_ID,,}" = 'snapshot' ]; then
+		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	elif  [ "${RELEASE_ID,,}" = 'beta' ]; then
 		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	elif [ "${RELEASE_ID,,}" = 'alpha' ]; then
@@ -1195,8 +1197,10 @@ createChroot() {
 	# remove rpm db files which may not match the target chroot environment
 	chroot "$CHROOTNAME" rm -f /var/lib/rpm/__db.*
 	# Cache stuff to make discover happy - but don't freak out on an iso that doesn't include PK
-	chroot "$CHROOTNAME" /bin/bash -c "mkdir -p /run/dbus; /usr/bin/dbus-daemon --system --nofork --print-pid &>/run/dbus/dbusd-pid & sleep 3s; /usr/libexec/packagekitd & sleep 5s; pkcon -y -p refresh force" || :
-	chroot "$CHROOTNAME" /bin/bash -c "/usr/libexec/packagekitd --immediate-exit; kill \$(cat /run/dbus/dbusd-pid); rm -rf /run/dbus" || :
+	if [ -e "$CHROOTNAME"/usr/libexec/packagekitd ]; then
+		chroot "$CHROOTNAME" /bin/bash -c "mkdir -p /run/dbus; /usr/bin/dbus-daemon --system --nofork --print-pid &>/run/dbus/dbusd-pid & sleep 3s; /usr/libexec/packagekitd & sleep 5s; pkcon -y -p refresh force" || :
+		chroot "$CHROOTNAME" /bin/bash -c "/usr/libexec/packagekitd --immediate-exit; kill \$(cat /run/dbus/dbusd-pid); rm -rf /run/dbus" || :
+	fi
 }
 
 # Usage: mkOmSpin [main install file path} i.e. [path]/omdv-kde4.lst.
@@ -2031,9 +2035,9 @@ EOF
 	# (crazy) WARNING: calamares-locale service need to run for langauage settings grub menu's
 	# ( crazy) DO NOT ENABLE THESE: dnf-makecache.timer dnf-automatic.timer dnf-automatic-notifyonly.timer dnf-automatic-download.timer
 	# like discussed 1000000000000 times already this should not be activate by default, not here not in the rpm. Not only it break the boot time but people are still
-        # using 'paid' per MB/GB internet
+	# using 'paid' per MB/GB internet
 	## this -> 17.153s dnf-makecache.service ( on a device boots in 2.4 secs with a nvme , imagine that on slow HDD )
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path)
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon.socket irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path)
 
 
 	# ( crazy) we cannot symlink/rm for .service,.socket

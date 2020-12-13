@@ -1,7 +1,6 @@
 basesystem-minimal
 distro-release-common
 distro-release-OpenMandriva
-distro-theme
 distro-release-repos
 distro-release-repos-keys
 locales
