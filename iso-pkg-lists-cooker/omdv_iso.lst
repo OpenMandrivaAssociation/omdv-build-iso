@@ -55,6 +55,7 @@ urw-fonts
 uuidd
 vbetool #iso
 wget
+aria2
 whois #iso
 x11-driver-input-vmmouse #iso
 #x11-driver-video-vboxvideo #iso
