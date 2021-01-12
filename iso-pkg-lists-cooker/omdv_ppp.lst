@@ -1,5 +1,5 @@
 ppp
-ppp-dhcp
+#ppp-dhcp
 ppp-pppoatm
 ppp-radius
 rp-pppoe
