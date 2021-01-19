@@ -2158,6 +2158,12 @@ EOF
 		chroot "$CHROOTNAME" /usr/bin/mandb --quiet
 	fi
 
+	# Rebuild mime database
+	if [ -x "$CHROOTNAME"/usr/bin/update-mime-database ]; then
+		printf "%s\n" "-> Please wait...rebuilding MIME database"
+		chroot "$CHROOTNAME" /usr/bin/update-mime-database /usr/share/mime
+	fi
+
 # Move the rpm cache out of the way for the iso build
 	#if [[ "$IN_ABF" = 0  || ( "$IN_ABF" = '1' && -n "$DEBUG" ) ]]; then
 	#if [ "$IN_ABF" = 0 ] || [ "$IN_ABF" = '1' ] && [ -n "$DEBUG" ]; then
