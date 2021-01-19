@@ -2134,9 +2134,10 @@ EOF
 
 	# Get back to real /etc/resolv.conf
 	rm -f "$CHROOTNAME"/etc/resolv.conf
-	ln -sf /run/systemd/resolve/resolv.conf "$CHROOTNAME"/etc/resolv.conf
+	ln -sf /run/systemd/resolve/stub-resolv.conf "$CHROOTNAME"/etc/resolv.conf
 	# set up some default settings
 	printf '%s\n' "nameserver 208.67.222.222" "nameserver 208.67.220.220" >> "$CHROOTNAME"/run/systemd/resolve/resolv.conf
+	printf '%s\n' "nameserver 208.67.222.222" "nameserver 208.67.220.220" >> "$CHROOTNAME"/run/systemd/resolve/stub-resolv.conf
 
 	# fontconfig cache
 	if [ -x "$CHROOTNAME"/usr/bin/fc-cache ]; then
@@ -2206,7 +2207,7 @@ createSquash() {
 		fi
 # copy the package lists and and the build options to the chroot
 		mkdir -p ${CHROOTNAME}/.build_info
-		cp ${COMMITDIR}/*   ${CHROOTNAME}/.build_info/pkglsts_build_id-${BUILD_ID}
+		cp ${COMMITDIR}/* ${CHROOTNAME}/.build_info/pkglsts_build_id-${BUILD_ID}
 		dnf --installroot "${CHROOTNAME}" list --installed >${CHROOTNAME}/.build_info/installed_pkgs
 	fi
 
