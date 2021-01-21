@@ -1615,7 +1615,7 @@ createBOOTimgs() {
 		rm -f "$CHROOTNAME/memdisk_img"
 	fi
 	printf "%s\n" "-> Setting up UEFI partiton and image."
-	IMGNME="$ISOROOTNAME/boot/grub/BOOT"$ARCHFMT".img
+	IMGNME="$ISOROOTNAME"/boot/grub/BOOT"$ARCHFMT".img
 
 	printf "%s\n" "-> Building GRUB's EFI image."
 	if [ -e "$IMGNME" ]; then
@@ -1674,8 +1674,8 @@ createBOOTimgs() {
 	# Clean up
 	kpartx -d "$IMGNME"
 	# Remove the EFI directory
-	rm -R "$ISOROOTNAME/EFI"
-	XORRISO_OPTIONS2="--efi-boot $EFINAME -append_partition 2 0xef $IMGNME"
+	#rm -R "$ISOROOTNAME/EFI"
+	XORRISO_OPTIONS2="-append_partition 2 0xef $IMGNME"
 
 	# Create startup.nsh to direct VirtualBox VMs to start in EFI mode automatically. EFI booting stopped working with Oracle VirtualBox 6.1 when they updated the EFI code
 #cat << EOF > "$ISOROOTNAME/startup.nsh"
