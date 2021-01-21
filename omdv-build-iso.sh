@@ -323,8 +323,7 @@ CarryOn() {
 	#mkUserSpin        # Creates a user chroot which includes the content of the my.add and my.rmv package lists
 	#updateUserSpin    # Updates the user chroot with the content of the my.add and my.rmv package lists
 	createInitrd       # Creates the initrds is able to use two different kernels and gives boot entries for both
-	createMemDisk      # Creates a memdisk for embedding in the iso-build-lists.
-	createUEFI         # Creates a bootable UEFI image
+	createBOOTimgs  # Create boot images  
 	setupGrub2         # Configure and set up grub2
 	setupISOenv        # Move files to ISO build directories
 	ClnShad            # Clean out passwd locks from the chroots /etc
@@ -1179,7 +1178,7 @@ createChroot() {
 		errorCatch
 	fi
 
-	# There's a problem here if you have something like desktop and desktop-clang kernels as module detection fails if
+	# There is a problem here if you have something like desktop and desktop-clang kernels as module detection fails if
 	# the boot kernel type is defined as desktop. You have to be careful about what you put in --boot-kernel-type
 	# Somehow this has to be fixed perhaps with a lookup or translation table.
 	# Export installed and boot kernel
@@ -1548,9 +1547,8 @@ createInitrd() {
 	ln -sf "/boot/initrd-$KERNEL_ISO.img" "$CHROOTNAME/boot/initrd0.img"
 }
 
-# Usage: createMemDIsk <target_directory/image_name>.img <grub_support_files_directory> <grub2 efi executable>
 # Creates a fat formatted file ifilesystem image which will boot an UEFI system.
-createMemDisk() {
+createBOOTimgs() {
 	if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
 		ARCHFMT=x86_64-efi
 		ARCHPFX=X64
@@ -1561,17 +1559,16 @@ createMemDisk() {
 		ARCHFMT=i386-efi
 		ARCHPFX=IA32
 	fi
-
-	# Create the ISO directory
-	mkdir -m 0755 -p "$ISOROOTNAME"/EFI/BOOT
-	# and the grub diectory
-	mkdir -m 0755 -p "$ISOROOTNAME"/boot/grub
-
-	ARCHLIB="/usr/lib/grub/$ARCHFMT"
-	EFINAME=BOOT"$ARCHPFX.efi"
-	printf "%s\n" "-> Setting up UEFI memdisk image."
+    ARCHLIB="/usr/lib/grub/$ARCHFMT"
+	EFINAME="BOOT$ARCHPFX.efi"
 	GRB2FLS="$ISOROOTNAME/EFI/BOOT"
+	# Create the ISO directory
+	mkdir -m 0755 -p "$ISOROOTNAME/EFI/BOOT"
+	# and the grub diectory
+	mkdir -m 0755 -p "$ISOROOTNAME/boot/grub"
+	printf "%s\n" "-> Setting up UEFI memdisk image."
 	# Create memdisk directory
+	
 	if [ -e "$WORKDIR/boot/grub" ]; then
 		/bin/rm -R "$WORKDIR/boot/grub"
 		mkdir -p "$WORKDIR/boot/grub"
@@ -1595,7 +1592,7 @@ createMemDisk() {
 	tar cvf "$CHROOTNAME/memdisk_img" boot
 
 	# Make the image locally rather than rely on the grub2-rpm this allows more control as well as different images for IA32 if required
-	# To do this cleanly it's easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
+	# To do this cleanly it is easiest to move the ISO directory containing the config files to the chroot, build and then move it back again
 	mv -f "$ISOROOTNAME" "$CHROOTNAME"
 
 	# Job done just remember to move it back again
@@ -1617,28 +1614,8 @@ createMemDisk() {
 	if [ -e "$CHROOTNAME/memdisk_img" ]; then
 		rm -f "$CHROOTNAME/memdisk_img"
 	fi
-}
-
-# Usage: createEFI $EXTARCH $ISOCHROOTNAME
-# Creates a fat formatted file in filesystem image which will boot an UEFI system.
-# PLEASE NOTE THAT THE ISO DIRECTORY IS TEMPORARILY MOVED TO THE CHROOT DIRECTORY FOR THE PURPOSE OF GENERATING THE GRUB IMAGE.
-createUEFI() {
-	if [ "$EXTARCH" = 'x86_64' ] || [ "$EXTARCH" = 'znver1' ]; then
-		ARCHFMT=x86_64-efi
-		ARCHPFX=X64
-	elif [ "$EXTARCH" = 'aarch64' ]; then
-		ARCHFMT=arm64-efi
-		ARCHPFX=AA64
-	elif printf "%s\n" $EXTARCH |grep -qE '^(i.86|znver1_32|athlon)'; then
-		ARCHFMT=i386-efi
-		ARCHPFX=IA32
-	fi
-	ARCHLIB=/usr/lib/grub/"$ARCHFMT"
-	EFINAME=BOOT"$ARCHPFX".efi
 	printf "%s\n" "-> Setting up UEFI partiton and image."
-
-	IMGNME="$ISOROOTNAME/boot/grub/$EFINAME"
-	GRB2FLS="$ISOROOTNAME"/EFI/BOOT
+	IMGNME="$ISOROOTNAME/boot/grub/BOOT"$ARCHFMT".img
 
 	printf "%s\n" "-> Building GRUB's EFI image."
 	if [ -e "$IMGNME" ]; then
@@ -1698,7 +1675,15 @@ createUEFI() {
 	kpartx -d "$IMGNME"
 	# Remove the EFI directory
 	rm -R "$ISOROOTNAME/EFI"
-	XORRISO_OPTIONS2=" --efi-boot $EFINAME -append_partition 2 0xef $IMGNME"
+	XORRISO_OPTIONS2="--efi-boot $EFINAME -append_partition 2 0xef $IMGNME"
+
+	# Create startup.nsh to direct VirtualBox VMs to start in EFI mode automatically. EFI booting stopped working with Oracle VirtualBox 6.1 when they updated the EFI code
+#cat << EOF > "$ISOROOTNAME/startup.nsh"
+#FS1:
+#CD EFI/BOOT
+#BOOTX64.efi
+#EOF
+	
 }
 
 # Usage: setupGrub2 (chroot directory (~/BASE) , iso directory (~/ISO), configdir (~/omdv-build-iso-<arch>)
@@ -1720,7 +1705,7 @@ setupGrub2() {
 	if [ -n "$DEFAULTKBD" ]; then
 		sed -i -e "0,/\(set bootkeymap=\).*/s//\1'$DEFAULTKBD'/" "$ISOROOTNAME"/boot/grub/grub.cfg
 	fi
-	sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/grub.cfg
+	sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME/boot/grub/grub.cfg"
 	cp -f "$WORKDIR"/grub2/start_cfg "$ISOROOTNAME"/boot/grub/start_cfg
 	printf "%s\n" "-> Setting GRUB_UUID to ${GRUB_UUID}"
 	sed -i -e "s/%GRUB_UUID%/${GRUB_UUID}/g" "$ISOROOTNAME"/boot/grub/start_cfg
