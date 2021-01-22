@@ -1052,7 +1052,7 @@ InstallRepos() {
 	if [ -n "$TESTREPO" ]; then
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
 	fi
-		printf "%s\n" "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
+		printf "%s\n" "keepcache=1" >>$CHROOTNAME/etc/dnf/dnf.conf
 	fi
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
@@ -1088,10 +1088,10 @@ updateSystem() {
 		fi
 	else
 		printf "%s\n" "-> Installing rpm files inside system environment"
-		dnf install -y --setopt=install_weak_deps=False --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
+		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 		# upgrade system after just in case
 #		if [ IN_ABF == '0' ]; then
-			dnf upgrade --refresh --assumeyes
+			dnf upgrade --refresh --assumeyes --releasever=${TREE}
 			printf "%s\n" '-> Updating rpms files inside system environment'
 #		fi
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
@@ -1333,9 +1333,9 @@ mkUpdateChroot() {
 		printf "%s\n" "-> Installing packages at ABF" " "
 		if [ -n "$__install_list" ]; then # Dont do it with an empty list
 			if [ -n "$PLLL" ]; then
-				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
+				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
 			else
-				/usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+				/usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
 				printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 			fi
 		fi
@@ -1352,10 +1352,10 @@ MyAdd() {
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
 		if [ -n "$PLLL" ]; then
-			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log"
+			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log"
 #			| tee "$WORKDIR/dnfopt.log"
 		else
-			/usr/bin/dnf install -y --refresh --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+			/usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
 #			>"$WORKDIR/dnfopt.log"
 #			| tee "$WORKDIR/dnfopt.log"
 			printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
@@ -1374,7 +1374,7 @@ MyRmv() {
 # Any duplicates that appear in both lists removed from BOTH lists
 # This works even if the packages are not installed
 		printf "%s" "-> Removing user specified rpms and orphans" " "
-		/usr/bin/dnf autoremove -y  --installroot "$CHROOTNAME" "$__remove_list"
+		/usr/bin/dnf autoremove -y --installroot "$CHROOTNAME" "$__remove_list"
 	else
 		printf "%s\n" " " "-> No rpms need to be removed"
 	fi
