@@ -1005,11 +1005,17 @@ InstallRepos() {
 			printf "->WARNING<- YOU HAVE ELECTED TO DOWNLOAD THE PACKAGES FOR THIS BUILD FROM A MIRROR. PACKAGE VERSIONS MAY NOT BE UP TO DATE"
 		else
 			sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
+			sed -i -e 's|http://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
 		fi
 		# we must make sure that the rpmcache is retained
 		printf "%s\n" "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
 		# This setting will be overwritten when the repos are re-installed at the end; however
 		# because the repo rpms are installed with rpm -Uvh the cache wont be cleared as dnf won't be run so the vache must be removed.
+	fi
+
+	DNFCONF_TREE="$TREE"
+	if echo $TREE |grep -qE '^[0-9]'; then
+		DNFCONF_TREE="release"
 	fi
 
 	#Check the repofiles and gpg keys exist in chroot
@@ -1023,7 +1029,7 @@ InstallRepos() {
 	# First make sure cooker is disabled
 	dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
 	# Then enable the main repo of the chosen tree
-	dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"
+	dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
 	# Clean up
 	if [ ! -e "$WORKDIR"/.new ]; then
 		/bin/rm -rf "$WORKDIR"/*.rpm
@@ -1034,7 +1040,7 @@ InstallRepos() {
 		printf "%s\n" "->Enabling the main repo only"
 	else
 		if [ -n "$UNSUPPREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-"$EXTARCH"-unsupported
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-unsupported
 		fi
 	# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
@@ -1045,7 +1051,7 @@ InstallRepos() {
 	fi
 
 	if [ -n "$TESTREPO" ]; then
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$TREE"-testing-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
 	fi
 		printf "%s\n" "keepcache=1" $CHROOTNAME/etc/dnf/dnf.conf
 	fi
