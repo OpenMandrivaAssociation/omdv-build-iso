@@ -1,0 +1,13 @@
+basesystem-minimal
+distro-release-common
+distro-release-OpenMandriva
+distro-release-repos
+distro-release-repos-keys
+locales
+locales-en
+ncurses
+dnf
+dnf-plugins-core
+dnf-plugins-extras-rpmconf
+systemd-resolved
+libnss_resolve
