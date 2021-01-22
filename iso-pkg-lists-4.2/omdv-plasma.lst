@@ -1,0 +1,106 @@
+# basic includes file lists
+%include .///omdv_core.lst
+%include .///omdv_iso.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_utils.lst
+
+# more includes lists for common sets that are not task/meta pkgs
+# Optional now that Falkon is Great Again -- .///omdv_firefox.lst
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_krita.lst
+%include .///omdv_libreoffice.lst
+%include .///omdv_locales.lst
+%include .///omdv_man-pages.lst
+%include .///omdv_myspell.lst
+%include .///omdv_vlc.lst
+%include .///omdv_smplayer.lst
+%include .///omdv_pulseaudio.lst
+%include .///omdv_task-plasma.lst
+
+
+# install for Live only
+# and remove with calamares cleaner
+kpat
+# Desktop Specifics
+
+phonon4qt5-gstreamer
+rosa-imagewriter
+quick-usb-formatter
+# digikam and kipi-plugins
+kipi-plugins-advancedslideshow
+kipi-plugins-calendar
+kipi-plugins-dropbox
+# kipi-plugins-expoblending  disable it as it needs wxgtk3.0
+kipi-plugins-facebook
+kipi-plugins-flashexport
+kipi-plugins-flickr
+kipi-plugins-googleservices
+kipi-plugins-imageshack
+kipi-plugins-imageviewer
+kipi-plugins-imgurexport
+kipi-plugins-kmlexport
+# kipi-plugins-panorama disable it as it needs wxgtk3.0
+kipi-plugins-piwigoexport
+kipi-plugins-printimages
+kipi-plugins-rajceexport
+kipi-plugins-remotestorage
+kipi-plugins-sendimages
+kipi-plugins-smug
+kipi-plugins-yandexfotki
+showfoto
+
+task-printing
+# printing
+task-printing-scanning
+system-config-printer-gui #printer
+epson-inkjet-printer-escpr
+
+## (crazy) hmm .. this need move away from here
+x11-font-cyrillic
+x11-tools
+x11-docs
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+
+# MD this entire list should be shuffled or justified to be needed for the full ISO
+
+avahi #service
+# FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
+
+# Miscelaneous Packages
+filelight
+enchant
+ffmpeg
+jasper
+nss
+nss_ldap
+nss_mdns
+nss_wins
+openssl
+pam_ldap
+poppler-data
+sasl-plug-gssapi
+
+# special featured software
+oma-welcome
+om-feeling-like
+om-update-config
+om-repo-picker
+om-control-center
+om-user-manager
+om-mirror-selector
+# oma-welcome got broken deps
+oxygen-icons
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
+discover
+discover-backend-kns
+discover-backend-packagekit
+discover-notifier
