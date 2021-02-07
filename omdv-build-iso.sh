@@ -1026,12 +1026,14 @@ InstallRepos() {
 		printf "%s\n" "Repository and GPG files installed sucessfully."
 		/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
 	fi
-	# First make sure cooker is disabled
-	dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
-	# Then enable the main repo of the chosen tree
-	dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
-	# Clean up
-	if [ ! -e "$WORKDIR"/.new ]; then
+
+	if [ -e "$WORKDIR"/.new ]; then
+		# First make sure cooker is disabled
+		dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
+		# Then enable the main repo of the chosen tree
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
+	else
+		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
 	fi
 
