@@ -1,7 +1,5 @@
 %include .///omdv_core.lst
 
-acpi
-acpid
 at
 basesystem
 btrfs-progs
@@ -16,7 +14,7 @@ iproute2
 grub2
 efibootmgr
 #kernel-release-desktop-latest
-kernel-release-desktop
+kernel-release-desktop-clang
 kernel-firmware
 kernel-firmware-extra
 lvm2
