@@ -9,7 +9,7 @@
 # more includes lists for common sets that are not task/meta pkgs
 # include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
-#%include .///omdv_gstreamer.lst
+%include .///omdv_gstreamer.lst
 # include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
@@ -35,10 +35,8 @@ gnome-terminal
 gnome-themes-standard
 nautilus
 networkmanager
-task-pulseaudio
 yelp
 task-x11
-task-pulseaudio
 
 cheese
 eog
@@ -50,13 +48,13 @@ gdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
-#gnome-software
+gnome-software
 gnome-terminal-nautilus
 
 empathy
 epiphany
 gnome-games
-#rhythmbox
+rhythmbox
 totem
 
 simple-scan
@@ -103,10 +101,11 @@ inkscape
 # Needed Task/Meta Packages
 task-pulseaudio
 
-#task-printing
+task-printing
 # printing
-#task-printing-scanning
-#system-config-printer-gui #printer
+task-printing-scanning
+system-config-printer-gui #printer
+epson-inkjet-printer-escpr
 
 x11-font-cyrillic
 # keep to check
@@ -138,21 +137,24 @@ gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
 
+# Dirty but urgent GTK deps
+%{_lib}gjs-gir1.0
+
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
 
 # Miscelaneous Packages
-#enchant
-#ffmpeg
-#jasper
-#nss
-#nss_ldap
-#nss_mdns
-#nss_wins
-#openssl
+enchant
+ffmpeg
+jasper
+nss
+nss_ldap
+nss_mdns
+nss_wins
+openssl
 #pam_ldap
-#poppler-data
-#sasl-plug-gssapi
+poppler-data
+sasl-plug-gssapi
 sddm
 
 #openssh-server #server
@@ -167,6 +169,14 @@ sddm
 #pyxdg
 
 # special featured software
-#oma-welcome
+oma-welcome
+om-feeling-like
+om-update-config
 om-repo-picker
 om-control-center
+om-user-manager
+om-mirror-selector
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
