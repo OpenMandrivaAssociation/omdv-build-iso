@@ -1531,9 +1531,9 @@ createInitrd() {
 	rm -rf "$CHROOTNAME/boot/initrd-$KERNEL_ISO.img"
 	rm -rf "$CHROOTNAME"/boot/initrd0.img
 
-	# Remove config before building initrd
-	rm -rf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
-	rm -rf "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso
+	# Move configs to /usr/share/dracut/ for diagnostics on live images. Probably should be removed by Calamares post-install scripts
+	mv  "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf  "$CHROOTNAME"/usr/share/dracut/
+    mv  "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso "$CHROOTNAME"/usr/share/dracut/
 
 	# Building initrd
 	chroot "$CHROOTNAME" /sbin/dracut -N -f "/boot/initrd-$KERNEL_ISO.img" "$KERNEL_ISO"
@@ -1764,7 +1764,7 @@ setupGrub2() {
 	mkdir -p "$ISOROOTNAME/boot/grub/i386-pc"
 	cp -rf "$CHROOTNAME/usr/lib/grub/i386-pc" "$ISOROOTNAME/boot/grub/"
 
-	# Build the grub images in the chroot rather that in the host OS this avoids any issues with different versions of grub in the host OS especially when using local mode.
+	# Build the grub images in the chroot rather that in t"$CHROOTNAME"he host OS this avoids any issues with different versions of grub in the host OS especially when using local mode.
 	# this means cooker isos can be built on a local machine running a different version of OpenMandriva
 	# It requires that all the files needed to build the image must be within the chroot directory when the chroot command is invoked.
 	# Also we cannot write outside of the chroot so the images generated will remain in the chroot directory and will need to be removed before the squashfs is built
