@@ -6,6 +6,12 @@
 
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
 
+if getargbool 0 rd.live.debug -n -y rdlivedebug; then
+    exec > /tmp/liveroot.$$.out
+    exec 2>> /tmp/liveroot.$$.out
+    set -x
+fi
+
 [ -z "$1" ] && exit 1
 livedev="$1"
 

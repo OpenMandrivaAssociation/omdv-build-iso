@@ -11,6 +11,7 @@ case "$root" in
     wait_for_dev "${root#live:}"
   ;;
   live:*)
+  modprobe loop
     if [ -f "${root#live:}" ]; then
         /sbin/initqueue --settled --onetime --unique /sbin/liveiso-root "${root#live:}"
     fi
