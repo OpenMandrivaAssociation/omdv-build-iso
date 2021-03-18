@@ -25,7 +25,8 @@
 # and remove with calamares cleaner
 kpat
 # Desktop Specifics
-
+qt-avif-image-plugin
+qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
 rosa-imagewriter
 quick-usb-formatter
