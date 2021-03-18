@@ -19,6 +19,8 @@
 
 # Desktop Specifics
 task-lxqt
+qt-avif-image-plugin
+qt-jpegxl-image-plugin
 pavucontrol-qt
 ark
 #cantata
