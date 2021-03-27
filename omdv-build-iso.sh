@@ -987,10 +987,10 @@ InstallRepos() {
 	fi
 
 	if [ -e "$WORKDIR"/.new ]; then
-		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps *.rpm
+		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
-		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps  *.rpm
+		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  *.rpm
 	fi
 
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
@@ -1094,7 +1094,7 @@ updateSystem() {
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 		# upgrade system after just in case
 #		if [ IN_ABF == '0' ]; then
-			dnf upgrade --refresh --assumeyes --releasever=${TREE}
+			dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
 			printf "%s\n" '-> Updating rpms files inside system environment'
 #		fi
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
