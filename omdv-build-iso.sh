@@ -975,7 +975,7 @@ InstallRepos() {
 		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-conf"
+		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
 		for i in $PACKAGES; do
 			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 			if [ "$?" != '0' ]; then
