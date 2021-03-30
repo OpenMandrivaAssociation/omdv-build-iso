@@ -46,6 +46,7 @@ rtkit #iso
 sharutils #iso
 sound-theme-freedesktop #iso
 sudo
+systemd-bash-completion
 task-x11
 testdisk
 tmpwatch #iso
