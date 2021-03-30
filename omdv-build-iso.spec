@@ -1,6 +1,6 @@
 Summary:	Tool to build OopenMandriva ISO
 Name:		omdv-build-iso
-# (tpg) befor you release please make sure you updated sources
+# (tpg) before you do the release, please be sure you updated sources
 # make dist
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
@@ -9,6 +9,8 @@ Release:	1
 License:	GPL
 Group:		System/Libraries
 URL:		https://github.com/OpenMandrivaAssociation/omdv-build-iso
+# (tpg) this file is generate by running "make dist"
+# make sure VERSION is good in Makefile
 Source0:	%{name}-%{version}.tar.xz
 Requires:	bash
 Requires:	bc
@@ -25,7 +27,6 @@ Requires:	imagemagick
 Requires:	gptfdisk
 Requires:	kpartx
 Requires:	grub2
-Requires:	syslinux
 Requires:	diffutils
 Requires:	parallel
 BuildArch:	noarch
@@ -47,4 +48,3 @@ Tool to build OpenMandriva Lx ISO.
 %dir %{_datadir}/%{name}
 %{_bindir}/%{name}.sh
 %{_datadir}/%{name}/*
-
