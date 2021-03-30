@@ -1,10 +1,750 @@
+2021-03-30 22:24:53 +0200 tpgxyz 
+
+	* bump Makefile ver (HEAD -> master, origin/master, origin/HEAD)
+
+2021-03-30 22:16:48 +0200 Tomasz Paweł Gajc 
+
+	* new version 4.1.1 (tag: delete)
+
+2021-03-30 22:08:15 +0200 Tomasz Paweł Gajc 
+
+	* systemd-bash-completion
+
+2021-03-30 22:07:49 +0200 Tomasz Paweł Gajc 
+
+	* systemd-bash-completion
+
+2021-03-28 01:14:51 +0100 Bernhard Rosenkränzer 
+
+	* dnf-conf -> dnf-data
+
+2021-03-27 23:25:24 +0100 Bernhard Rosenkränzer 
+
+	* First try at allowing hostarch != targetarch
+
+2021-03-18 22:26:18 +0100 Bernhard Rosenkränzer 
+
+	* Add Qt AVIF and JPEG XL image format plugins
+
+2021-02-24 15:10:19 +0000 Colin 
+
+	* Keep the dracut configs nad module in the iso in case tests are needed.
+
+2021-02-24 15:02:50 +0000 Colin 
+
+	* Update our liveiso module to latest dracut-051
+
+2021-02-24 14:59:48 +0000 Colin 
+
+	* Remove non-existant kernel module that was causing an intermittent failure in dracut
+
+2021-02-16 02:54:15 +0100 Bernhard Rosenkränzer 
+
+	* Updates for post-4.2 rolling/cooker: Use clang kernel, ksysguard -> plasma-systemmonitor, nx-firewall -> plasma-firewall
+
+2021-02-10 13:47:06 +0100 AngryPenguinPL 
+
+	* adjust deps (tag: 4.2, origin/4.2)
+
+2021-02-09 22:04:30 +0100 Bernhard Rosenkränzer 
+
+	* Drop clang kernel
+
+2021-02-09 00:42:23 +0100 Bernhard Rosenkränzer 
+
+	* Use clang kernel, drop acpid
+
+2021-02-07 18:41:05 +0100 Bernhard Rosenkränzer 
+
+	* Avoid duplicate repositories
+
+2021-01-24 01:40:43 +0100 Bernhard Rosenkränzer 
+
+	* Add emoji fonts
+
+2021-01-22 06:44:38 +0100 Bernhard Rosenkränzer 
+
+	* Fix a few typos, add --releasever
+
+2021-01-22 05:54:53 +0100 Bernhard Rosenkränzer 
+
+	* Disable mirrors the right way, fix dnf config-manager calls
+
+2021-01-22 05:27:28 +0100 Bernhard Rosenkränzer 
+
+	* Sync cooker with rolling, copy rolling to 4.2
+
+2021-01-22 05:25:54 +0100 Bernhard Rosenkränzer 
+
+	* Add kio-fuse
+
+2021-01-19 12:49:49 +0100 tpgxyz 
+
+	* update mime database just to be safe
+
+2021-01-19 10:09:34 +0100 tpgxyz 
+
+	* adapt to last resolve changes
+
+2021-01-18 23:10:18 +0100 Bernhard Rosenkränzer 
+
+	* Make sure systemd-resolved and libnss_resolve are on the iso
+
+2021-01-12 10:37:22 +0100 rugyada 
+
+	* drop ppp-dhcp
+
+2021-01-12 10:35:38 +0100 rugyada 
+
+	* drop ppp-dhcp
+
+2021-01-10 16:50:42 +0100 AngryPenguinPL 
+
+	* drop orage
+
+2021-01-07 23:01:12 +0100 Bernhard Rosenkränzer 
+
+	* Drop packagekit workaround, no longer needed since we patched discover
+
+2020-12-19 02:46:37 +0100 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' into rolling
+
+2020-12-19 02:46:23 +0100 Bernhard Rosenkränzer 
+
+	* +aria2, +filelight
+
+2020-12-13 03:27:24 +0100 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' into rolling
+
+2020-12-13 03:27:08 +0100 Bernhard Rosenkränzer 
+
+	* Sync cooker -> rolling
+
+2020-12-13 03:25:48 +0100 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' into rolling
+
+2020-12-07 22:28:17 +0100 Bernhard Rosenkränzer 
+
+	* Drop tuned, it usually does more harm than good
+
+2020-11-17 23:48:52 +0100 Tomasz Paweł Gajc 
+
+	* revert fat partition name
+
+2020-11-16 09:40:58 +0100 Tomasz Paweł Gajc 
+
+	* run packagekitd only if it exists
+
+2020-10-01 20:01:30 +0200 tpgxyz 
+
+	* do not enable avahi-daemon by default
+
+2020-09-28 10:22:55 -0500 Ben Bullard 
+
+	* Set back to default kernel-release-desktop
+
+2020-09-28 10:18:42 -0500 Ben Bullard 
+
+	* Set back to default kernel-release-desktop
+
+2020-09-28 10:17:09 -0500 Ben Bullard 
+
+	* Set back to default kernel-release-desktop
+
+2020-09-27 21:36:55 -0500 Ben Bullard 
+
+	* To build ISO's with clang_kernel
+
+2020-09-27 21:34:19 -0500 Ben Bullard 
+
+	* To build Rolling ISO's with clang_kernel
+
+2020-09-27 19:13:52 -0500 Ben Bullard 
+
+	* Set back to current default kernel-release-desktop
+
+2020-09-27 14:43:39 -0500 Ben Bullard 
+
+	* Attempt to build ISO with clang and gcc kernel.
+
+2020-09-27 14:41:38 -0500 Ben Bullard 
+
+	* Attempt to build ISO with clang and gcc kernel.
+
+2020-09-27 12:23:37 -0500 Ben Bullard 
+
+	* Update omdv_iso_minimal.lst
+
+2020-09-27 12:22:42 -0500 Ben Bullard 
+
+	* Update omdv_iso_minimal.lst
+
+2020-09-24 08:19:38 +0200 rugyada 
+
+	* Add release id snapshot
+
+2020-09-23 12:05:59 +0200 Tomasz Paweł Gajc 
+
+	* no need to pull aria2
+
+2020-09-23 12:05:28 +0200 Tomasz Paweł Gajc 
+
+	* no need to pull aria2
+
+2020-09-17 11:06:58 +0200 tpgxyz 
+
+	* get back to 16-bit FAT ESP, as it seems EFI does not boot on vbox
+
+2020-09-17 11:04:54 +0200 tpgxyz 
+
+	* sort out distro-release packages
+
+2020-09-16 11:00:52 +0200 tpgxyz 
+
+	* pull distro-release-theme
+
+2020-09-09 16:51:59 +0200 tpgxyz 
+
+	* create 32 bit FAT ESP - btw this whole partitioning situation needs a rewrite
+
+2020-09-08 19:02:02 +0200 rugyada 
+
+	* Revert change as it did not help
+
+2020-09-07 02:25:41 +0200 Gabriel Craciunescu 
+
+	* disable theme for a quick test
+
+2020-09-06 22:29:48 +0200 Gabriel Craciunescu 
+
+	* Update main menu file
+
+2020-09-06 22:28:52 +0200 Gabriel Craciunescu 
+
+	* Fix Other submenu
+
+2020-09-01 23:45:41 +0200 Bernhard Rosenkränzer 
+
+	* Sync cooker/rolling package lists
+
+2020-09-01 23:44:36 +0200 Bernhard Rosenkränzer 
+
+	* Merge remote-tracking branch 'origin/master' into rolling
+
+2020-09-01 09:38:05 +0200 rugyada 
+
+	* Revert again as it did not help
+
+2020-08-31 17:15:24 +0200 rugyada 
+
+	* Revert commit
+
+2020-08-31 09:59:05 +0200 rugyada 
+
+	* No need of this one
+
+2020-08-31 09:42:06 +0200 rugyada 
+
+	* No need of this one
+
+2020-08-31 09:14:36 +0200 rugyada 
+
+	* No need of this one
+
+2020-08-31 08:53:25 +0200 rugyada 
+
+	* Add plasma-workspace-x11
+
+2020-08-28 10:05:14 +0200 Tomasz Paweł Gajc 
+
+	* add plasma-workspace-wayland
+
+2020-08-27 20:09:07 +0200 rugyada 
+
+	* Add plasma-workspace-x11
+
+2020-08-27 10:06:08 +0200 tpgxyz 
+
+	*  revert  8fedeef1a13f0e797e6ae639331861deed817b41 as this breaks important timers
+
+2020-08-27 10:04:35 +0200 tpgxyz 
+
+	* do not install dnf-automatic by default
+
+2020-08-26 21:12:15 +0200 Gabriel C 
+
+	* ok just miminal fix
+
+2020-08-26 21:10:08 +0200 Gabriel C 
+
+	* Revert "fix some obvious errors"
+
+2020-08-26 21:06:54 +0200 Gabriel C 
+
+	* Revert "make preset stuff optional off by default, also drop old network scripts"
+
+2020-08-26 19:10:25 +0200 Gabriel C 
+
+	* timers can be disabled with systemctl itself, probably some path files also
+
+2020-08-26 18:58:15 +0200 Gabriel C 
+
+	* drop dnf* stuff for real
+
+2020-08-26 18:40:30 +0200 Gabriel C 
+
+	* make preset stuff optional off by default, also drop old network scripts
+
+2020-08-26 18:26:01 +0200 Gabriel C 
+
+	* fix some obvious errors
+
+2020-08-24 23:05:27 +0200 rugyada 
+
+	* No need of this one
+
+2020-08-24 22:49:40 +0200 rugyada 
+
+	* Testing vbox fix
+
+2020-08-11 21:28:40 +0200 tpgxyz 
+
+	* get rid of bootsplash package
+
+2020-07-30 00:06:44 +0200 Bernhard Rosenkränzer 
+
+	* Wait a bit longer after trying to load the loop module
+
+2020-07-30 00:04:49 +0200 Bernhard Rosenkränzer 
+
+	* dbus-daemon lives in /usr/bin these days
+
+2020-07-18 03:40:37 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2020-07-18 03:40:19 +0200 Bernhard Rosenkränzer 
+
+	* Add mechanism to build isos with other default languages/keyboard layouts
+
+2020-07-17 18:27:11 -0500 Ben Bullard 
+
+	* Update omdv_iso.lst
+
+2020-07-17 18:25:51 -0500 Ben Bullard 
+
+	* Update omdv_iso.lst
+
+2020-07-18 01:18:10 +0200 Bernhard Rosenkränzer 
+
+	* Try to fix autologin on edu iso
+
+2020-07-14 13:01:09 -0500 benbullard79 
+
+	* Merge remote-tracking branch 'origin/master' into rolling
+
+2020-07-14 12:57:38 -0500 Ben Bullard 
+
+	* Update omdv_iso.lst
+
+2020-07-13 21:51:24 +0200 Bernhard Rosenkränzer 
+
+	* EDU: Add wine
+
+2020-07-11 10:33:13 +0200 rugyada 
+
+	* Same as guest additions
+
+2020-07-01 13:55:11 +0200 tpgxyz 
+
+	* use less echos, do not pull grub2-efi as it is useless
+
+2020-07-01 13:37:36 +0200 tpgxyz 
+
+	* adapt to new distro-release
+
+2020-07-01 13:28:25 +0200 tpgxyz 
+
+	* add ntfs-3g-system-compression to get Win10 support
+
+2020-06-29 22:04:33 -0500 Ben Bullard 
+
+	* This is a test.
+
+2020-06-27 13:42:42 -0500 Ben Bullard 
+
+	* Mindnever...
+
+2020-06-27 13:41:37 -0500 Ben Bullard 
+
+	* Nevermind...
+
+2020-06-27 13:23:28 -0500 Ben Bullard 
+
+	* Need ISO that shows desktop.
+
+2020-06-27 13:22:07 -0500 Ben Bullard 
+
+	* Need an x86_64 ISO that will have desktop.
+
+2020-06-18 21:21:56 +0200 rugyada 
+
+	* Revert changes for testing
+
+2020-06-17 19:06:36 +0200 rugyada 
+
+	* Comment out vbox stuff for testing
+
+2020-06-17 14:31:05 +0200 Tomasz Paweł Gajc 
+
+	* do not disable packagekit
+
+2020-06-17 10:37:35 +0200 Tomasz Paweł Gajc 
+
+	* this is not the culprit
+
+2020-06-16 21:25:19 -0500 Ben Bullard 
+
+	* Testing
+
+2020-06-12 12:52:32 +0200 Bernhard Rosenkränzer 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2020-06-12 12:52:29 +0200 Bernhard Rosenkränzer 
+
+	* EDU: Add a few games, drop a few redundant bits
+
+2020-06-12 08:27:35 +0100 Colin Close 
+
+	* Add edu to the list of iso's buildable on ABF.
+
+2020-06-12 03:52:51 +0200 Bernhard Rosenkränzer 
+
+	* No wine for now, but add quaternion
+
+2020-06-10 19:45:47 +0200 Bernhard Rosenkränzer 
+
+	* Add edu type
+
+2020-05-18 16:42:15 +0200 tpgxyz 
+
+	* use xsettingsd instead of xsettings-kde
+
+2020-05-11 16:39:24 +0200 Tomasz Paweł Gajc 
+
+	* Merge pull request #75 from OpenMandrivaAssociation/master
+
+2020-05-11 16:38:55 +0200 Tomasz Paweł Gajc 
+
+	* add earlyoom
+
+2020-05-11 16:37:54 +0200 Tomasz Paweł Gajc 
+
+	* add earlyoom
+
+2020-04-28 19:27:45 -0500 Ben Bullard 
+
+	* Remove grub2-extra
+
+2020-04-28 18:21:46 -0500 Ben Bullard 
+
+	* Add grub2-extra
+
+2020-04-28 18:20:00 -0500 Ben Bullard 
+
+	* Nope
+
+2020-04-28 18:19:03 -0500 Ben Bullard 
+
+	* Not sure
+
+2020-04-16 14:49:44 -0500 Ben Bullard 
+
+	* Restore to default
+
+2020-04-15 21:44:35 -0500 Ben Bullard 
+
+	* Temporary change to build ISO's
+
+2020-04-15 21:40:44 -0500 Ben Bullard 
+
+	* Restore list to default
+
+2020-04-13 17:09:37 -0500 Ben Bullard 
+
+	* Update omdv-lxqt.lst
+
+2020-04-13 16:52:47 -0500 Ben Bullard 
+
+	* Temp change
+
+2020-04-13 15:38:36 -0500 Ben Bullard 
+
+	* Temporary change
+
+2020-04-04 11:36:35 +0200 rugyada 
+
+	* Temp comment out fuse-exfat
+
+2020-04-04 01:39:07 +0200 Gabriel Craciunescu 
+
+	* drop -clang kernel
+
+2020-04-03 19:03:45 +0200 rugyada 
+
+	* Bring back gcc kernel
+
+2020-04-03 18:41:40 +0200 rugyada 
+
+	* Temp comment out fuse-exfat
+
+2020-03-27 13:21:00 +0100 tpgxyz 
+
+	* fix path to dracut binary
+
+2020-03-03 21:50:52 -0600 Ben Bullard 
+
+	* Update omdv-build-iso.sh
+
+2020-03-03 21:47:46 -0600 Ben Bullard 
+
+	* Update omdv-build-iso.sh
+
+2020-03-02 23:06:28 +0000 Colin Close 
+
+	* Fix inadvertant delete
+
+2020-03-02 23:04:50 +0000 Colin Close 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2020-03-02 23:04:20 +0000 Colin Close 
+
+	* Fix some lint issues
+
+2020-02-29 14:33:40 -0600 Ben Bullard 
+
+	* Temp change so we can build a working Cooker ISO
+
+2020-02-01 18:39:57 +0100 Bernhard Rosenkraenzer 
+
+	* Remove clang kernel from cooker as well
+
+2020-02-01 16:49:46 +0100 Bernhard Rosenkraenzer 
+
+	* Try to fix pkcon hang
+
+2020-02-01 02:45:40 +0100 rugyada 
+
+	* Temporarily remove kernel clang
+
+2020-01-31 20:53:11 +0100 Bernhard Rosenkraenzer 
+
+	* Force pkcon into non-interactive mode
+
+2020-01-31 19:03:16 +0100 Bernhard Rosenkraenzer 
+
+	* Create /run/dbus
+
+2020-01-31 18:46:01 +0100 Bernhard Rosenkraenzer 
+
+	* Try launching dbus-daemon before packagekitd
+
+2020-01-31 18:22:44 +0100 Bernhard Rosenkraenzer 
+
+	* Start packagekitd before running pkcon
+
+2020-01-31 17:04:40 +0100 Bernhard Rosenkraenzer 
+
+	* Run pkcon refresh force in the chroot
+
+2020-01-31 11:43:06 +0100 Bernhard Rosenkraenzer 
+
+	* Copy iso-pkg-lists-cooker to iso-pkg-lists-4.1
+
+2020-01-30 11:30:03 +0000 Colin Close 
+
+	* Add the rpmconf dnf plugin to hopefully support rpm new files interactively
+
+2020-01-27 19:21:46 +0100 mock build 
+
+	* Remove dnfdragora-updater now that discover-notifier works
+
+2020-01-23 15:37:24 +0100 Bernhard Rosenkränzer 
+
+	* Bring back discover without the unintended change in the previous commit (tag: working, tag: known-good)
+
+2020-01-23 15:36:19 +0100 Bernhard Rosenkränzer 
+
+	* Revert "Bring back discover"
+
+2020-01-23 15:36:03 +0100 Bernhard Rosenkränzer 
+
+	* Revert "Fix inverted logic"
+
+2020-01-22 16:36:00 +0000 iso buider 
+
+	* Fix inverted logic
+
+2020-01-21 20:58:13 +0100 Bernhard Rosenkränzer 
+
+	* Bring back discover
+
+2020-01-21 17:59:56 +0100 rugyada 
+
+	* Add elisa
+
+2020-01-19 22:38:06 +0100 Bernhard Rosenkränzer 
+
+	* Add om-update-config
+
+2020-01-19 01:28:57 +0100 Bernhard Rosenkränzer 
+
+	* Add nx-firewall
+
+2020-01-18 22:28:24 +0100 Bernhard Rosenkränzer 
+
+	* Add om-feeling-like
+
+2020-01-13 22:25:44 +0100 Gabriel Craciunescu 
+
+	* regenerate menu from grub-menu script
+
+2020-01-13 22:23:44 +0100 Gabriel Craciunescu 
+
+	* also %KCC_TYPE% need go to here
+
+2020-01-13 22:21:04 +0100 Gabriel Craciunescu 
+
+	* remove that linux1 from here
+
+2020-01-13 22:19:22 +0100 Gabriel Craciunescu 
+
+	* move that linux1 to right menu
+
+2020-01-13 17:15:54 +0100 rugyada 
+
+	* Add elisa
+
+2019-12-24 03:36:54 +0100 Bernhard Rosenkränzer 
+
+	* Fix inconsistent indentation, simplify a little
+
+2019-12-24 02:16:39 +0000 iso buider 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-12-24 02:13:49 +0000 iso buider 
+
+	* Add back the grub tar module so the memdisk works again.
+
+2019-12-24 02:59:13 +0100 Bernhard Rosenkränzer 
+
+	* Fix inconsistent indentation, clean up a little
+
+2019-12-24 00:34:57 +0000 iso buider 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-12-23 23:41:35 +0000 iso buider 
+
+	* Improvements to user build lists
+
+2019-12-22 02:13:04 +0300 Alexander Stefanov 
+
+	* clean
+
+2019-12-22 02:12:28 +0300 Alexander Stefanov 
+
+	* clean
+
+2019-12-22 02:11:17 +0300 Alexander Stefanov 
+
+	* remove trailing whitespaces
+
+2019-12-21 02:03:14 +0300 Alexander Stefanov 
+
+	* add stuff
+
+2019-12-03 12:21:46 +0100 tpgxyz 
+
+	* add libblockdev-plugins-all
+
+2019-12-02 19:18:17 +0100 rugyada 
+
+	* Add packages
+
+2019-11-27 18:49:57 +0100 rugyada 
+
+	* Add packages
+
+2019-11-22 18:31:35 +0100 rugyada 
+
+	* Add packages
+
+2019-11-22 18:29:05 +0100 rugyada 
+
+	* Add packages
+
+2019-11-18 17:09:06 +0100 tpgxyz 
+
+	* fix check for rpm list is installed inside chroot, fix indentation and code style (wip)
+
+2019-11-07 23:33:22 +0000 iso buider 
+
+	* Remove dupes Fix logic screwup
+
+2019-11-07 23:05:59 +0000 iso buider 
+
+	* Add more cinnamon stuff
+
+2019-11-07 22:48:36 +0000 iso buider 
+
+	* Remove some nonsense
+
+2019-11-07 22:18:55 +0000 iso buider 
+
+	* Fix rogue GitHub line at EOF
+
+2019-11-07 21:29:26 +0100 AngryPenguinPL 
+
+	* initial
+
+2019-11-07 18:39:32 +0000 iso buider 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2019-11-07 18:39:06 +0000 iso buider 
+
+	* Update sources
+
+2019-11-07 18:37:27 +0000 iso buider 
+
+	* Update spec Regenerate changelog (origin/addrepos)
+
+2019-11-07 18:08:38 +0100 rugyada 
+
+	* Update omdv-build-iso.sh
+
+2019-11-07 18:06:09 +0100 rugyada 
+
+	* Add cinnamon
+
+2019-11-07 17:23:49 +0100 rugyada 
+
+	* Add cinnamon
+
 2019-11-06 22:54:11 +0000 iso buider 
 
-	* Update to do Remove spurious file (HEAD -> addrepos, origin/master, origin/HEAD, master)
+	* Update to do Remove spurious file
 
 2019-11-06 21:09:21 +0000 iso buider 
 
-	* Rewrite the method for creating user spins. Rename the interactive functions and their variables. Revise getPkgList function to ensure local repo is created Make some changes suggested by shell check. (origin/addrepos)
+	* Rewrite the method for creating user spins. Rename the interactive functions and their variables. Revise getPkgList function to ensure local repo is created Make some changes suggested by shell check.
 
 2019-11-06 11:13:12 +0000 iso buider 
 
@@ -56,7 +796,7 @@
 
 2019-10-29 15:21:04 +0300 Alexander Stefanov 
 
-	* put all back (tag: known-good)
+	* put all back
 
 2019-10-29 14:53:08 +0300 Alexander Stefanov 
 
@@ -248,7 +988,7 @@
 
 2019-10-07 22:20:12 +0100 itchka (Colin Close) 
 
-	* Disable debugging (tag: working)
+	* Disable debugging
 
 2019-10-07 21:10:00 +0100 itchka (Colin Close) 
 
@@ -352,7 +1092,7 @@
 
 2019-08-28 03:18:51 +0200 AngryPenguinPL 
 
-	* obsolete (origin/rolling, rolling)
+	* obsolete
 
 2019-08-28 02:58:58 +0200 AngryPenguinPL 
 
