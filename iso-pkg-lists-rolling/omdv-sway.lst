@@ -47,7 +47,6 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 dosfstools
-ufw
 hfsutils
 ntfs-3g
 ntfs-3g-system-compression

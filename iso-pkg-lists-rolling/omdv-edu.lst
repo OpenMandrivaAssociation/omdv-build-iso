@@ -28,8 +28,7 @@ calamares #min-iso
 distro-release-theme
 dosfstools
 eject
-ufw
-nx-firewall
+plasma-firewall
 distro-release-indexhtml
 info #iso
 info-install #iso
