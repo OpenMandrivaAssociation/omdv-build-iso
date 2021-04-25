@@ -760,11 +760,11 @@ mKeBuild_id() {
 			# The BUILD_ID has already been saved. Used to create commit messages.
 			BUILD_ID=$(cat "$COMMITDIR"/sessrec/.build_id)
 		else
-			BUILD_ID=$(($RANDOM%9999+1000))
+			BUILD_ID=$(date +%H%M)
 			printf "%s\n" ${BUILD_ID} > "$COMMITDIR"/sessrec/.build_id
 		fi
 	else
-		BUILD_ID=$(($RANDOM%9999+1000))
+		[ -z "$BUILD_ID" ] && BUILD_ID=$(date +%H%M)
 	fi
 }
 
