@@ -1044,17 +1044,17 @@ InstallRepos() {
 		if [ -n "$UNSUPPREPO" ]; then
 			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-unsupported
 		fi
-	# Some pre-processing required here because of the structure of repoid's
+		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
 			ENABLEREPO=$(tr "," " " <<< $ENABLEREPO)
 			#for rpo in ${ENABLEREPO//,/]; do
 			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
 			#done
-	fi
+		fi
 
-	if [ -n "$TESTREPO" ]; then
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
-	fi
+		if [ -n "$TESTREPO" ]; then
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
+		fi
 		printf "%s\n" "keepcache=1" >>$CHROOTNAME/etc/dnf/dnf.conf
 	fi
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
