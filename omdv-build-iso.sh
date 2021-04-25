@@ -1055,7 +1055,6 @@ InstallRepos() {
 		if [ -n "$TESTREPO" ]; then
 			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
 		fi
-		printf "%s\n" "keepcache=1" >>$CHROOTNAME/etc/dnf/dnf.conf
 	fi
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
