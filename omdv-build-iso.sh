@@ -2192,8 +2192,7 @@ EOF
 
 	# Remove rpm db files to save some space
 	rm -rf "$CHROOTNAME"/var/lib/rpm/__db.*
-	printf "%s\n" 'File created by omdv-build-iso. See systemd-update-done.service(8).' \
-		| tee "$CHROOTNAME"/etc/.updated >"$CHROOTNAME"/var/.updated
+	printf "%s\n" 'File created by omdv-build-iso. See systemd-update-done.service(8).' > "$CHROOTNAME"/var/.updated
 }
 
 # Clean out the backups of passwd, group and shadow
