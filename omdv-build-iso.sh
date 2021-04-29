@@ -1532,7 +1532,7 @@ createInitrd() {
 
 	# Move configs to /usr/share/dracut/ for diagnostics on live images. Probably should be removed by Calamares post-install scripts
 	mv  "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf  "$CHROOTNAME"/usr/share/dracut/
-    mv  "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso "$CHROOTNAME"/usr/share/dracut/
+	mv  "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso "$CHROOTNAME"/usr/share/dracut/
 
 	# Building initrd
 	chroot "$CHROOTNAME" /sbin/dracut -N -f "/boot/initrd-$KERNEL_ISO.img" "$KERNEL_ISO"
@@ -1836,19 +1836,19 @@ setupGrub2() {
 
 setupISOenv() {
 	# Set up default timezone
-	printf "%s\n" "-> Setting default timezone"
-	ln -sf /usr/share/zoneinfo/Universal "$CHROOTNAME/etc/localtime"
+	printf "%s\n" "-> Setting systemd firstboot"
 
-	# try harder with systemd-nspawn
-	# version 215 and never has then --share-system option
-	#	if (( `rpm -qa systemd --queryformat '%{VERSION} \n'` >= "215" )); then
-	#		systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/timedatectl set-timezone UTC
-	#		# set default locale
-	#		printf "%sSetting default localization"
-	#		systemd-nspawn --share-system -D "$CHROOTNAME" /usr/bin/localectl set-locale LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8:en_US:en
-	#	else
-	#		printf "%ssystemd-nspawn does not exists."
-	#	fi
+# set up system environment, default root password is omv
+	systemd-firstboot --root="$CHROOTNAME" \
+		--locale="$DEFAULTLANG" \
+		--keymap="$DEFAULTKBD" \
+		--timezone="Europe/London" \
+		--hostname="omv-$BUILD_ID" \
+		--delete-root-password \
+		--force
+
+	systemd-tmpfiles --root="$CHROOTNAME" --create
+	systemd-sysusers --root="$CHROOTNAME"
 
 	# Create /etc/minsysreqs
 	printf "%s\n" "-> Creating /etc/minsysreqs"
@@ -1882,15 +1882,6 @@ setupISOenv() {
 			rm -rf "$CHROOTNAME"/etc/sysconfig/desktop
 		fi
 	fi
-
-	# Copy some extra config files
-	## (crazy) fixme this kind stuff should not be needed this way!
-	cp -rfT "$WORKDIR/extraconfig/etc/X11" "$CHROOTNAME"/etc/X11
-	# (crazy) booting is handle these now , we start with empty locale.conf
-	touch "$CHROOTNAME"/etc/locale.conf
-	cp -rfT "$WORKDIR/extraconfig/etc/vconsole.conf" "$CHROOTNAME"/etc/vconsole.conf
-	## why ?
-	cp -rfT "$WORKDIR/extraconfig/etc/hostname" "$CHROOTNAME"/etc/hostname
 
 	# Add the VirtualBox folder sharing group
 	chroot "$CHROOTNAME" /usr/sbin/groupadd -f vboxsf
@@ -2192,7 +2183,10 @@ EOF
 
 	# Remove rpm db files to save some space
 	rm -rf "$CHROOTNAME"/var/lib/rpm/__db.*
-	printf "%s\n" 'File created by omdv-build-iso. See systemd-update-done.service(8).' > "$CHROOTNAME"/var/.updated
+
+	for i in etc var; do
+	    printf "%s\n" 'File created by omdv-build-iso. See systemd-update-done.service(8).' > "$CHROOTNAME/$i"/.updated
+	done
 }
 
 # Clean out the backups of passwd, group and shadow
