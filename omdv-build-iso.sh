@@ -469,7 +469,7 @@ setWorkdir() {
 		if [ "$IN_ABF" = '1'  ] && [ -d '/home/omv/docker-iso-worker' ]; then
 			# We really are in ABF
 			printf "%s\n" "using realpath"
-			WORKDIR=$(realpath "$(dirname "$0")")
+			WORKDIR="$(realpath $(dirname "$0"))"
 		elif [ -n "$DEBUG" ]; then
 			if [ -z "$WORKDIR" ]; then
 				WORKDIR="$UHOME/omdv-build-chroot-$EXTARCH"
@@ -1846,10 +1846,11 @@ setupISOenv() {
 		--delete-root-password \
 		--force
 
-	systemd-tmpfiles --root="$CHROOTNAME" --create
-	systemd-sysusers --root="$CHROOTNAME"
+# (tpg) this is already done by systemd.triggers, but run it anyways just to be safe
+	systemd-tmpfiles --root="$CHROOTNAME" --remove ||:
+	systemd-sysusers --root="$CHROOTNAME" ||:
 
-	# Create /etc/minsysreqs
+# Create /etc/minsysreqs
 	printf "%s\n" "-> Creating /etc/minsysreqs"
 
 	if [ "${TYPE,,}" = "minimal" ]; then
@@ -1899,10 +1900,6 @@ setupISOenv() {
 		fi
 		printf "%s\n" "-> Clearing $username password."
 		chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
-#		if [ $? != 0 ]; then
-#			printf "%s\n" "-> Failed to clear $username user password." "Exiting."
-#			errorCatch
-#		fi
 
 		chroot "$CHROOTNAME" /usr/bin/passwd -f -u $username
 	done
@@ -2175,6 +2172,7 @@ EOF
 
 	# Clear tmp
 	rm -rf "$CHROOTNAME"/tmp/*
+	rm -rf "$CHROOTNAME"/run/*
 	rm -rf "$CHROOTNAME/1" ||:
 
 	# Generate list of installed rpm packages
