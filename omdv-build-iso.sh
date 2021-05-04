@@ -1143,10 +1143,9 @@ createChroot() {
 		printf "%s\n" "-> Rebuilding."
 	fi
 
-	mount --bind /proc "$CHROOTNAME"/proc
-	mount --bind /sys "$CHROOTNAME"/sys
-	mount --bind /dev "$CHROOTNAME"/dev
-	mount --bind /dev/pts "$CHROOTNAME"/dev/pts
+	for f in dev dev/pts proc sys; do
+	    mount --bind -o ro "/$f" "$CHROOTNAME/$f"
+	done
 
 	if [ "$IN_ABF" = '1' ]; then
 		# Just build a chroot if DEBUG is not we will have
