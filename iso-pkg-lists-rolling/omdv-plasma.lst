@@ -28,7 +28,7 @@ kpat
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-rosa-imagewriter
+isoimagewriter
 quick-usb-formatter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
