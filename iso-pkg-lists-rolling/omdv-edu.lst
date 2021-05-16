@@ -88,7 +88,7 @@ kpat
 # Desktop Specifics
 
 phonon4qt5-gstreamer
-rosa-imagewriter
+isoimagewriter
 quick-usb-formatter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
