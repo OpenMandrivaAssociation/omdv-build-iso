@@ -2294,11 +2294,11 @@ postBuild() {
 	if [ -n "$OUTPUTDIR" ]; then
 		cd "$OUTPUTDIR" || exit
 		md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
-		sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
+		sha256sum "$PRODUCT_ID.$EXTARCH.iso" > SHA256SUMS
 	else
 		cd "$WORKDIR" > /dev/null 2>&1
 		md5sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.md5sum"
-		sha1sum "$PRODUCT_ID.$EXTARCH.iso" > "$PRODUCT_ID.$EXTARCH.iso.sha1sum"
+		sha256sum "$PRODUCT_ID.$EXTARCH.iso" > SHA256SUMS
 		cd - > /dev/null 2>&1
 	fi
 
