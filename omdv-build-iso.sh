@@ -1903,9 +1903,8 @@ setupISOenv() {
 	done
 
 # (tpg) allow to ssh for live user with blank password
-	if [ -f "$CHROOTNAME"/etc/ssh/sshd_config ]; then
-	cat >> "$CHROOTNAME"/etc/ssh/sshd_config << EOF
-
+	if [ -d "$CHROOTNAME"/etc/ssh/sshd_config.d ]; then
+	cat > "$CHROOTNAME"/etc/ssh/sshd_config.d/50-live-iso.conf << EOF
 Match User $live_user
     PasswordAuthentication yes
     PermitEmptyPasswords yes
