@@ -1483,7 +1483,7 @@ createInitrd() {
 		errorCatch
 	fi
 
-	cp -f "$WORKDIR"/dracut/dracut.conf.d/99-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/90-dracut-isobuild.conf
+	cp -f "$WORKDIR"/dracut/dracut.conf.d/99-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/99-dracut-isobuild.conf
 
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
@@ -1894,13 +1894,24 @@ setupISOenv() {
 
 	# Clear user passwords
 	for username in root $live_user; do
-		# Kill it as it prevents clearing passwords
-		if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
-			rm -rf "$CHROOTNAME"/etc/shadow.lock
-		fi
-		printf "%s\n" "-> Clearing $username password."
-		chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
+	    # Kill it as it prevents clearing passwords
+	    if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
+		rm -rf "$CHROOTNAME"/etc/shadow.lock
+	    fi
+	    printf "%s\n" "-> Clearing $username password."
+	    chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
 	done
+
+# (tpg) allow to ssh for live user with blank password
+	if [ -f "$CHROOTNAME"/etc/ssh/sshd_config ]; then
+	cat >> "$CHROOTNAME"/etc/ssh/sshd_config << EOF
+
+Match User $live_user
+    PasswordAuthentication yes
+    PermitEmptyPasswords yes
+
+EOF
+	fi
 
 	chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
 	chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
