@@ -1478,12 +1478,12 @@ createInitrd() {
 
 	# Build initrd for syslinux
 	printf "%s\n" "-> Building liveinitrd-${BOOT_KERNEL_ISO} for ISO boot"
-	if [ ! -f "$WORKDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf" ]; then
-		printf "%s\n" "-> Missing $WORKDIR/dracut/dracut.conf.d/60-dracut-isobuild.conf." "Exiting."
+	if [ ! -f "$WORKDIR/dracut/dracut.conf.d/99-dracut-isobuild.conf" ]; then
+		printf "%s\n" "-> Missing $WORKDIR/dracut/dracut.conf.d/99-dracut-isobuild.conf." "Exiting."
 		errorCatch
 	fi
 
-	cp -f "$WORKDIR"/dracut/dracut.conf.d/60-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf
+	cp -f "$WORKDIR"/dracut/dracut.conf.d/99-dracut-isobuild.conf "$CHROOTNAME"/etc/dracut.conf.d/99-dracut-isobuild.conf
 
 	if [ ! -d "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso ]; then
 		printf "%s\n" "-> Dracut is missing 90liveiso module. Installing it."
@@ -1515,9 +1515,9 @@ createInitrd() {
 	fi
 
 	# Building liveinitrd
-	chroot "$CHROOTNAME" /sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$BOOT_KERNEL_ISO"
+	chroot "$CHROOTNAME" /sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd.img --conf /etc/dracut.conf.d/99-dracut-isobuild.conf "$BOOT_KERNEL_ISO"
 	if [ -n "$BOOT_KERNEL_TYPE" ]; then
-		chroot "$CHROOTNAME" /sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/60-dracut-isobuild.conf "$KERNEL_ISO"
+		chroot "$CHROOTNAME" /sbin/dracut -N -f --no-early-microcode --nofscks /boot/liveinitrd1.img --conf /etc/dracut.conf.d/99-dracut-isobuild.conf "$KERNEL_ISO"
 	fi
 	if [ ! -f "$CHROOTNAME"/boot/liveinitrd.img ]; then
 		printf "%s\n" "-> File $CHROOTNAME/boot/liveinitrd.img does not exist. Exiting."
@@ -1530,7 +1530,7 @@ createInitrd() {
 	rm -rf "$CHROOTNAME"/boot/initrd0.img
 
 	# Move configs to /usr/share/dracut/ for diagnostics on live images. Probably should be removed by Calamares post-install scripts
-	mv  "$CHROOTNAME"/etc/dracut.conf.d/60-dracut-isobuild.conf  "$CHROOTNAME"/usr/share/dracut/
+	mv  "$CHROOTNAME"/etc/dracut.conf.d/99-dracut-isobuild.conf  "$CHROOTNAME"/usr/share/dracut/
 	mv  "$CHROOTNAME"/usr/lib/dracut/modules.d/90liveiso "$CHROOTNAME"/usr/share/dracut/
 
 	# Building initrd
@@ -1894,15 +1894,24 @@ setupISOenv() {
 
 	# Clear user passwords
 	for username in root $live_user; do
-		# Kill it as it prevents clearing passwords
-		if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
-			rm -rf "$CHROOTNAME"/etc/shadow.lock
-		fi
-		printf "%s\n" "-> Clearing $username password."
-		chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
-
-		chroot "$CHROOTNAME" /usr/bin/passwd -f -u $username
+	    # Kill it as it prevents clearing passwords
+	    if [ -e "$CHROOTNAME"/etc/shadow.lock ]; then
+		rm -rf "$CHROOTNAME"/etc/shadow.lock
+	    fi
+	    printf "%s\n" "-> Clearing $username password."
+	    chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
 	done
+
+# (tpg) allow to ssh for live user with blank password
+	if [ -f "$CHROOTNAME"/etc/ssh/sshd_config ]; then
+	cat >> "$CHROOTNAME"/etc/ssh/sshd_config << EOF
+
+Match User $live_user
+    PasswordAuthentication yes
+    PermitEmptyPasswords yes
+
+EOF
+	fi
 
 	chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
 	chroot "$CHROOTNAME" /bin/cp -rfT /etc/skel /home/${live_user}/
