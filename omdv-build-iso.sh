@@ -1900,8 +1900,6 @@ setupISOenv() {
 		fi
 		printf "%s\n" "-> Clearing $username password."
 		chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
-
-		chroot "$CHROOTNAME" /usr/bin/passwd -f -u $username
 	done
 
 	chroot "$CHROOTNAME" /bin/mkdir -p /home/${live_user}
