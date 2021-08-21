@@ -10,6 +10,7 @@
 # Optional now that Falkon is Great Again -- .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
+%include .///omdv_krita.lst
 %include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
