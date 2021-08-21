@@ -88,8 +88,8 @@ poppler-data
 sasl-plug-gssapi
 
 # special featured software
-# oma-welcome
-# om-feeling-like
+oma-welcome
+om-feeling-like
 om-update-config
 om-repo-picker
 om-control-center
