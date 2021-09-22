@@ -48,8 +48,8 @@ rng-tools #utils
 rpcbind #utils
 rsnapshot #utils
 rsync #utils
-samba-client #utils
-samba-winbind #utils
+# samba-client #utils
+# samba-winbind #utils
 saned
 sane-backends
 sane-backends-iscan #utils
