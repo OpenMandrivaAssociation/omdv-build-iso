@@ -21,7 +21,7 @@ mdadm
 nscd
 openssh-server
 openssh-clients
-omv-bug-report
+omdv-bug-report
 pciutils
 timezone
 usbutils
