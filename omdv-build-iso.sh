@@ -37,11 +37,6 @@ main() {
 	# to ensure that all functions are read before the body of the script is run.
 	# All global variables need to be inside the curly braces of this function.
 
-	# Make sure MAXERRORS gets preset to a real number else parallel will error out.
-	# This will be overidden by the users value if given.
-	MAXERRORS=1
-
-
 	if [ "$#" -lt 1 ]; then
 		usage_help
 		exit 1
@@ -120,24 +115,6 @@ main() {
 		--rebuild)
 			REBUILD=rebuild
 			;;
-		 --quicken)
-			QUICKEN=squashfs
-			;;
-		 --compressor=*)
-			declare -l lcmp
-			lcmp=${k#*=}
-			case "$lcmp" in
-			gzip|gz|lzo|lz4|xz|zstd)
-				COMPTYPE=$lcmp
-				;;
-			*)
-				printf "%s\n" "Error: Illegal compressor name"
-				printf "%s\n" "Using default zstd"
-				COMPTYPE=zstd
-				exit
-				;;
-			esac
-			;;
 		 --keep)
 			KEEP=keep
 			;;
@@ -153,17 +130,8 @@ main() {
 		--baserepo)
 			BASEREPO=baserepo
 			;;
-		 --parallel)
-			PLLL=plll
-			;;
 		 --isover=*)
 			ISO_VER=${k#*=}
-			;;
-		 --maxerrors=*)
-			MAXERRORS=${k#*=}
-			;;
-		 --devmode)
-			DEVMODE=devmode
 			;;
 		 --auto-update)
 			AUTO_UPDATE=1
@@ -207,9 +175,9 @@ main() {
 	# to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER \
-	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF "QUICKEN="$QUICKEN \
-	"COMPTYPE="$COMPTYPE "KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
-	"DEVMODE="$DEVMODE "ENSKPLST="$ENSKPLST "PLLL="$PLLL "MAXERRORS="$MAXERRORS "LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
+	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF \
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
+	"ENSKPLST="$ENSKPLST " LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
 	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "DEFAULTKBD="$DEFAULTKBD"
 
 
@@ -248,8 +216,6 @@ main() {
 	[ -z "${TREE}" ] && TREE=cooker
 	[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
 	[ -z "${RELEASE_ID}" ] && RELEASE_ID=alpha
-	[ -z "${COMPTYPE}" ] && COMPTYPE="zstd -Xcompression-level 15"
-	[ -z "${MAXERRORS}" ] && MAXERRORS=1
 
 	ARCHEXCLUDE=""
 	printf "%s\n" $EXTARCH |grep -qE "^arm" && EXTARCH=armv7hnl
@@ -337,6 +303,7 @@ CarryOn() {
 	FilterLogs         # Provides various logs. When parallel is used gives a list of packages that failed to install
 	#END
 }
+
 usage_help() {
 	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%b\n" ""
@@ -366,7 +333,6 @@ usage_help() {
 		printf "%b\n"
 		hlpprtf "\t\t\tProvision is made for custom builds in the form of two files in the package list directories. These are my.add and my.rmv you can add packages names to either of these files and they will be added or removed. You may also add full paths to local rpm files and these will be installed as well. Including other package lists is also supported see the package list files with the folloing include syntax | %include .///omdv-<listname>.lst |. The my.rmv file can be used to temporarily remove packages from the package lists that are failing to install or are simple not required without the need to modify the original lists. The files are stored in a directory which is set up as a git repository; each time the script is run this directory is checked for changes and if any are found they committed to the git repository using a commmit message which contains the build-id and the number of times the script has been run for that build id thus providing a full record of the session. Note that changes to ALL the files are recorded and it is not mandatory that you use my.add or my.rmv it is just more convenient. my.rmv is the only way to remove packages from the chroot when using the --noclean and --rebuild options. To enable the user to create different custom builds and return to them easily the --lrepodir=<dirpath> option is provided. The dirpath defaults to ~/<user_name>s-user-iso but may be pointed to any directory path in the users home directory. The directory once created is never deleted by the script. It is for the user to remove redundant data directories. The script records the last used data directory and restores the content to the chroot unless --lrepodir is set to another value; then a new directory is created (if it does not already exist) with files downloaded from the github repository corresponding to the repository you wish to build against.\n"
 		optprtf "--lrepodir=" "The lrepodir option sets the path to the storage directory for the package lists and other iso files. Once set the path for this directory will be remembered until the value of the lrepodir dir is changedl This initiates a fresh build with virgin files from the OMA repos."
-		optprtf "--quicken" "Set up mksqaushfs to use no compression for faster iso builds. Intended mainly for testing"
 		optprtf "--noclean" "Do not clean build chroot and keep cached rpms. Updates chroot with new packages. Option will not re-install the packages it will only retain them"
 		printf "%b\n\n" "\t\t\tFor the following options you must have built an iso using the --noclean option before they can be applied"
 		optprtf "--rebuild" "Recreates the build chroot and rebuilds from cached rpms and supplementary files. This allows a developer to modify the ""fixed"" iso setup files and preserve them from one run to the next"
@@ -375,8 +341,6 @@ usage_help() {
 		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
 		printf "%6b\n" "\t\t\t\t${ulon}${bold}DEVELOPER OPTIONS${normal}"
 		optprtf "--debug   " "Enable debug output basically enables set -x. This option also allows ABF=1 to be used loacally for testing"
-		optprtf "--devmode" "Enables some developer aids see the README"
-		optprtf "--parallel" "Runs each item in the build list as a single transaction. Used in conjunction with --maxerrors=<integer> (default=1) can be used when remastering isos to allow failures due to missing or broken packages. This feature is intended for debugging iso builds and is helpful in tracking down broken dependencies. A list of failed packages is produced at the end of the run after the iso is built."
 		optprtf "--compressor" "This option allows a choice for the compressor to be used when the mksquashfs file is created. Valid choices are gzip, xz, lzo, lz4 and zstd."
 		optprtf "--keep  " "Retains only the build lists from one run to another. This means that if you modify the package lists within the working directory (usually omdv-build-chroot-<arch>) they will be restored unconditionally on the next run irrespective of any other flags. This can be used to create lists for new compilations. The build lists are stored in a git repository and each time there is a change a commit is performed thus keeping a record of the users session."
 		optprtf "--makelistrepo" "Just make a list repo if one does not already exist the --listrepodir, --arch and --tree options must be set. Optionally the --isover option may be set to direct the script to an alternative branch on GitHub. The script will create the repo and then exit"
@@ -545,7 +509,6 @@ mkeWkingEnv() {
 RemkWorkDir() {
 
 	printf "%s\n" "-> Remaking directories"
-	rm -rf "$WORKDIR"
 	mkdir -p ${WORKDIR}
 	# Create the mount points
 	mkdir -p ${CHROOTNAME}/proc ${CHROOTNAME}/sys ${CHROOTNAME}/dev ${CHROOTNAME}/dev/pts
@@ -853,12 +816,6 @@ showInfo() {
 	if [ -n "$DEBUG" ]; then
 		printf "%s\n" "-> Debugging enabled"
 	fi
-	if [ -n "$QUICKEN" ]; then
-		printf "%s\n" "-> Squashfs compression disabled"
-	fi
-	if [ -n "$COMPTYPE" ]; then
-		printf "%s\n" "-> Using ${COMPTYPE} for Squashfs compression"
-	fi
 	if [ -n "$KEEP" ]; then
 		printf "%s\n" "-> The session diffs will be retained"
 	fi
@@ -1079,7 +1036,7 @@ updateSystem() {
 	esac
 
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk parallel git dosfstools qemu-x86_64-static"
+	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static"
 	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
 		printf "%s\n" "->All the correct system files are installed "
 		if [ ! -d "$WORKDIR/dracut" ]; then
@@ -1091,11 +1048,8 @@ updateSystem() {
 	else
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-		# upgrade system after just in case
-#		if [ IN_ABF == '0' ]; then
-			dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
-			printf "%s\n" '-> Updating rpms files inside system environment'
-#		fi
+		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
 		if [ ! -d "$WORKDIR/dracut" ]; then
@@ -1105,8 +1059,6 @@ updateSystem() {
 			printf "%s\n" "-> Your build lists have been retained" # Files already copied
 		fi
 	fi
-	# Make our directory writeable by current sudo user
-	chown -R "$WHO":"$WHO" "$WORKDIR" #this doesn't do ISO OR BASE
 }
 
 # Usage: createChroot packages.lst /target/dir
@@ -1213,9 +1165,6 @@ mkOmSpin() {
 	printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" " " "   Which includes"
 	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
 	createPkgList "$ADDRPMINC" INSTALL_LIST
-	if [ -n "$DEVMODE" ]; then
-		printf '%s' "$INSTALL_LIST" >"$WORKDIR/rpmlist" > /dev/null 2>&1
-	fi
 	mkUpdateChroot "$INSTALL_LIST"
 }
 
@@ -1333,12 +1282,8 @@ mkUpdateChroot() {
 	elif [ "$IN_ABF" = '1' ]; then
 		printf "%s\n" "-> Installing packages at ABF" " "
 		if [ -n "$__install_list" ]; then # Dont do it with an empty list
-			if [ -n "$PLLL" ]; then
-				printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME"  | tee "$WORKDIR/dnfopt.log"
-			else
-				/usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
-				printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
-			fi
+			/usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+			printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 		fi
 	fi
 }
@@ -1352,15 +1297,8 @@ MyAdd() {
 	fi
 	if [ -n "$__install_list" ]; then
 		printf "%s\n" "-> Installing user package selection" " "
-		if [ -n "$PLLL" ]; then
-			printf "%s\n" "$__install_list" | parallel --keep-order --joblog "$WORKDIR/install.log" --tty --halt now,fail="$MAXERRORS" -P 1 /usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch=${EXTARCH} ${ARCHEXCLUDE} --setopt=install_weak_deps=False --installroot "$CHROOTNAME" >"$WORKDIR/dnfopt.log"
-#			| tee "$WORKDIR/dnfopt.log"
-		else
-			/usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
-#			>"$WORKDIR/dnfopt.log"
-#			| tee "$WORKDIR/dnfopt.log"
-			printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
-		fi
+		/usr/bin/dnf install -y --refresh --releasever=${TREE} --forcearch="${EXTARCH}" ${ARCHEXCLUDE} --installroot "$CHROOTNAME" ${__install_list} | tee "$WORKDIR/dnfopt.log"
+		printf "%s\n" "$__install_list" >"$WORKDIR/RPMLIST.txt"
 	fi
 }
 
@@ -1404,20 +1342,10 @@ mkUserSpin() {
 	#Give some information
 	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
 	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
-	if [ -n "$DEVMODE" ]; then
-		printf "%s\n" "$ALLRPMINC" > "$WORKDIR/primary.list"
-		printf "%s\n" "$ADDRPMINC" > "$WORKDIR/prime.list"
-		printf "%s\n" "$RMRPMINC" | grep -v "$FILELISTS"
-		printf "%s\n" "$RMRPMINC" > "$WORKDIR/rmprime.list"
-	fi
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
 	INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u))
-	if [ -n "$DEVMODE" ]; then
-		printf '%s\n' "$INSTALL_LIST" >"$WORKDIR/user_add_rpmlist"
-		printf '%s\n' "$REMOVE_LIST" >"$WORKDIR/user_rm_rpmlist"
-	fi
 	# Remove any files from the install list which in the remove list
 	printf "%s\n" "This is the install list" " " "$INSTALL_LIST" " " "End of install list"
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
@@ -1452,20 +1380,11 @@ updateUserSpin() {
 	printf "%s\n" "-> Creating the package lists"
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
-	if [ -n "$DEVMODE" ]; then
-		printf '%s\n' "$ALLRPMINC" >"$WORKDIR/add_incfile.list" " "
-		printf '%s\n' "$RMRPMINC" >"$WORKDIR/remove_incfile.list" " "
-	fi
 	# Remove any packages that occur in both lists
 	INSTALL_LIST=$(comm -13 <(printf '%s\n' "$REMOVE_LIST" | sort -u) <(printf '%s\n' "$INSTALL_LIST" | sort -u)) > /dev/null 2>&1
 	printf "%s\n" "-> This is the install package list" "$INSTALL_LIST" "->End of install pkg list" " "
 	printf "%s\n" "-> This is the remove package list" "$REMOVE_LIST" "End of remove pkg list"
-	if [ -n "$DEVMODE" ]; then
-		printf '%s\n\t' "$INSTALL_LIST" >"$WORKDIR/user_update_add_rpmlist" " "
-		printf '%s\n\t' "$REMOVE_LIST" >"$WORKDIR/user_update_rm_rpmlist" " "
-	fi
-	# We don't want parallel here
-	unset PLLL
+
 	mkUpdateChroot "$INSTALL_LIST" "$REMOVE_LIST"
 }
 
@@ -2230,14 +2149,8 @@ createSquash() {
 	# Unmout all stuff inside CHROOT to build squashfs image
 	umountAll "$CHROOTNAME"
 
-	# Here we go with local speed ups
-	# For development only remove all the compression so the squashfs builds quicker.
-	# Give it it's own flag QUICKEN.
-	if [ -n "$QUICKEN" ]; then
-		mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp ${COMPTYPE} -no-progress -noD -noF -noI -no-exports -no-recovery -b 16384
-	else
-		mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp ${COMPTYPE}  -no-progress -no-exports -no-recovery -b 16384
-	fi
+# Build ISO image
+	mksquashfs "$CHROOTNAME" "$ISOROOTNAME"/LiveOS/squashfs.img -comp zstd -Xcompression-level 15 -no-progress -no-exports -no-recovery -b 16384
 	if [ ! -f  "$ISOROOTNAME"/LiveOS/squashfs.img ]; then
 		printf "%s\n" "-> Failed to create squashfs." "Exiting."
 		errorCatch
