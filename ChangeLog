@@ -1,10 +1,254 @@
+2021-09-29 11:51:20 +0200 Tomasz Paweł Gajc 
+
+	* bump version (HEAD -> master, origin/master, origin/HEAD)
+
+2021-09-29 11:50:36 +0200 Tomasz Paweł Gajc 
+
+	* update
+
+2021-09-29 04:22:00 +0200 rugyada 
+
+	* add neochat
+
+2021-09-22 18:01:55 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-09-22 16:15:15 -0500 Ben Bullard 
+
+	* Update omdv_krita.lst
+
+2021-09-22 16:13:36 -0500 Ben Bullard 
+
+	* Reverting a temporary change, krita is fixed now.
+
+2021-09-22 09:46:58 -0500 Ben Bullard 
+
+	* Revert previous change.
+
+2021-09-21 23:23:56 -0500 Ben Bullard 
+
+	* Temporary change
+
+2021-09-16 11:18:38 +0200 rugyada 
+
+	* Add pulseaudio-server
+
+2021-08-26 16:18:04 -0500 Ben Bullard 
+
+	* Update omdv_iso_minimal.lst
+
+2021-08-26 16:08:15 -0500 Ben Bullard 
+
+	* Update omdv_iso_minimal.lst
+
+2021-08-26 16:03:33 -0500 Ben Bullard 
+
+	* Update omdv_iso_minimal.lst
+
+2021-08-21 17:57:29 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 17:48:28 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 17:30:03 -0500 Ben Bullard 
+
+	* Update omdv_task-plasma.lst
+
+2021-08-21 17:11:03 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 17:08:42 -0500 Ben Bullard 
+
+	* Update omdv_krita.lst
+
+2021-08-21 16:58:55 -0500 Ben Bullard 
+
+	* Update omdv_calligra.lst
+
+2021-08-21 16:55:55 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 16:44:39 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 13:21:54 -0500 Ben Bullard 
+
+	* Update omdv_task-plasma.lst
+
+2021-08-21 13:21:03 -0500 Ben Bullard 
+
+	* Update omdv_krita.lst
+
+2021-08-21 13:19:51 -0500 Ben Bullard 
+
+	* Update omdv_calligra.lst
+
+2021-08-21 13:19:23 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 13:11:48 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 13:08:44 -0500 Ben Bullard 
+
+	* Update omdv_krita.lst
+
+2021-08-21 13:07:34 -0500 Ben Bullard 
+
+	* Update omdv_task-plasma.lst
+
+2021-08-21 12:52:16 -0500 Ben Bullard 
+
+	* Update omdv_task-plasma.lst
+
+2021-08-21 12:51:34 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 12:51:00 -0500 Ben Bullard 
+
+	* Update omdv_krita.lst
+
+2021-08-21 12:45:56 -0500 Ben Bullard 
+
+	* Update omdv-plasma.lst
+
+2021-08-21 12:42:52 -0500 Ben Bullard 
+
+	* Update omdv_krita.lst
+
+2021-08-21 12:41:31 -0500 Ben Bullard 
+
+	* Update omdv_task-plasma.lst
+
+2021-08-20 14:51:23 -0500 Ben Bullard 
+
+	* Update omdv-lxqt.lst
+
+2021-05-23 16:20:36 +0200 Tomasz Paweł Gajc 
+
+	* allow to ssh for live user with blank password
+
+2021-05-23 15:55:01 +0200 Tomasz Paweł Gajc 
+
+	* do not run passwd twice
+
+2021-05-23 15:38:30 +0200 Tomasz Paweł Gajc 
+
+	* adjust dracut config for liveiso
+
+2021-05-20 17:15:14 -0500 Ben Bullard 
+
+	* Set to use .sha256sum
+
+2021-05-20 16:50:08 -0500 Ben Bullard 
+
+	* Update omdv-build-iso.sh
+
+2021-05-20 16:36:54 -0500 Ben Bullard 
+
+	* Update omdv-build-iso.sh
+
+2021-05-20 15:38:41 -0500 Ben Bullard 
+
+	* Update omdv-build-iso.sh
+
+2021-05-20 15:09:20 -0500 Ben Bullard 
+
+	* generate sha256sum file
+
+2021-05-20 20:06:03 +0200 Tomasz Paweł Gajc 
+
+	* generate SHA256SUMS file needed for isoimagewriter
+
+2021-05-14 20:08:45 +0200 Tomasz Paweł Gajc 
+
+	* replace rosa-imagewriter with KDE isoimagewriter
+
+2021-05-04 12:33:48 +0200 Tomasz Paweł Gajc 
+
+	* clean up
+
+2021-05-04 12:24:16 +0200 Tomasz Paweł Gajc 
+
+	* from bero: bind-mount standard filesystems read-only for additional safety
+
+2021-04-30 00:19:50 +0200 Tomasz Paweł Gajc 
+
+	* use systemd-firstboot, run systemd-tmpfiles and systemd-sysusers
+
+2021-04-29 09:30:38 +0200 Tomasz Paweł Gajc 
+
+	* do not create /etc/.updated to allow services that uses ConditionNeedsUpdate=/etc to be executed
+
+2021-04-25 15:37:43 +0200 Bernhard Rosenkränzer 
+
+	* Set BUILD_ID more reasonably
+
+2021-04-25 14:46:31 +0200 Bernhard Rosenkränzer 
+
+	* Don't set keepcache=1 in dnf.conf after installation
+
+2021-04-25 14:46:03 +0200 Bernhard Rosenkränzer 
+
+	* Fix indentation errors
+
+2021-04-20 13:06:15 +0200 tpgxyz 
+
+	* add gstreamer1.0-wayland
+
+2021-04-20 09:20:17 +0200 rugyada 
+
+	* gcc kernel for testing in rolling iso
+
+2021-04-18 16:30:10 +0200 Bernhard Rosenkränzer 
+
+	* Drop ufw from remaining bits
+
+2021-04-12 13:48:42 +0200 Bernhard Rosenkränzer 
+
+	* Death to UFW
+
+2021-04-10 22:02:50 +0200 Bernhard Rosenkränzer 
+
+	* Drop ufw
+
+2021-04-04 00:00:32 +0100 Colin 
+
+	* Add qemu-x86-64-static to the builders requires.
+
+2021-03-31 09:03:34 +0100 Colin 
+
+	* Merge branch 'master' of github.com:OpenMandrivaAssociation/omdv-build-iso
+
+2021-03-31 09:02:57 +0100 Colin 
+
+	* Add missing dosfstools which is not normally installed for aarch64
+
+2021-03-30 22:30:23 +0200 tpgxyz 
+
+	* new version 4.1.1
+
+2021-03-30 22:27:33 +0200 tpgxyz 
+
+	* generated changelog
+
 2021-03-30 22:24:53 +0200 tpgxyz 
 
-	* bump Makefile ver (HEAD -> master, origin/master, origin/HEAD)
+	* bump Makefile ver
 
 2021-03-30 22:16:48 +0200 Tomasz Paweł Gajc 
 
-	* new version 4.1.1 (tag: delete)
+	* new version 4.1.1
 
 2021-03-30 22:08:15 +0200 Tomasz Paweł Gajc 
 
@@ -44,7 +288,7 @@
 
 2021-02-10 13:47:06 +0100 AngryPenguinPL 
 
-	* adjust deps (tag: 4.2, origin/4.2)
+	* adjust deps (tag: 4.2)
 
 2021-02-09 22:04:30 +0100 Bernhard Rosenkränzer 
 
@@ -268,7 +512,7 @@
 
 2020-08-27 10:06:08 +0200 tpgxyz 
 
-	*  revert  8fedeef1a13f0e797e6ae639331861deed817b41 as this breaks important timers
+	*  revert  81cee215142c8d796fd030e712f3e3fa6b4a54d3 as this breaks important timers
 
 2020-08-27 10:04:35 +0200 tpgxyz 
 
@@ -1612,7 +1856,7 @@
 
 2019-01-08 02:42:11 +0100 Gabriel Craciunescu 
 
-	* drop broken Trolltech.conf (origin/wipe-old)
+	* drop broken Trolltech.conf
 
 2019-01-08 02:40:10 +0100 Gabriel Craciunescu 
 
@@ -3624,7 +3868,7 @@
 
 2016-06-02 22:16:07 +0100 itchka (Colin Close) 
 
-	* Revert "Major upgrade to full user mode. See doc dir" Causes ABF breakage This reverts commit a5d2f17db02984d05adb843bf66b44eec5aece94.
+	* Revert "Major upgrade to full user mode. See doc dir" Causes ABF breakage This reverts commit 6f0cc789d07c908f73add1bf108336f720f55b8f.
 
 2016-06-02 22:15:25 +0100 itchka (Colin Close) 
 
@@ -5096,7 +5340,7 @@
 
 2015-01-12 03:26:38 +0400 Tomasz Paweł Gajc 
 
-	* Updated .abf.yml (tag: cooker-0.0.1-1)
+	* Updated .abf.yml
 
 2015-01-12 03:26:21 +0400 Tomasz Paweł Gajc 
 
