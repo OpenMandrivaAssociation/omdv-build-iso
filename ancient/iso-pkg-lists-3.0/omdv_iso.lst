@@ -21,7 +21,6 @@ indexhtml
 info #iso
 info-install #iso
 inxi
-isomd5sum #iso
 iso-codes #iso
 irqbalance
 jfsutils #iso
