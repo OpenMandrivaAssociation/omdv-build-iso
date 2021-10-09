@@ -7,7 +7,7 @@ akonadi-search
 akregator
 audiocd-kio
 bluedevil5
-digikam
+# digikam
 distro-release-desktop-Plasma
 dolphin-plugins
 drkonqi
@@ -28,7 +28,7 @@ kdeconnect
 kdegraphics-thumbnailers
 kde-gtk-config
 kdenetwork-filesharing
-kdenlive
+# kdenlive
 kdepim-runtime
 kdf
 kdialog
@@ -37,7 +37,7 @@ kget
 khelpcenter
 kidentitymanagement
 kio-gdrive
-kipi-plugins
+# kipi-plugins
 kleopatra
 kmail
 kmail-account-wizard
