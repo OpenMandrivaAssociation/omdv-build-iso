@@ -20,7 +20,7 @@ kaccounts-providers
 kaddressbook
 # kalarm -- not until it stops crashing on startup
 kamera
-kamoso
+#kamoso
 kate
 kbackup
 kcalc
@@ -68,7 +68,7 @@ sddm
 sddm-kcm
 sddm-theme-breeze
 signon-kwallet-extension
-skanlite
+#skanlite
 sonnet-hunspell
 spectacle
 speech-dispatcher
