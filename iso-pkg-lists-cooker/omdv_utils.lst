@@ -13,7 +13,7 @@ dump #utils
 dvb-apps #utils
 dvbsnoop #utils
 dvbtune #utils
-# dvd+rw-tools is in unsupported repo, it should either move to main repo or not be on our isos. benbullard79
+# Violation! dnd+rw-tools is in unsupported repo. It should either be moved to main repo or not be on our isos. benbullard79
 # dvd+rw-tools #utils
 earlyoom
 freerdp #utils
