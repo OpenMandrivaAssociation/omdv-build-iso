@@ -11,8 +11,8 @@ dmraid #utils
 dmraid-events #utils
 dump #utils
 # dvb-apps #utils
-dvbsnoop #utils
-dvbtune #utils
+# dvbsnoop #utils
+# dvbtune #utils
 # dvd+rw-tools #utils
 earlyoom
 freerdp #utils
