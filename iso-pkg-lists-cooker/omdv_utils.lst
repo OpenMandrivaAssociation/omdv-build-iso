@@ -10,9 +10,9 @@ command-not-found #utils
 dmraid #utils
 dmraid-events #utils
 dump #utils
-dvb-apps #utils
-dvbsnoop #utils
-dvbtune #utils
+# dvb-apps #utils
+# dvbsnoop #utils
+# dvbtune #utils
 # Violation! dnd+rw-tools is in unsupported repo. It should either be moved to main repo or not be on our isos. benbullard79
 # dvd+rw-tools #utils
 earlyoom
@@ -51,9 +51,9 @@ rsnapshot #utils
 rsync #utils
 samba-client #utils
 samba-winbind #utils
-saned
-sane-backends
-sane-backends-iscan #utils
+# saned
+# sane-backends
+# sane-backends-iscan #utils
 sash #utils
 xev #utils
 radeontool
