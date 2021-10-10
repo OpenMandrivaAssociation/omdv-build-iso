@@ -26,7 +26,7 @@ htop #utils
 hw-probe #utils
 krb5-workstation #utils
 lame #utils
-lftp #utils
+#lftp #utils
 libblockdev-plugins-all
 libgphoto-common #utils
 libmtp-utils #utils
