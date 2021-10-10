@@ -75,7 +75,7 @@ avahi #service
 
 # Miscelaneous Packages
 filelight
-# enchant
+enchant
 ffmpeg
 jasper
 nss
