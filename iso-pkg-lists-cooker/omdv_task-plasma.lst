@@ -17,7 +17,7 @@ grub2-editor
 gwenview
 kaccounts-integration
 kaccounts-providers
-kaddressbook
+#kaddressbook
 # kalarm -- not until it stops crashing on startup
 kamera
 #kamoso
