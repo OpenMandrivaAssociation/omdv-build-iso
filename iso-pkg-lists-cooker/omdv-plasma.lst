@@ -30,7 +30,7 @@ qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
 isoimagewriter
-quick-usb-formatter
+#quick-usb-formatter
 # digikam and kipi-plugins
 # kipi-plugins-advancedslideshow
 # kipi-plugins-calendar
@@ -90,8 +90,8 @@ sasl-plug-gssapi
 
 # special featured software
 oma-welcome
-om-feeling-like
-om-update-config
+#om-feeling-like
+#om-update-config
 om-repo-picker
 om-control-center
 om-user-manager
