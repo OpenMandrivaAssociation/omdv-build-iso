@@ -22,7 +22,7 @@ kaddressbook
 kamera
 #kamoso
 kate
-kbackup
+#kbackup
 kcalc
 kdeconnect
 kdegraphics-thumbnailers
@@ -39,18 +39,18 @@ kidentitymanagement
 kio-gdrive
 # kipi-plugins
 kleopatra
-kmail
-kmail-account-wizard
+#kmail
+#kmail-account-wizard
 kontact
-konversation
+#konversation
 neochat
 korganizer
-krdc
-krfb
+#krdc
+#krfb
 ksystemlog
 ktorrent
 kwallet-pam
-kwave
+#kwave
 kwayland
 kwayland-integration
 kwin-wayland
@@ -71,8 +71,8 @@ signon-kwallet-extension
 #skanlite
 sonnet-hunspell
 spectacle
-speech-dispatcher
-ssr
+#speech-dispatcher
+#ssr
 systemd-kcm
 kuser
 zeroconf-ioslave
