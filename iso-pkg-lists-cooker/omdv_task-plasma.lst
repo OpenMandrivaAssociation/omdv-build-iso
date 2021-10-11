@@ -2,7 +2,7 @@
 #%include .///omdv_task-plasma-telepathy.lst
 
 akonadi-calendar-tools
-akonadi-notes-agent
+#akonadi-notes-agent
 akonadi-search
 #akregator
 audiocd-kio
@@ -23,7 +23,7 @@ kamera
 #kamoso
 kate
 #kbackup
-kcalc
+#kcalc
 kdeconnect
 kdegraphics-thumbnailers
 kde-gtk-config
