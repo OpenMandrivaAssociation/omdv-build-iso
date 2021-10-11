@@ -23,7 +23,7 @@
 
 # install for Live only
 # and remove with calamares cleaner
-kpat
+#kpat
 # Desktop Specifics
 
 qt-avif-image-plugin
