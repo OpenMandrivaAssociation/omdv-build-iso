@@ -10,10 +10,10 @@ command-not-found #utils
 dmraid #utils
 dmraid-events #utils
 dump #utils
-#dvb-apps #utils
-#dvbsnoop #utils
-#dvbtune #utils
-#dvd+rw-tools #utils
+dvb-apps #utils
+dvbsnoop #utils
+dvbtune #utils
+dvd+rw-tools #utils
 earlyoom
 freerdp #utils
 fuse2
@@ -26,7 +26,7 @@ htop #utils
 hw-probe #utils
 krb5-workstation #utils
 lame #utils
-#lftp #utils
+lftp #utils
 libblockdev-plugins-all
 libgphoto-common #utils
 libmtp-utils #utils
@@ -48,13 +48,13 @@ rng-tools #utils
 rpcbind #utils
 rsnapshot #utils
 rsync #utils
-#samba-client #utils
-#samba-winbind #utils
-#saned
-#sane-backends
-#sane-backends-iscan #utils
+samba-client #utils
+samba-winbind #utils
+saned
+sane-backends
+sane-backends-iscan #utils
 sash #utils
 xev #utils
 radeontool
 ## this is *wong* , the whole file is wrong
-#dnfdragora
+dnfdragora
