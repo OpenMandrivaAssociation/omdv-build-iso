@@ -1,9 +1,9 @@
 %include .///omdv_task-plasma-minimal.lst
 #%include .///omdv_task-plasma-telepathy.lst
 
-akonadi-calendar-tools
+#akonadi-calendar-tools
 #akonadi-notes-agent
-akonadi-search
+#akonadi-search
 #akregator
 audiocd-kio
 bluedevil5
@@ -15,11 +15,11 @@ elisa
 ffmpegthumbs
 grub2-editor
 gwenview
-kaccounts-integration
-kaccounts-providers
+#kaccounts-integration
+#kaccounts-providers
 #kaddressbook
 # kalarm -- not until it stops crashing on startup
-kamera
+#kamera
 #kamoso
 kate
 #kbackup
@@ -27,9 +27,9 @@ kate
 kdeconnect
 kdegraphics-thumbnailers
 kde-gtk-config
-kdenetwork-filesharing
+#kdenetwork-filesharing
 # kdenlive
-kdepim-runtime
+#kdepim-runtime
 kdf
 kdialog
 kgamma5
@@ -41,19 +41,19 @@ kio-gdrive
 kleopatra
 #kmail
 #kmail-account-wizard
-kontact
+#kontact
 konversation
 #neochat
-korganizer
+#korganizer
 #krdc
 #krfb
 ksystemlog
 ktorrent
 kwallet-pam
 #kwave
-kwayland
-kwayland-integration
-kwin-wayland
+#kwayland
+#kwayland-integration
+#kwin-wayland
 kwrite
 libproxy-kde
 libproxy-networkmanager
@@ -61,7 +61,7 @@ myspell-dictionary
 okular
 openmandriva-kde-icons
 partitionmanager
-plasma-workspace-wayland
+#plasma-workspace-wayland
 plymouth-kcm
 print-manager
 sddm
