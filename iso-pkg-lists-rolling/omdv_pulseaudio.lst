@@ -4,4 +4,4 @@ pulseaudio-module-bluetooth
 pulseaudio-module-x11
 pulseaudio-module-zeroconf
 pulseaudio-utils
-
+pulseaudio-server
