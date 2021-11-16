@@ -25,10 +25,12 @@
 # and remove with calamares cleaner
 kpat
 # Desktop Specifics
+
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-quick-usb-formatter
+# isoimagewriter
+# quick-usb-formatter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
 kipi-plugins-calendar
@@ -84,6 +86,7 @@ nss_wins
 openssl
 pam_ldap
 poppler-data
+rosa-imagewriter
 sasl-plug-gssapi
 
 # special featured software
