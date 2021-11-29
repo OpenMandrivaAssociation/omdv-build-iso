@@ -19,7 +19,8 @@
 %include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
-%include .///omdv-cutefish.lst
+%include .///omdv_cutefish.lst
+
 
 # install for Live only
 # and remove with calamares cleaner
