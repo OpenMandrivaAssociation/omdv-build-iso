@@ -1,5 +1,5 @@
 %include .///omdv_task-x11.lst
-%include .///omdv-pulseaudio.lst
+# %include .///omdv-pulseaudio.lst
 
 ark
 baloo5
@@ -40,6 +40,7 @@ milou
 oxygen-sounds
 phonon4qt5-backend
 pinentry-qt5
+pipewire-pulse
 plasma-browser-integration
 plasma-desktop
 plasma-framework
