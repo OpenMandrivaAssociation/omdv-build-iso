@@ -17,7 +17,7 @@
 %include .///omdv_myspell.lst
 %include .///omdv_vlc.lst
 %include .///omdv_smplayer.lst
-# %include .///omdv_pulseaudio.lst
+%include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
 
