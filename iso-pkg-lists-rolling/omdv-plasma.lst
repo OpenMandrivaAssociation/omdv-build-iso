@@ -17,7 +17,7 @@
 %include .///omdv_myspell.lst
 %include .///omdv_vlc.lst
 %include .///omdv_smplayer.lst
-# %include .///omdv_pulseaudio.lst
+%include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
 
@@ -73,9 +73,6 @@ edidbins
 
 avahi #service
 # FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
-
-# Audio
-pipewire-pulse
 
 # Miscelaneous Packages
 filelight
