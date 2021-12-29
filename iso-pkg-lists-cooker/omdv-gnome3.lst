@@ -63,6 +63,7 @@ sushi
 vino
 vinagre
 polari
+fractal
 
 gnome-maps
 gnome-music
@@ -138,7 +139,10 @@ gvfs-smb #gtk dep
 pango #gtk dep
 
 # Dirty but urgent GTK deps
-%{_lib}gjs-gir1.0
+%{_lib}gjs0
+typelib(GjsPrivate)
+gjs
+
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
@@ -170,7 +174,8 @@ sddm
 
 # special featured software
 oma-welcome
-om-feeling-like
+# Disable feeling-like as it works only in Plasma
+#om-feeling-like
 om-update-config
 om-repo-picker
 om-control-center
