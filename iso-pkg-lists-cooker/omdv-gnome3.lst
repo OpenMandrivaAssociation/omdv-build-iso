@@ -7,10 +7,10 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-# include .///omdv_firefox.lst
+%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-# include .///omdv_libreoffice.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -66,7 +66,7 @@ polari
 fractal
 
 gnome-maps
-gnome-music
+#gnome-music
 gnome-photos
 
 bijiben
@@ -98,6 +98,7 @@ gparted
 gthumb
 gimp
 inkscape
+rosa-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -185,3 +186,14 @@ om-mirror-selector
 #packagekit
 packagekit-gstreamer-plugin
 packagekit-command-not-found
+# make sure that flatpak is installed on iso
+flatpak
+
+# Feeling stuff
+# for dnfdragora to use correct backedn
+libyui-gtk
+libyui-mga-gtk
+# for libreoffice
+libreoffice-gnome
+libreoffice-gtk3-kde5
+
