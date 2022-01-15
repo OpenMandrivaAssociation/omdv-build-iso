@@ -1,0 +1,33 @@
+%include .///omdv_iso_minimal.lst
+%include .///omdv_control.lst
+%include .///omdv_x11_extra.lst
+%include .///omdv_core.lst
+%include .///omdv_locales.lst
+
+cups
+#draklive-install
+#drakx-installer-binaries-probe
+icewm
+joe
+kdm
+lsb-release
+lsof
+mandriva-gfxboot-theme
+mdkonline
+openssh-server
+samba-server
+samba-client
+task-x11
+#uClibc
+x11-driver-input-vmmouse
+#x11-driver-video-vboxvideo
+x11-driver-video-modesetting
+x11-driver-video-fbdev
+x11-driver-video-vesa
+x11-driver-video-vmware
+x11-font-cyrillic
+xorg-x11
+xdg-user-dirs-gtk
+xdm
+xev
+xterm
