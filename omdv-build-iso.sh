@@ -987,6 +987,9 @@ InstallRepos() {
 	if [ -e "$WORKDIR"/.new ]; then
 		# First make sure cooker is disabled
 		dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
+		# Rock too -- at release time, rock and $DNFCONF_TREE should be
+		# the same anyway
+		dnf --installroot="$CHROOTNAME" config-manager --disable rock-"$EXTARCH"
 		# Then enable the main repo of the chosen tree
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
 	else
