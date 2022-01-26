@@ -1674,9 +1674,6 @@ setupGrub2() {
 	GRUB_LIB=/usr/lib/grub/i386-pc
 	GRUB_IMG=$(mktemp)
 
-	# Copy memtest
-	cp -rfT "$WORKDIR/extraconfig/memtest" "$ISOROOTNAME/boot/grub/memtest"
-	chmod +x "$ISOROOTNAME/boot/grub/memtest"
 	# To use an embedded image with our grub2 we need to make the modules available in the /boot/grub directory of the iso.
 	# The modules can't be carried in the payload of the embedded image as it's size is limited to 32kb.
 	# So we copy the i386-pc modules to the isobuild directory
