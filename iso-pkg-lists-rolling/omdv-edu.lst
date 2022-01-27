@@ -42,7 +42,7 @@ lm_sensors #iso
 mailcap #iso
 man-db
 monitor-edid #iso
-memtest86+
+pcmemtest
 mkxauth #iso
 mlocate #iso
 mtools #iso

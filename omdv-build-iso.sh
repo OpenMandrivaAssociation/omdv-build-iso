@@ -1720,7 +1720,7 @@ setupGrub2() {
 
 	# Copy SuperGrub iso
 	# disable for now
-	#	cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.00s2.iso "$ISOROOTNAME"/boot/grub/sgb.iso
+	#	cp -rfT $OURDIR/extraconfig/super_grub2_disk_i386_pc_2.04s1.iso "$ISOROOTNAME"/boot/grub/sgb.iso
 
 	printf "%s\n" "-> End building Grub2 El-Torito image."
 	printf "%s\n" "-> Installing liveinitrd for grub2"
