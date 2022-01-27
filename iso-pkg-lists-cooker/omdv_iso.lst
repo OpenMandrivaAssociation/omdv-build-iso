@@ -28,6 +28,7 @@ mailcap #iso
 man-db
 mc
 monitor-edid #iso
+memtest86+
 mkxauth #iso
 mlocate #iso
 mtools #iso
