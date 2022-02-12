@@ -75,7 +75,7 @@ avahi #service
 # FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Audio
-# pipewire-pulse
+pipewire-pulse
 
 # Miscelaneous Packages
 filelight
