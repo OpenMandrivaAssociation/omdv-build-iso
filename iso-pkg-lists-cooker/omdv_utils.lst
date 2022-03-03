@@ -51,6 +51,8 @@ rsnapshot #utils
 rsync #utils
 samba-client #utils
 samba-winbind #utils
+samba-libs #utils
+samba-server #utils
 saned
 sane-backends
 sane-backends-iscan #utils
