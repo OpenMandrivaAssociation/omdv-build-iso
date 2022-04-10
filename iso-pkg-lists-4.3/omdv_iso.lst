@@ -32,6 +32,7 @@ pcmemtest
 mkxauth #iso
 mlocate #iso
 mtools #iso
+neofetch
 ntfs-3g
 ntfs-3g-system-compression
 os-prober

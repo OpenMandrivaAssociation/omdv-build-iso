@@ -254,14 +254,14 @@ main() {
 	#SaveDaTa      # Saves useful chroot data for rebuilds
 	#RestoreDaTa   # Restores data to the chroot for rebuild
 	SetFileList    # Sets the current list repo paths.
-	#userISONme    # Interactive menu to set user iso name and the windoe manager executable.
+	#userISONme    # Interactive menu to set user iso name and the window manager executable.
 	#cfrmISONme    # Support for interactive menu.
 	#cfrmWMNme     # Support for interactive menu.
 	mkeREPOdir     # Creates users personal repo must always be first as it stores variables from one run to the next.
 	mKeBuild_id    # Creates a unique build id.
 	mkISOLabel     # Creates the iso labelling data and the UUIDS.
 	showInfo       # Shows major options chosen.
-	getPkgList     # Gets the package lists from git hub from barnch set by --isover.
+	getPkgList     # Gets the package lists from git hub from branch set by --isover.
 	MkeListRepo    # Create git repo for pkg lists.
 	#MkeCmmtMsg    # Creates a uniquely labelled commit message for git commits.
 	DtctCmmt       # Check for changes and set change flag.
@@ -279,18 +279,18 @@ main() {
 CarryOn() {
 	InstallRepos       # Installs the repo rpms if they are not already installed
 	updateSystem       # Updates the system rpms if not already updated
-	createChroot       # Creates chroot (proc dirs and mounts) Despatches to following funtions
+	createChroot       # Creates chroot (proc dirs and mounts) Despatches to following functions
 	#mkOmSpin          # Creates an iso in the ABF environment
-	#getIncFiles       # Recursively gets all the files included in a top level list and returns itin a variable
+	#getIncFiles       # Recursively gets all the files included in a top level list and returns it in a variable
 	#createPkgList     # Creates a package list from a list of package list files and returns it in a variable.
 	#mkUpdateChroot    # Installs or updates the files in the chroot
 	#MyAdd             # Local users package list for adding files to build
 	#MyRmv             # Local users package list for removing files
 	#mkUserSpin        # Creates a user chroot which includes the content of the my.add and my.rmv package lists
 	#updateUserSpin    # Updates the user chroot with the content of the my.add and my.rmv package lists
-	createInitrd       # Creates the initrds is able to use two different kernels and gives boot entries for both
+	createInitrd       # Creates the initrds. This function is able to use two different kernels and gives boot entries for both
 	createMemDisk      # Creates a memdisk for embedding in the iso-build-lists.
-	createUEFI         # Creates a bootable UEFI image
+	createUEFI         # Creates a bootable UEFI image and installs startup.nsh to fix start-up in VirtualBox hypervisor
 	setupGrub2         # Configure and set up grub2
 	setupISOenv        # Move files to ISO build directories
 	ClnShad            # Clean out passwd locks from the chroots /etc
@@ -1039,7 +1039,7 @@ updateSystem() {
 	esac
 
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static"
+	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static unix2dos"
 	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
 		printf "%s\n" "->All the correct system files are installed "
 		if [ ! -d "$WORKDIR/dracut" ]; then
@@ -1575,7 +1575,7 @@ createUEFI() {
 	FILESIZE=$(du -s --block-size=512 "$ISOROOTNAME"/EFI | awk '{print $1}')
 	EFIFILESIZE=$(( FILESIZE * 2 ))
 	PARTTABLESIZE=$(( (2*17408)/512 ))
-	EFIDISKSIZE=$((  $EFIFILESIZE + $PARTTABLESIZE + 1 ))
+	EFIDISKSIZE=$((  $EFIFILESIZE + $PARTTABLESIZE + 2 ))
 
 	# Create the image.
 	printf "%s\n" "-> Creating EFI image with size $EFIDISKSIZE"
@@ -1606,7 +1606,8 @@ createUEFI() {
 		errorCatch
 	fi
 	sleep 1
-	mount -t vfat "$IMGNME" /mnt
+ 
+mount -t vfat "$IMGNME" /mnt
 	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed to mount UEFI image." "Exiting."
 		errorCatch
@@ -1615,6 +1616,14 @@ createUEFI() {
 	# Copy the Grub2 files to the EFI image
 	mkdir -p /mnt/EFI/BOOT
 	cp -R "$GRB2FLS"/"$EFINAME" /mnt/EFI/BOOT/"$EFINAME"
+
+	# Create a startup.nsh file to feed to the VirtualBox EFI shell
+	cat  >/mnt/EFI/BOOT/startup.nsh <<EOF
+fs1:
+cd EFI/BOOT
+BOOTX64.EFI
+EOF
+	unix2dos /mnt/EFI/BOOT/startup.nsh
 
 	# Unmout the filesystem with EFI image
 	umount /mnt

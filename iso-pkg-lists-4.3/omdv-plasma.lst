@@ -57,7 +57,6 @@ showfoto
 task-printing
 # printing
 task-printing-scanning
-system-config-printer-gui #printer
 epson-inkjet-printer-escpr
 
 ## (crazy) hmm .. this need move away from here
@@ -75,7 +74,6 @@ avahi #service
 # FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Audio
-pipewire-pulse
 
 # Miscelaneous Packages
 filelight

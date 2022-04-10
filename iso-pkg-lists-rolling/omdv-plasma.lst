@@ -57,7 +57,6 @@ showfoto
 task-printing
 # printing
 task-printing-scanning
-system-config-printer-gui #printer
 epson-inkjet-printer-escpr
 
 ## (crazy) hmm .. this need move away from here

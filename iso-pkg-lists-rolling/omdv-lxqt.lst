@@ -70,7 +70,6 @@ task-pulseaudio
 # printing
 task-printing-scanning
 hplip-gui #printer
-system-config-printer-gui #printer
 
 x11-font-cyrillic
 # keep to check
