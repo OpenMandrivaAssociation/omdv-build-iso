@@ -1,5 +1,5 @@
 %include .///omdv_task-x11.lst
-%include .///omdv-pulseaudio.lst
+%include .///omdv_pulseaudio.lst
 
 ark
 baloo5
