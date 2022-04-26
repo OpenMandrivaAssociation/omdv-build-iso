@@ -194,6 +194,6 @@ flatpak
 libyui-gtk
 libyui-mga-gtk
 # for libreoffice
-libreoffice-gnome
-libreoffice-gtk3-kde5
+# libreoffice-gnome
+# libreoffice-gtk3-kde5
 
