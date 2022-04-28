@@ -23,7 +23,7 @@ task-xfce-minimal
 #eatmonkey
 slim
 gigolo
-midori
+# midori
 parole
 #squeeze
 xarchiver
