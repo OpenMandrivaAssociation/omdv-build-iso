@@ -63,7 +63,7 @@ openmandriva-kde-icons
 partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
-print-manager
+#print-manager
 sddm
 sddm-kcm
 sddm-theme-breeze
