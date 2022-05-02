@@ -26,6 +26,6 @@ pciutils
 timezone
 usbutils
 usb_modeswitch
-vim-enhanced
+#vim-enhanced
 nano
 wireless-tools
