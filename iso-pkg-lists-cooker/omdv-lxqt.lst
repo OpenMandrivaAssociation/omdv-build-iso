@@ -31,8 +31,9 @@ notepadqq
 owncloudclient
 qterminal
 quassel
-qupzilla
-isoimagewriter
+falkon
+#isoimagewriter
+rosa-imagewriter
 sddm
 silicon-audio-disc
 silicon-converter

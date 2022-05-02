@@ -21,9 +21,9 @@ task-xfce
 task-xfce-minimal
 #task-xfce-plugins
 #eatmonkey
-slim
+# slim
 gigolo
-midori
+# midori
 parole
 #squeeze
 xarchiver
