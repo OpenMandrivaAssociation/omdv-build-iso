@@ -7,7 +7,7 @@
 %include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-#include .///pk-firefox.lst
+# include .///pk-firefox.lst
 %include .///pk-fonts.lst
 #%include .///pk-gstreamer.lst
 # include .///pk-libreoffice.lst
@@ -21,7 +21,7 @@ task-xfce
 task-xfce-minimal
 #task-xfce-plugins
 #eatmonkey
-#slim
+# slim
 gigolo
 # midori
 parole

@@ -7,7 +7,7 @@
 %include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-# %include .///pk-calligra.lst
+%include .///pk-calligra.lst
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
 # %include .///pk-krita.lst
@@ -31,7 +31,7 @@ notepadqq
 owncloudclient
 qterminal
 quassel
-falkon
+qupzilla
 #isoimagewriter
 rosa-imagewriter
 sddm
@@ -71,6 +71,7 @@ task-pulseaudio
 # printing
 task-printing-scanning
 hplip-gui #printer
+system-config-printer-gui #printer
 
 x11-font-cyrillic
 # keep to check

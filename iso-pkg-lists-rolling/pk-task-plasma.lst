@@ -33,12 +33,12 @@ kde-gtk-config
 kdf
 kdialog
 kgamma5
-#kget
+kget
 khelpcenter
 kidentitymanagement
 kio-gdrive
 # kipi-plugins
-#kleopatra
+kleopatra
 #kmail
 #kmail-account-wizard
 #kontact

@@ -10,57 +10,61 @@
 # Optional now that Falkon is Great Again -- .///pk-firefox.lst
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
-%include .///pk-krita.lst
+# %include .///pk-krita.lst
 # %include .///pk-libreoffice.lst
 %include .///pk-locales.lst
 %include .///pk-man-pages.lst
 %include .///pk-myspell.lst
-%include .///pk-vlc.lst
-%include .///pk-smplayer.lst
+# %include .///pk-vlc.lst
+# %include .///pk-smplayer.lst
 %include .///pk-pulseaudio.lst
 %include .///pk-task-plasma.lst
 
 
 # install for Live only
 # and remove with calamares cleaner
-kpat
+#kpat
 
 # Desktop Specifics
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-# isoimagewriter
-# quick-usb-formatter
+haruna
+nulloy
+#isoimagewriter
+rosa-imagewriter
+#quick-usb-formatter
 # digikam and kipi-plugins
-kipi-plugins-advancedslideshow
-kipi-plugins-calendar
-kipi-plugins-dropbox
+# kipi-plugins-advancedslideshow
+# kipi-plugins-calendar
+# kipi-plugins-dropbox
 # kipi-plugins-expoblending  disable it as it needs wxgtk3.0
-kipi-plugins-facebook
-kipi-plugins-flashexport
-kipi-plugins-flickr
-kipi-plugins-googleservices
-kipi-plugins-imageshack
-kipi-plugins-imageviewer
-kipi-plugins-imgurexport
-kipi-plugins-kmlexport
+# kipi-plugins-facebook
+# kipi-plugins-flashexport
+# kipi-plugins-flickr
+# kipi-plugins-googleservices
+# kipi-plugins-imageshack
+# kipi-plugins-imageviewer
+# kipi-plugins-imgurexport
+# kipi-plugins-kmlexport
 # kipi-plugins-panorama disable it as it needs wxgtk3.0
-kipi-plugins-piwigoexport
-kipi-plugins-printimages
-kipi-plugins-rajceexport
-kipi-plugins-remotestorage
-kipi-plugins-sendimages
-kipi-plugins-smug
-kipi-plugins-yandexfotki
-showfoto
+# kipi-plugins-piwigoexport
+# kipi-plugins-printimages
+# kipi-plugins-rajceexport
+# kipi-plugins-remotestorage
+# kipi-plugins-sendimages
+# kipi-plugins-smug
+# kipi-plugins-yandexfotki
+# showfoto
 
-task-printing
+# task-printing
 # printing
-task-printing-scanning
-epson-inkjet-printer-escpr
+# task-printing-scanning
+# system-config-printer-gui #printer
+# epson-inkjet-printer-escpr
 
 ## (crazy) hmm .. this need move away from here
-x11-font-cyrillic
+#x11-font-cyrillic
 x11-tools
 x11-docs
 x11-font-type1
@@ -75,7 +79,7 @@ avahi #service
 
 # Miscelaneous Packages
 filelight
-enchant
+#enchant
 ffmpeg
 jasper
 nss
@@ -85,13 +89,12 @@ nss_wins
 openssl
 pam_ldap
 poppler-data
-rosa-imagewriter
 sasl-plug-gssapi
 
-# Special featured software
+# special featured software
 oma-welcome
-om-feeling-like
-om-update-config
+#om-feeling-like
+#om-update-config
 om-repo-picker
 om-control-center
 om-user-manager
@@ -102,7 +105,7 @@ oxygen-icons
 #packagekit
 packagekit-gstreamer-plugin
 packagekit-command-not-found
-discover
-discover-backend-kns
-discover-backend-packagekit
-# discover-notifier
+#discover
+#discover-backend-kns
+#discover-backend-packagekit
+#discover-notifier
