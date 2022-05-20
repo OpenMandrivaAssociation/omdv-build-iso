@@ -1,8 +1,8 @@
-%include .///omdv_iso_minimal.lst
-%include .///omdv_control.lst
-%include .///omdv_x11_extra.lst
-%include .///omdv_core.lst
-%include .///omdv_locales.lst
+%include .///pk-iso_minimal.lst
+%include .///pk-control.lst
+%include .///pk-x11_extra.lst
+%include .///pk-core.lst
+%include .///pk-locales.lst
 
 cups
 #draklive-install

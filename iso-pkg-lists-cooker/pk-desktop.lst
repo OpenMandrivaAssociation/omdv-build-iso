@@ -1,9 +1,9 @@
-%include .///omdv_iso.lst
+%include .///pk-iso.lst
 
-%include .///omdv_control.lst
-%include .///omdv_drivers.lst
-%include .///omdv_locales.lst
-%include .///omdv_ppp.lst
+%include .///pk-control.lst
+%include .///pk-drivers.lst
+%include .///pk-locales.lst
+%include .///pk-ppp.lst
 gksu
 gnome-keyring
 gnome-themes

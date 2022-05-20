@@ -1,4 +1,4 @@
-%include .///omdv_iso_minimal.lst
+%include .///pk-iso_minimal.lst
 
 alsa-plugins
 alsa-plugins-pulseaudio
