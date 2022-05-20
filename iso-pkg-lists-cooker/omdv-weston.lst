@@ -1,17 +1,17 @@
 # basic includes file lists
-%include .///omdv_core.lst
-%include .///omdv_iso.lst
-%include .///omdv_control.lst
-%include .///omdv_drivers.lst
-%include .///omdv_ppp.lst
-%include .///omdv_utils.lst
+%include .///pk-core.lst
+%include .///pk-iso.lst
+%include .///pk-control.lst
+%include .///pk-drivers.lst
+%include .///pk-ppp.lst
+%include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-%include .///omdv_firefox.lst
-%include .///omdv_fonts.lst
-%include .///omdv_locales.lst
-%include .///omdv_pulseaudio.lst
-%include .///omdv_vlc.lst
+%include .///pk-firefox.lst
+%include .///pk-fonts.lst
+%include .///pk-locales.lst
+%include .///pk-pulseaudio.lst
+%include .///pk-vlc.lst
 
 # Desktop Specifics
 calamares
