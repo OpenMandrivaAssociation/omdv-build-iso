@@ -11,7 +11,7 @@ x11-font-alias
 x11-font-cursor-misc
 x11-font-misc-misc
 x11-server-xorg
-x11-server-xwayland
+#x11-server-xwayland
 xauth
 xhost
 xinit

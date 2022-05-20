@@ -12,4 +12,4 @@ gstreamer1.0-lame
 gstreamer1.0-cdio
 gstreamer1.0-a52dec
 gstreamer1.0-flac
-gstreamer1.0-wayland
+#gstreamer1.0-wayland
