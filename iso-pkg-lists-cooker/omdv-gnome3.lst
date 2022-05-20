@@ -7,10 +7,10 @@
 %include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-# %include .///pk-firefox.lst
+# include .///pk-firefox.lst
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
-# %include .///pk-libreoffice.lst
+# include .///pk-libreoffice.lst
 %include .///pk-locales.lst
 #%include .///pk-man-pages.lst
 %include .///pk-pulseaudio.lst
@@ -98,7 +98,6 @@ gparted
 gthumb
 gimp
 inkscape
-rosa-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio

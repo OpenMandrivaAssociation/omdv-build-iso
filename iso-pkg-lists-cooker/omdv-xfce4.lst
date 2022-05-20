@@ -7,7 +7,7 @@
 %include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-#include .///pk-firefox.lst
+# include .///pk-firefox.lst
 %include .///pk-fonts.lst
 #%include .///pk-gstreamer.lst
 # include .///pk-libreoffice.lst
@@ -53,7 +53,7 @@ task-pulseaudio
 #task-printing-scanning
 #system-config-printer-gui #printer
 
-x11-font-cyrillic
+#x11-font-cyrillic
 # keep to check
 x11-server-xorg
 x11-tools
@@ -100,6 +100,7 @@ pango #gtk dep
 #sasl-plug-gssapi
 sddm
 breeze-gtk
+breeze-icons
 
 #openssh-server #server
 #samba-server #server
@@ -113,6 +114,7 @@ breeze-gtk
 #pyxdg
 
 # special featured software
-#oma-welcome
+oma-welcome
 om-repo-picker
 om-control-center
+om-user-manager
