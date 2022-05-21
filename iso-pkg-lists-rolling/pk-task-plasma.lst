@@ -33,7 +33,7 @@ kde-gtk-config
 kdf
 kdialog
 kgamma5
-kget
+#kget
 khelpcenter
 kidentitymanagement
 kio-gdrive
@@ -43,12 +43,12 @@ kleopatra
 #kmail-account-wizard
 #kontact
 #konversation
-neochat
+#neochat
 #korganizer
 #krdc
 #krfb
 ksystemlog
-ktorrent
+#ktorrent
 kwallet-pam
 #kwave
 #kwayland
