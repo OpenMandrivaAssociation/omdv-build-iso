@@ -18,7 +18,7 @@ gwenview
 #kaccounts-integration
 #kaccounts-providers
 #kaddressbook
-# kalarm -- not until it stops crashing on startup
+# kalarm
 #kamera
 #kamoso
 #kate
@@ -59,7 +59,6 @@ libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
 okular
-openmandriva-kde-icons
 partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
