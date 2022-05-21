@@ -18,10 +18,10 @@ gwenview
 #kaccounts-integration
 #kaccounts-providers
 #kaddressbook
-# kalarm -- not until it stops crashing on startup
+#kalarm
 #kamera
 #kamoso
-kate
+#kate
 #kbackup
 #kcalc
 #kdeconnect
@@ -38,7 +38,7 @@ khelpcenter
 kidentitymanagement
 kio-gdrive
 # kipi-plugins
-kleopatra
+#kleopatra
 #kmail
 #kmail-account-wizard
 #kontact
@@ -59,7 +59,6 @@ libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
 okular
-openmandriva-kde-icons
 partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
