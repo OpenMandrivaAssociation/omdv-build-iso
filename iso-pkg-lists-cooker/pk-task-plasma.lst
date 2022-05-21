@@ -21,7 +21,7 @@ gwenview
 # kalarm -- not until it stops crashing on startup
 #kamera
 #kamoso
-kate
+#kate
 #kbackup
 #kcalc
 #kdeconnect
@@ -43,7 +43,7 @@ kio-gdrive
 #kmail-account-wizard
 #kontact
 #konversation
-neochat
+#neochat
 #korganizer
 #krdc
 #krfb
