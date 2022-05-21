@@ -10,7 +10,6 @@
 # %include .///omdv_calligra.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-# %include .///omdv_krita.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -107,6 +106,7 @@ pango #gtk dep
 usbmuxd
 
 # Miscelaneous Packages
+#krita
 enchant
 ffmpeg
 jasper
@@ -126,9 +126,10 @@ samba-server #server
 
 breeze-gtk
 
-# special featured software
+# OM special featured software
 #oma-welcome
 om-update-config
+om-repo-picker
 
 discover
 discover-backend-kns
