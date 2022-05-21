@@ -7,18 +7,18 @@
 %include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-# Optional now that Falkon is Great Again -- .///pk-firefox.lst
+%include .///pk-pulseaudio.lst
+%include .///pk-task-plasma.lst
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
-# %include .///pk-krita.lst
-# %include .///pk-libreoffice.lst
 %include .///pk-locales.lst
 %include .///pk-man-pages.lst
 %include .///pk-myspell.lst
+# %include .///pk-libreoffice.lst
 # %include .///pk-vlc.lst
 # %include .///pk-smplayer.lst
-%include .///pk-pulseaudio.lst
-%include .///pk-task-plasma.lst
+
+# %include .///pk-firefox.lst
 
 # install for Live only
 # and remove with calamares cleaner
@@ -32,7 +32,6 @@ haruna
 nulloy
 #isoimagewriter
 rosa-imagewriter
-#quick-usb-formatter
 # digikam and kipi-plugins
 # kipi-plugins-advancedslideshow
 # kipi-plugins-calendar
@@ -55,11 +54,12 @@ rosa-imagewriter
 # kipi-plugins-smug
 # kipi-plugins-yandexfotki
 # showfoto
+# krita
 
 # task-printing
 # printing
 # task-printing-scanning
-# system-config-printer-gui #printer
+# system-config-printer-gui
 
 ## (crazy) hmm .. this need move away from here
 #x11-font-cyrillic
@@ -70,10 +70,7 @@ x11-font-misc
 x11-data-cursor-themes
 edidbins
 
-# MD this entire list should be shuffled or justified to be needed for the full ISO
-
 avahi #service
-# FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Miscelaneous Packages
 filelight
@@ -89,7 +86,7 @@ pam_ldap
 poppler-data
 sasl-plug-gssapi
 
-# special featured software
+# OM special featured software
 oma-welcome
 #om-feeling-like
 #om-update-config
@@ -97,7 +94,7 @@ om-repo-picker
 om-control-center
 om-user-manager
 om-mirror-selector
-# oma-welcome got broken deps
+
 oxygen-icons
 
 #packagekit
