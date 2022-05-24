@@ -54,7 +54,7 @@ kwallet-pam
 #kwayland
 #kwayland-integration
 #kwin-wayland
-# kwrite
+kwrite
 libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
