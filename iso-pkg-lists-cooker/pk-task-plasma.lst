@@ -14,14 +14,14 @@ drkonqi
 #elisa
 ffmpegthumbs
 grub2-editor
-gwenview
+# gwenview
 #kaccounts-integration
 #kaccounts-providers
 #kaddressbook
 # kalarm
 #kamera
 #kamoso
-#kate
+# kate
 #kbackup
 #kcalc
 #kdeconnect
@@ -34,7 +34,7 @@ kde-gtk-config
 kdialog
 kgamma5
 #kget
-khelpcenter
+# khelpcenter
 kidentitymanagement
 kio-gdrive
 # kipi-plugins
@@ -43,23 +43,23 @@ kio-gdrive
 #kmail-account-wizard
 #kontact
 #konversation
-#neochat
+# neochat
 #korganizer
 #krdc
 #krfb
-ksystemlog
+#ksystemlog
 #ktorrent
 kwallet-pam
 #kwave
 #kwayland
 #kwayland-integration
 #kwin-wayland
-kwrite
+# kwrite
 libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
-okular
-partitionmanager
+# okular
+# partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
 #print-manager
@@ -69,9 +69,9 @@ sddm-theme-breeze
 signon-kwallet-extension
 #skanlite
 sonnet-hunspell
-spectacle
+# spectacle
 #speech-dispatcher
 #ssr
 systemd-kcm
-kuser
+# kuser
 zeroconf-ioslave
