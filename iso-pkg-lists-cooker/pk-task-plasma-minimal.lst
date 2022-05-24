@@ -1,7 +1,7 @@
 %include .///pk-task-x11.lst
 %include .///pk-pulseaudio.lst
 
-ark
+# ark
 baloo5
 breeze
 breeze-icons
@@ -13,14 +13,14 @@ falkon
 falkon-kde
 #falkon-plugins
 frameworkintegration
-kate
+# kate
 kdeclarative
 kde-cli-tools
 kded
 kde-gtk-config
 kdeplasma-addons
 khotkeys
-kinfocenter
+# kinfocenter
 kinit
 kio-extras
 kmenuedit
@@ -29,7 +29,7 @@ kscreen5
 kscreenlocker
 kservice
 ksshaskpass
-plasma-systemmonitor
+# plasma-systemmonitor
 kwalletmanager
 kwin-x11
 kwrited
