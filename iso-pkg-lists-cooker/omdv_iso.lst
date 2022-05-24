@@ -26,7 +26,7 @@ lsof #iso
 lm_sensors #iso
 mailcap #iso
 man-db
-mc
+# mc
 monitor-edid #iso
 pcmemtest
 mkxauth #iso
