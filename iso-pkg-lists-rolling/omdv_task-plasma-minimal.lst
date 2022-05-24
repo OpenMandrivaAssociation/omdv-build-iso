@@ -1,5 +1,5 @@
 %include .///omdv_task-x11.lst
-%include .///omdv-pulseaudio.lst
+%include .///omdv_pulseaudio.lst
 
 ark
 baloo5
@@ -13,7 +13,7 @@ falkon
 falkon-kde
 falkon-plugins
 frameworkintegration
-kate
+#kate
 kdeclarative
 kde-cli-tools
 kded
@@ -24,7 +24,6 @@ kinfocenter
 kinit
 kio-extras
 kmenuedit
-konsole
 konsole
 kscreen5
 kscreenlocker
