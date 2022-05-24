@@ -56,10 +56,10 @@ phonon4qt5-gstreamer
 # showfoto
 # krita
 
-# task-printing
-# printing
-# task-printing-scanning
-# system-config-printer-gui
+#task-printing
+#printing
+#task-printing-scanning
+#system-config-printer-gui
 
 ## (crazy) hmm .. this need move away from here
 #x11-font-cyrillic
@@ -73,7 +73,7 @@ edidbins
 avahi #service
 
 # Miscelaneous Packages
-# filelight
+#filelight
 enchant
 ffmpeg
 jasper
@@ -93,7 +93,7 @@ oma-welcome
 om-repo-picker
 om-control-center
 om-user-manager
-# om-mirror-selector
+om-mirror-selector
 
 oxygen-icons
 
