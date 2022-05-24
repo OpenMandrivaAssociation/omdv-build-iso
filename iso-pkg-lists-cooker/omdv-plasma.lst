@@ -28,10 +28,10 @@
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-haruna
-nulloy
+# haruna
+# nulloy
 #isoimagewriter
-rosa-imagewriter
+# rosa-imagewriter
 #quick-usb-formatter
 # digikam and kipi-plugins
 # kipi-plugins-advancedslideshow
@@ -77,7 +77,7 @@ avahi #service
 # FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Miscelaneous Packages
-filelight
+# filelight
 #enchant
 ffmpeg
 jasper
