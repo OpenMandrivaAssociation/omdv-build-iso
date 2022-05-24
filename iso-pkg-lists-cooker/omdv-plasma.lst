@@ -28,10 +28,10 @@
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-haruna
-nulloy
-#isoimagewriter
-rosa-imagewriter
+# haruna
+# nulloy
+# isoimagewriter
+# rosa-imagewriter
 # digikam and kipi-plugins
 # kipi-plugins-advancedslideshow
 # kipi-plugins-calendar
@@ -73,7 +73,7 @@ edidbins
 avahi #service
 
 # Miscelaneous Packages
-filelight
+# filelight
 enchant
 ffmpeg
 jasper
