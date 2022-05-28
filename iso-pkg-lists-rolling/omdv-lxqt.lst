@@ -129,12 +129,12 @@ samba-server #server
 breeze-gtk
 
 # OM special featured software
-oma-welcome
-om-control-center
+# oma-welcome
+# om-control-center
 om-update-config
 om-repo-picker
 
-discover
-discover-backend-kns
-discover-backend-packagekit
-discover-notifier
+# discover
+# discover-backend-kns
+# discover-backend-packagekit
+# discover-notifier
