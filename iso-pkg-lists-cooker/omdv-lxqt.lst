@@ -7,9 +7,10 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-# %include .///omdv_calligra.lst
+%include .///omdv_calligra.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
+# %include .///omdv_krita.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -24,12 +25,13 @@ pavucontrol-qt
 ark
 #cantata
 lximage-qt
-meteo-qt
+# meteo-qt
 networkmanager-applet
 notepadqq
 owncloudclient
 qterminal
-quassel
+# quassel
+neochat
 falkon
 #isoimagewriter
 rosa-imagewriter
@@ -61,15 +63,15 @@ silicon-plugin-rootmount
 silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-udisks
-trojita
+# trojita
 
 # Needed Task/Meta Packages
 task-pulseaudio
 
 #task-printing
 # printing
-task-printing-scanning
-hplip-gui #printer
+# task-printing-scanning
+# hplip-gui #printer
 
 x11-font-cyrillic
 # keep to check
@@ -127,7 +129,8 @@ samba-server #server
 breeze-gtk
 
 # OM special featured software
-#oma-welcome
+# oma-welcome
+# om-control-center
 om-update-config
 om-repo-picker
 
