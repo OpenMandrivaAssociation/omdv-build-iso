@@ -134,7 +134,7 @@ breeze-gtk
 om-update-config
 om-repo-picker
 
-discover
-discover-backend-kns
-discover-backend-packagekit
-discover-notifier
+# discover
+# discover-backend-kns
+# discover-backend-packagekit
+# discover-notifier
