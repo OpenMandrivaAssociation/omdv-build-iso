@@ -7,7 +7,7 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-# %include .///omdv_calligra.lst
+%include .///omdv_calligra.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 # %include .///omdv_krita.lst
@@ -28,7 +28,6 @@ lximage-qt
 # meteo-qt
 networkmanager-applet
 notepadqq
-# owncloudclient
 qterminal
 # quassel
 neochat
@@ -129,8 +128,8 @@ samba-server #server
 breeze-gtk
 
 # OM special featured software
-# oma-welcome
-# om-control-center
+oma-welcome
+om-control-center
 om-update-config
 om-repo-picker
 
