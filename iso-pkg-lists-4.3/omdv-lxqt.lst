@@ -25,14 +25,16 @@ pavucontrol-qt
 ark
 #cantata
 lximage-qt
-meteo-qt
+# meteo-qt
 networkmanager-applet
 notepadqq
 owncloudclient
 qterminal
-quassel
-qupzilla
-isoimagewriter
+# quassel
+neochat
+falkon
+#isoimagewriter
+rosa-imagewriter
 sddm
 silicon-audio-disc
 silicon-converter
@@ -61,15 +63,15 @@ silicon-plugin-rootmount
 silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-udisks
-trojita
+# trojita
 
 # Needed Task/Meta Packages
 task-pulseaudio
 
 #task-printing
 # printing
-task-printing-scanning
-hplip-gui #printer
+# task-printing-scanning
+# hplip-gui #printer
 
 x11-font-cyrillic
 # keep to check
@@ -106,6 +108,7 @@ pango #gtk dep
 usbmuxd
 
 # Miscelaneous Packages
+#krita
 enchant
 ffmpeg
 jasper
@@ -125,11 +128,13 @@ samba-server #server
 
 breeze-gtk
 
-# special featured software
-#oma-welcome
+# OM special featured software
+# oma-welcome
+# om-control-center
 om-update-config
+om-repo-picker
 
-discover
-discover-backend-kns
-discover-backend-packagekit
-discover-notifier
+# discover
+# discover-backend-kns
+# discover-backend-packagekit
+# discover-notifier
