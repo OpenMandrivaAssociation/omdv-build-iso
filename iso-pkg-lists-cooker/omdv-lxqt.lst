@@ -7,15 +7,15 @@
 %include .///pk-utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-%include .///pk-calligra.lst
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
-# %include .///pk-krita.lst
 %include .///pk-locales.lst
 %include .///pk-man-pages.lst
 %include .///pk-pulseaudio.lst
-%include .///pk-vlc.lst
-%include .///pk-smplayer.lst
+#%include .///pk-calligra.lst
+# %include .///pk-krita.lst
+#%include .///pk-vlc.lst
+#%include .///pk-smplayer.lst
 
 # Desktop Specifics
 task-lxqt
@@ -25,14 +25,13 @@ pavucontrol-qt
 ark
 #cantata
 lximage-qt
-meteo-qt
+#meteo-qt
 networkmanager-applet
 notepadqq
-owncloudclient
+#owncloudclient
 qterminal
-quassel
+#quassel
 falkon
-#isoimagewriter
 rosa-imagewriter
 sddm
 silicon-audio-disc
@@ -62,35 +61,31 @@ silicon-plugin-rootmount
 silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-udisks
-trojita
+#trojita
 
 # Needed Task/Meta Packages
 task-pulseaudio
-
 #task-printing
 # printing
-task-printing-scanning
-hplip-gui #printer
-system-config-printer-gui #printer
+#task-printing-scanning
+#hplip-gui #printer
+#system-config-printer-gui #printer
 
-x11-font-cyrillic
+#x11-font-cyrillic
 # keep to check
 x11-server-xorg
-x11-server-xwayland
+#x11-server-xwayland
 x11-compose-cache
 x11-tools
 #x11-docs
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
-xscreensaver
-xscreensaver-base
+#xscreensaver
+#xscreensaver-base
 edidbins
 
-# MD this entire list should be shuffled or justified to be needed for the full ISO
-
 avahi #service
-
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
 gamin #gtk dep
@@ -119,19 +114,19 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
-
 openssh-server #server
-samba-server #server
+#samba-server #server
 
 # Add breeze then for openbox startup
-
 breeze-gtk
 
-# special featured software
-#oma-welcome
-om-update-config
+# OM special featured software
+oma-welcome
+om-control-center
+om-repo-picker
+#om-update-config
 
-discover
-discover-backend-kns
-discover-backend-packagekit
-discover-notifier
+#discover
+#discover-backend-kns
+#discover-backend-packagekit
+#discover-notifier
