@@ -95,8 +95,7 @@ om-control-center
 om-user-manager
 om-mirror-selector
 
-oxygen-icons
-
+#oxygen-icons
 #packagekit
 packagekit-gstreamer-plugin
 packagekit-command-not-found
