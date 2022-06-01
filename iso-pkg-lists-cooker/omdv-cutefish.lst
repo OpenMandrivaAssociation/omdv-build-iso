@@ -52,6 +52,7 @@ falkon
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
+kwin-x11
 x11-tools
 x11-docs
 x11-font-type1
