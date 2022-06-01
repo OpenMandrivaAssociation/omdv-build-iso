@@ -1906,6 +1906,8 @@ EOF
 			if [ "${TYPE,,}" = "lxqt" ]; then
 				# (tpg) use maldives theme on LXQt desktop
 				chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
+			elif [ "${TYPE,,}" = "cutefish" ]; then
+				chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
 			fi
 			;;
 		"gdm")
