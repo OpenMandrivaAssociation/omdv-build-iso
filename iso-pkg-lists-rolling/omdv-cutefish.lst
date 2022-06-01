@@ -11,11 +11,11 @@
 %include .///pk-gstreamer.lst
 %include .///pk-locales.lst
 %include .///pk-man-pages.lst
-%include .///pk-myspell.lst
-%include .///pk-vlc.lst
-%include .///pk-smplayer.lst
 %include .///pk-pulseaudio.lst
+%include .///pk-myspell.lst
 %include .///pk-task-x11.lst
+#%include .///pk-vlc.lst
+#%include .///pk-smplayer.lst
 
 # Desktop Specifics
 cutefish-calculator
@@ -34,34 +34,29 @@ cutefish-statusbar
 cutefish-terminal
 cutefish-videoplayer
 cutefish-wallpapers
-# task-cutefish
-
-# Special featured software
-oma-welcome
-om-repo-picker
-om-control-center
-om-user-manager
-om-mirror-selector
-oxygen-icons
+#task-cutefish
 
 # Miscelaneous Packages
-rosa-imagewriter
-neochat
-partitionmanager
 sddm
 sddm-theme-breeze
 notepadqq
 edidbins
+grub2-editor
+lximage-qt
+falkon
+#rosa-imagewriter
+#neochat
+#partitionmanager
 
 # To review list
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
+kwin-x11
 x11-tools
 x11-docs
 x11-font-type1
 x11-font-misc
-x11-data-cursor-themes
 avahi #service
 ffmpeg
 ffmpegthumbs
@@ -74,11 +69,16 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
-grub2-editor
-lximage-qt
 audiocd-kio
 bluedevil5
 zeroconf-ioslave
 sonnet-hunspell
 libproxy-networkmanager
-myspell-dictionary
+#myspell-dictionary
+
+# Special OM featured software
+oma-welcome
+om-repo-picker
+om-control-center
+om-user-manager
+om-mirror-selector
