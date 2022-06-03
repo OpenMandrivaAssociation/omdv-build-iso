@@ -3,15 +3,15 @@
 %include .///pk-iso.lst
 %include .///pk-control.lst
 %include .///pk-drivers.lst
-#include .///pk-ppp.lst
-#include .///pk-utils.lst
+%include .///pk-ppp.lst
+%include .///pk-utils.lst
 
 # More includes lists for common sets that are not task/meta pkgs
+%include .///pk-pulseaudio.lst
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
 %include .///pk-locales.lst
 %include .///pk-man-pages.lst
-%include .///pk-pulseaudio.lst
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
 #%include .///pk-vlc.lst
@@ -50,8 +50,8 @@ task-pulseaudio
 # Printing
 #task-printing
 #task-printing-scanning
-#hplip-gui #printer
-#system-config-printer-gui #printer
+#hplip-gui
+#system-config-printer-gui
 
 # Keep to check
 #x11-font-cyrillic
