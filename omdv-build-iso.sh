@@ -32,6 +32,11 @@
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
+# (tpg) source plugins from plugin dir
+for file in "$(find $(realpath $(dirname "$0"))/plugins -maxdepth 1 -name '*.sh' -print -quit)"; do
+	source $file;
+done
+
 main() {
 	# This function which starts at the top of the file is executed first from the end of file
 	# to ensure that all functions are read before the body of the script is run.
@@ -77,14 +82,10 @@ main() {
 			plasma|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|mate|edu)
 				TYPE="$lc"
 				;;
-			user)
-				TYPE=my.add
-				;;
 			*)
-				TYPE=$lc
-				printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
-#				printf "%s\n" "$TYPE is not supported."
-#				usage_help
+
+				printf "%s\n" "$TYPE is not supported."
+				usage_help
 				;;
 			esac
 			;;
@@ -153,7 +154,6 @@ main() {
 			;;
 		*)
 			printf "%s\n" "Unknown argument $k" >/dev/stderr
-			usage_help
 			exit 1
 			;;
 		esac
@@ -191,21 +191,7 @@ main() {
 		exit 1
 	fi
 
-	if [ -n "$DEBUG" ]; then
-		set -x
-	else
-		set +x
-	fi
-
-	# Set the local build prefix
-	if [ -d /home/omv ] && [ -d /home/omv/docker-iso-worker ]; then
-		WHO=omv
-	else
-		# SUDO_USER is an environment variable from the shell it gets set if you run as sudo
-		WHO="$SUDO_USER"
-		UHOME=/home/"$WHO"
-		export UHOME
-	fi
+	[ -n "$DEBUG" ] && set +x
 
 	# default definitions
 	DIST=omdv
@@ -269,10 +255,6 @@ main() {
 ########################
 #   Start functions    #
 ########################
-# TODO:
-# Test --auto-update switch
-# Add  --auto-upgrade
-# Investigate why we can't mount our isos in plasma
 
 CarryOn() {
 	InstallRepos       # Installs the repo rpms if they are not already installed
@@ -388,7 +370,7 @@ allowedOptions() {
 			exit 1
 		fi
 	# Allow the use of --workdir if in debug mode
-		if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n  "$DEBUG" ]; then
+		if  [ "$WORKDIR" != "/home/omv/build_iso" ] && [ -n "$DEBUG" ]; then
 			printf "%s\n" "-> using --workdir inside ABF DEBUG instance"
 		elif  [ -n  "$WORKDIR" ]; then
 			printf "%s\n" "-> You cannot use --workdir inside ABF (https://abf.openmandriva.org)"
@@ -491,7 +473,7 @@ mkeWkingEnv() {
 		fi
 	else
 		# Expressly for debugging ABF=1 outside of the ABF builder
-		if [ "$ABF" = '1' ] && [ -n "$DEBUG" ] && [ "$WHO" != 'omv' ] && [ -n "$NOCLEAN" ]; then
+		if [ "$ABF" = '1' ] && [ -n "$DEBUG" ] && [ -n "$NOCLEAN" ]; then
 			touch "$WORKDIR"/.new
 			printf "%s\n" "Using noclean inside abf mode debug instance"
 		else
@@ -698,7 +680,6 @@ mkeREPOdir() {
 			COMMITDIR="$UHOME"/"$LREPODIR"
 			printf "%s\n" "The package lists for this build are stored in $COMMITDIR found 3"
 		else
-			LREPODIR="$WHO"s-user-iso
 			mkdir -p "$UHOME"/"$LREPODIR"/sessrec
 			echo "$LREPODIR" > "${UHOME}"/.rpodir
 			COMMITDIR="$UHOME"/"$LREPODIR"
@@ -1336,8 +1317,6 @@ mkUserSpin() {
 	printf "%s\n" "-> Removing the common include lines for the remove package includes"
 
 	#Give some information
-	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
-	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
@@ -2247,18 +2226,6 @@ postBuild() {
 
 	# Clean chroot
 	umountAll "$CHROOTNAME"
-}
-
-## (crazy) Fixme
-umountAll() {
-	printf "%s\n" "-> Unmounting all."
-	unset KERNEL_ISO
-	umount -l "$1"/proc 2> /dev/null || :
-	umount -l "$1"/sys 2> /dev/null || :
-	umount -l "$1"/dev/pts 2> /dev/null || :
-	umount -l "$1"/dev 2> /dev/null || :
-	umount -l "$1"/run/os-prober/dev/* 2> /dev/null || :
-	umount -l "$IMGNME" 2> /dev/null || :
 }
 
 errorCatch() {
