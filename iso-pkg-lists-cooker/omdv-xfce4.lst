@@ -7,9 +7,9 @@
 %include .///omdv_utils.lst
 
 # more includes lists for common sets that are not task/meta pkgs
-#include .///omdv_firefox.lst
+%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
-#%include .///omdv_gstreamer.lst
+%include .///omdv_gstreamer.lst
 # include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
@@ -21,14 +21,13 @@ task-xfce
 task-xfce-minimal
 #task-xfce-plugins
 #eatmonkey
-#slim
 gigolo
 # midori
 parole
 #squeeze
 xarchiver
-#ristretto
-viewnior
+ristretto
+#viewnior
 thunar-archive-plugin
 thunar-media-tags-plugin
 thunar-shares-plugin
@@ -50,8 +49,8 @@ task-pulseaudio
 
 #task-printing
 # printing
-#task-printing-scanning
-#system-config-printer-gui #printer
+task-printing-scanning
+system-config-printer-gui #printer
 
 x11-font-cyrillic
 # keep to check
@@ -88,7 +87,7 @@ pango #gtk dep
 
 # Miscelaneous Packages
 #enchant
-#ffmpeg
+ffmpeg
 #jasper
 #nss
 #nss_ldap
