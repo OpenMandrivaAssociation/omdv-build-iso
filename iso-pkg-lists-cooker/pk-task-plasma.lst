@@ -7,43 +7,43 @@
 #akregator
 audiocd-kio
 bluedevil5
-# digikam
+#digikam
 distro-release-desktop-Plasma
 dolphin-plugins
 drkonqi
 #elisa
 ffmpegthumbs
 grub2-editor
-# gwenview
+#gwenview
 #kaccounts-integration
 #kaccounts-providers
 #kaddressbook
-# kalarm
+#kalarm
 #kamera
 #kamoso
-# kate
+#kate
 #kbackup
 #kcalc
 #kdeconnect
 kdegraphics-thumbnailers
 kde-gtk-config
 #kdenetwork-filesharing
-# kdenlive
+#kdenlive
 #kdepim-runtime
 #kdf
 kdialog
 kgamma5
 #kget
-# khelpcenter
+#khelpcenter
 kidentitymanagement
 kio-gdrive
-# kipi-plugins
+#kipi-plugins
 #kleopatra
 #kmail
 #kmail-account-wizard
 #kontact
 #konversation
-# neochat
+#neochat
 #korganizer
 #krdc
 #krfb
@@ -58,8 +58,8 @@ kwrite
 libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
-# okular
-# partitionmanager
+#okular
+#partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
 #print-manager
@@ -69,9 +69,9 @@ sddm-theme-breeze
 signon-kwallet-extension
 #skanlite
 sonnet-hunspell
-# spectacle
+#spectacle
 #speech-dispatcher
 #ssr
 systemd-kcm
-# kuser
+#kuser
 zeroconf-ioslave
