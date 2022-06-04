@@ -30,8 +30,8 @@ orage
 parole
 #squeeze
 xarchiver
-#ristretto
-viewnior
+ristretto
+#viewnior
 thunar-archive-plugin
 thunar-media-tags-plugin
 thunar-shares-plugin
@@ -88,7 +88,7 @@ pango #gtk dep
 
 # Miscelaneous Packages
 enchant
-#ffmpeg
+ffmpeg
 #jasper
 #nss
 #nss_ldap
