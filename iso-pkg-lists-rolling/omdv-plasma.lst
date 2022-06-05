@@ -14,11 +14,15 @@
 %include .///pk-locales.lst
 %include .///pk-man-pages.lst
 %include .///pk-myspell.lst
-# %include .///pk-libreoffice.lst
-# %include .///pk-vlc.lst
-# %include .///pk-smplayer.lst
+#%include .///pk-libreoffice.lst
+#%include .///pk-vlc.lst
+#%include .///pk-smplayer.lst
 
-# %include .///pk-firefox.lst
+#%include .///pk-firefox.lst
+firefox
+#falkon
+#falkon-kde
+#falkon-plugins
 
 # install for Live only
 # and remove with calamares cleaner
@@ -28,52 +32,49 @@
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-haruna
-nulloy
+#haruna
+#nulloy
 #isoimagewriter
-rosa-imagewriter
+#rosa-imagewriter
 # digikam and kipi-plugins
-# kipi-plugins-advancedslideshow
-# kipi-plugins-calendar
-# kipi-plugins-dropbox
-# kipi-plugins-expoblending  disable it as it needs wxgtk3.0
-# kipi-plugins-facebook
-# kipi-plugins-flashexport
-# kipi-plugins-flickr
-# kipi-plugins-googleservices
-# kipi-plugins-imageshack
-# kipi-plugins-imageviewer
-# kipi-plugins-imgurexport
-# kipi-plugins-kmlexport
-# kipi-plugins-panorama disable it as it needs wxgtk3.0
-# kipi-plugins-piwigoexport
-# kipi-plugins-printimages
-# kipi-plugins-rajceexport
-# kipi-plugins-remotestorage
-# kipi-plugins-sendimages
-# kipi-plugins-smug
-# kipi-plugins-yandexfotki
-# showfoto
-# krita
+#kipi-plugins-advancedslideshow
+#kipi-plugins-calendar
+#kipi-plugins-dropbox
+#kipi-plugins-expoblending  disable it as it needs wxgtk3.0
+#kipi-plugins-facebook
+#kipi-plugins-flashexport
+#kipi-plugins-flickr
+#kipi-plugins-googleservices
+#kipi-plugins-imageshack
+#kipi-plugins-imageviewer
+#kipi-plugins-imgurexport
+#kipi-plugins-kmlexport
+#kipi-plugins-panorama disable it as it needs wxgtk3.0
+#kipi-plugins-piwigoexport
+#kipi-plugins-printimages
+#kipi-plugins-rajceexport
+#kipi-plugins-remotestorage
+#kipi-plugins-sendimages
+#kipi-plugins-smug
+#kipi-plugins-yandexfotki
+#showfoto
+#krita
 
-# task-printing
-# printing
-# task-printing-scanning
-# system-config-printer-gui
+#task-printing
+#printing
+#task-printing-scanning
+#system-config-printer-gui
 
-## (crazy) hmm .. this need move away from here
-#x11-font-cyrillic
 x11-tools
 x11-docs
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
 edidbins
-
 avahi #service
 
 # Miscelaneous Packages
-filelight
+#filelight
 enchant
 ffmpeg
 jasper
