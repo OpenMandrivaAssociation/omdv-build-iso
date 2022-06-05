@@ -124,6 +124,7 @@ edidbins
 avahi #service
 #firewall-applet #service
 networkmanager-applet
+dbus-broker
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
