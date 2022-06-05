@@ -46,15 +46,12 @@ phonon4qt5-gstreamer
 #task-printing-scanning
 #system-config-printer-gui
 
-## (crazy) hmm .. this need move away from here
-#x11-font-cyrillic
 x11-tools
 x11-docs
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
 edidbins
-
 avahi #service
 
 # Miscelaneous Packages
