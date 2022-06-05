@@ -9,9 +9,6 @@ dbus-x11
 distro-release-desktop
 dolphin
 kio-fuse
-falkon
-falkon-kde
-#falkon-plugins
 frameworkintegration
 #kate
 kdeclarative
