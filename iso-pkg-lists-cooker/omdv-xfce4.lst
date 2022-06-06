@@ -45,6 +45,11 @@ xfmpc
 xfce4-appfinder
 xfce4-screenshooter
 
+# xfce is missing email client.
+# We can choose betwen Thunderbird powerfully based on gtk or Claws-mail
+# Pick right now claws-mail due to less resources and better theme integration with xfce4
+claws-mail
+
 # Needed Task/Meta Packages
 task-pulseaudio
 
