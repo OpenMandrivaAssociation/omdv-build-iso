@@ -75,4 +75,6 @@ speech-dispatcher
 ssr
 systemd-kcm
 kuser
+yakuake
+btop
 zeroconf-ioslave
