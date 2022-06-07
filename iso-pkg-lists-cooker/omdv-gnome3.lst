@@ -16,7 +16,7 @@
 %include .///pk-task-x11.lst
 %include .///omdv_firefox.lst
 #%include .///omdv_libreoffice.lst
-# include .///omdv_vlc.lst
+#%include .///omdv_vlc.lst
 
 # Desktop Specifics
 task-gnome
@@ -40,11 +40,11 @@ networkmanager
 yelp
 task-x11
 
-cheese
+#cheese
 eog
 evince
 file-roller
-gnome-calculator
+#gnome-calculator
 gedit
 gdm
 gnome-color-manager
@@ -53,20 +53,20 @@ gnome-packagekit
 gnome-software
 gnome-terminal-nautilus
 
-empathy
-epiphany
-gnome-games
-rhythmbox
+#empathy
+#epiphany
+#gnome-games
+#rhythmbox
 totem
 
 #simple-scan
-shotwell
+#shotwell
 #sushi
 vino
 vinagre
-polari
-fractal
-gnome-maps
+#polari
+#fractal
+#gnome-maps
 gnome-music
 gnome-photos
 bijiben
@@ -88,11 +88,11 @@ gucharmap
 mousetweaks
 
 # biz / office / utils
-brasero
+#brasero
 caribou
 caribou-gtk3
-evolution
-gnome-contacts
+#evolution
+#gnome-contacts
 gparted
 gthumb
 gimp
