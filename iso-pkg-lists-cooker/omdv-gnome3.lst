@@ -65,8 +65,8 @@ totem
 #simple-scan
 #shotwell
 #sushi
-vino
-vinagre
+#vino
+#vinagre
 #polari
 #fractal
 #gnome-maps
@@ -135,7 +135,7 @@ gvfs
 gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
-gvfs-smb #gtk dep
+#gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
 
