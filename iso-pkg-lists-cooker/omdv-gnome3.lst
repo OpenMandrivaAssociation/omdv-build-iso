@@ -19,7 +19,7 @@
 #%include .///omdv_vlc.lst
 
 # Desktop Specifics
-task-gnome
+#task-gnome
 task-gnome-minimal
 accountsservice
 adwaita-icon-theme
@@ -42,6 +42,8 @@ task-x11
 
 #cheese
 eog
+#ekiga
+#lollypop
 evince
 file-roller
 #gnome-calculator
@@ -52,6 +54,7 @@ gnome-disk-utility
 gnome-packagekit
 gnome-software
 gnome-terminal-nautilus
+gnome-tweaks
 
 #empathy
 #epiphany
@@ -72,7 +75,7 @@ gnome-photos
 bijiben
 gnome-characters
 gnome-clocks
-gnome-builder
+#gnome-builder
 gnome-dictionary
 gnome-documents
 gnome-font-viewer
