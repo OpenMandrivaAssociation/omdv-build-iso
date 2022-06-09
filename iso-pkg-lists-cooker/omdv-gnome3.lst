@@ -14,7 +14,7 @@
 %include .///omdv_man-pages.lst
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
-%include .///omdv_firefox.lst
+#%include .///omdv_firefox.lst
 #%include .///omdv_libreoffice.lst
 #%include .///omdv_vlc.lst
 
@@ -92,15 +92,15 @@ mousetweaks
 
 # biz / office / utils
 #brasero
-caribou
-caribou-gtk3
+#caribou
+#caribou-gtk3
 #evolution
 #gnome-contacts
 gparted
 gthumb
-gimp
-inkscape
-rosa-imagewriter
+#gimp
+#inkscape
+#rosa-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -179,15 +179,15 @@ om-user-manager
 om-mirror-selector
 
 #packagekit
-packagekit-gstreamer-plugin
-packagekit-command-not-found
+#packagekit-gstreamer-plugin
+#packagekit-command-not-found
 # make sure that flatpak is installed on iso
-flatpak
+#flatpak
 
 # Feeling stuff
 # for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
+#libyui-gtk
+#libyui-mga-gtk
 # For libreoffice
 #libreoffice-gnome
 #libreoffice-gtk3-kde5
