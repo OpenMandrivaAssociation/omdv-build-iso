@@ -20,7 +20,7 @@
 
 # Desktop Specifics
 #task-gnome
-task-gnome-minimal
+#task-gnome-minimal
 accountsservice
 adwaita-icon-theme
 gnome-desktop
