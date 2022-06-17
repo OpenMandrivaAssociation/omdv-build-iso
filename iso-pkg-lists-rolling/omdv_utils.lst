@@ -15,7 +15,8 @@ dvbsnoop #utils
 dvbtune #utils
 # Violation! dnd+rw-tools is in unsupported repo. It should either be moved to main repo or not be on our isos. benbullard79
 dvd+rw-tools #utils
-earlyoom
+systemd-oom
+systemd-homed
 freerdp #utils
 fuse2
 # fuse-exfat #utils
