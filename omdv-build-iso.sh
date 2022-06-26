@@ -234,7 +234,7 @@ main() {
 	# always build free ISO
 	FREE=1
 	LOGDIR="."
-	[ -z $ABF ] ABF='0'
+	[ -z $ABF ] && ABF='0'
 	# The functions are stored in this in the order that they are executed.
 	# Functions that are not called directly are are commented out and are stored following the functions they are first called in
 	# though they may be called from alternate functions.
