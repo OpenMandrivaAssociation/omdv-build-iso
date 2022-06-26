@@ -14,7 +14,8 @@ dump #utils
 #dvbsnoop #utils
 #dvbtune #utils
 #dvd+rw-tools #utils
-earlyoom
+systemd-oom
+systemd-homed
 freerdp #utils
 fuse2
 # fuse-exfat #utils
