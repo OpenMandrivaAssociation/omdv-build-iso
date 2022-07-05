@@ -3,7 +3,7 @@ bind-utils #utils
 cdialog #utils old
 cdrkit #utils
 cdrkit-genisoimage #utils
-cifs-utils #utils
+#cifs-utils #utils
 command-not-found #utils
 # why this ?
 #davfs2 #utils
@@ -18,7 +18,7 @@ systemd-oom
 systemd-homed
 freerdp #utils
 fuse2
-# fuse-exfat #utils
+#fuse-exfat #utils
 # wrong here
 gnupg #utils
 html2text #utils
