@@ -1,5 +1,6 @@
 iwlwifi-agn-ucode
 radeon-firmware
+nvidia-firmware
 microcode-intel
 # FIXME
 dri-drivers
