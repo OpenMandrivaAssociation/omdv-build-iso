@@ -4,8 +4,8 @@ Name:		omdv-build-iso
 # make dist
 # abf store omdv-build-iso*.tar.xz
 # update .abf.yml
-Version:	4.1.2
-Release:	4
+Version:	4.1.3
+Release:	1
 License:	GPL
 Group:		System/Libraries
 URL:		https://github.com/OpenMandrivaAssociation/omdv-build-iso
@@ -35,7 +35,7 @@ BuildArch:	noarch
 Tool to build OpenMandriva Lx ISO.
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
 #nothing to do here

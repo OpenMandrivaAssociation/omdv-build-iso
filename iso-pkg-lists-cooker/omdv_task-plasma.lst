@@ -18,7 +18,7 @@ gwenview
 kaccounts-integration
 kaccounts-providers
 kaddressbook
-# kalarm -- not until it stops crashing on startup
+#kalarm -- not until it stops crashing on startup
 kamera
 kamoso
 kate
@@ -42,7 +42,7 @@ kleopatra
 kmail
 kmail-account-wizard
 kontact
-# konversation
+#konversation
 neochat
 korganizer
 krdc
@@ -76,5 +76,5 @@ ssr
 systemd-kcm
 kuser
 yakuake
-btop
+#btop
 zeroconf-ioslave

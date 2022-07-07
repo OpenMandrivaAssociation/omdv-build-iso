@@ -4,3 +4,5 @@ nvidia-firmware
 microcode-intel
 # FIXME
 dri-drivers
+# Needed for sound support on some Intel HW
+sof-firmware

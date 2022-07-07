@@ -77,9 +77,6 @@ main() {
 			plasma|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|mate|edu)
 				TYPE="$lc"
 				;;
-			user)
-				TYPE=my.add
-				;;
 			*)
 				TYPE=$lc
 				printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
@@ -260,9 +257,6 @@ main() {
 	mkISOLabel     # Creates the iso labelling data and the UUIDS.
 	showInfo       # Shows major options chosen.
 	getPkgList     # Gets the package lists from git hub from branch set by --isover.
-	MkeListRepo    # Create git repo for pkg lists.
-	#MkeCmmtMsg    # Creates a uniquely labelled commit message for git commits.
-	DtctCmmt       # Check for changes and set change flag.
 	CarryOn        # An entry point for the user build setup.
 } #End of main
 
@@ -284,8 +278,6 @@ CarryOn() {
 	#mkUpdateChroot    # Installs or updates the files in the chroot
 	#MyAdd             # Local users package list for adding files to build
 	#MyRmv             # Local users package list for removing files
-	#mkUserSpin        # Creates a user chroot which includes the content of the my.add and my.rmv package lists
-	#updateUserSpin    # Updates the user chroot with the content of the my.add and my.rmv package lists
 	createInitrd       # Creates the initrds. This function is able to use two different kernels and gives boot entries for both
 	createMemDisk      # Creates a memdisk for embedding in the iso-build-lists.
 	createUEFI         # Creates a bootable UEFI image and installs startup.nsh to fix start-up in VirtualBox hypervisor
@@ -583,30 +575,6 @@ SetFileList() {
 	elif [ "$NEWTYPE" != "error" ] && [ $ABF = '1' ]; then
 		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
 		errorCatch
-	else
-		printf "%s\n" "-> You are creating a user build"
-		hlpprtf "\t\t\t\tThis build will use the the omdv_minimal_iso.lst to create a basic iso. In addition you will need to provide the name the executable for the Window Manager and the name you wish to assign to the desktop file associated with it. At this point a list repository will be created with that name and the program will exit. This allows the user to add any desired packages and includes to the my.add list file before building the iso. On subsequent runs the program will not exit but continue on to build the iso." " "
-		#Check here whether .wmdeskname and .wmname are stored and if so load them into their variables.
-		#Hmm if the content of .repo matches that of NEWTYPE then WHAT? Load the repo name and then check for .wmdeskname and .wmname if these do'nt exist then call userISOnme to set them.
-		# then set COMMITDIR else if it doesn't match we need to create the COMMITDIR and call and THEN set .uisonme and .wmisoHmm ok
-		if [ -f "$UHOME/.repo" ]; then
-			if [ "$NEWTYPE" == "$(< "$UHOME/.repo")" ]; then
-				COMMITDIR=< "$UHOME/.repo"
-			fi
-		else
-			COMMITDIR="$UHOME/$NEWTYPE"
-			#check whether the .wmdeskname and the .wmname have been saved if true then load them if false call the routines to create them
-			if [ -f "$COMMITDIR"/sessrec/.wmdeskname ] && [ -f "$COMMITDIR"/sessrec/.wmname ]; then
-				WMDESK="$(< "${COMMITDIR}"/sessrec/.wmdeskname)"
-				WMNAME="$(< "${COMMITDIR}"/sessrec/.wmname)"
-			else
-				userDSKTPNme
-			fi
-			# Set the default file list for the user build.
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/omdv-minimal.lst"
-			mkeUsrListRepo
-			hlpprtf "\t\tA git repository with basic build lists has been created in directory named $UHOME/$NEWTYPE. This directory is maintained as a git repository, this script will never overwrite it. Additional packages or files to be included on the iso may be added to the file my.add Packages or files that you wish to be removed may be added to the file my.rmv"
-		fi
 	fi
 }
 
@@ -726,29 +694,6 @@ mKeBuild_id() {
 	fi
 }
 
-mkeUsrListRepo() {
-	#Creates and populates a list repository if --type=user
-	if [ "$ABF" = '0' ]; then
-		if [[ (-n "$MAKELISTREPO" && -n "$LREPODIR") ||  -n "$NEWTYPE" ]]; then
-			mkeREPOdir
-			getPkgList
-			MkeListRepo
-			DtctCmmt
-			setWorkdir
-			if [ ! -f "$COMMITDIR"/sessrec/.wmdeskname ] && [ ! -f "$COMMITDIR"/sessrec/.wmname ]; then
-				printf "%s" "$WMDESK" > "$COMMITDIR/sessrec/.wmdeskname"
-				printf "%s" "$WMNAME" > "$COMMITDIR/sessrec/.wmname"
-			else  #If they exist then continue i.e. exit the function to the next step.
-				printf "%s\n" "Building user iso $NEWTYPE"
-				CarryOn
-			fi
-			printf "%s\n" " " "Created local user list repo $TYPE" " "
-			hlpprtf "\t\t\tYou may now add package names, list files to include or paths to local package files that you wish to include in your iso to the my.add file in the list repo directory above. Running the script a second time will build an iso inclUding the packages you have added."
-		fi
-	fi
-	exit 0
-}
-
 mkISOLabel() {
 	# UUID Generation. xorriso needs a string of 16 asci digits.
 	# grub2 needs dashes to separate the fields..
@@ -767,12 +712,7 @@ mkISOLabel() {
 	elif [ "${RELEASE_ID,,}" = 'alpha' ]; then
 		RELEASE_ID="$RELEASE_ID.$(date +%Y%m%d).$BUILD_ID"
 	fi
-	# Check if user build if true fixup name logic
-	if [ "$TYPE" = 'my.add' ]; then
-		PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$NEWTYPE"
-	else
-		PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
-	fi
+	PRODUCT_ID="OpenMandrivaLx.$VERSION-$RELEASE_ID-$TYPE"
 	printf "%s" "$PRODUCT_ID"
 
 	LABEL="$PRODUCT_ID.$EXTARCH"
@@ -788,17 +728,11 @@ showInfo() {
 	printf "%s\n" "Tree is $TREE"
 	printf "%s\n" "Version is $VERSION"
 	printf "%s\n" "Release ID is $RELEASE_ID"
-	if [ "${TYPE,,}" = 'my.add' ]; then
-		printf "%s\n" "TYPE is user"
-	else
-		printf "%s\n" "Type is $TYPE"
-	fi
+	printf "%s\n" "Type is $TYPE"
 	if [ "${TYPE,,}" = 'minimal' ]; then
-		printf "%s\n" "-> No display manager for minimal ISO."
-	elif [ "${TYPE,,}" = "my.add" ] && [ -z "$DISPLAYMANAGER" ]; then
-		printf "%s\n" "-> No display manager for user ISO."
+	    printf "%s\n" "-> No display manager for minimal ISO."
 	else
-		printf "%s\n" "Display Manager is $DISPLAYMANAGER"
+	    printf "%s\n" "Display Manager is $DISPLAYMANAGER"
 	fi
 	printf "%s\n" "ISO label is $LABEL"
 	printf "%s\n" "Build ID is $BUILD_ID"
@@ -851,69 +785,6 @@ getPkgList() {
 		if [ ! -e "$FILELISTS" ]; then
 			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 			errorCatch
-		fi
-	fi
-	# If the list repo directory is empty populate it, create git repo and commit
-	# Otherwise copy contents of list repo directory to the WORKDIR.
-	if [ ! -f "$COMMITDIR"/${FILELISTS#$WORKDIR/} ]; then
-		printf "%s\n" "The local list repo directory is being populated"
-		popREPOdir
-	else
-		printf "%s\n" "-> Copying users local package lists from $COMMITDIR to workdir"
-		cp -fR ${COMMITDIR}/iso-pkg-lists-${TREE}/  ${WORKDIR}/
-	fi
-}
-
-popREPOdir() {
-	# This function serves to populate a newly created package list repo after itdirectory creation by mkeREPOdir
-	# It is called conditionally (once and only once) when the package lists have been downloaded from the git repo.
-	cp -r ${WORKDIR}/iso-pkg-lists-${TREE}/ ${COMMITDIR}/
-	if  [ ! -f ${COMMITDIR}/iso-pkg-lists-${TREE}/my.add ]; then
-		printf "%s\n" "There's been an error"
-		hlpprtf "\t\t\tPlease check whether the directory named in the hidden file .rpodir in your home directory still exists and if it does it may still have the .git directory which will allow you to recover your package lists. If no files exist please delete the .rpodir file and the directory named in it and start with a fresh build"
-		errorCatch
-	fi
-}
-
-MkeListRepo() {
-	# Create git repo for the package lists so we can record user mode changes.
-	if [ ! -d "${COMMITDIR}/iso-pkg-lists-${TREE}/.git" ]; then
-		printf "%s\n" "-> Creating package list repo"
-		cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
-		git init
-		git add .
-		git config user.email "omdv@abf.openmandriva.org"
-		git config user.name "iso buider"
-		MkeCmmtMsg
-		git commit -a -m "$CMMTMSG"
-	fi
-}
-
-MkeCmmtMsg() {
-	# Create a sequential commit message
-	if [ ! -d ${COMMITDIR}/sessrec ]; then
-		mkdir -p ${COMMITDIR}/sessrec
-	else
-		if  [ -f ${COMMITDIR}/sessrec/.seqnum ]; then
-			SEQNUM=$(cat ${COMMITDIR}/sessrec/.seqnum)
-			SEQNUM=$((SEQNUM+1))
-		else
-			SEQNUM=1
-		fi
-		printf "%s\n" "$SEQNUM" >"${COMMITDIR}/sessrec/.seqnum"
-		SESSNO=$(cat ${COMMITDIR}/sessrec/.build_id)
-		CMMTMSG=$(printf "%s/n" "Changes for Build Id ${BUILD_ID}; Session No ${SEQNUM}")
-	fi
-}
-
-DtctCmmt() {
-	# Detect whether the lists have changed and if so set the change flag, generate commit msg and commit the changes.
-	if [ -d $COMMITDIR/iso-pkg-lists-$TREE ]; then
-		cd ${COMMITDIR}/iso-pkg-lists-${TREE} || exit
-		CHNGFLG=$(git diff)
-		if [ -n "$CHNGFLG" ]; then
-			MkeCmmtMsg
-			git commit -a -m "$CMMTMSG"
 		fi
 	fi
 }
@@ -1328,7 +1199,6 @@ mkUserSpin() {
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	printf "%s\n" "$FILELISTS"
 	getIncFiles "$FILELISTS" ADDRPMINC
-	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
 	# Combine the main and the users files"
 	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
 	# Now for the remove list
@@ -1357,7 +1227,6 @@ mkUserSpin() {
 updateUserSpin() {
 	[ -n "$DEBUG" ] && printf '%s\n' "updateUserSpin"
 	printf "%s\n" "-> Updating user spin"
-	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.add" UADDRPMINC
 	# re-assign just for consistancy
 	ALLRPMINC="$UADDRPMINC"
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
@@ -1758,7 +1627,7 @@ setupISOenv() {
 	printf "%s\n" "-> Setting systemd firstboot"
 
 # set up system environment, default root password is omv
-	/bin/systemd-firstboot --root="$CHROOTNAME" \
+	sudo /bin/systemd-firstboot --root="$CHROOTNAME" \
 		--locale="$DEFAULTLANG" \
 		--keymap="$DEFAULTKBD" \
 		--timezone="Europe/London" \
@@ -1767,8 +1636,8 @@ setupISOenv() {
 		--force
 
 # (tpg) this is already done by systemd.triggers, but run it anyways just to be safe
-	/bin/systemd-tmpfiles --root="$CHROOTNAME" --remove ||:
-	/bin/systemd-sysusers --root="$CHROOTNAME" ||:
+	sudo /bin/systemd-tmpfiles --root="$CHROOTNAME" --remove ||:
+	sudo /bin/systemd-sysusers --root="$CHROOTNAME" ||:
 
 # Create /etc/minsysreqs
 	printf "%s\n" "-> Creating /etc/minsysreqs"
@@ -1788,7 +1657,7 @@ setupISOenv() {
 	printf "%s\n" "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# Set up displaymanager
-	if [[ ( ${TYPE,,} != "minimal" || ${TYPE,,} != "my.add" ) && ! -z ${DISPLAYMANAGER,,} ]]; then
+	if [ ${TYPE,,} != "minimal" ] && [ ! -z ${DISPLAYMANAGER,,} ]; then
 		if [ ! -e "$CHROOTNAME/lib/systemd/system/${DISPLAYMANAGER,,}.service" ]; then
 			printf "%s\n" "-> File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 			errorCatch
