@@ -2,3 +2,5 @@ iwlwifi-agn-ucode
 radeon-firmware
 microcode-intel
 dri-drivers
+# Needed for sound support on some Intel HW
+sof-firmware
