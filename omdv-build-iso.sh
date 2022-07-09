@@ -1758,7 +1758,7 @@ setupISOenv() {
 	printf "%s\n" "-> Setting systemd firstboot"
 
 # set up system environment, default root password is omv
-	/bin/systemd-firstboot --root="$CHROOTNAME" \
+	sudo /bin/systemd-firstboot --root="$CHROOTNAME" \
 		--locale="$DEFAULTLANG" \
 		--keymap="$DEFAULTKBD" \
 		--timezone="Europe/London" \
@@ -1767,8 +1767,8 @@ setupISOenv() {
 		--force
 
 # (tpg) this is already done by systemd.triggers, but run it anyways just to be safe
-	/bin/systemd-tmpfiles --root="$CHROOTNAME" --remove ||:
-	/bin/systemd-sysusers --root="$CHROOTNAME" ||:
+	sudo /bin/systemd-tmpfiles --root="$CHROOTNAME" --remove ||:
+	sudo /bin/systemd-sysusers --root="$CHROOTNAME" ||:
 
 # Create /etc/minsysreqs
 	printf "%s\n" "-> Creating /etc/minsysreqs"
