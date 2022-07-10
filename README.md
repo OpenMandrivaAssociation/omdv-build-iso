@@ -1,5 +1,5 @@
 This is a tool to build OpenMandriva Lx ISO.
 
-slim branch
+slim4u branch
 
 https://openmandriva.org
