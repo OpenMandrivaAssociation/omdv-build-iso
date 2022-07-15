@@ -13,7 +13,8 @@ e2fsprogs
 iproute2
 grub2
 efibootmgr
-kernel-desktop-gcc
+#kernel-desktop-gcc
+kernel-release-desktop
 kernel-firmware
 kernel-firmware-extra
 lvm2
