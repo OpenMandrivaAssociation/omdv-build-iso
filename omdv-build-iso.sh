@@ -1686,7 +1686,7 @@ setupISOenv() {
 	    # Kill it as it prevents clearing passwords
 	    [ -e "$CHROOTNAME"/etc/shadow.lock ] && rm -rf "$CHROOTNAME"/etc/shadow.lock
 	    printf "%s\n" "-> Clearing $username password."
-	    chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
+	    chroot "$CHROOTNAME" /usr/bin/passwd -d $username||errorCatch
 	done
 
 # (tpg) allow to ssh for live user with blank password
