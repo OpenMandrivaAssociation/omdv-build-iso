@@ -781,7 +781,7 @@ getPkgList() {
 		cd "$WORKDIR" || exit
 		EX_PREF=./
 		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
-		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1 
+		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1
 		if [ ! -e "$FILELISTS" ]; then
 			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
 			errorCatch
@@ -1464,7 +1464,7 @@ createUEFI() {
 		errorCatch
 	fi
 	sleep 1
- 
+
 mount -t vfat "$IMGNME" /mnt
 	if [ $? != 0 ]; then
 		printf "%s\n" "-> Failed to mount UEFI image." "Exiting."
@@ -1686,7 +1686,7 @@ setupISOenv() {
 	    # Kill it as it prevents clearing passwords
 	    [ -e "$CHROOTNAME"/etc/shadow.lock ] && rm -rf "$CHROOTNAME"/etc/shadow.lock
 	    printf "%s\n" "-> Clearing $username password."
-	    chroot "$CHROOTNAME" /usr/bin/passwd -f -d $username||errorCatch
+	    chroot "$CHROOTNAME" /usr/bin/passwd -d $username||errorCatch
 	done
 
 # (tpg) allow to ssh for live user with blank password
@@ -2179,3 +2179,4 @@ FilterLogs() {
 }
 
 main "$@"
+
