@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///omdv_core.lst
 %include .///omdv_iso.lst
 %include .///omdv_control.lst
@@ -6,11 +6,11 @@
 %include .///omdv_ppp.lst
 %include .///omdv_utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
+# More includes lists for common sets that are not task/meta pkgs
 %include .///omdv_calligra.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-# %include .///omdv_krita.lst
+#%include .///omdv_krita.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -25,11 +25,11 @@ pavucontrol-qt
 ark
 #cantata
 lximage-qt
-# meteo-qt
+#meteo-qt
 networkmanager-applet
 notepadqq
 qterminal
-# quassel
+#quassel
 neochat
 falkon
 #isoimagewriter
@@ -62,18 +62,19 @@ silicon-plugin-rootmount
 silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-udisks
-# trojita
+#trojita
 
 # Needed Task/Meta Packages
 task-pulseaudio
 
+# Printing and scanning
 #task-printing
-# printing
-# task-printing-scanning
-# hplip-gui #printer
+#printing
+#task-printing-scanning
+#hplip-gui #printer
 
-x11-font-cyrillic
 # keep to check
+#x11-font-cyrillic
 x11-server-xorg
 x11-server-xwayland
 x11-compose-cache
@@ -82,8 +83,8 @@ x11-tools
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
-xscreensaver
-xscreensaver-base
+#xscreensaver
+#xscreensaver-base
 edidbins
 
 # MD this entire list should be shuffled or justified to be needed for the full ISO
@@ -124,7 +125,6 @@ openssh-server #server
 samba-server #server
 
 # Add breeze then for openbox startup
-
 breeze-gtk
 
 # OM special featured software
