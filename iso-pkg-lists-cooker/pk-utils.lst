@@ -45,7 +45,7 @@ opensc #utils
 p7zip #utils
 pcsc-lite #utils
 pptp-linux #utils
-#rng-tools #utils
+rng-tools #utils
 rpcbind #utils
 rsnapshot #utils
 rsync #utils
