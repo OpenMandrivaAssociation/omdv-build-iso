@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///omdv_core.lst
 %include .///omdv_iso.lst
 %include .///omdv_control.lst
@@ -6,8 +6,8 @@
 %include .///omdv_ppp.lst
 %include .///omdv_utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
-# Optional now that Falkon is Great Again -- .///omdv_firefox.lst
+# More includes lists for common sets that are not task/meta pkgs
+#%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_libreoffice.lst
@@ -20,7 +20,7 @@
 %include .///omdv_task-plasma.lst
 
 
-# install for Live only
+# Install for Live only
 # and remove with calamares cleaner
 kpat
 
@@ -28,8 +28,7 @@ kpat
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
-# isoimagewriter
-# quick-usb-formatter
+#quick-usb-formatter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
 kipi-plugins-calendar
@@ -57,7 +56,6 @@ krita
 task-printing
 # printing
 task-printing-scanning
-epson-inkjet-printer-escpr
 
 ## (crazy) hmm .. this need move away from here
 x11-font-cyrillic
@@ -81,14 +79,14 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_wins
+#nss_wins #this pulls in a ton of samba deps
 openssl
 pam_ldap
 poppler-data
 rosa-imagewriter
 sasl-plug-gssapi
 
-# Special featured software
+# OM special featured software
 oma-welcome
 om-feeling-like
 om-update-config
@@ -96,7 +94,6 @@ om-repo-picker
 om-control-center
 om-user-manager
 om-mirror-selector
-# oma-welcome got broken deps
 oxygen-icons
 
 #packagekit
@@ -105,4 +102,4 @@ packagekit-command-not-found
 discover
 discover-backend-kns
 discover-backend-packagekit
-# discover-notifier
+#discover-notifier
