@@ -18,7 +18,7 @@ kernel-firmware
 kernel-firmware-extra
 lvm2
 mdadm
-nscd
+#nscd
 openssh-server
 openssh-clients
 omdv-bug-report
