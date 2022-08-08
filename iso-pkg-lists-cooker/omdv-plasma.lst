@@ -5,9 +5,9 @@
 %include .///pk-drivers.lst
 %include .///pk-ppp.lst
 %include .///pk-utils.lst
-%include .///omdv-mate.lst
+#%include .///omdv-mate.lst
 #%include .///omdv-gnome3.lst
-#%include .///omdv-cinnamon.lst
+%include .///omdv-cinnamon.lst
 
 # more includes lists for common sets that are not task/meta pkgs
 %include .///pk-pulseaudio.lst
