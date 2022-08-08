@@ -93,6 +93,7 @@ sddm-theme-breeze
 breeze-gtk
 #openssh-server #server
 #samba-server #server
+kwin-x11
 
 #python deps?
 #python-ldap
