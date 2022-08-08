@@ -103,7 +103,7 @@ breeze-gtk
 #pyxdg
 
 # Special OM featured software
-oma-welcome
+#oma-welcome
 om-repo-picker
 om-control-center
 om-user-manager
