@@ -1,34 +1,37 @@
-# basic includes file lists
-%include .///omdv_core.lst
-%include .///omdv_iso.lst
-%include .///omdv_control.lst
-%include .///omdv_drivers.lst
-%include .///omdv_ppp.lst
-%include .///omdv_utils.lst
+# Basic includes file lists
+%include .///pk-core.lst
+%include .///pk-iso.lst
+%include .///pk-control.lst
+%include .///pk-drivers.lst
+%include .///pk-ppp.lst
+%include .///pk-utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
-# include .///omdv_firefox.lst
-%include .///omdv_fonts.lst
-#%include .///omdv_gstreamer.lst
-# include .///omdv_libreoffice.lst
-%include .///omdv_locales.lst
-#%include .///omdv_man-pages.lst
-%include .///omdv_pulseaudio.lst
-# include .///omdv_vlc.lst
+# More includes lists for common sets that are not task/meta pkgs
+%include .///pk-fonts.lst
+%include .///pk-gstreamer.lst
+%include .///pk-locales.lst
+%include .///pk-pulseaudio.lst
+%include .///pk-myspell.lst
+%include .///pk-task-x11.lst
+#%include .///pk-man-pages.lst
+#%include .///pk-firefox.lst
+#%include .///pk-libreoffice.lst
+#%include .///pk-vlc.lst
 
 # Desktop Specifics
 task-xfce
 task-xfce-minimal
 #task-xfce-plugins
 #eatmonkey
-# slim
+#slim
 gigolo
-# midori
+#midori
+orage
 parole
 #squeeze
 xarchiver
-#ristretto
-viewnior
+ristretto
+#viewnior
 thunar-archive-plugin
 thunar-media-tags-plugin
 thunar-shares-plugin
@@ -47,14 +50,13 @@ xfce4-screenshooter
 
 # Needed Task/Meta Packages
 task-pulseaudio
-
 #task-printing
 # printing
 #task-printing-scanning
 #system-config-printer-gui #printer
 
-x11-font-cyrillic
-# keep to check
+# Keep to check
+#x11-font-cyrillic
 x11-server-xorg
 x11-tools
 #x11-docs
@@ -64,11 +66,9 @@ x11-data-cursor-themes
 edidbins
 
 # MD this entire list should be shuffled or justified to be needed for the full ISO
-
 avahi #service
 #firewall-applet #service
 networkmanager-applet
-
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
 gamin #gtk dep
@@ -87,8 +87,8 @@ pango #gtk dep
 #usbmuxd
 
 # Miscelaneous Packages
-#enchant
-#ffmpeg
+enchant
+ffmpeg
 #jasper
 #nss
 #nss_ldap
@@ -100,7 +100,7 @@ pango #gtk dep
 #sasl-plug-gssapi
 sddm
 breeze-gtk
-
+breeze-icons
 #openssh-server #server
 #samba-server #server
 
@@ -112,7 +112,11 @@ breeze-gtk
 #python-sip
 #pyxdg
 
-# special featured software
-#oma-welcome
-om-repo-picker
+# OM special featured software
+oma-welcome
 om-control-center
+om-repo-picker
+om-user-manager
+om-mirror-selector
+#om-feeling-like
+#om-update-config

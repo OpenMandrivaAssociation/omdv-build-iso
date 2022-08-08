@@ -1,0 +1,18 @@
+# Cutefish Desktop Specifics
+cutefish-calculator
+cutefish-core
+cutefish-cursor-themes
+cutefish-dock
+cutefish-filemanager
+cutefish-icon-theme
+cutefish-kwin-plugins
+cutefish-launcher
+cutefish-qt-plugins
+cutefish-screenlocker
+cutefish-screenshot
+cutefish-settings
+cutefish-statusbar
+cutefish-terminal
+cutefish-videoplayer
+cutefish-wallpapers
+# task-cutefish #waiting for metapackage
