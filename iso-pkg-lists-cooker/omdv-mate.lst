@@ -5,6 +5,7 @@
 %include .///omdv_drivers.lst
 #include .///omdv_ppp.lst
 #include .///omdv_utils.lst
+%include .///omdv_task-plasma-minimal.lst
 
 # more includes lists for common sets that are not task/meta pkgs
 %include .///omdv_firefox.lst
