@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///omdv_core.lst
 %include .///omdv_iso.lst
 %include .///omdv_control.lst
@@ -6,15 +6,15 @@
 %include .///omdv_ppp.lst
 %include .///omdv_utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
+# More includes lists for common sets that are not task/meta pkgs
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-%include .///omdv_libreoffice.lst
+#%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-# include .///omdv_vlc.lst
+#%include .///omdv_vlc.lst
 
 # Desktop Specifics
 task-gnome
@@ -105,12 +105,11 @@ task-pulseaudio
 
 task-printing
 # printing
-task-printing-scanning
-system-config-printer-gui #printer
-epson-inkjet-printer-escpr
+#task-printing-scanning
+#system-config-printer-gui #printer
 
-x11-font-cyrillic
 # keep to check
+#x11-font-cyrillic
 x11-server-xorg
 x11-tools
 #x11-docs
@@ -156,7 +155,7 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_wins
+#nss_wins #this pulls in a ton of samba deps
 openssl
 #pam_ldap
 poppler-data
@@ -174,7 +173,7 @@ sddm
 #python-sip
 #pyxdg
 
-# special featured software
+# Special OM featured software
 oma-welcome
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
@@ -194,7 +193,7 @@ flatpak
 # for dnfdragora to use correct backend
 libyui-gtk
 libyui-mga-gtk
-# for libreoffice
-libreoffice-gnome
-libreoffice-gtk3-kde5
+# for LibreOffice
+#libreoffice-gnome
+#libreoffice-gtk3-kde5
 
