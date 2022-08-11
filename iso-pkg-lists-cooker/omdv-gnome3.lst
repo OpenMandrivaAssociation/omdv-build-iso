@@ -154,14 +154,15 @@ jasper
 nss
 nss_ldap
 nss_mdns
-#nss_wins #this pulls in a ton of samba deps
+nss_wins #this pulls in a ton of samba deps
 openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
 sddm
-#openssh-server #server
-#samba-server #server
+breeze-icons
+openssh-server #server
+samba-server #server
 
 #python deps?
 #python-ldap
@@ -172,7 +173,7 @@ sddm
 #pyxdg
 
 # Special OM featured software
-oma-welcome
+#oma-welcome
 om-repo-picker
 om-control-center
 om-user-manager
@@ -186,8 +187,8 @@ om-mirror-selector
 
 # Feeling stuff
 # for dnfdragora to use correct backend
-#libyui-gtk
-#libyui-mga-gtk
+libyui-gtk
+libyui-mga-gtk
 # For libreoffice
 #libreoffice-gnome
 #libreoffice-gtk3-kde5
