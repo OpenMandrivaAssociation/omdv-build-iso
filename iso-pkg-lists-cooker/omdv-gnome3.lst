@@ -72,7 +72,8 @@ gnome-photos
 bijiben
 gnome-characters
 gnome-clocks
-gnome-builder
+# Builder is needed only for developers.
+#gnome-builder
 gnome-dictionary
 gnome-documents
 gnome-font-viewer
