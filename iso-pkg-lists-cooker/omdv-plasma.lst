@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///pk-core.lst
 %include .///pk-iso.lst
 %include .///pk-control.lst
@@ -6,7 +6,7 @@
 %include .///pk-ppp.lst
 %include .///pk-utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
+# More includes lists for common sets that are not task/meta pkgs
 %include .///pk-pulseaudio.lst
 %include .///pk-task-plasma.lst
 %include .///pk-fonts.lst
@@ -19,17 +19,16 @@
 #%include .///pk-smplayer.lst
 #%include .///pk-kipi-plugins.lst
 
-#%include .///pk-firefox.lst
 firefox
 #falkon
 #falkon-kde
 #falkon-plugins
 
-# install for Live only
+# Install for Live only
 # and remove with calamares cleaner
 #kpat
 
-# Desktop Specifics
+# Desktop Specific
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-gstreamer
@@ -76,6 +75,7 @@ om-repo-picker
 om-control-center
 om-user-manager
 om-mirror-selector
+dnfdrake
 
 #oxygen-icons
 #packagekit
