@@ -10,7 +10,7 @@
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-#%include .///omdv_libreoffice.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -56,7 +56,7 @@ epiphany
 gnome-games
 rhythmbox
 totem
-
+transmission-gtk
 simple-scan
 shotwell
 #sushi
@@ -68,6 +68,7 @@ fractal
 gnome-maps
 gnome-music
 gnome-photos
+shortwave
 
 bijiben
 gnome-characters
@@ -106,8 +107,8 @@ task-pulseaudio
 
 task-printing
 # printing
-#task-printing-scanning
-#system-config-printer-gui #printer
+task-printing-scanning
+system-config-printer-gui #printer
 
 # keep to check
 #x11-font-cyrillic
@@ -175,12 +176,16 @@ sddm
 #pyxdg
 
 # Special OM featured software
-oma-welcome
+gnome-initial-setup
+gnome-tour
+
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
+#oma-welcome
+#om-control-center
+
 om-update-config
 om-repo-picker
-om-control-center
 om-user-manager
 om-mirror-selector
 
@@ -195,6 +200,6 @@ flatpak
 libyui-gtk
 libyui-mga-gtk
 # for LibreOffice
-#libreoffice-gnome
-#libreoffice-gtk3-kde5
+libreoffice-gnome
+libreoffice-gtk3-kde5
 
