@@ -162,7 +162,7 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-#sddm
+sddm
 
 #openssh-server #server
 #samba-server #server
