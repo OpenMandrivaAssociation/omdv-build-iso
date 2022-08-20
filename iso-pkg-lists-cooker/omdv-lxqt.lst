@@ -12,10 +12,10 @@
 %include .///omdv_gstreamer.lst
 #%include .///omdv_krita.lst
 %include .///omdv_locales.lst
-%include .///omdv_man-pages.lst
+#%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_vlc.lst
-%include .///omdv_smplayer.lst
+#%include .///omdv_smplayer.lst
 
 # Desktop Specifics
 task-lxqt
@@ -115,7 +115,7 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_wins
+nss_wins #this pulls in a ton of samba deps
 openssl
 pam_ldap
 poppler-data
@@ -128,8 +128,8 @@ samba-server #server
 breeze-gtk
 
 # OM special featured software
-oma-welcome
-om-control-center
+#oma-welcome
+#om-control-center
 om-update-config
 om-repo-picker
 
