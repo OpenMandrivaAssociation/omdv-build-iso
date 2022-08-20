@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///omdv_core.lst
 %include .///omdv_iso_minimal.lst
 %include .///omdv_control.lst
@@ -6,15 +6,15 @@
 %include .///omdv_ppp.lst
 %include .///omdv_utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
-# Optional now that Falkon is Great Again -- .///omdv_firefox.lst
+# More includes lists for common sets that are not task/meta pkgs
+#%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
-# include .///omdv_vlc.lst
+#%include .///omdv_vlc.lst
 %include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
@@ -80,14 +80,13 @@ xrandr
 zip
 unzip
 
-# install for Live only
+# Install for Live only
 # and remove with calamares cleaner
 kpat
-# Desktop Specifics
 
+# Desktop Specifics
 phonon4qt5-gstreamer
-isoimagewriter
-quick-usb-formatter
+rosa-imagewriter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
 kipi-plugins-calendar
@@ -111,10 +110,10 @@ kipi-plugins-smug
 kipi-plugins-yandexfotki
 showfoto
 
+# Printing and scanning
 task-printing
-# printing
 task-printing-scanning
-epson-inkjet-printer-escpr
+hplip-gui
 
 ## (crazy) hmm .. this need move away from here
 x11-font-cyrillic
@@ -126,7 +125,6 @@ x11-data-cursor-themes
 edidbins
 
 # MD this entire list should be shuffled or justified to be needed for the full ISO
-
 avahi #service
 
 # Miscelaneous Packages
@@ -136,21 +134,20 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_wins
+nss_wins #this pulls in a ton of samba deps
 openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
 
-# special featured software
+# OM special featured software
 oma-welcome
+om-control-center
 om-feeling-like
 om-update-config
 om-repo-picker
-om-control-center
 om-user-manager
 om-mirror-selector
-# oma-welcome got broken deps
 oxygen-icons
 
 #packagekit
@@ -159,9 +156,8 @@ packagekit-command-not-found
 discover
 discover-backend-kns
 discover-backend-packagekit
-discover-notifier
 
-# educational software
+# Educational software
 gcompris-qt
 minuet
 parley
@@ -206,11 +202,11 @@ cmake
 ninja
 rpm-build
 
-# students tend to love messengers...
+# Students tend to love messengers...
 telegram-desktop
 quaternion
 
-# let's give kids something to play with too
+# Let's give kids something to play with too
 extremetuxracer
 kreversi
 khangman
