@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///omdv_core.lst
 %include .///omdv_iso.lst
 %include .///omdv_control.lst
@@ -6,15 +6,15 @@
 %include .///omdv_ppp.lst
 %include .///omdv_utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
+# More includes lists for common sets that are not task/meta pkgs
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-# include .///omdv_libreoffice.lst
+#%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-# include .///omdv_vlc.lst
+#%include .///omdv_vlc.lst
 
 # Desktop Specifics
 task-xfce
@@ -22,7 +22,7 @@ task-xfce-minimal
 #task-xfce-plugins
 #eatmonkey
 gigolo
-# midori
+#midori
 orage
 parole
 #squeeze
@@ -58,8 +58,8 @@ task-pulseaudio
 task-printing-scanning
 system-config-printer-gui #printer
 
-x11-font-cyrillic
 # keep to check
+#x11-font-cyrillic
 x11-server-xorg
 x11-tools
 #x11-docs
@@ -117,7 +117,7 @@ breeze-gtk
 #python-sip
 #pyxdg
 
-# special featured software
+# OM special featured software
 #oma-welcome
 om-repo-picker
-om-control-center
+#om-control-center
