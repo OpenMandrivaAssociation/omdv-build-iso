@@ -76,5 +76,6 @@ sonnet-hunspell
 systemd-kcm
 yakuake
 #btop
-#kuser
+kuser
+doas
 zeroconf-ioslave
