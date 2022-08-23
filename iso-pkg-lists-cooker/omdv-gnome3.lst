@@ -162,7 +162,6 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-sddm
 
 #openssh-server #server
 #samba-server #server
@@ -177,7 +176,7 @@ sddm
 
 # Special OM featured software
 gnome-initial-setup
-gnome-tour
+#gnome-tour
 
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
