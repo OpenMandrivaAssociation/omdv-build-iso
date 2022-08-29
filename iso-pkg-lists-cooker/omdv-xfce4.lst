@@ -44,6 +44,7 @@ xfmpc
 #xfce4-artwork
 xfce4-appfinder
 xfce4-screenshooter
+xfce-polkit
 
 # xfce is missing email client.
 # We can choose betwen Thunderbird powerfully based on gtk or Claws-mail
