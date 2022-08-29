@@ -2,7 +2,8 @@ iwlwifi-agn-ucode
 radeon-firmware
 nvidia-firmware
 microcode-intel
-# FIXME
 dri-drivers
+ipp-usb
+sane-airscan
 # Needed for sound support on some Intel HW
 sof-firmware
