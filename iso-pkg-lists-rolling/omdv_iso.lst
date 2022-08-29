@@ -4,7 +4,6 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 calamares #min-iso
-distro-release-theme
 dosfstools
 eject
 #freetype-tools #iso
@@ -28,7 +27,7 @@ mailcap #iso
 man-db
 #mc
 monitor-edid #iso
-pcmemtest
+memtest86+
 mkxauth #iso
 mlocate #iso
 mtools #iso

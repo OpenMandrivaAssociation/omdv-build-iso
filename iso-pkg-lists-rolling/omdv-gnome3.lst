@@ -1,4 +1,4 @@
-# basic includes file lists
+# Basic includes file lists
 %include .///omdv_core.lst
 %include .///omdv_iso.lst
 %include .///omdv_control.lst
@@ -6,15 +6,15 @@
 %include .///omdv_ppp.lst
 %include .///omdv_utils.lst
 
-# more includes lists for common sets that are not task/meta pkgs
-# include .///omdv_firefox.lst
+# More includes lists for common sets that are not task/meta pkgs
+%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-# include .///omdv_libreoffice.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-# include .///omdv_vlc.lst
+#%include .///omdv_vlc.lst
 
 # Desktop Specifics
 task-gnome
@@ -56,22 +56,25 @@ epiphany
 gnome-games
 rhythmbox
 totem
-
+transmission-gtk
 simple-scan
 shotwell
-sushi
+#sushi
 vino
 vinagre
 polari
+fractal
 
 gnome-maps
 gnome-music
 gnome-photos
+shortwave
 
 bijiben
 gnome-characters
 gnome-clocks
-gnome-builder
+# Builder is needed only for developers.
+#gnome-builder
 gnome-dictionary
 gnome-documents
 gnome-font-viewer
@@ -97,6 +100,7 @@ gparted
 gthumb
 gimp
 inkscape
+rosa-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -105,10 +109,9 @@ task-printing
 # printing
 task-printing-scanning
 system-config-printer-gui #printer
-epson-inkjet-printer-escpr
 
-x11-font-cyrillic
 # keep to check
+#x11-font-cyrillic
 x11-server-xorg
 x11-tools
 #x11-docs
@@ -122,6 +125,7 @@ edidbins
 avahi #service
 #firewall-applet #service
 networkmanager-applet
+dbus-broker
 
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
@@ -138,7 +142,10 @@ gvfs-smb #gtk dep
 pango #gtk dep
 
 # Dirty but urgent GTK deps
-%{_lib}gjs-gir1.0
+#{_lib}gjs0
+typelib(GjsPrivate)
+gjs
+
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
@@ -150,12 +157,11 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_wins
+nss_wins #this pulls in a ton of samba deps
 openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-sddm
 
 #openssh-server #server
 #samba-server #server
@@ -168,15 +174,31 @@ sddm
 #python-sip
 #pyxdg
 
-# special featured software
-oma-welcome
-om-feeling-like
+# Special OM featured software
+gnome-initial-setup
+#gnome-tour
+
+# Disable feeling-like as it works only in Plasma
+#om-feeling-like
+#oma-welcome
+#om-control-center
+
 om-update-config
 om-repo-picker
-om-control-center
 om-user-manager
 om-mirror-selector
 
 #packagekit
 packagekit-gstreamer-plugin
 packagekit-command-not-found
+# make sure that flatpak is installed on iso
+flatpak
+
+# Feeling stuff
+# for dnfdragora to use correct backend
+libyui-gtk
+libyui-mga-gtk
+# for LibreOffice
+libreoffice-gnome
+libreoffice-gtk3-kde5
+
