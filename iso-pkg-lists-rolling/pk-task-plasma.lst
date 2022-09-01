@@ -74,5 +74,8 @@ sonnet-hunspell
 #speech-dispatcher
 #ssr
 systemd-kcm
-#kuser
+yakuake
+#btop
+kuser
+doas
 zeroconf-ioslave

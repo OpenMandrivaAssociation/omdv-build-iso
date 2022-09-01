@@ -47,6 +47,7 @@ xfmpc
 #xfce4-artwork
 xfce4-appfinder
 xfce4-screenshooter
+#claws-mail
 
 # Needed Task/Meta Packages
 task-pulseaudio
