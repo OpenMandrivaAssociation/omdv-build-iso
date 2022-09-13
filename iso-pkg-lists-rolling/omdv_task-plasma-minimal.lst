@@ -11,7 +11,7 @@ dolphin
 kio-fuse
 falkon
 falkon-kde
-# falkon-plugins
+falkon-plugins
 frameworkintegration
 kate
 kdeclarative
