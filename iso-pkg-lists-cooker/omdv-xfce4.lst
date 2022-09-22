@@ -58,6 +58,7 @@ task-pulseaudio
 # printing
 task-printing-scanning
 system-config-printer-gui #printer
+sane
 
 # keep to check
 #x11-font-cyrillic
