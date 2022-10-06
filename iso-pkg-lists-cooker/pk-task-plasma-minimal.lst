@@ -36,13 +36,13 @@ milou
 oxygen-sounds
 phonon4qt5-backend
 pinentry-qt5
-plasma-browser-integration
+#plasma-browser-integration
 plasma-desktop
 plasma-framework
 plasma-integration
 plasma-nm
 plasma-pa
-plasma-vault
+#plasma-vault
 plasma-workspace
 plasma-workspace-x11
 polkit-kde-agent-1
