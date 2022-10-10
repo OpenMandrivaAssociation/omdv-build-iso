@@ -97,11 +97,11 @@ pango #gtk dep
 #enchant
 ffmpeg
 #jasper
-#nss
-#nss_ldap
-#nss_mdns
+nss
+nss_ldap
+nss_mdns
 #nss_wins
-#openssl
+openssl
 #pam_ldap
 #poppler-data
 #sasl-plug-gssapi
