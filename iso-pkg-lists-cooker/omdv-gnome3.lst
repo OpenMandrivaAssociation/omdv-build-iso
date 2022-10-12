@@ -32,6 +32,7 @@ gnome-screenshot
 gnome-shell
 gnome-system-monitor
 gnome-terminal
+console
 gnome-themes-standard
 nautilus
 networkmanager
@@ -44,6 +45,7 @@ evince
 file-roller
 gnome-calculator
 gedit
+gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
@@ -59,9 +61,9 @@ totem
 transmission-gtk
 simple-scan
 shotwell
-#sushi
-vino
-vinagre
+sushi
+#vino
+#vinagre    #broken deps with spice-gtk+photodav, so for now disable it
 polari
 fractal
 
@@ -76,7 +78,7 @@ gnome-clocks
 # Builder is needed only for developers.
 #gnome-builder
 gnome-dictionary
-gnome-documents
+#gnome-documents  #deprecated and right now also not compile. Disable it due conflicting during iso building
 gnome-font-viewer
 gnome-sound-recorder
 gnome-usage
@@ -177,7 +179,7 @@ sasl-plug-gssapi
 
 # Special OM featured software
 gnome-initial-setup
-#gnome-tour
+gnome-tour
 
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
