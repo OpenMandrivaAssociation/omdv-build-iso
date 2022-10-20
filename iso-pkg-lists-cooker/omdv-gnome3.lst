@@ -57,13 +57,15 @@ empathy
 epiphany
 gnome-games
 rhythmbox
+clapper
 totem
 transmission-gtk
 simple-scan
 shotwell
+gthumb
 sushi
-#vino
-#vinagre    #broken deps with spice-gtk+photodav, so for now disable it
+vino
+vinagre
 polari
 fractal
 
@@ -79,6 +81,7 @@ gnome-clocks
 #gnome-builder
 gnome-dictionary
 #gnome-documents  #deprecated and right now also not compile. Disable it due conflicting during iso building
+foliate
 gnome-font-viewer
 gnome-sound-recorder
 gnome-usage
