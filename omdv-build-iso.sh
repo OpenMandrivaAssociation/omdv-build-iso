@@ -208,7 +208,7 @@ main() {
 	DIST=omdv
 	[ -z "$EXTARCH" ] && EXTARCH="$(rpm -E '%{_target_cpu}')"
 	[ -z "$EXTARCH" ] && EXTARCH="$(uname -m)"
-	[ -z "${DEFAULTLANG}" ] && DEFAULTLANG="en_US.utf8"
+	[ -z "${DEFAULTLANG}" ] && DEFAULTLANG="en_US.UTF-8"
 	[ -z "${DEFAULTKBD}" ] && DEFAULTKBD="us"
 	[ -z "${TREE}" ] && TREE=cooker
 	[ -z "${VERSION}" ] && VERSION="$(date +%Y.0)"
