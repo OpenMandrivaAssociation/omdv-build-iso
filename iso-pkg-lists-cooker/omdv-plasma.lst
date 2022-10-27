@@ -53,8 +53,8 @@ kipi-plugins-yandexfotki
 showfoto
 krita
 
-task-printing
 # printing
+task-printing
 task-printing-scanning
 
 ## (crazy) hmm .. this need move away from here
