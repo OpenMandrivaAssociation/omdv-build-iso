@@ -5,7 +5,7 @@ ktp-call-ui
 ktp-common-internals
 ktp-contact-list
 ktp-contact-runner
-ktp-desktop-applets
+#ktp-desktop-applets
 ktp-filetransfer-handler
 ktp-kded-module
 ktp-send-file
