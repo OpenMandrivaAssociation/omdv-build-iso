@@ -72,8 +72,9 @@ avahi #service
 # FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Miscelaneous Packages
-filelight
+chromium-browser-stable
 enchant
+filelight
 ffmpeg
 jasper
 nss
