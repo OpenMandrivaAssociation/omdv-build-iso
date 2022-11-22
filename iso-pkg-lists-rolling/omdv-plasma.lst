@@ -27,7 +27,7 @@ kpat
 # Desktop Specifics
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
-phonon4qt5-gstreamer
+phonon4qt5-vlc
 #quick-usb-formatter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
