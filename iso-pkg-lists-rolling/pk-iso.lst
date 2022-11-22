@@ -32,7 +32,7 @@ memtest86+
 mkxauth #iso
 mlocate #iso
 mtools #iso
-neofetch
+#neofetch
 ntfs-3g
 ntfs-3g-system-compression
 os-prober
@@ -57,8 +57,6 @@ vbetool #iso
 wget
 aria2
 whois #iso
-x11-driver-input-vmmouse #iso
-#x11-driver-video-vboxvideo #iso
 virtualbox-guest-additions #Shared clipboard and files
 x11-data-bitmaps
 x11-driver-input-evdev
