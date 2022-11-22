@@ -19,12 +19,9 @@ samba-server
 samba-client
 task-x11
 #uClibc
-x11-driver-input-vmmouse
-#x11-driver-video-vboxvideo
 x11-driver-video-modesetting
 x11-driver-video-fbdev
 x11-driver-video-vesa
-x11-driver-video-vmware
 x11-font-cyrillic
 xorg-x11
 xdg-user-dirs-gtk
