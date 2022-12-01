@@ -32,6 +32,7 @@ gnome-screenshot
 gnome-shell
 gnome-system-monitor
 gnome-terminal
+console
 gnome-themes-standard
 nautilus
 networkmanager
@@ -44,6 +45,7 @@ evince
 file-roller
 gnome-calculator
 gedit
+gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
@@ -55,11 +57,13 @@ empathy
 epiphany
 gnome-games
 rhythmbox
+clapper
 totem
 transmission-gtk
 simple-scan
 shotwell
-#sushi
+gthumb
+sushi
 vino
 vinagre
 polari
@@ -76,7 +80,8 @@ gnome-clocks
 # Builder is needed only for developers.
 #gnome-builder
 gnome-dictionary
-gnome-documents
+#gnome-documents  #deprecated and right now also not compile. Disable it due conflicting during iso building
+foliate
 gnome-font-viewer
 gnome-sound-recorder
 gnome-usage
@@ -109,6 +114,7 @@ task-printing
 # printing
 task-printing-scanning
 system-config-printer-gui #printer
+sane
 
 # keep to check
 #x11-font-cyrillic
@@ -176,7 +182,7 @@ sasl-plug-gssapi
 
 # Special OM featured software
 gnome-initial-setup
-#gnome-tour
+gnome-tour
 
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
@@ -201,4 +207,3 @@ libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
 libreoffice-gtk3-kde5
-
