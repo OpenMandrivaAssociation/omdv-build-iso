@@ -23,7 +23,6 @@ task-xfce-minimal
 #eatmonkey
 gigolo
 #midori
-firefox
 orage
 parole
 #squeeze
@@ -140,6 +139,7 @@ gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
+lightdm
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
