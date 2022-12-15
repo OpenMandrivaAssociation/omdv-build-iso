@@ -23,6 +23,7 @@ task-xfce-minimal
 #eatmonkey
 gigolo
 #midori
+firefox
 orage
 parole
 #squeeze
@@ -45,11 +46,60 @@ xfmpc
 xfce4-appfinder
 xfce4-screenshooter
 xfce-polkit
+thunar
+xfce4-appfinder
+xfce4-notifyd
+xfce4-panel
+xfce4-screenshooter
+xfce4-session
+xfce4-settings
+xfce4-taskmanager
+xfce4-terminal
+xfce4-whiskermenu-plugin
+xfdesktop
+xfwm4
 
 # xfce is missing email client.
 # We can choose betwen Thunderbird powerfully based on gtk or Claws-mail
 # Pick right now claws-mail due to less resources and better theme integration with xfce4
 claws-mail
+
+# Plugins
+xfce4-battery-plugin
+xfce4-calculator-plugin
+xfce4-clipman-plugin
+xfce4-cpufreq-plugin
+xfce4-cpugraph-plugin
+xfce4-datetime-plugin
+xfce4-diskperf-plugin
+xfce4-embed-plugin
+xfce4-equake-plugin
+xfce4-eyes-plugin
+xfce4-fsguard-plugin
+xfce4-genmon-plugin
+xfce4-hamster-plugin
+xfce4-hotcorner-plugin
+xfce4-kbdleds-plugin
+xfce4-linelight-plugin
+xfce4-mailwatch-plugin
+xfce4-mount-plugin
+xfce4-mpc-plugin
+xfce4-netload-plugin
+xfce4-notes-plugin
+xfce4-places-plugin
+xfce4-pulseaudio-plugin
+xfce4-quicklauncher-plugin
+xfce4-sensors-plugin
+xfce4-smartbookmark-plugin
+xfce4-statusnotifier-plugin
+xfce4-systemload-plugin
+xfce4-time-out-plugin
+xfce4-timer-plugin
+xfce4-verve-plugin
+xfce4-wavelan-plugin
+xfce4-weather-plugin
+xfce4-whiskermenu-plugin
+xfce4-xkb-plugin
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -76,6 +126,7 @@ avahi #service
 #firewall-applet #service
 networkmanager-applet
 
+adwaita-icon-theme
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
 gamin #gtk dep
