@@ -6,3 +6,4 @@ pulseaudio-module-zeroconf
 pulseaudio-utils
 pulseaudio-server
 #pipewire-pulse
+#wireplumber
