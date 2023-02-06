@@ -17,6 +17,7 @@ dvbtune #utils
 dvd+rw-tools #utils
 systemd-oom
 systemd-homed
+flatpak
 freerdp #utils
 fuse2
 # fuse-exfat #utils
