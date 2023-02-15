@@ -13,7 +13,6 @@ dump #utils
 dvb-apps #utils
 dvbsnoop #utils
 dvbtune #utils
-# Violation! dnd+rw-tools is in unsupported repo. It should either be moved to main repo or not be on our isos. benbullard79
 dvd+rw-tools #utils
 systemd-oom
 systemd-homed
@@ -44,6 +43,7 @@ open #utils
 openldap-clients #utils
 opensc #utils
 p7zip #utils
+unar #utils
 pcsc-lite #utils
 pptp-linux #utils
 rng-tools #utils
