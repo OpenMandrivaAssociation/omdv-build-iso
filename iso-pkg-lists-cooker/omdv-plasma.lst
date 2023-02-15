@@ -74,8 +74,9 @@ avahi #service
 # Miscelaneous Packages
 chromium-browser-stable
 enchant
-filelight
 ffmpeg
+filelight
+flatpak
 jasper
 nss
 nss_ldap
