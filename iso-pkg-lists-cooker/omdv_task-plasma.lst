@@ -1,5 +1,5 @@
 %include .///omdv_task-plasma-minimal.lst
-%include .///omdv_task-plasma-telepathy.lst
+#%include .///omdv_task-plasma-telepathy.lst
 
 akonadi-calendar-tools
 akonadi-notes-agent
@@ -11,7 +11,7 @@ digikam
 distro-release-desktop-Plasma
 dolphin-plugins
 drkonqi
-elisa
+#elisa
 ffmpegthumbs
 grub2-editor
 gwenview
@@ -32,6 +32,7 @@ kdenlive
 kdepim-runtime
 kdf
 kdialog
+kfind
 kgamma5
 kget
 khelpcenter
