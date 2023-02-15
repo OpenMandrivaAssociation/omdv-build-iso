@@ -15,7 +15,7 @@
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
 %include .///omdv_vlc.lst
-%include .///omdv_smplayer.lst
+#%include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
@@ -53,8 +53,8 @@ kipi-plugins-yandexfotki
 showfoto
 krita
 
-task-printing
 # printing
+task-printing
 task-printing-scanning
 
 ## (crazy) hmm .. this need move away from here
@@ -74,8 +74,9 @@ avahi #service
 # Miscelaneous Packages
 chromium-browser-stable
 enchant
-filelight
 ffmpeg
+filelight
+flatpak
 jasper
 nss
 nss_ldap
@@ -85,6 +86,7 @@ openssl
 pam_ldap
 poppler-data
 rosa-imagewriter
+telegram-desktop
 sasl-plug-gssapi
 
 # OM special featured software
@@ -101,6 +103,7 @@ oxygen-icons
 packagekit-gstreamer-plugin
 packagekit-command-not-found
 discover
+discover-backend-flatpak
 discover-backend-kns
 discover-backend-packagekit
 #discover-notifier
