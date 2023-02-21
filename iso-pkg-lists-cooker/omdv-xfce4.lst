@@ -133,6 +133,8 @@ gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
 lightdm
+lightdm-gtk3-greeter
+lightdm-gtk-greeter-common
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
