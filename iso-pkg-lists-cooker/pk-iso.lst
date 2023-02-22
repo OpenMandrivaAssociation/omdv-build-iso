@@ -50,7 +50,7 @@ task-x11
 testdisk
 tmpwatch #iso
 upower #iso
-usbmuxd #iso
+#usbmuxd #iso
 urw-fonts
 uuidd
 vbetool #iso
