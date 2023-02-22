@@ -151,7 +151,6 @@ openssl
 #pam_ldap
 #poppler-data
 #sasl-plug-gssapi
-sddm
 breeze-gtk
 
 #openssh-server #server
