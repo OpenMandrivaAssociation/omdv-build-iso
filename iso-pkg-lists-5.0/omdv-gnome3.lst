@@ -1,0 +1,209 @@
+# Basic includes file lists
+%include .///omdv_core.lst
+%include .///omdv_iso.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_utils.lst
+
+# More includes lists for common sets that are not task/meta pkgs
+%include .///omdv_firefox.lst
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_libreoffice.lst
+%include .///omdv_locales.lst
+#%include .///omdv_man-pages.lst
+%include .///omdv_pulseaudio.lst
+#%include .///omdv_vlc.lst
+
+# Desktop Specifics
+task-gnome
+task-gnome-minimal
+accountsservice
+adwaita-icon-theme
+gnome-desktop
+gnome-backgrounds
+gnome-control-center
+gnome-menus
+gnome-panel
+gnome-power-manager
+gnome-keyring
+gnome-screenshot
+gnome-shell
+gnome-system-monitor
+gnome-terminal
+console
+gnome-themes-standard
+nautilus
+networkmanager
+yelp
+task-x11
+
+cheese
+eog
+evince
+file-roller
+gnome-calculator
+gedit
+gnome-text-editor
+gdm
+gnome-color-manager
+gnome-disk-utility
+gnome-packagekit
+gnome-software
+gnome-terminal-nautilus
+
+empathy
+epiphany
+gnome-games
+rhythmbox
+clapper
+totem
+transmission-gtk
+simple-scan
+shotwell
+gthumb
+sushi
+vino
+vinagre
+polari
+fractal
+
+gnome-maps
+gnome-music
+gnome-photos
+shortwave
+
+bijiben
+gnome-characters
+gnome-clocks
+# Builder is needed only for developers.
+#gnome-builder
+gnome-dictionary
+#gnome-documents  #deprecated and right now also not compile. Disable it due conflicting during iso building
+foliate
+gnome-font-viewer
+gnome-sound-recorder
+gnome-usage
+gnome-weather
+baobab
+gnome-system-log
+gnome-search-tool
+gnome-commander
+gnome-calendar
+
+gucharmap
+mousetweaks
+
+# biz / office / utils
+brasero
+caribou
+caribou-gtk3
+evolution
+gnome-contacts
+gparted
+gthumb
+gimp
+inkscape
+rosa-imagewriter
+
+# Needed Task/Meta Packages
+task-pulseaudio
+
+task-printing
+# printing
+task-printing-scanning
+system-config-printer-gui #printer
+sane
+
+# keep to check
+#x11-font-cyrillic
+x11-server-xorg
+x11-tools
+#x11-docs
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+
+# MD this entire list should be shuffled or justified to be needed for the full ISO
+
+avahi #service
+#firewall-applet #service
+networkmanager-applet
+dbus-broker
+
+atk1.0-common #gtk dep
+canberra-gtk #gtk dep
+gamin #gtk dep
+GConf2 #gtk dep
+gtk2-modules #gtk dep
+#gtk-xfce-engine
+gvfs
+gvfs-archive #gtk dep
+gvfs-fuse #gtk dep
+gvfs-gphoto2 #gtk dep
+gvfs-smb #gtk dep
+#ia_ora-gnome #gtk dep
+pango #gtk dep
+
+# Dirty but urgent GTK deps
+#{_lib}gjs0
+typelib(GjsPrivate)
+gjs
+
+
+# Support for talking to wrongPhone/wrongPad
+#usbmuxd
+
+# Miscelaneous Packages
+enchant
+ffmpeg
+jasper
+nss
+nss_ldap
+nss_mdns
+nss_wins #this pulls in a ton of samba deps
+openssl
+#pam_ldap
+poppler-data
+sasl-plug-gssapi
+
+#openssh-server #server
+#samba-server #server
+
+#python deps?
+#python-ldap
+#python-notify
+#python-OpenSSL
+#python-pycrypto
+#python-sip
+#pyxdg
+
+# Special OM featured software
+gnome-initial-setup
+gnome-tour
+
+# Disable feeling-like as it works only in Plasma
+#om-feeling-like
+#oma-welcome
+#om-control-center
+
+om-update-config
+om-repo-picker
+om-user-manager
+om-mirror-selector
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
+# make sure that flatpak is installed on iso
+flatpak
+
+# Feeling stuff
+# for dnfdragora to use correct backend
+libyui-gtk
+libyui-mga-gtk
+# for LibreOffice
+libreoffice-gnome
+libreoffice-gtk3-kde5
