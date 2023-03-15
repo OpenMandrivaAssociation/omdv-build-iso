@@ -13,7 +13,7 @@
 %include .///pk-man-pages.lst
 %include .///pk-pulseaudio.lst
 #%include .///pk-calligra.lst
-# %include .///pk-krita.lst
+#%include .///pk-krita.lst
 #%include .///pk-vlc.lst
 #%include .///pk-smplayer.lst
 
@@ -46,8 +46,8 @@ task-pulseaudio
 #hplip-gui #printer
 #system-config-printer-gui #printer
 
-#x11-font-cyrillic
 # keep to check
+#x11-font-cyrillic
 x11-server-xorg
 #x11-server-xwayland
 x11-compose-cache
