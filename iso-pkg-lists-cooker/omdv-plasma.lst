@@ -19,7 +19,7 @@
 #%include .///pk-smplayer.lst
 #%include .///pk-kipi-plugins.lst
 
-#chromium-browser-stable
+chromium-browser-stable
 #firefox
 #falkon
 #falkon-kde
