@@ -14,13 +14,12 @@
 %include .///pk-man-pages.lst
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
-#%include .///pk-firefox.lst
 #%include .///pk-libreoffice.lst
 #%include .///pk-vlc.lst
 
 # Desktop Specifics
-#task-gnome
-#task-gnome-minimal
+task-gnome
+task-gnome-minimal
 accountsservice
 adwaita-icon-theme
 gnome-desktop
@@ -34,27 +33,27 @@ gnome-screenshot
 gnome-shell
 gnome-system-monitor
 gnome-terminal
+console
 gnome-themes-standard
 nautilus
 networkmanager
 yelp
 task-x11
 
+firefox
 #cheese
 eog
-#ekiga
-#lollypop
 evince
 file-roller
 #gnome-calculator
 gedit
+gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
 gnome-software
 gnome-terminal-nautilus
-gnome-tweaks
 
 #empathy
 #epiphany
@@ -62,7 +61,6 @@ gnome-tweaks
 #rhythmbox
 totem
 
-#simple-scan
 #shotwell
 #sushi
 #vino
@@ -104,10 +102,13 @@ gthumb
 
 # Needed Task/Meta Packages
 task-pulseaudio
+
+# Printing
 #task-printing
-# printing
 #task-printing-scanning
-#system-config-printer-gui #printer
+#system-config-printer-gui
+#simple-scan
+#sane
 
 # keep to check
 #x11-font-cyrillic
@@ -174,10 +175,12 @@ samba-server #server
 
 # Special OM featured software
 #oma-welcome
+#om-control-center
 om-repo-picker
-om-control-center
 om-user-manager
 om-mirror-selector
+gnome-initial-setup
+gnome-tour
 
 #packagekit
 #packagekit-gstreamer-plugin
@@ -189,6 +192,6 @@ om-mirror-selector
 # for dnfdragora to use correct backend
 libyui-gtk
 libyui-mga-gtk
-# For libreoffice
+# for libreoffice
 #libreoffice-gnome
 #libreoffice-gtk3-kde5
