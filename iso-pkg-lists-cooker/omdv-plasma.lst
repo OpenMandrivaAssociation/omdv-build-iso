@@ -87,7 +87,7 @@ openssl
 pam_ldap
 poppler-data
 rosa-imagewriter
-telegram-desktop
+#telegram-desktop
 sasl-plug-gssapi
 
 # OM special featured software
