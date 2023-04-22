@@ -110,8 +110,8 @@ rosa-imagewriter
 # Needed Task/Meta Packages
 task-pulseaudio
 
+# Printing
 task-printing
-# printing
 task-printing-scanning
 system-config-printer-gui #printer
 sane
@@ -180,15 +180,13 @@ sasl-plug-gssapi
 #python-sip
 #pyxdg
 
-# Special OM featured software
+# OM special featured software
 gnome-initial-setup
 gnome-tour
-
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
 #oma-welcome
 #om-control-center
-
 om-update-config
 om-repo-picker
 om-user-manager
