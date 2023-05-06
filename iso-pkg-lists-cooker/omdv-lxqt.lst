@@ -35,11 +35,7 @@ qterminal
 falkon
 rosa-imagewriter
 #trojita
-# Test mate
-#sddm
-lightdm
-task-mate
-openmandriva-mate-config
+sddm
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -86,7 +82,7 @@ jasper
 nss
 nss_ldap
 nss_mdns
-nss_wins #this pulls in a ton of samba deps
+#nss_wins #this pulls in a ton of samba deps
 openssl
 pam_ldap
 poppler-data
