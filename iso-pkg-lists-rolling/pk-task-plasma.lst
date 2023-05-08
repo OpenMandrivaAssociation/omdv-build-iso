@@ -64,6 +64,7 @@ myspell-dictionary
 #plasma-workspace-wayland
 plymouth-kcm
 #print-manager
+purpose
 sddm
 sddm-kcm
 sddm-theme-breeze
