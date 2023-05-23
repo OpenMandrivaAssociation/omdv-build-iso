@@ -11,7 +11,7 @@
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
 %include .///pk-locales.lst
-%include .///pk-man-pages.lst
+#include .///pk-man-pages.lst
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
 #%include .///pk-libreoffice.lst
@@ -33,7 +33,7 @@ gnome-screenshot
 gnome-shell
 gnome-system-monitor
 gnome-terminal
-console
+#console
 gnome-themes-standard
 nautilus
 networkmanager
@@ -47,19 +47,20 @@ evince
 file-roller
 #gnome-calculator
 gedit
-gnome-text-editor
+#gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
 gnome-software
-gnome-terminal-nautilus
+#gnome-terminal-nautilus
 
 #empathy
 #epiphany
 #gnome-games
 #rhythmbox
-totem
+#totem
+clapper
 
 #shotwell
 #sushi
@@ -68,23 +69,23 @@ totem
 #polari
 #fractal
 #gnome-maps
-gnome-music
+#gnome-music
 gnome-photos
-bijiben
-gnome-characters
+#bijiben
+#gnome-characters
 gnome-clocks
 #gnome-builder
 gnome-dictionary
-gnome-documents
-gnome-font-viewer
-gnome-sound-recorder
-gnome-usage
+#gnome-documents
+#gnome-font-viewer
+#gnome-sound-recorder
+#gnome-usage
 gnome-weather
-baobab
-gnome-system-log
-gnome-search-tool
-gnome-commander
-gnome-calendar
+#baobab
+#gnome-system-log
+#gnome-search-tool
+#gnome-commander
+#gnome-calendar
 gucharmap
 mousetweaks
 
@@ -94,7 +95,7 @@ mousetweaks
 #caribou-gtk3
 #evolution
 #gnome-contacts
-gparted
+#gparted
 gthumb
 #gimp
 #inkscape
@@ -160,8 +161,8 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-sddm
-breeze-icons
+#sddm
+#breeze-icons
 openssh-server #server
 samba-server #server
 
@@ -177,10 +178,10 @@ samba-server #server
 #oma-welcome
 #om-control-center
 om-repo-picker
-om-user-manager
+#om-user-manager
 om-mirror-selector
-gnome-initial-setup
-gnome-tour
+#gnome-initial-setup
+#gnome-tour
 
 #packagekit
 #packagekit-gstreamer-plugin
@@ -190,8 +191,8 @@ gnome-tour
 
 # Feeling stuff
 # for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
+#libyui-gtk
+#libyui-mga-gtk
 # for libreoffice
 #libreoffice-gnome
 #libreoffice-gtk3-kde5
