@@ -11,14 +11,14 @@
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
 %include .///pk-locales.lst
-#include .///pk-man-pages.lst
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
+#%include .///pk-man-pages.lst
 #%include .///pk-libreoffice.lst
 #%include .///pk-vlc.lst
 
 # Desktop Specifics
-task-gnome
+#task-gnome
 task-gnome-minimal
 accountsservice
 adwaita-icon-theme
@@ -33,12 +33,14 @@ gnome-screenshot
 gnome-shell
 gnome-system-monitor
 gnome-terminal
+gnome-tweaks
 #console
 gnome-themes-standard
 nautilus
 networkmanager
 yelp
 task-x11
+adobe-source-code-pro-fonts
 
 firefox
 #cheese
