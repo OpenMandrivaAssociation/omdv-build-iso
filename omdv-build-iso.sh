@@ -1877,7 +1877,7 @@ EOF
 
 		## NOTE these sed's need generate valid yaml .. - crazy -
 		if [ "${TYPE,,}" = 'plasma' -o "${TYPE,,}" = 'edu' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startkde"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*executable:.*/    executable: "startplasma-x11"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
