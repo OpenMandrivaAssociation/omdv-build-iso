@@ -7,7 +7,6 @@ calamares #min-iso
 dosfstools
 eject
 #freetype-tools #iso
-plasma-firewall
 hfsutils #iso
 distro-release-desktop
 distro-release-indexhtml
