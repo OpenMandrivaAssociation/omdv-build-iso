@@ -21,7 +21,7 @@ task-plasma6
 
 # Install for Live only
 # and remove with calamares cleaner
-kpat
+#kpat
 
 x11-font-cyrillic
 x11-tools
@@ -59,3 +59,5 @@ kf6-oxygen-icons
 plasma6-discover
 plasma6-discover-backend-flatpak
 plasma6-discover-backend-packagekit
+
+plasma6-sddm
