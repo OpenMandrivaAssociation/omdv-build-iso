@@ -47,7 +47,7 @@ pcsc-lite #utils
 pptp-linux #utils
 rng-tools #utils
 rpcbind #utils
-rsnapshot #utils
+#rsnapshot #utils
 rsync #utils
 #samba-client #utils
 #samba-winbind #utils
