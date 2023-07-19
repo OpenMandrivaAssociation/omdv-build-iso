@@ -17,7 +17,6 @@
 #%include .///pk-smplayer.lst
 #%include .///pk-vlc.lst
 
-
 task-plasma6
 plasma6-sddm
 
