@@ -57,6 +57,8 @@ plasma6-systemmonitor
 plasma6-konsole
 plasma6-dolphin
 plasma6-gwenview
+plasma6-kate
+plasma6-kwrite
 # FIXME need to figure out what exactly requires
 # the next 2 so we can add a dependency there
 # rather than listing them here
