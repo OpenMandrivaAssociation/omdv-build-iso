@@ -9,7 +9,7 @@ dosfstools
 eject
 #freetype-tools #iso
 hfsutils #iso
-distro-release-desktop
+#distro-release-desktop
 distro-release-indexhtml
 distro-release-repos-pkgprefs
 distro-release-theme
@@ -32,14 +32,14 @@ mkxauth #iso
 mlocate #iso
 mtools #iso
 neofetch
-ntfs-3g
-ntfs-3g-system-compression
+#ntfs-3g
+#ntfs-3g-system-compression
 os-prober
-pcmciautils
+#pcmciautils
 plymouth-system-theme
 python-curl
 quota #iso
-reiserfsprogs
+#reiserfsprogs
 rtkit #iso
 sharutils #iso
 sound-theme-freedesktop #iso
