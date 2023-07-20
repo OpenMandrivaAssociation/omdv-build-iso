@@ -35,6 +35,27 @@ enchant
 ffmpeg
 #flatpak
 #plasma6-flatpak-kcm
+plasma6-systemsettings
+plasma6-kinfocenter
+plasma6-ksystemstats
+plasma6-oxygen
+plasma6-oxygen-sounds
+plasma6-nm
+plasma6-kdeplasma-addons
+plasma6-browser-integration
+plasma6-vault
+plasma6-xdg-desktop-portal-kde
+plasma6-flatpak-kcm
+plasma6-firewall
+plasma6-systemmonitor
+plasma6-konsole
+plasma6-dolphin
+plasma6-gwenview
+# FIXME need to figure out what exactly requires
+# the next 2 so we can add a dependency there
+# rather than listing them here
+kf6-kirigami-addons
+plasma6-qqc2-breeze-style
 jasper
 nss
 nss_ldap
