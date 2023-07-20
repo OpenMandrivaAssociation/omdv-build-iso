@@ -36,7 +36,6 @@ os-prober
 plymouth-system-theme
 python-curl
 quota #iso
-reiserfsprogs
 rtkit #iso
 sharutils #iso
 sound-theme-freedesktop #iso
