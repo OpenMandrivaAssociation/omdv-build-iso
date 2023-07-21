@@ -83,4 +83,4 @@ plasma6-discover
 plasma6-discover-backend-flatpak
 plasma6-discover-backend-packagekit
 
-plasma6-sddm
+gdm
