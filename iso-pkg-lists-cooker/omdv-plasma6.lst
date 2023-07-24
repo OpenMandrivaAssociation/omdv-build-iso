@@ -69,6 +69,11 @@ poppler-data
 #telegram-desktop
 sasl-plug-gssapi
 
+# FIXME why is gtk pulled in? Would be nice to be
+# free of g cruft, but we have to take plasma6's gtk
+# style over plasma5's...
+plasma6-breeze-gtk
+
 # Install for Live only
 # and remove with calamares cleaner
 #kpat
