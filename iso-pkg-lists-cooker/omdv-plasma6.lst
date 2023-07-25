@@ -18,6 +18,7 @@
 %include .///omdv_pulseaudio.lst
 
 task-plasma6
+libreoffice-qt6
 
 # Install for Live only
 # and remove with calamares cleaner
