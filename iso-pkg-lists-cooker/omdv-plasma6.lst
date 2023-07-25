@@ -46,7 +46,7 @@ plasma6-browser-integration
 plasma6-vault
 plasma6-xdg-desktop-portal-kde
 plasma6-flatpak-kcm
-plasma6-firewall
+#plasma6-firewall
 plasma6-systemmonitor
 plasma6-konsole
 plasma6-dolphin
@@ -58,6 +58,7 @@ plasma6-kwrite
 # rather than listing them here
 kf6-kirigami-addons
 plasma6-qqc2-breeze-style
+
 jasper
 nss
 nss_ldap
