@@ -17,6 +17,7 @@
 task-plasma6
 plasma6-sddm
 plasma6-workspace-x11
+plasma6-breeze-gtk
 
 x11-tools
 x11-docs
