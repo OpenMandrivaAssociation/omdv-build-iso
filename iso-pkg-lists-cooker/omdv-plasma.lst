@@ -19,6 +19,7 @@
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
+libreoffice-kde5
 
 # Install for Live only
 # and remove with calamares cleaner
