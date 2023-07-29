@@ -5,6 +5,7 @@
 %include .///pk-drivers.lst
 %include .///pk-ppp.lst
 %include .///pk-utils.lst
+%include .///pk-plasma6.lst
 
 # More includes lists for common sets that are not task/meta pkgs
 %include .///pk-fonts.lst
@@ -13,57 +14,35 @@
 %include .///pk-man-pages.lst
 %include .///pk-myspell.lst
 %include .///pk-pulseaudio.lst
-
-task-plasma6
-plasma6-sddm
-plasma6-workspace-x11
-plasma6-breeze-gtk
-
-x11-tools
-x11-docs
-x11-font-type1
-x11-font-misc
-x11-data-cursor-themes
-edidbins
-avahi #service
+#%include .///pk-vlc.lst
 
 # Miscelaneous Packages
-#chromium-browser-stable
+avahi #service
+chromium-browser-stable
+edidbins
 enchant
 ffmpeg
-plasma6-systemsettings
-plasma6-kinfocenter
-plasma6-ksystemstats
-plasma6-oxygen
-plasma6-oxygen-sounds
-plasma6-nm
-plasma6-kdeplasma-addons
-plasma6-xdg-desktop-portal-kde
-plasma6-systemmonitor
-plasma6-konsole
-plasma6-dolphin
-plasma6-gwenview
-plasma6-kate
-plasma6-kwrite
-plasma6-qqc2-breeze-style
-#plasma6-firewall
-#flatpak
-#plasma6-flatpak-kcm
-#plasma6-browser-integration
-#plasma6-vault
-kf6-kirigami-addons
-kf6-oxygen-icons
 jasper
 nss
 nss_ldap
 nss_mdns
-#nss_wins #this pulls in a ton of samba deps
+openmandriva-kde-icons
 openssl
 pam_ldap
+phonon4qt6-backend
 poppler-data
 sasl-plug-gssapi
+task-x11
+x11-data-cursor-themes
+x11-docs
+x11-font-misc
+x11-font-type1
+x11-tools
+xsettings-kde
+xsettingsd
+plasma6-breeze-gtk
+#nss_wins #this pulls in a ton of samba deps
 #telegram-desktop
-
 #packagekit
 #plasma6-discover
 #plasma6-discover-backend-flatpak
