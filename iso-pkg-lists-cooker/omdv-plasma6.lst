@@ -41,6 +41,7 @@ x11-tools
 xsettings-kde
 xsettingsd
 plasma6-breeze-gtk
+dnfdrake
 #nss_wins #this pulls in a ton of samba deps
 #telegram-desktop
 #packagekit
