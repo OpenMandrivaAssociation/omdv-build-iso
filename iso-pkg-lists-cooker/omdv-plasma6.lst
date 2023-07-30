@@ -60,6 +60,7 @@ plasma6-dolphin
 plasma6-gwenview
 plasma6-kate
 plasma6-kwrite
+plasma6-ark
 # FIXME need to figure out what exactly requires
 # the next 2 so we can add a dependency there
 # rather than listing them here
