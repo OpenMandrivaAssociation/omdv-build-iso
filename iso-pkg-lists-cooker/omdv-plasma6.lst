@@ -49,7 +49,9 @@ dnfdrake
 #plasma6-discover-backend-flatpak
 #plasma6-discover-backend-packagekit
 # Temporary
-lightdm
+sddm
+sddm-kcm
+sddm-theme-breeze
 
 # OM special featured software
 #
