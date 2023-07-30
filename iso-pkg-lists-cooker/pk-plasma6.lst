@@ -40,9 +40,9 @@ plasma6-pa
 plasma6-polkit-kde-agent-1
 plasma6-powerdevil
 plasma6-qqc2-breeze-style
-plasma6-sddm
-plasma6-sddm-kcm
-plasma6-sddm-theme-breeze
+#plasma6-sddm
+#plasma6-sddm-kcm
+#plasma6-sddm-theme-breeze
 plasma6-systemmonitor
 plasma6-systemsettings
 plasma6-vault
