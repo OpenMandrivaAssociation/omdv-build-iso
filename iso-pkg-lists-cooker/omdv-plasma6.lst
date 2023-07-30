@@ -48,6 +48,8 @@ dnfdrake
 #plasma6-discover
 #plasma6-discover-backend-flatpak
 #plasma6-discover-backend-packagekit
+# Temporary
+lightdm
 
 # OM special featured software
 #
