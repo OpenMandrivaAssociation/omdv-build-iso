@@ -74,7 +74,7 @@ main() {
 			declare -l lc
 			lc=${k#*=}
 			case "$lc" in
-			plasma|plasma6|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|budgie|edu)
+			plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|budgie|edu)
 				TYPE="$lc"
 				;;
 			*)
@@ -558,7 +558,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma|plasma6|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|budgie|edu)
+	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|budgie|edu)
 		NEWTYPE=error
 		;;
 	*)
@@ -568,6 +568,8 @@ SetFileList() {
 	if [ "$NEWTYPE" = "error" ]; then
 		if [ "$TYPE" = 'plasma-wayland' ]; then
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
+		elif [ "$TYPE" = 'plasma6x11' ]; then
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6.lst"
 		else
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
@@ -1717,7 +1719,7 @@ EOF
 
 	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
-	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma6" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
+	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma6" ] || [ "${TYPE,,}" = "plasma6x11" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
 		# disable baloo in live session
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
 		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
@@ -1747,6 +1749,12 @@ EOF
 
 	case "${TYPE}" in
 	edu)
+		SESSION="plasma"
+		;;
+	plasma6)
+		SESSION="plasmawayland"
+		;;
+	plasma6x11)
 		SESSION="plasma"
 		;;
 	*)
@@ -1882,54 +1890,38 @@ EOF
 		fi
 
 		if [ "${TYPE,,}" = 'plasma6' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startplasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasmawayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		elif [ "${TYPE,,}" = 'plasma6x11' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-x11"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma6"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'plasma-wayland' ]; then
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+		elif [ "${TYPE,,}" = 'plasma-wayland' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'mate' ]; then
+		elif [ "${TYPE,,}" = 'mate' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "mate-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "mate"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'budgie' ]; then
+		elif [ "${TYPE,,}" = 'budgie' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "budgie-desktop"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "budgie"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'cinnamon' ]; then
+		elif [ "${TYPE,,}" = 'cinnamon' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'lxqt' ]; then
+		elif [ "${TYPE,,}" = 'lxqt' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "lxqt-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "lxqt"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-		if [ "${TYPE,,}" = 'cutefish' ]; then
+		elif [ "${TYPE,,}" = 'cutefish' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "cutefish-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cutefish"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'icewm' ]; then
+		elif [ "${TYPE,,}" = 'icewm' ]; then
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "icewm"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'xfce4' ]; then
+		elif [ "${TYPE,,}" = 'xfce4' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startxfce4"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "xfce"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = 'gnome3' ]; then
+		elif [ "${TYPE,,}" = 'gnome3' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startgnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "gnome3"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		fi
-
-		if [ "${TYPE,,}" = "$NEWTYPE" ]; then
+		elif [ "${TYPE,,}" = "$NEWTYPE" ]; then
 			sed -i -e "s/.*executable:.*/    executable: $WMNAME/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: $WMDESK/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
