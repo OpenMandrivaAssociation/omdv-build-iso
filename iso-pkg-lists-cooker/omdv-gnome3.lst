@@ -165,8 +165,8 @@ poppler-data
 sasl-plug-gssapi
 #sddm
 #breeze-icons
-openssh-server #server
-samba-server #server
+#openssh-server #server
+#samba-server #server
 
 #python deps?
 #python-ldap
