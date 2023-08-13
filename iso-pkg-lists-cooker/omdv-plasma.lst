@@ -67,7 +67,7 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
-plasma-firewall
+#plasma-firewall
 
 # OM special featured software
 oma-welcome
