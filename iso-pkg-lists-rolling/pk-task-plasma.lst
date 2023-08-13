@@ -1,5 +1,4 @@
 %include .///pk-task-plasma-minimal.lst
-#%include .///pk-task-plasma-telepathy.lst
 
 #akonadi-calendar-tools
 #akonadi-notes-agent
