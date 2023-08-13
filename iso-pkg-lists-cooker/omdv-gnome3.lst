@@ -115,6 +115,9 @@ task-printing
 task-printing-scanning
 system-config-printer-gui #printer
 sane
+sane-backends
+# Dirty workaround for mess with ROME repos...
+lib64sane1
 
 # keep to check
 #x11-font-cyrillic
@@ -151,7 +154,8 @@ pango #gtk dep
 #{_lib}gjs0
 typelib(GjsPrivate)
 gjs
-
+lib64webkit2gtk-gir4.0
+lib64webkit2gtk-gir4.1
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
