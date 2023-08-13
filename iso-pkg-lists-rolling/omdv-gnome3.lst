@@ -11,16 +11,15 @@
 %include .///pk-fonts.lst
 %include .///pk-gstreamer.lst
 %include .///pk-locales.lst
-%include .///pk-man-pages.lst
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
-#%include .///pk-firefox.lst
+#%include .///pk-man-pages.lst
 #%include .///pk-libreoffice.lst
 #%include .///pk-vlc.lst
 
 # Desktop Specifics
 #task-gnome
-#task-gnome-minimal
+task-gnome-minimal
 accountsservice
 adwaita-icon-theme
 gnome-desktop
@@ -34,35 +33,37 @@ gnome-screenshot
 gnome-shell
 gnome-system-monitor
 gnome-terminal
+gnome-tweaks
+#console
 gnome-themes-standard
 nautilus
 networkmanager
 yelp
 task-x11
+adobe-source-code-pro-fonts
 
+firefox
 #cheese
 eog
-#ekiga
-#lollypop
 evince
 file-roller
 #gnome-calculator
 gedit
+#gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
 gnome-software
-gnome-terminal-nautilus
-gnome-tweaks
+#gnome-terminal-nautilus
 
 #empathy
 #epiphany
 #gnome-games
 #rhythmbox
-totem
+#totem
+clapper
 
-#simple-scan
 #shotwell
 #sushi
 #vino
@@ -70,23 +71,23 @@ totem
 #polari
 #fractal
 #gnome-maps
-gnome-music
+#gnome-music
 gnome-photos
-bijiben
-gnome-characters
+#bijiben
+#gnome-characters
 gnome-clocks
 #gnome-builder
 gnome-dictionary
-gnome-documents
-gnome-font-viewer
-gnome-sound-recorder
-gnome-usage
+#gnome-documents
+#gnome-font-viewer
+#gnome-sound-recorder
+#gnome-usage
 gnome-weather
-baobab
-gnome-system-log
-gnome-search-tool
-gnome-commander
-gnome-calendar
+#baobab
+#gnome-system-log
+#gnome-search-tool
+#gnome-commander
+#gnome-calendar
 gucharmap
 mousetweaks
 
@@ -96,7 +97,7 @@ mousetweaks
 #caribou-gtk3
 #evolution
 #gnome-contacts
-gparted
+#gparted
 gthumb
 #gimp
 #inkscape
@@ -104,10 +105,13 @@ gthumb
 
 # Needed Task/Meta Packages
 task-pulseaudio
+
+# Printing
 #task-printing
-# printing
 #task-printing-scanning
-#system-config-printer-gui #printer
+#system-config-printer-gui
+#simple-scan
+#sane
 
 # keep to check
 #x11-font-cyrillic
@@ -159,8 +163,8 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-sddm
-breeze-icons
+#sddm
+#breeze-icons
 openssh-server #server
 samba-server #server
 
@@ -174,11 +178,13 @@ samba-server #server
 
 # Special OM featured software
 #oma-welcome
+#om-control-center
 om-repo-picker
-om-control-center
-om-user-manager
+#om-user-manager
 om-mirror-selector
+#gnome-initial-setup
+#gnome-tour
 
 #packagekit
-packagekit-gstreamer-plugin
-packagekit-command-not-found
+#packagekit-gstreamer-plugin
+#packagekit-command-not-found
