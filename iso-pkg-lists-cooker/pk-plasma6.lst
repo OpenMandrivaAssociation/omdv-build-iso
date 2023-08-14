@@ -36,14 +36,14 @@ plasma6-kwrited
 plasma6-milou
 plasma6-nm
 #plasma6-oxygen
-plasma6-oxygen-sounds
+#plasma6-oxygen-sounds
 plasma6-pa
 plasma6-polkit-kde-agent-1
 plasma6-powerdevil
 plasma6-qqc2-breeze-style
-#plasma6-sddm
-#plasma6-sddm-kcm
-#plasma6-sddm-theme-breeze
+plasma6-sddm
+plasma6-sddm-kcm
+plasma6-sddm-theme-breeze
 plasma6-systemmonitor
 plasma6-systemsettings
 plasma6-vault
@@ -51,7 +51,7 @@ plasma6-workspace
 plasma6-workspace-x11
 plasma6-xdg-desktop-portal-kde
 #plasma6-kwayland-integration
-#plasma6-kwin-wayland
+plasma6-kwin-wayland
 #plasma6-workspace-wayland
 #flatpak
 #plasma6-flatpak-kcm
