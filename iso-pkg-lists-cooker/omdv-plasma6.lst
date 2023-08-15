@@ -26,7 +26,7 @@ jasper
 nss
 nss_ldap
 nss_mdns
-openmandriva-kde-icons
+#openmandriva-kde-icons
 openssl
 pam_ldap
 phonon4qt6-backend
