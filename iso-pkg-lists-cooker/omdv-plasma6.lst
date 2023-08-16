@@ -36,6 +36,8 @@ edidbins
 
 avahi #service
 
+distro-release-desktop-Plasma6
+
 # Miscelaneous Packages
 chromium-browser-stable
 enchant
@@ -61,6 +63,10 @@ plasma6-gwenview
 plasma6-kate
 plasma6-kwrite
 plasma6-ark
+plasma6-kalk
+# FIXME replace with plasma6-okular as soon as it exists
+okular
+qbittorrent
 # FIXME need to figure out what exactly requires
 # the next 2 so we can add a dependency there
 # rather than listing them here
