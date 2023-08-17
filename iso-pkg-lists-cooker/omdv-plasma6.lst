@@ -20,6 +20,7 @@
 task-plasma6
 plasma6-sddm
 plasma6-workspace-x11
+distro-release-desktop-Plasma6
 
 x11-tools
 x11-docs
@@ -59,6 +60,8 @@ plasma6-ark
 # rather than listing them here
 kf6-kirigami-addons
 plasma6-qqc2-breeze-style
+# FIXME replace with plasma6-okular as soon as it exists
+okular
 
 jasper
 nss
