@@ -16,6 +16,8 @@
 %include .///pk-pulseaudio.lst
 #%include .///pk-vlc.lst
 
+distro-release-desktop-Plasma6
+
 # Miscelaneous Packages
 accountsservice
 avahi #service
