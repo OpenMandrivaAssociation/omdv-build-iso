@@ -82,9 +82,10 @@ pam_ldap
 poppler-data
 telegram-desktop
 sasl-plug-gssapi
+kf6-oxygen-icons
 
 # OM special featured software
-kf6-oxygen-icons
+om-repo-picker
 
 #packagekit
 plasma6-discover
