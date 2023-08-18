@@ -63,7 +63,7 @@ plasma6-gwenview
 plasma6-kate
 plasma6-kwrite
 plasma6-ark
-plasma6-kalk
+plasma6-kcalc
 # FIXME replace with plasma6-okular as soon as it exists
 okular
 qbittorrent
