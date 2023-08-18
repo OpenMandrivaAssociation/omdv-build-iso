@@ -79,13 +79,10 @@ sasl-plug-gssapi
 # style over plasma5's...
 plasma6-breeze-gtk
 
-# Install for Live only
-# and remove with calamares cleaner
-#kpat
+kf6-oxygen-icons
 
 # OM special featured software
-#
-kf6-oxygen-icons
+om-repo-picker
 
 #packagekit
 #plasma6-discover
