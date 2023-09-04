@@ -16,6 +16,7 @@ dvbtune #utils
 dvd+rw-tools #utils
 systemd-oom
 systemd-homed
+flatpak
 freerdp #utils
 fuse2
 # fuse-exfat #utils
@@ -48,7 +49,7 @@ pcsc-lite #utils
 pptp-linux #utils
 rng-tools #utils
 rpcbind #utils
-rsnapshot #utils
+#rsnapshot #utils
 rsync #utils
 #samba-client #utils
 #samba-winbind #utils
