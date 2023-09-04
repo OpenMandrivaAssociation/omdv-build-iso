@@ -7,10 +7,10 @@
 %include .///omdv_utils.lst
 
 # More includes lists for common sets that are not task/meta pkgs
-#%include .///omdv_firefox.lst
+%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
-#%include .///omdv_gstreamer.lst
-#%include .///omdv_libreoffice.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -33,6 +33,9 @@ gnome-terminal
 gsettings-desktop-schemas
 dbus-x11
 polkit-gnome
+gnome-backgrounds
+gnome-themes-standard
+networkmanager
 dconf
 gnome-keyring
 networkmanager-applet
@@ -79,19 +82,20 @@ pango #gtk dep
 #usbmuxd
 
 # Miscelaneous Packages
-#enchant
-#ffmpeg
-#jasper
-#nss
-#nss_ldap
-#nss_mdns
-#nss_wins
-#openssl
+enchant
+ffmpeg
+jasper
+nss
+nss_ldap
+nss_mdns
+nss_wins
+openssl
 #pam_ldap
-#poppler-data
-#sasl-plug-gssapi
-sddm
+poppler-data
+sasl-plug-gssapi
 breeze-gtk
+
+gdm
 
 #openssh-server #server
 #samba-server #server
