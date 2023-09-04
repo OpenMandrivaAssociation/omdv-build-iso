@@ -27,6 +27,6 @@ pciutils
 timezone
 usbutils
 usb_modeswitch
-neovim
+#neovim
 nano
 #wireless-tools
