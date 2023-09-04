@@ -26,5 +26,5 @@ pciutils
 timezone
 usbutils
 usb_modeswitch
-vim-enhanced
+neovim
 nano
