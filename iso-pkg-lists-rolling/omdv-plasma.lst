@@ -25,24 +25,19 @@ chromium-browser-stable
 #falkon-kde
 #falkon-plugins
 
-# Install for Live only
-# and remove with calamares cleaner
-#kpat
-
 # Desktop Specific
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 phonon4qt5-vlc
 #haruna
 #nulloy
-#isoimagewriter
 #rosa-imagewriter
 #digikam
 #showfoto
 #krita
 
+# Printing
 #task-printing
-#printing
 #task-printing-scanning
 #system-config-printer-gui
 
@@ -67,6 +62,7 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
+#plasma-firewall
 
 # OM special featured software
 oma-welcome
