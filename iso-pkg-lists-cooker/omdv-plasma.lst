@@ -90,7 +90,7 @@ poppler-data
 rosa-imagewriter
 telegram-desktop
 sasl-plug-gssapi
-plasma-firewall
+#plasma-firewall
 
 # OM special featured software
 oma-welcome
