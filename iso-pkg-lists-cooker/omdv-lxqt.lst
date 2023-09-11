@@ -63,7 +63,7 @@ silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-udisks
 #trojita
-plasma-firewall
+#plasma-firewall
 
 # Needed Task/Meta Packages
 task-pulseaudio
