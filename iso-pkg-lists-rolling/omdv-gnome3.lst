@@ -90,6 +90,7 @@ baobab
 gnome-system-log
 gnome-search-tool
 gnome-commander
+gnome-firmware
 gnome-calendar
 
 gucharmap
@@ -105,6 +106,7 @@ gparted
 gthumb
 gimp
 inkscape
+loupe
 rosa-imagewriter
 
 # Needed Task/Meta Packages
