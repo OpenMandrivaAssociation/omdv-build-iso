@@ -28,7 +28,6 @@ htop #utils
 hw-probe #utils
 krb5-workstation #utils
 lame #utils
-lftp #utils
 libblockdev-plugins-all
 libgphoto-common #utils
 libmtp-utils #utils
@@ -49,7 +48,7 @@ pcsc-lite #utils
 pptp-linux #utils
 rng-tools #utils
 rpcbind #utils
-rsnapshot #utils
+#rsnapshot #utils
 rsync #utils
 #samba-client #utils
 #samba-winbind #utils
