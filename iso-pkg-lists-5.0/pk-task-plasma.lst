@@ -1,5 +1,4 @@
 %include .///pk-task-plasma-minimal.lst
-#%include .///pk-task-plasma-telepathy.lst
 
 #akonadi-calendar-tools
 #akonadi-notes-agent
@@ -64,6 +63,7 @@ myspell-dictionary
 #plasma-workspace-wayland
 plymouth-kcm
 #print-manager
+purpose
 sddm
 sddm-kcm
 sddm-theme-breeze
@@ -75,8 +75,9 @@ sonnet-hunspell
 #speech-dispatcher
 #ssr
 systemd-kcm
+kuser
 yakuake
 #btop
-kuser
 doas
 zeroconf-ioslave
+#plasma-firewall
