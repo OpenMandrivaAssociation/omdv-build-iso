@@ -89,7 +89,7 @@ gnome-weather
 baobab
 gnome-system-log
 gnome-search-tool
-gnome-commander
+#gnome-commander
 gnome-firmware
 gnome-calendar
 
