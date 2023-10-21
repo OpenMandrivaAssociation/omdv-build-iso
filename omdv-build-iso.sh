@@ -1510,7 +1510,10 @@ setupGrub2() {
 	# NOTE Themes are used by the EFI boot as well.
 	# Copy grub config files to the ISO build directory
 	# and set the UUID's
-	cp -f "$WORKDIR"/grub2/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
+	pushd "$WORKDIR"/grub2-menus
+	./grub-menu
+	popd
+	cp -f "$WORKDIR"/grub2-menus/grub2-bios.cfg "$ISOROOTNAME"/boot/grub/grub.cfg
 	if [ -n "$DEFAULTLANG" ]; then
 		sed -i -e "0,/\(set bootlang=\).*/s//\1'$DEFAULTLANG'/" "$ISOROOTNAME"/boot/grub/grub.cfg
 	fi
