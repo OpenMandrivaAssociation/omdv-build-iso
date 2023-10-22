@@ -739,6 +739,7 @@ showInfo() {
 	printf "%s\n" "ISO label is $LABEL"
 	printf "%s\n" "Build ID is $BUILD_ID"
 	printf "%s\n" "Working directory is $WORKDIR"
+	printf "%s\n" "isobuilder is running on $(hostname)"
 	if  [ -n "$REBUILD" ]; then
 		printf "%s\n" "-> All rpms will be re-installed"
 	elif [ -n "$NOCLEAN" ]; then
