@@ -55,7 +55,7 @@ gnome-software
 gnome-terminal-nautilus
 
 empathy
-epiphany
+#epiphany # disable to save space on ISO
 gnome-games
 rhythmbox
 clapper
