@@ -14,8 +14,8 @@
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
-%include .///omdv_vlc.lst
-#%include .///omdv_smplayer.lst
+#%include .///omdv_vlc.lst
+%include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
@@ -28,7 +28,9 @@ kpat
 # Desktop Specifics
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
-phonon4qt5-vlc
+phonon4qt5-mpv
+phonon4qt6-mpv
+kio-admin
 #quick-usb-formatter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
