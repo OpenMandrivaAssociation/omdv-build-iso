@@ -28,7 +28,8 @@ chromium-browser-stable
 # Desktop Specific
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
-phonon4qt5-vlc
+phonon4qt5-mpv
+kio-admin
 #haruna
 #nulloy
 #rosa-imagewriter
