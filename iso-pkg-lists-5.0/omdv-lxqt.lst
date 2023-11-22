@@ -14,8 +14,6 @@
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-%include .///omdv_vlc.lst
-#%include .///omdv_smplayer.lst
 
 # Desktop Specifics
 task-lxqt
@@ -63,6 +61,7 @@ silicon-plugin-single-inner-dialog
 silicon-plugin-system-tray
 silicon-plugin-udisks
 #trojita
+#plasma-firewall
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -137,3 +136,8 @@ om-repo-picker
 # discover-backend-kns
 # discover-backend-packagekit
 # discover-notifier
+
+mpv
+phonon4qt5-mpv
+phonon4qt6-mpv
+qmplay2

@@ -15,7 +15,6 @@
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
 #%include .///omdv_vlc.lst
-%include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
 
@@ -137,6 +136,7 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
+qmplay2
 
 # OM special featured software
 oma-welcome

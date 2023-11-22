@@ -15,9 +15,10 @@
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
 #%include .///omdv_vlc.lst
-%include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 %include .///omdv_task-plasma.lst
+
+qmplay2
 
 libreoffice-kde5
 
@@ -28,6 +29,7 @@ kpat
 # Desktop Specifics
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
+mpv
 phonon4qt5-mpv
 phonon4qt6-mpv
 kio-admin
@@ -72,7 +74,6 @@ edidbins
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
-# FIXME: add something like https://github.com/nomad-desktop/nomad-firewall
 
 # Miscelaneous Packages
 chromium-browser-stable

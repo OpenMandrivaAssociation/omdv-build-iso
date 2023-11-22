@@ -14,8 +14,6 @@
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-%include .///omdv_vlc.lst
-#%include .///omdv_smplayer.lst
 
 # Desktop Specifics
 task-lxqt
@@ -138,3 +136,8 @@ om-repo-picker
 # discover-backend-kns
 # discover-backend-packagekit
 # discover-notifier
+
+mpv
+phonon4qt5-mpv
+phonon4qt6-mpv
+qmplay2
