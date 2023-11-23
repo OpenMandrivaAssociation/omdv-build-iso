@@ -34,7 +34,8 @@ libproxy-kde
 libproxy-networkmanager
 milou
 oxygen-sounds
-phonon4qt5-backend
+phonon4qt5-mpv
+phonon4qt6-mpv
 pinentry-qt5
 #plasma-browser-integration
 plasma-desktop
