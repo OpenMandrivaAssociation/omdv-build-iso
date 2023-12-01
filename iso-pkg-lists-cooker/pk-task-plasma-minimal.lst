@@ -33,7 +33,8 @@ kwrited
 libproxy-kde
 libproxy-networkmanager
 milou
-oxygen-sounds
+#oxygen-sounds
+sound-theme-ocean
 phonon4qt5-mpv
 phonon4qt6-mpv
 pinentry-qt5
