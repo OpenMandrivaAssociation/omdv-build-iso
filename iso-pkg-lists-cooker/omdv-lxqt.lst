@@ -99,7 +99,6 @@ gvfs-archive #gtk dep
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
-ia_ora-gnome #gtk dep
 notification-daemon #dubious virt req
 pango #gtk dep
 
@@ -119,6 +118,7 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
+xdg-desktop-portal-lxqt
 
 openssh-server #server
 samba-server #server
