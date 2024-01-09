@@ -860,6 +860,9 @@ InstallRepos() {
 		dnf --installroot="$CHROOTNAME" config-manager --disable rock-*"$EXTARCH"
 		# Then enable the main repo of the chosen tree
 		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
+		# And the corresponding updates repository (allow this to fail, because there
+		# is no rolling/updates or cooker/updates)
+		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH" || :
 	else
 		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
@@ -871,6 +874,9 @@ InstallRepos() {
 	else
 		if [ -n "$UNSUPPREPO" ]; then
 			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-unsupported
+			# And the corresponding updates repository (allow this to fail, because there
+			# is no rolling/updates or cooker/updates)
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-unsupported || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
