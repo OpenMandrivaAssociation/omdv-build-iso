@@ -58,7 +58,8 @@ evince
 file-roller
 gnome-calculator
 gedit
-gdm
+#gdm
+lightdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
