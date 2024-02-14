@@ -62,7 +62,8 @@ myspell-dictionary
 okular
 okular-epub
 openmandriva-kde-icons
-partitionmanager
+# Using the plasma6 version even for Plasma 5 because of kpmcore clashes with calamares
+plasma6-partitionmanager
 plasma-workspace-wayland
 plymouth-kcm
 print-manager
