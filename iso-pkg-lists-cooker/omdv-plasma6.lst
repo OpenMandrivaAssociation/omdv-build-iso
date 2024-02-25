@@ -17,12 +17,16 @@
 #%include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
 
+qmplay2
 task-plasma6
 libreoffice-qt6
 
 # Install for Live only
 # and remove with calamares cleaner
-#kpat
+plasma6-kpat
+
+# Desktop specifics
+
 
 x11-font-cyrillic
 x11-tools
@@ -42,6 +46,7 @@ distro-release-desktop-Plasma6
 chromium-browser-stable
 enchant
 ffmpeg
+plasma6-filelight
 flatpak
 plasma6-flatpak-kcm
 plasma6-systemsettings
@@ -64,13 +69,12 @@ plasma6-kate
 plasma6-kwrite
 plasma6-ark
 plasma6-kcalc
-# FIXME replace with plasma6-okular as soon as it exists
-okular
-qbittorrent
+plasma6-okular
+plasma6-kio-admin
 # FIXME need to figure out what exactly requires
 # the next 2 so we can add a dependency there
 # rather than listing them here
-kf6-kirigami-addons
+kirigami-addons
 plasma6-qqc2-breeze-style
 jasper
 nss
@@ -85,7 +89,9 @@ sasl-plug-gssapi
 kf6-oxygen-icons
 
 # OM special featured software
+oma-welcome
 om-repo-picker
+om-control-center
 
 #packagekit
 plasma6-discover
@@ -93,3 +99,69 @@ plasma6-discover-backend-flatpak
 plasma6-discover-backend-packagekit
 
 plasma6-sddm
+om-midna-sddm
+
+plasma6-akonadi-calendar-tools
+plasma6-akonadi-search
+plasma6-akregator
+plasma6-audiocd-kio
+plasma6-bluedevil
+plasma6-dolphin-plugins
+plasma6-drkonqi
+#elisa
+plasma6-ffmpegthumbs
+grub2-editor
+plasma6-gwenview
+plasma6-kaccounts-integration
+plasma6-kaccounts-providers
+plasma6-kaddressbook
+plasma6-kalarm
+plasma6-kamera
+plasma6-kate
+plasma6-kbackup
+plasma6-kcalc
+plasma6-kdeconnect
+plasma6-kdegraphics-thumbnailers
+plasma6-kde-gtk-config
+plasma6-kdenetwork-filesharing
+plasma6-kdenlive
+plasma6-kdepim-runtime
+plasma6-kdf
+plasma6-kdialog
+plasma6-kfind
+plasma6-kgamma
+plasma6-kget
+plasma6-khelpcenter
+plasma6-kidentitymanagement
+plasma6-kio-gdrive
+plasma6-kleopatra
+plasma6-kmail
+plasma6-kmail-account-wizard
+plasma6-kontact
+#plasma6-konversation
+plasma6-neochat
+plasma6-korganizer
+plasma6-krdc
+plasma6-krfb
+plasma6-ksystemlog
+plasma6-ktorrent
+plasma6-kwallet-pam
+plasma6-kwrite
+myspell-dictionary
+plasma6-okular
+plasma6-okular-epub
+openmandriva-kde-icons
+plasma6-partitionmanager
+plasma6-plymouth-kcm
+plasma6-print-manager
+plasma6-sddm-kcm
+plasma6-sddm-theme-breeze
+plasma6-signon-kwallet-extension
+plasma6-skanlite
+kf6-sonnet
+plasma6-spectacle
+speech-dispatcher
+ssr
+plasma6-yakuake
+plasma6-kio-zeroconf
+plasma6-kio-extras
