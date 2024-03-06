@@ -43,7 +43,8 @@ avahi #service
 distro-release-desktop-Plasma6
 
 # Miscelaneous Packages
-chromium-browser-stable
+chromium
+chromium-qt6
 enchant
 ffmpeg
 plasma6-filelight
