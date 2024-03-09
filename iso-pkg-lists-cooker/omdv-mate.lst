@@ -20,6 +20,37 @@
 task-mate
 openmandriva-mate-config
 
+#  other useful things not in task-mate
+#   caja
+caja-extensions-av
+caja-extensions-image-converter
+caja-extensions-open-terminal
+caja-extensions-sendto
+#caja-extensions-sendto-pidgin
+#caja-extensions-sendto-upnp
+#caja-extensions-share
+caja-extensions-wallpaper
+caja-extensions-xattr-tags
+caja-actions
+#   pluma
+pluma-plugins
+
+#  third party useful things
+#   admin
+mate-user-admin
+mate-tweak
+matekbd-keyboard-display
+#   applicaions
+mate-recorder
+#   mate panel
+mate-dock-applet
+mate-menu
+mate-applet-softupd
+#   caja
+#mate-eicel
+caja-rename
+seahorse-caja
+
 # Needed Task/Meta Packages
 task-pulseaudio
 
@@ -71,3 +102,4 @@ pyxdg
 om-repo-picker
 #om-control-center
 om-mirror-selector
+
