@@ -1765,7 +1765,7 @@ EOF
 		SESSION="plasmawayland"
 		;;
 	plasma6x11)
-		SESSION="plasma"
+		SESSION="plasmax11"
 		;;
 	*)
 		SESSION="${TYPE}"
