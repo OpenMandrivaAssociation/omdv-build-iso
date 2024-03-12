@@ -832,6 +832,8 @@ InstallRepos() {
 			sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
 			sed -i -e 's|http://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
 			sed -i -e 's|https://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			sed -i -e 's|http://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			sed -i -e 's|https://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
 		fi
 		# we must make sure that the rpmcache is retained
 		printf "%s\n" "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
