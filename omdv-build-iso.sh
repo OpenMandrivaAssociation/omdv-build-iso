@@ -1905,10 +1905,10 @@ EOF
 
 		if [ "${TYPE,,}" = 'plasma6' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasmawayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'plasma6x11' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-x11"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasmax11"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'plasma-wayland' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
