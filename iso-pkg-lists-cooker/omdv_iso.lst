@@ -4,6 +4,7 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 calamares #min-iso
+cups
 dosfstools
 eject
 #freetype-tools #iso
