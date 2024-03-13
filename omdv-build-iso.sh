@@ -830,10 +830,11 @@ InstallRepos() {
 			printf "->WARNING<- YOU HAVE ELECTED TO DOWNLOAD THE PACKAGES FOR THIS BUILD FROM A MIRROR. PACKAGE VERSIONS MAY NOT BE UP TO DATE"
 		else
 			sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
-			sed -i -e 's|http://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
-			sed -i -e 's|https://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
-			sed -i -e 's|http://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
-			sed -i -e 's|https://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			# Using perl instead of sed below because we want to remove the newline
+			perl -p -i -e 's|http://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			perl -p -i -e 's|https://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			perl -p -i -e 's|http://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			perl -p -i -e 's|https://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
 		fi
 		# we must make sure that the rpmcache is retained
 		printf "%s\n" "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
