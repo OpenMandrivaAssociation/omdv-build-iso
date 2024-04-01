@@ -4,11 +4,11 @@ alsa-plugins
 alsa-plugins-pulseaudio
 alsa-utils
 calamares #min-iso
+#cups
 dosfstools
 eject
 #freetype-tools #iso
 hfsutils #iso
-#distro-release-desktop
 distro-release-indexhtml
 distro-release-repos-pkgprefs
 distro-release-theme
@@ -31,14 +31,10 @@ mkxauth #iso
 mlocate #iso
 mtools #iso
 neofetch
-#ntfs-3g
-#ntfs-3g-system-compression
 os-prober
-#pcmciautils
 plymouth-system-theme
 python-curl
 quota #iso
-#reiserfsprogs
 rtkit #iso
 sharutils #iso
 sound-theme-freedesktop #iso
@@ -48,7 +44,7 @@ task-x11
 testdisk
 tmpwatch #iso
 upower #iso
-#usbmuxd #iso
+usbmuxd #iso
 urw-fonts
 uuidd
 vbetool #iso
