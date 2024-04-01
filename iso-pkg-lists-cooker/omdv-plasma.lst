@@ -82,8 +82,8 @@ flatdrake
 
 #oxygen-icons
 #packagekit
-packagekit-gstreamer-plugin
-packagekit-command-not-found
+#packagekit-gstreamer-plugin
+#packagekit-command-not-found
 #discover
 #discover-backend-kns
 #discover-backend-packagekit
