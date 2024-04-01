@@ -17,6 +17,7 @@
 #%include .///pk-smplayer.lst
 #%include .///pk-vlc.lst
 
+# FIXME replace task-plasma6 with pk-plasma6.lst
 task-plasma6
 plasma6-sddm
 plasma6-workspace-x11
@@ -24,7 +25,8 @@ distro-release-desktop-Plasma6
 
 # Miscelaneous Packages
 avahi #service
-chromium-browser-stable
+chromium
+chromium-qt6
 edidbins
 enchant
 ffmpeg
@@ -35,20 +37,20 @@ nss_mdns
 openssl
 pam_ldap
 plasma6-ark
-plasma6-browser-integration
+#plasma6-browser-integration
 plasma6-dolphin
-plasma6-flatpak-kcm
+plasma6-dolphin-plugins
 #plasma6-firewall
 plasma6-gwenview
 plasma6-kate
 plasma6-kdeplasma-addons
 plasma6-kinfocenter
+plasma6-kio-admin
 plasma6-konsole
 plasma6-ksystemstats
 plasma6-kwrite
 plasma6-nm
-# FIXME replace with plasma6-okular as soon as it exists
-okular
+plasma6-okular
 plasma6-oxygen
 plasma6-oxygen-sounds
 kf6-oxygen-icons
@@ -83,3 +85,4 @@ x11-tools
 
 # OM special featured software
 om-repo-picker
+om-mirror-selector
