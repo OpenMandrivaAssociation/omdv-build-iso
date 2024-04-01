@@ -830,7 +830,11 @@ InstallRepos() {
 			printf "->WARNING<- YOU HAVE ELECTED TO DOWNLOAD THE PACKAGES FOR THIS BUILD FROM A MIRROR. PACKAGE VERSIONS MAY NOT BE UP TO DATE"
 		else
 			sed -i -e 's,^mirrorlist=,#mirrorlist=,g;s,^# baseurl=,baseurl=,g' $CHROOTNAME/etc/yum.repos.d/*.repo
-			sed -i -e 's|http://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			# Using perl instead of sed below because we want to remove the newline
+			perl -p -i -e 's|http://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			perl -p -i -e 's|https://mirror.*, ||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			perl -p -i -e 's|http://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
+			perl -p -i -e 's|https://mirror[^ ]*$||' $CHROOTNAME/etc/yum.repos.d/*.repo
 		fi
 		# we must make sure that the rpmcache is retained
 		printf "%s\n" "keepcache=1" >> $CHROOTNAME/etc/dnf/dnf.conf
@@ -912,6 +916,7 @@ updateSystem() {
 		;;
 	esac
 
+	set -x
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static dnf-plugins-core unix2dos"
 	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
@@ -925,7 +930,7 @@ updateSystem() {
 	else
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+		dnf --verbose upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
 		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
@@ -1765,7 +1770,7 @@ EOF
 		SESSION="plasmawayland"
 		;;
 	plasma6x11)
-		SESSION="plasma"
+		SESSION="plasmax11"
 		;;
 	*)
 		SESSION="${TYPE}"
@@ -1901,10 +1906,10 @@ EOF
 
 		if [ "${TYPE,,}" = 'plasma6' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasmawayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'plasma6x11' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-x11"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasmax11"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'plasma-wayland' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasmacompositor"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
