@@ -28,7 +28,7 @@ kdeconnect
 kdegraphics-thumbnailers
 kde-gtk-config
 kdenetwork-filesharing
-kdenlive
+#kdenlive
 kdepim-runtime
 kdf
 kdialog
@@ -75,7 +75,7 @@ skanlite
 sonnet-hunspell
 spectacle
 speech-dispatcher
-ssr
+#ssr
 systemd-kcm
 kuser
 yakuake
