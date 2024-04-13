@@ -125,7 +125,7 @@ plasma6-kdeconnect
 plasma6-kdegraphics-thumbnailers
 plasma6-kde-gtk-config
 plasma6-kdenetwork-filesharing
-plasma6-kdenlive
+#plasma6-kdenlive
 plasma6-kdepim-runtime
 plasma6-kdf
 plasma6-kdialog
@@ -162,7 +162,7 @@ plasma6-skanlite
 kf6-sonnet
 plasma6-spectacle
 speech-dispatcher
-ssr
+#ssr
 plasma6-yakuake
 plasma6-kio-zeroconf
 plasma6-kio-extras
