@@ -50,7 +50,7 @@ gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
-gnome-packagekit
+#gnome-packagekit #broken, and no needed
 gnome-software
 gnome-terminal-nautilus
 
@@ -157,6 +157,8 @@ pango #gtk dep
 typelib(GjsPrivate)
 gjs
 lib64webkit2gtk-gir4.1
+gstreamer1.0-gtk
+gstreamer1.0-gtk-wayland
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
