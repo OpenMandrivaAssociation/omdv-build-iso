@@ -20,7 +20,7 @@ qmplay2
 # qmplay2 pulls in yt-dlp which requires (mplayer or mpv). Make sure it picks mpv
 mpv
 task-plasma6
-libreoffice-qt6
+libreoffice-kde6
 
 # Install for Live only
 # and remove with calamares cleaner
@@ -162,8 +162,9 @@ plasma6-skanlite
 kf6-sonnet
 plasma6-spectacle
 speech-dispatcher
-ssr
+#ssr
 plasma6-yakuake
 plasma6-kio-zeroconf
 plasma6-kio-extras
+plasma6-disks
 krita

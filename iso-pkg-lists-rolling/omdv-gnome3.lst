@@ -28,7 +28,7 @@ gnome-menus
 gnome-panel
 gnome-power-manager
 gnome-keyring
-gnome-screenshot
+#gnome-screenshot # no longer needed
 gnome-shell
 gnome-system-monitor
 gnome-terminal
@@ -50,11 +50,11 @@ gnome-text-editor
 gdm
 gnome-color-manager
 gnome-disk-utility
-gnome-packagekit
+#gnome-packagekit #broken, and no needed
 gnome-software
 gnome-terminal-nautilus
 
-empathy
+#empathy
 #epiphany # disable to save space on ISO
 gnome-games
 rhythmbox
@@ -65,8 +65,8 @@ simple-scan
 shotwell
 gthumb
 sushi
-vino
-vinagre
+#vino
+#vinagre
 polari
 fractal
 
@@ -89,7 +89,6 @@ gnome-usage
 gnome-weather
 baobab
 gnome-system-log
-gnome-search-tool
 gnome-commander
 gnome-firmware
 gnome-calendar
@@ -157,8 +156,9 @@ pango #gtk dep
 #{_lib}gjs0
 typelib(GjsPrivate)
 gjs
-lib64webkit2gtk-gir4.0
 lib64webkit2gtk-gir4.1
+gstreamer1.0-gtk
+gstreamer1.0-gtk-wayland
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd

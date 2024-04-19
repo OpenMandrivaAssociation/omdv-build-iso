@@ -76,7 +76,8 @@ edidbins
 avahi #service
 
 # Miscelaneous Packages
-chromium-browser-stable
+chromium
+chromium-qt5
 enchant
 ffmpeg
 filelight

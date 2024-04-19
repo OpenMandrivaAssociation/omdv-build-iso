@@ -24,7 +24,6 @@ x11-driver-video-fbdev
 x11-driver-video-vesa
 x11-font-cyrillic
 xorg-x11
-xdg-user-dirs-gtk
 xdm
 xev
 xterm

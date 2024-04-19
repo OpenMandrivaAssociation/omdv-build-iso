@@ -23,10 +23,10 @@ budgie-screensaver
 budgie-control-center
 budgie-backgrounds
 gnome-bluetooth3.34
-gnome-session
+budgie-session
 gnome-settings-daemon
 gsettings-desktop-schemas
-mutter
+magpie-wm
 accountsservice
 adwaita-icon-theme
 hicolor-icon-theme
@@ -43,6 +43,7 @@ networkmanager
 networkmanager-applet
 yelp
 task-x11
+lib64xfce4windowing
 
 # Themes?Styles
 
@@ -58,6 +59,7 @@ file-roller
 gnome-calculator
 gedit
 gdm
+#lightdm
 gnome-color-manager
 gnome-disk-utility
 gnome-packagekit
