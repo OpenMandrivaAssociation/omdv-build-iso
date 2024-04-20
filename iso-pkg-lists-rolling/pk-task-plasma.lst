@@ -58,8 +58,8 @@ kwrite
 libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
-#okular
-#partitionmanager
+okular
+partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
 #print-manager
