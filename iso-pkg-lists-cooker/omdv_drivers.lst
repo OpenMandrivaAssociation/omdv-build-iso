@@ -6,4 +6,4 @@ dri-drivers
 ipp-usb
 sane-airscan
 # Needed for sound support on some Intel HW
-sof-firmware
+sof-bin
