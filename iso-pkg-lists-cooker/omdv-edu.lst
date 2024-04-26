@@ -64,6 +64,7 @@ vbetool #iso
 wget
 whois #iso
 virtualbox-guest-additions #Shared clipboard and files
+spice-vdagent #Same for qemu
 x11-data-bitmaps
 x11-driver-video
 xdg-compliance #iso
