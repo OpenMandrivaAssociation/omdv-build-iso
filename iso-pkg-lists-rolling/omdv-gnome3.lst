@@ -59,7 +59,7 @@ gnome-terminal-nautilus
 gnome-games
 rhythmbox
 clapper
-totem
+#totem
 transmission-gtk
 simple-scan
 shotwell
