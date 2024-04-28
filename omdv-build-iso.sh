@@ -569,7 +569,9 @@ SetFileList() {
 		if [ "$TYPE" = 'plasma-wayland' ]; then
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
 		elif [ "$TYPE" = 'plasma6x11' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6.lst"
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6x11.lst"
+		elif [ "$TYPE" = 'plasma6' ]; then
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6wayland.lst"
 		else
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
