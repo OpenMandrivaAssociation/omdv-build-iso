@@ -30,7 +30,7 @@ memtest86+
 mkxauth #iso
 mlocate #iso
 mtools #iso
-neofetch
+fastfetch
 os-prober
 plymouth-system-theme
 python-curl
