@@ -1848,7 +1848,7 @@ EOF
 	# like discussed 1000000000000 times already this should not be activate by default, not here not in the rpm. Not only it break the boot time but people are still
 	# using 'paid' per MB/GB internet
 	## this -> 17.153s dnf-makecache.service ( on a device boots in 2.4 secs with a nvme , imagine that on slow HDD )
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon.socket irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path)
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon.socket irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path spice-vdagentd)
 
 
 	# ( crazy) we cannot symlink/rm for .service,.socket
