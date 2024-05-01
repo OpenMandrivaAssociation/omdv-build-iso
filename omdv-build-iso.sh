@@ -1766,10 +1766,10 @@ EOF
 
 	case "${TYPE}" in
 	edu)
-		SESSION="plasma"
+		SESSION="plasmax11"
 		;;
 	plasma6)
-		SESSION="plasmawayland"
+		SESSION="plasma"
 		;;
 	plasma6x11)
 		SESSION="plasmax11"
