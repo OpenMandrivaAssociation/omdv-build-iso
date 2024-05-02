@@ -151,10 +151,9 @@ openssl
 #pam_ldap
 #poppler-data
 #sasl-plug-gssapi
-breeze-gtk
 
 #openssh-server #server
-#samba-server #server
+samba-server #server
 
 #python deps?
 #python-ldap
