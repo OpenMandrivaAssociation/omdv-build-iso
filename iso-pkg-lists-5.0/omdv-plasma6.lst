@@ -17,74 +17,79 @@
 #%include .///pk-smplayer.lst
 #%include .///pk-vlc.lst
 
+# FIXME replace task-plasma6 with pk-plasma6.lst
 task-plasma6
 plasma6-sddm
 plasma6-workspace-x11
 distro-release-desktop-Plasma6
 
-x11-tools
-x11-docs
-x11-font-type1
-x11-font-misc
-x11-data-cursor-themes
-edidbins
-avahi #service
-
 # Miscelaneous Packages
-chromium-browser-stable
+avahi #service
+chromium
+chromium-qt6
+edidbins
 enchant
 ffmpeg
-#flatpak
-#plasma6-flatpak-kcm
-plasma6-systemsettings
-plasma6-kinfocenter
-plasma6-ksystemstats
-plasma6-oxygen
-plasma6-oxygen-sounds
-plasma6-nm
-plasma6-kdeplasma-addons
-plasma6-browser-integration
-plasma6-vault
-plasma6-xdg-desktop-portal-kde
-plasma6-flatpak-kcm
-#plasma6-firewall
-plasma6-systemmonitor
-plasma6-konsole
+jasper
+nss
+nss_ldap
+nss_mdns
+openssl
+pam_ldap
+plasma6-ark
+#plasma6-browser-integration
 plasma6-dolphin
+plasma6-dolphin-plugins
+#plasma6-firewall
 plasma6-gwenview
 plasma6-kate
+plasma6-kdeplasma-addons
+plasma6-kinfocenter
+plasma6-kio-admin
+plasma6-konsole
+plasma6-ksystemstats
+plasma6-kwin-x11
 plasma6-kwrite
-plasma6-ark
+plasma6-libkscreen-x11
+plasma6-nm
+plasma6-okular
+plasma6-oxygen
+plasma6-oxygen-sounds
+kf6-oxygen-icons
+plasma6-partitionmanager
+plasma6-systemmonitor
+plasma6-systemsettings
+plasma6-vault
+plasma6-xdg-desktop-portal-kde
 # FIXME need to figure out what exactly requires
 # the next 2 so we can add a dependency there
 # rather than listing them here
 kf6-kirigami-addons
 plasma6-qqc2-breeze-style
-# FIXME replace with plasma6-okular as soon as it exists
-okular
-
-jasper
-nss
-nss_ldap
-nss_mdns
-#nss_wins #this pulls in a ton of samba deps
-openssl
-pam_ldap
-poppler-data
-#telegram-desktop
-sasl-plug-gssapi
-
 # FIXME why is gtk pulled in? Would be nice to be
 # free of g cruft, but we have to take plasma6's gtk
 # style over plasma5's...
 plasma6-breeze-gtk
+kf6-kidletime-x11
+kf6-kwindowsystem-backend-x11
+# P5 compat bits
+kwindowsystem-x11
 
-kf6-oxygen-icons
-
-# OM special featured software
-om-repo-picker
+poppler-data
+sasl-plug-gssapi
+x11-data-cursor-themes
+x11-docs
+x11-font-misc
+x11-font-type1
+x11-tools
 
 #packagekit
 #plasma6-discover
 #plasma6-discover-backend-flatpak
 #plasma6-discover-backend-packagekit
+#flatpak
+#plasma6-flatpak-kcm
+
+# OM special featured software
+om-repo-picker
+om-mirror-selector

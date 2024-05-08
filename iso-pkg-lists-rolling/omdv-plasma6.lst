@@ -48,7 +48,9 @@ plasma6-kinfocenter
 plasma6-kio-admin
 plasma6-konsole
 plasma6-ksystemstats
+plasma6-kwin-x11
 plasma6-kwrite
+plasma6-libkscreen-x11
 plasma6-nm
 plasma6-okular
 plasma6-oxygen
@@ -68,6 +70,10 @@ plasma6-qqc2-breeze-style
 # free of g cruft, but we have to take plasma6's gtk
 # style over plasma5's...
 plasma6-breeze-gtk
+kf6-kidletime-x11
+kf6-kwindowsystem-backend-x11
+# P5 compat bits
+kwindowsystem-x11
 
 poppler-data
 sasl-plug-gssapi

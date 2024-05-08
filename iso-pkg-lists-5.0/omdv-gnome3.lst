@@ -188,13 +188,3 @@ om-mirror-selector
 #packagekit
 #packagekit-gstreamer-plugin
 #packagekit-command-not-found
-# make sure that flatpak is installed on iso
-#flatpak
-
-# Feeling stuff
-# for dnfdragora to use correct backend
-#libyui-gtk
-#libyui-mga-gtk
-# for libreoffice
-#libreoffice-gnome
-#libreoffice-gtk3-kde5
