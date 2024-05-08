@@ -569,7 +569,9 @@ SetFileList() {
 		if [ "$TYPE" = 'plasma-wayland' ]; then
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
 		elif [ "$TYPE" = 'plasma6x11' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6.lst"
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6x11.lst"
+		elif [ "$TYPE" = 'plasma6' ]; then
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6wayland.lst"
 		else
 			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
 
@@ -916,7 +918,6 @@ updateSystem() {
 		;;
 	esac
 
-	set -x
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static dnf-plugins-core unix2dos"
 	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
@@ -930,7 +931,7 @@ updateSystem() {
 	else
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-		dnf --verbose upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
 		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
@@ -1764,10 +1765,10 @@ EOF
 
 	case "${TYPE}" in
 	edu)
-		SESSION="plasma"
+		SESSION="plasmax11"
 		;;
 	plasma6)
-		SESSION="plasmawayland"
+		SESSION="plasma"
 		;;
 	plasma6x11)
 		SESSION="plasmax11"
@@ -1846,7 +1847,7 @@ EOF
 	# like discussed 1000000000000 times already this should not be activate by default, not here not in the rpm. Not only it break the boot time but people are still
 	# using 'paid' per MB/GB internet
 	## this -> 17.153s dnf-makecache.service ( on a device boots in 2.4 secs with a nvme , imagine that on slow HDD )
-	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon.socket irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path)
+	SERVICES_ENABLE=(getty@tty1.service sshd.socket uuidd.socket calamares-locale NetworkManager avahi-daemon.socket irqbalance systemd-timedated systemd-timesyncd systemd-resolved vboxadd vboxdrmclinet vboxdrmclinet.path spice-vdagentd)
 
 
 	# ( crazy) we cannot symlink/rm for .service,.socket
