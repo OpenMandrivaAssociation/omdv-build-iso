@@ -20,7 +20,7 @@ task-lxqt
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 pavucontrol-qt
-ark
+plasma6-ark
 #cantata
 lximage-qt
 #meteo-qt
