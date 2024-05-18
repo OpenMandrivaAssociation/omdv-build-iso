@@ -1784,12 +1784,6 @@ EOF
 		case ${DISPLAYMANAGER,,} in
 		"sddm")
 			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
-			if [ "${TYPE,,}" = "lxqt" ]; then
-				# (tpg) use maldives theme on LXQt desktop
-				chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
-			elif [ "${TYPE,,}" = "cutefish" ]; then
-				chroot "$CHROOTNAME" sed -i -e "s/^Current=.*/Current=maldives/g" /etc/sddm.conf
-			fi
 			;;
 		"gdm")
 			chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
