@@ -154,7 +154,7 @@ openssl
 breeze-gtk
 
 #openssh-server #server
-#samba-server #server
+samba-server #server
 
 #python deps?
 #python-ldap
