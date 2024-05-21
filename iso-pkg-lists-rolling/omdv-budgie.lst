@@ -59,31 +59,23 @@ file-roller
 gnome-calculator
 gedit
 gdm
-#lightdm
 gnome-color-manager
 gnome-disk-utility
-gnome-packagekit
 gnome-software
 gnome-terminal-nautilus
 
-empathy
 gnome-games
-rhythmbox
 clapper
-totem
 transmission-gtk
 simple-scan
 shotwell
 gthumb
 sushi
-vino
-vinagre
 polari
 fractal
 
 gnome-maps
 gnome-music
-gnome-photos
 shortwave
 
 bijiben
@@ -93,11 +85,9 @@ gnome-dictionary
 foliate
 gnome-font-viewer
 gnome-sound-recorder
-gnome-usage
 gnome-weather
 baobab
 gnome-system-log
-gnome-search-tool
 gnome-commander
 gnome-calendar
 
