@@ -20,7 +20,7 @@ task-lxqt
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 pavucontrol-qt
-ark
+plasma6-ark
 #cantata
 lximage-qt
 #meteo-qt
@@ -32,7 +32,8 @@ neochat
 falkon
 #isoimagewriter
 rosa-imagewriter
-sddm
+plasma6-sddm
+plasma6-sddm-theme-breeze
 #silicon-audio-disc
 #silicon-converter
 #silicon-copy-disc
@@ -123,8 +124,12 @@ xdg-desktop-portal-lxqt
 openssh-server #server
 samba-server #server
 
+distro-release-desktop-LXQt
+kf6-breeze-icons
+plasma6-kwin-x11
+plasma6-breeze
 # Add breeze then for openbox startup
-breeze-gtk
+plasma6-breeze-gtk
 
 # OM special featured software
 #oma-welcome
