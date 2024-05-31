@@ -31,6 +31,7 @@ kde-gtk-config
 #kdepim-runtime
 #kdf
 kdialog
+kfind
 kgamma5
 #kget
 #khelpcenter
@@ -59,7 +60,8 @@ libproxy-kde
 libproxy-networkmanager
 myspell-dictionary
 okular
-partitionmanager
+# Using the plasma6 version even for Plasma 5 because of kpmcore clashes with calamares
+plasma6-partitionmanager
 #plasma-workspace-wayland
 plymouth-kcm
 #print-manager
@@ -67,7 +69,6 @@ purpose
 sddm
 sddm-kcm
 sddm-theme-breeze
-om-midna-sddm
 signon-kwallet-extension
 #skanlite
 sonnet-hunspell
