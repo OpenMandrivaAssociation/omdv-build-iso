@@ -3,9 +3,8 @@ bind-utils #utils
 cdialog #utils old
 cdrkit #utils
 cdrkit-genisoimage #utils
-#cifs-utils #utils
 command-not-found #utils
-# why this ?
+#
 #davfs2 #utils
 dmraid #utils
 dmraid-events #utils
@@ -50,6 +49,7 @@ rpcbind #utils
 #rsnapshot #utils
 rsync #utils
 #samba-client #utils
+#cifs-utils #utils
 #samba-winbind #utils
 #saned
 #sane-backends
@@ -57,5 +57,5 @@ rsync #utils
 sash #utils
 xev #utils
 radeontool
-## this is *wong* , the whole file is wrong
+#
 #dnfdragora
