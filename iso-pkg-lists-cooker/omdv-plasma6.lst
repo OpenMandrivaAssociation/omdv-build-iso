@@ -162,7 +162,8 @@ plasma6-skanlite
 kf6-sonnet
 plasma6-spectacle
 speech-dispatcher
-ssr
+#ssr
+vokoscreenNG
 plasma6-yakuake
 plasma6-kio-zeroconf
 plasma6-kio-extras
