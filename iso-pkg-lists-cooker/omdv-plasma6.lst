@@ -98,7 +98,7 @@ x11-tools
 #plasma6-flatpak-kcm
 
 # OM special featured software
-oma-welcome
+om-welcome
 om-control-center
 om-mirror-selector
 om-repo-picker
