@@ -91,9 +91,9 @@ sasl-plug-gssapi
 kf6-oxygen-icons
 
 # OM special featured software
-oma-welcome
+om-welcome
 om-repo-picker
-om-control-center
+#om-control-center
 
 #packagekit
 plasma6-discover
