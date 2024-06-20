@@ -67,7 +67,7 @@ sasl-plug-gssapi
 #plasma-firewall
 
 # OM special featured software
-oma-welcome
+om-welcome
 #om-feeling-like
 #om-update-config
 om-repo-picker
