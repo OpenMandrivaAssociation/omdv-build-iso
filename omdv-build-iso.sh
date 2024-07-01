@@ -1787,6 +1787,9 @@ EOF
 		"gdm")
 			chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
 			;;
+		"lightdm")
+			chroot "$CHROOTNAME" sed -i -e "s/^#autologin-user=.*/autologin-user=live/g;s/^#autologin-session=.*/autologin-session=${SESSION,,}/g;s/^#user-session=.*/user-session=${SESSION,,}/g" /etc/lightdm/lightdm.conf
+			;;
 		*)
 			printf "%s -> ${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
 		esac
