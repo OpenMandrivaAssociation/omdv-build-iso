@@ -99,6 +99,5 @@ x11-tools
 
 # OM special featured software
 om-welcome
-om-control-center
 om-mirror-selector
 om-repo-picker
