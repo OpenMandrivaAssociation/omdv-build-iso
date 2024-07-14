@@ -133,7 +133,7 @@ plasma6-breeze-gtk
 
 # OM special featured software
 #oma-welcome
-#om-control-center
+om-imagewriter
 om-update-config
 om-repo-picker
 
