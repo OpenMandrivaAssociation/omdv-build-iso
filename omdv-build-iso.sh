@@ -1783,11 +1783,11 @@ EOF
 	if [ "${TYPE,,}" != "minimal" ]; then
 		case ${DISPLAYMANAGER,,} in
 		"sddm")
-			sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e 's/^User=.*/User=${live_user}/g' "$CHROOTNAME"/etc/sddm.conf
+			sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e "s/^User=.*/User=${live_user}/g" "$CHROOTNAME"/etc/sddm.conf
 			;;
 		"gdm")
 			if grep -q AutomaticLoginEnable "$CHROOTNAME"/etc/X11/gdm/custom.conf; then
-				sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=${live_user}/g' "$CHROOTNAME"/etc/X11/gdm/custom.conf
+				sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e "s/^AutomaticLogin.*/AutomaticLogin=${live_user}/g" "$CHROOTNAME"/etc/X11/gdm/custom.conf
 			else
 				sed -i -e "/^\[daemon\]/aAutomaticLoginEnable=True\nAutomaticLogin=${live_user}" "$CHROOTNAME"/etc/X11/gdm/custom.conf
 			fi
