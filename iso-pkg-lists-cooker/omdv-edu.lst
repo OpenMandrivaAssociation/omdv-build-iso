@@ -81,7 +81,7 @@ kpat
 
 # Desktop Specifics
 phonon4qt5-gstreamer
-rosa-imagewriter
+om-imagewriter
 # digikam and kipi-plugins
 kipi-plugins-advancedslideshow
 kipi-plugins-calendar
