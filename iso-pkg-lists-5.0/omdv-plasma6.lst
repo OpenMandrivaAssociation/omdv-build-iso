@@ -20,6 +20,8 @@
 # FIXME replace task-plasma6 with pk-plasma6.lst
 task-plasma6
 plasma6-sddm
+plasma6-sddm-kcm
+plasma6-sddm-theme-breeze
 plasma6-workspace-x11
 distro-release-desktop-Plasma6
 
@@ -31,21 +33,36 @@ edidbins
 enchant
 ffmpeg
 jasper
+kf6-kidletime
+kf6-kidletime-x11
+kirigami-addons
+kf6-kirigami
+kf6-kwindowsystem
+kf6-kwindowsystem-backend-x11
+#kf6-oxygen-icons
+##kwindowsystem-x11
 nss
 nss_ldap
 nss_mdns
 openssl
 pam_ldap
 plasma6-ark
-#plasma6-browser-integration
+plasma6-bluedevil
+#plasma6-breeze-gtk
 plasma6-dolphin
 plasma6-dolphin-plugins
-#plasma6-firewall
+plasma6-ffmpegthumbs
 plasma6-gwenview
 plasma6-kate
+plasma6-kdegraphics-thumbnailers
+plasma6-kdepim-runtime
 plasma6-kdeplasma-addons
+plasma6-kdialog
 plasma6-kinfocenter
 plasma6-kio-admin
+plasma6-kio-extras
+plasma6-kio-gdrive
+plasma6-kio-zeroconf
 plasma6-konsole
 plasma6-ksystemstats
 plasma6-kwin-x11
@@ -53,35 +70,25 @@ plasma6-kwrite
 plasma6-libkscreen-x11
 plasma6-nm
 plasma6-okular
-plasma6-oxygen
+#plasma6-oxygen
 plasma6-oxygen-sounds
-kf6-oxygen-icons
 plasma6-partitionmanager
+plasma6-plymouth-kcm
+plasma6-qqc2-breeze-style
 plasma6-systemmonitor
 plasma6-systemsettings
 plasma6-vault
 plasma6-xdg-desktop-portal-kde
-# FIXME need to figure out what exactly requires
-# the next 2 so we can add a dependency there
-# rather than listing them here
-kf6-kirigami-addons
-plasma6-qqc2-breeze-style
-# FIXME why is gtk pulled in? Would be nice to be
-# free of g cruft, but we have to take plasma6's gtk
-# style over plasma5's...
-plasma6-breeze-gtk
-kf6-kidletime-x11
-kf6-kwindowsystem-backend-x11
-# P5 compat bits
-kwindowsystem-x11
-
 poppler-data
 sasl-plug-gssapi
+sound-theme-ocean
 x11-data-cursor-themes
 x11-docs
 x11-font-misc
 x11-font-type1
 x11-tools
+#plasma6-browser-integration
+#plasma6-firewall
 
 #packagekit
 #plasma6-discover
@@ -91,5 +98,6 @@ x11-tools
 #plasma6-flatpak-kcm
 
 # OM special featured software
-om-repo-picker
+om-welcome
 om-mirror-selector
+om-repo-picker
