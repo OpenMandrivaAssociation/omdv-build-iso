@@ -74,7 +74,7 @@ main() {
 			declare -l lc
 			lc=${k#*=}
 			case "$lc" in
-			plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|budgie|edu)
+			plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
 				TYPE="$lc"
 				;;
 			*)
@@ -304,7 +304,7 @@ usage_help() {
 		optprtf "--tree=     " "Branch of software repository: cooker, lx4"
 		optprtf "--version=" "Version for software repository: 4.0"
 		optprtf "--release_id=" "Release identifer: alpha, beta, rc, final"
-		optprtf "--type=     " "User environment type desired on ISO: plasma, plasma6, mate, budgie, lxqt, cutefish, icewm, xfce4, weston, gnome3, edu, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
+		optprtf "--type=     " "User environment type desired on ISO: plasma, plasma6, mate, budgie, lxqt, cutefish, icewm, xfce, weston, gnome3, edu, minimal, user-type. ${ulon}${bold}NOTE:${normal} When type is set to ${bold}a user chosen name${normal} an interactive session will be invoked where the user will be asked for the window manager desktop file and the command required to start the desired window manager. Both entries must be valid for a proper build of the new iso. No error check is performed on the values entered. Th ese values are saved in a sub-directory of the list repo directory and are restored on each run."
 		hlpprtf "\t\t\tBy default the system build a minimal iso from a list repo with the user selected name. Subsequently the user may add additional include lines, packages or local filenames directories for inclusion to the my.add file in the repository named in the first step. The list repo is created ahead of the build so the script will exit after creating the intial repo to allow the user to add packages or includes to the my.add file before building the iso. On subsequent runs the program will not exit but continue on to build the iso. See also the --makelistrepo option. Switching between user created repos is accomplished by setting the --listrepodir to the desired directory."
 		printf "%b" "--displaymanager=" "\tDisplay Manager used in desktop environemt: sddm , none\n"
 		optprtf "--workdir=" "Set directory where ISO will be build The default is ~/omdv-buildchroot-<arch>"
@@ -558,7 +558,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce4|weston|gnome3|minimal|sway|budgie|edu)
+	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
 		NEWTYPE=error
 		;;
 	*)
@@ -1731,7 +1731,7 @@ EOF
 	chroot "$CHROOTNAME" /bin/mkdir -p /var/lib/AccountsService/icons
 	cp -f "$WORKDIR"/data/account-user "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
 	cp -f "$WORKDIR"/data/account-icon "$CHROOTNAME"/var/lib/AccountsService/icons/${live_user}
-	chroot "$CHROOTNAME" /bin/sed -i -e "s/_NAME_/${live_user}/g" /var/lib/AccountsService/users/${live_user}
+	/bin/sed -i -e "s/_NAME_/${live_user}/g" "$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
 
 	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
@@ -1782,17 +1782,22 @@ EOF
 	if [ "${TYPE,,}" != "minimal" ]; then
 		case ${DISPLAYMANAGER,,} in
 		"sddm")
-			chroot "$CHROOTNAME" sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e 's/^User=.*/User=live/g' /etc/sddm.conf
+			sed -i -e "s/^Session=.*/Session=${SESSION,,}.desktop/g" -e "s/^User=.*/User=${live_user}/g" "$CHROOTNAME"/etc/sddm.conf
 			;;
 		"gdm")
-			chroot "$CHROOTNAME" sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e 's/^AutomaticLogin.*/AutomaticLogin=live/g' /etc/X11/gdm/custom.conf
+			if grep -q AutomaticLoginEnable "$CHROOTNAME"/etc/X11/gdm/custom.conf; then
+				sed -i -e "s/^AutomaticLoginEnable.*/AutomaticLoginEnable=True/g" -e "s/^AutomaticLogin.*/AutomaticLogin=${live_user}/g" "$CHROOTNAME"/etc/X11/gdm/custom.conf
+			else
+				sed -i -e "/^\[daemon\]/aAutomaticLoginEnable=True\nAutomaticLogin=${live_user}" "$CHROOTNAME"/etc/X11/gdm/custom.conf
+			fi
 			;;
 		"lightdm")
-			chroot "$CHROOTNAME" sed -i -e "s/^#autologin-user=.*/autologin-user=live/g;s/^#autologin-session=.*/autologin-session=${SESSION,,}/g;s/^#user-session=.*/user-session=${SESSION,,}/g" /etc/lightdm/lightdm.conf
+			sed -i -e "s/^#autologin-user=.*/autologin-user=live/g;s/^#autologin-session=.*/autologin-session=${SESSION,,}/g;s/^#user-session=.*/user-session=${SESSION,,}/g" "$CHROOTNAME"/etc/lightdm/lightdm.conf
 			;;
 		*)
 			printf "%s -> ${DISPLAYMANAGER,,} is not supported, autologin feature will be not enabled"
 		esac
+		echo "XSession=${SESSION}" >>"$CHROOTNAME"/var/lib/AccountsService/users/${live_user}
 	fi
 
 	# (crazy) not used ? cannot work like this ?
@@ -1928,7 +1933,7 @@ EOF
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cutefish"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'icewm' ]; then
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "icewm"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
-		elif [ "${TYPE,,}" = 'xfce4' ]; then
+		elif [ "${TYPE,,}" = 'xfce' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startxfce4"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "xfce"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'gnome3' ]; then
