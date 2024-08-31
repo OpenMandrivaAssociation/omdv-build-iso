@@ -7,7 +7,7 @@ kf6-kidletime-x11
 kf6-kwindowsystem-backend-x11
 
 # right now for test
-task-x11
+mesa
 
 # P5 compat bits
 kwindowsystem-x11
