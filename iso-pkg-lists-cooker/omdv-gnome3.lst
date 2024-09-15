@@ -32,7 +32,7 @@ gnome-keyring
 gnome-shell
 gnome-system-monitor
 gnome-terminal
-console
+#console
 gnome-themes-standard
 nautilus
 networkmanager
@@ -56,8 +56,8 @@ gnome-terminal-nautilus
 
 #empathy
 #epiphany # disable to save space on ISO
-gnome-games
-rhythmbox
+#gnome-games
+#rhythmbox
 clapper
 #totem
 transmission-gtk
@@ -71,11 +71,11 @@ polari
 fractal
 
 gnome-maps
-gnome-music
-gnome-photos
+#gnome-music
+#gnome-photos
 shortwave
 
-bijiben
+#bijiben
 gnome-characters
 gnome-clocks
 # Builder is needed only for developers.
@@ -188,8 +188,8 @@ sasl-plug-gssapi
 #pyxdg
 
 # OM special featured software
-gnome-initial-setup
-gnome-tour
+#gnome-initial-setup
+#gnome-tour
 # Disable feeling-like as it works only in Plasma
 #om-feeling-like
 #oma-welcome
