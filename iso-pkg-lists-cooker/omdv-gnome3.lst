@@ -57,6 +57,10 @@ gnome-terminal-nautilus
 #empathy
 #epiphany # disable to save space on ISO
 #gnome-games
+aisleriot
+gnome-chess
+gnome-mahjongg
+gnome-nibbles
 #rhythmbox
 clapper
 #totem
@@ -72,6 +76,7 @@ fractal
 
 gnome-maps
 #gnome-music
+g4music
 #gnome-photos
 shortwave
 
