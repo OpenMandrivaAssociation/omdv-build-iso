@@ -28,7 +28,6 @@ gnome-menus
 gnome-panel
 gnome-power-manager
 gnome-keyring
-#gnome-screenshot # no longer needed
 gnome-shell
 gnome-system-monitor
 gnome-terminal
@@ -54,7 +53,6 @@ gnome-disk-utility
 gnome-software
 gnome-terminal-nautilus
 
-#empathy
 #epiphany # disable to save space on ISO
 #gnome-games
 aisleriot
@@ -86,7 +84,6 @@ gnome-clocks
 # Builder is needed only for developers.
 #gnome-builder
 gnome-dictionary
-#gnome-documents  #deprecated and right now also not compile. Disable it due conflicting during iso building
 foliate
 gnome-font-viewer
 gnome-sound-recorder
