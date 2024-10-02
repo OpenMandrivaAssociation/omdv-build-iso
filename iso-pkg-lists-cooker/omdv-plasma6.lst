@@ -19,6 +19,7 @@
 
 # FIXME replace task-plasma6 with pk-plasma6.lst
 task-plasma6
+#%include .///pk-plasma6.lst
 plasma6-sddm
 plasma6-sddm-kcm
 plasma6-sddm-theme-breeze
