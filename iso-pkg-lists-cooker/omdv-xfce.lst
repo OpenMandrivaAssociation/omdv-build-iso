@@ -140,6 +140,8 @@ gdm
 #lightdm-gtk3-greeter
 #lightdm-gtk-greeter-common
 
+dbus-broker
+
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
 
