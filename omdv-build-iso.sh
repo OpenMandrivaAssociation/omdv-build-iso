@@ -1924,7 +1924,7 @@ EOF
 			sed -i -e "s/.*executable:.*/    executable: "budgie-desktop"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "budgie"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'cinnamon' ]; then
-			sed -i -e "s/.*executable:.*/    executable: "startcinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*executable:.*/    executable: "cinnamon-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cinnamon"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'lxqt' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "lxqt-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
