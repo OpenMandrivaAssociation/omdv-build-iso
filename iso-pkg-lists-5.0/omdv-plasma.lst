@@ -19,7 +19,7 @@
 #%include .///pk-smplayer.lst
 #%include .///pk-kipi-plugins.lst
 
-chromium
+#chromium
 #firefox
 #falkon
 #falkon-kde
@@ -68,7 +68,7 @@ sasl-plug-gssapi
 #plasma-firewall
 
 # OM special featured software
-om-welcome
+#om-welcome
 #om-feeling-like
 #om-update-config
 om-repo-picker
