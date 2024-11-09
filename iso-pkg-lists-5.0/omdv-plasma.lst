@@ -28,6 +28,7 @@ chromium
 # Desktop Specific
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
+mpv
 phonon4qt5-mpv
 phonon4qt6-mpv
 kio-admin
