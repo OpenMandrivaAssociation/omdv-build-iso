@@ -161,6 +161,9 @@ gjs
 lib64webkit2gtk-gir4.1
 gstreamer1.0-gtk
 gstreamer1.0-gtk-wayland
+# Make sure that both are on ISO ### I hate splits
+python-gobject3
+python-gi
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
