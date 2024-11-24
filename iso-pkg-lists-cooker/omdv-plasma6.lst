@@ -9,7 +9,7 @@
 # More includes lists for common sets that are not task/meta pkgs
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-#%include .///omdv_libreoffice.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
