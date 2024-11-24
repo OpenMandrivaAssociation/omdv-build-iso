@@ -61,7 +61,9 @@ xfwm4
 # xfce is missing email client.
 # We can choose betwen Thunderbird powerfully based on gtk or Claws-mail
 # Pick right now claws-mail due to less resources and better theme integration with xfce4
-claws-mail
+# temp prefer thunderbid due claw is broken
+thunderbird
+#claws-mail
 
 # Plugins
 xfce4-battery-plugin
@@ -132,9 +134,13 @@ gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
-lightdm
-lightdm-gtk3-greeter
-lightdm-gtk-greeter-common
+# force gdm due problem with lightdm that boot to blacks creen on wrong tty (change tty allow to log in)
+gdm
+#lightdm
+#lightdm-gtk3-greeter
+#lightdm-gtk-greeter-common
+
+dbus-broker
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
@@ -151,7 +157,6 @@ openssl
 #pam_ldap
 #poppler-data
 #sasl-plug-gssapi
-breeze-gtk
 
 #openssh-server #server
 samba-server #server

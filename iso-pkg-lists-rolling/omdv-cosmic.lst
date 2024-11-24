@@ -17,99 +17,19 @@
 #%include .///omdv_vlc.lst
 
 # Desktop Specifics
-task-gnome
-task-gnome-minimal
+task-cosmic
+task-cosmic-minimal
 accountsservice
 adwaita-icon-theme
-gnome-desktop
-gnome-backgrounds
-gnome-control-center
-gnome-menus
-gnome-panel
-gnome-power-manager
 gnome-keyring
-gnome-shell
-gnome-system-monitor
-gnome-terminal
-#console
-gnome-themes-standard
-nautilus
 networkmanager
-yelp
 task-x11
-xdg-desktop-portal-gnome
+xdg-desktop-portal-cosmic
 
-cheese
-eog
-evince
+# Optional but wanted
+firefox
 file-roller
-gnome-calculator
-gedit
-gnome-text-editor
-gdm
-gnome-color-manager
-gnome-disk-utility
-#gnome-packagekit #broken, and no needed
-gnome-software
-gnome-terminal-nautilus
-
-#epiphany # disable to save space on ISO
-#gnome-games
-aisleriot
-gnome-chess
-gnome-mahjongg
-gnome-nibbles
-#rhythmbox
 clapper
-#totem
-transmission-gtk
-simple-scan
-shotwell
-gthumb
-sushi
-#vino
-#vinagre
-polari
-fractal
-
-gnome-maps
-#gnome-music
-g4music
-#gnome-photos
-shortwave
-
-#bijiben
-gnome-characters
-gnome-clocks
-# Builder is needed only for developers.
-#gnome-builder
-gnome-dictionary
-foliate
-gnome-font-viewer
-gnome-sound-recorder
-gnome-usage
-gnome-weather
-baobab
-gnome-system-log
-gnome-commander
-gnome-firmware
-gnome-calendar
-
-gucharmap
-mousetweaks
-
-# biz / office / utils
-brasero
-caribou
-caribou-gtk3
-evolution
-gnome-contacts
-gparted
-gthumb
-gimp
-inkscape
-loupe
-om-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -154,17 +74,6 @@ gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
 
-# Dirty but urgent GTK deps
-#{_lib}gjs0
-typelib(GjsPrivate)
-gjs
-lib64webkit2gtk-gir4.1
-gstreamer1.0-gtk
-gstreamer1.0-gtk-wayland
-# Make sure that both are on ISO ### I hate splits
-python-gobject3
-python-gi
-
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
 
@@ -181,24 +90,8 @@ openssl
 poppler-data
 sasl-plug-gssapi
 
-#openssh-server #server
-#samba-server #server
-
-#python deps?
-#python-ldap
-#python-notify
-#python-OpenSSL
-#python-pycrypto
-#python-sip
-#pyxdg
 
 # OM special featured software
-#gnome-initial-setup
-#gnome-tour
-# Disable feeling-like as it works only in Plasma
-#om-feeling-like
-#oma-welcome
-#om-control-center
 om-update-config
 om-repo-picker
 om-user-manager
@@ -209,11 +102,3 @@ packagekit-gstreamer-plugin
 packagekit-command-not-found
 # make sure that flatpak is installed on iso
 flatpak
-
-# Feeling stuff
-# for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
-# for LibreOffice
-libreoffice-gnome
-libreoffice-gtk3-kde5

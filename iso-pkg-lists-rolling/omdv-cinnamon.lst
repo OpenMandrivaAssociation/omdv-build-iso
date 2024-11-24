@@ -32,6 +32,7 @@ json-glib
 gnome-terminal
 gsettings-desktop-schemas
 dbus-x11
+dbus-broker
 polkit-gnome
 gnome-backgrounds
 gnome-themes-standard
@@ -47,8 +48,8 @@ task-pulseaudio
 
 #task-printing
 # printing
-#task-printing-scanning
-#system-config-printer-gui #printer
+task-printing-scanning
+system-config-printer-gui #printer
 
 # keep to check
 #x11-font-cyrillic

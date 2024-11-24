@@ -31,6 +31,7 @@ lame #utils
 libblockdev-plugins-all
 libgphoto-common #utils
 libmtp-utils #utils
+libgthread # For some obscure benchmarks (Unigine) to work
 # core ?
 lvm2 #utils
 nail #utils
