@@ -34,9 +34,9 @@ fastfetch
 os-prober
 plymouth-system-theme
 python-curl
-quota #iso
+#quota #iso
 rtkit #iso
-sharutils #iso
+#sharutils #iso
 sound-theme-freedesktop #iso
 sudo
 systemd-bash-completion
@@ -50,7 +50,7 @@ uuidd
 vbetool #iso
 wget
 aria2
-whois #iso
+#whois #iso
 virtualbox-guest-additions #Shared clipboard and files
 spice-vdagent #Same for qemu
 x11-data-bitmaps
