@@ -30,6 +30,8 @@ xdg-desktop-portal-cosmic
 firefox
 file-roller
 clapper
+loupe
+glycin-loaders
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -90,7 +92,6 @@ openssl
 poppler-data
 sasl-plug-gssapi
 
-
 # OM special featured software
 om-update-config
 om-repo-picker
@@ -102,3 +103,11 @@ packagekit-gstreamer-plugin
 packagekit-command-not-found
 # make sure that flatpak is installed on iso
 flatpak
+
+# Feeling stuff
+# for dnfdragora to use correct backend
+libyui-gtk
+libyui-mga-gtk
+# for LibreOffice
+libreoffice-gnome
+libreoffice-gtk3-kde5
