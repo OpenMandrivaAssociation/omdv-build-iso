@@ -28,7 +28,6 @@ plasma6-kpat
 
 # Desktop specifics
 
-
 x11-font-cyrillic
 x11-tools
 x11-docs
@@ -94,6 +93,7 @@ kf6-oxygen-icons
 om-welcome
 om-repo-picker
 om-imagewriter
+om-mirror-selector
 
 #packagekit
 plasma6-discover
@@ -156,6 +156,7 @@ plasma6-plymouth-kcm
 plasma6-print-manager
 plasma6-sddm-kcm
 plasma6-sddm-theme-breeze
+plasma6-kwalletmanager
 plasma6-signon-kwallet-extension
 plasma6-skanlite
 kf6-sonnet
