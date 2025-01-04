@@ -34,8 +34,8 @@ fastfetch
 os-prober
 plymouth-system-theme
 
-proton-experimental
-proton-experimental-direct3d
+#proton-experimental
+#proton-experimental-direct3d
 
 python-curl
 #quota #iso
