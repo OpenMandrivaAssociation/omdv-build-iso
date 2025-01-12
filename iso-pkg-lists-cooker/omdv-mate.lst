@@ -89,7 +89,8 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
-sddm
+#sddm
+lightdm
 breeze-gtk
 
 openssh-server #server
