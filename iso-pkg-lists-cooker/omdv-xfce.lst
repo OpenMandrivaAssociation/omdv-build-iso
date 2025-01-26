@@ -135,10 +135,10 @@ gvfs-smb #gtk dep
 #ia_ora-gnome #gtk dep
 pango #gtk dep
 # force gdm due problem with lightdm that boot to blacks creen on wrong tty (change tty allow to log in)
-gdm
-# lightdm
-# lightdm-gtk3-greeter
-# lightdm-gtk-greeter-common
+#gdm
+lightdm
+lightdm-gtk3-greeter
+lightdm-gtk-greeter-common
 
 dbus-broker
 
