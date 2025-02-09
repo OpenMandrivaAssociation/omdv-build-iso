@@ -9,12 +9,18 @@
 # More includes lists for common sets that are not task/meta pkgs
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-#%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 %include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
-#%include .///omdv_smplayer.lst
 %include .///omdv_pulseaudio.lst
+#%include .///omdv_libreoffice.lst
+#%include .///omdv_smplayer.lst
+#%include .///omdv_vlc.lst
+
+# FIX replace task-plasma6 with omdv_plasma6.lst
+#task-plasma6
+#%include .///omdv_plasma6.lst
+task-plasma6-minimal = %{EVRD}
 
 # Let's add also wayland as alternative
 #%include .///omdv-plasma6wayland.lst
@@ -22,7 +28,6 @@
 qmplay2
 # qmplay2 pulls in yt-dlp which requires (mplayer or mpv). Make sure it picks mpv
 mpv
-task-plasma6
 #libreoffice-kde6
 
 # Install for Live only
@@ -39,15 +44,18 @@ x11-font-misc
 x11-data-cursor-themes
 edidbins
 
-# MD this entire list should be shuffled or justified to be needed for the full ISO
-
-avahi #service
+task-x11
+plasma6-kwin-x11
+plasma6-workspace-x11
+kf6-kwindowsystem-backend-x11
 
 distro-release-desktop-Plasma6
 
 # Miscelaneous Packages
+avahi #service
 chromium
 chromium-qt6
+edidbins
 enchant
 ffmpeg
 #plasma6-filelight
@@ -88,12 +96,13 @@ nss_mdns
 openssl
 pam_ldap
 poppler-data
-telegram-desktop
+#telegram-desktop
 sasl-plug-gssapi
 kf6-oxygen-icons
 
 # OM special featured software
 om-welcome
+om-mirror-selector
 om-repo-picker
 om-imagewriter
 om-mirror-selector
@@ -105,9 +114,9 @@ plasma6-discover-backend-packagekit
 
 plasma6-sddm
 
-plasma6-akonadi-calendar-tools
-plasma6-akonadi-search
-plasma6-akregator
+#plasma6-akonadi-calendar-tools
+#plasma6-akonadi-search
+#plasma6-akregator
 plasma6-audiocd-kio
 plasma6-bluedevil
 plasma6-dolphin-plugins
@@ -118,8 +127,8 @@ grub2-editor
 plasma6-gwenview
 plasma6-kaccounts-integration
 plasma6-kaccounts-providers
-plasma6-kaddressbook
-plasma6-kalarm
+#plasma6-kaddressbook
+#plasma6-kalarm
 plasma6-kamera
 plasma6-kate
 plasma6-kbackup
@@ -129,7 +138,7 @@ plasma6-kdegraphics-thumbnailers
 plasma6-kde-gtk-config
 plasma6-kdenetwork-filesharing
 #plasma6-kdenlive
-plasma6-kdepim-runtime
+#plasma6-kdepim-runtime
 plasma6-kdf
 plasma6-kdialog
 plasma6-kfind
@@ -138,17 +147,17 @@ plasma6-kget
 plasma6-khelpcenter
 plasma6-kidentitymanagement
 plasma6-kio-gdrive
-plasma6-kleopatra
-plasma6-kmail
-plasma6-kmail-account-wizard
-plasma6-kontact
+#plasma6-kleopatra
+#plasma6-kmail
+#plasma6-kmail-account-wizard
+#plasma6-kontact
 #plasma6-konversation
-plasma6-neochat
-plasma6-korganizer
-plasma6-krdc
-plasma6-krfb
+#plasma6-neochat
+#plasma6-korganizer
+#plasma6-krdc
+#plasma6-krfb
 plasma6-ksystemlog
-plasma6-ktorrent
+#plasma6-ktorrent
 plasma6-kwallet-pam
 plasma6-kwrite
 myspell-dictionary
