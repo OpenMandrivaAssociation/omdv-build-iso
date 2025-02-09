@@ -20,7 +20,7 @@
 # FIX replace task-plasma6 with omdv_plasma6.lst
 #task-plasma6
 #%include .///omdv_plasma6.lst
-task-plasma6-minimal = %{EVRD}
+task-plasma6-minimal
 
 # Let's add also wayland as alternative
 #%include .///omdv-plasma6wayland.lst
