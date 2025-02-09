@@ -918,7 +918,6 @@ updateSystem() {
 		;;
 	esac
 
-	set -x
 	# List of packages that needs to be installed inside lxc-container and local machines
 	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static dnf-plugins-core unix2dos"
 	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
@@ -932,7 +931,8 @@ updateSystem() {
 	else
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-		dnf --verbose upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+  
 		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
