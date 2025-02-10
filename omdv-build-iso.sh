@@ -121,6 +121,9 @@ main() {
 		 --unsupprepo)
 			UNSUPPREPO=unsupprepo
 			;;
+		 --nonfreerepo)
+			NONFREEREPO=non-free
+			;;
 		 --repolist=*)
 			ENABLEREPO=${k#*=}
 			;;
@@ -173,7 +176,7 @@ main() {
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER \
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "NONFREEREPO="$NONFREEREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"ENSKPLST="$ENSKPLST " LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
 	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "DEFAULTKBD="$DEFAULTKBD"
 
@@ -316,6 +319,7 @@ usage_help() {
 		hlpprtf "\t\t\tSeveral options allow the selection of additional repositories in addition to the default (main). Please note that is the following options are used the selected repositories will be left enabled on the iso. If you just want the default repositories on the iso use the --baserepo switch in addition to the other selectors."
 		optprtf "--testrepo" "Enables the testing repo for the main repository"
 		optprtf "--unsupprepo" "Enables the extra repo"
+		optprtf "--nonfreerepo" "Enables the non-free repo"
 		optprtf "--repolist" "Allows a list of comma separated repoid's to enable.  i.e. --repolist=extra,updates,restricted To obtain a list of repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation"
 		optprtf "--baserepo" "Resets the above options to the default for the repo group (rock, rolling, cooker)"
 		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
@@ -883,6 +887,12 @@ InstallRepos() {
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
 			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-extra || :
+		fi
+		if [ -n "$NONFREEREPO" ]; then
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-non-free
+			# And the corresponding updates repository (allow this to fail, because there
+			# is no rolling/updates or cooker/updates)
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
