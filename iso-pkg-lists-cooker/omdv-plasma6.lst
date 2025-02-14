@@ -152,9 +152,9 @@ plasma6-kio-gdrive
 #plasma6-krfb
 plasma6-ksystemlog
 #plasma6-ktorrent
-#plasma6-kwallet-pam
-#plasma6-kwalletmanager
-#plasma6-signon-kwallet-extension
+plasma6-kwallet-pam
+plasma6-kwalletmanager
+plasma6-signon-kwallet-extension
 plasma6-kwrite
 myspell-dictionary
 plasma6-okular
