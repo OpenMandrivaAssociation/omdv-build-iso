@@ -2096,14 +2096,23 @@ buildIso() {
 	fi
 	printf "%s\n" "-> Building ISO with options ${XORRISO_OPTIONS}"
 
-	xorriso -as mkisofs -R -r -J -joliet-long -cache-inodes \
-		-graft-points -iso-level 3 -full-iso9660-filenames \
-		--modification-date="${ISO_DATE}" \
-		-omit-version-number -disable-deep-relocation \
-		${XORRISO_OPTIONS} \
-		-publisher "OpenMandriva Association" \
-		-preparer "OpenMandriva Association" \
-		-volid "$LABEL" -o "$ISOFILE" "$ISOROOTNAME" --sort-weight 0 / --sort-weight 1 /boot
+    	xorriso -as mkisofs -R -r -J -joliet-long -cache-inodes \
+        -graft-points -iso-level 3 -full-iso9660-filenames \
+        --modification-date="${ISO_DATE}" \
+        -omit-version-number -disable-deep-relocation \
+        ${XORRISO_OPTIONS} \
+        -publisher "OpenMandriva Association" \
+        -preparer "OpenMandriva Association" \
+        -isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin \
+        -c isolinux/boot.cat \
+        -b isolinux/isolinux.bin \
+        -no-emul-boot -boot-load-size 4 -boot-info-table \
+        -eltorito-alt-boot \
+        -e isolinux/efiboot.img \
+        -no-emul-boot \
+        -isohybrid-gpt-basdat \
+        -volid "$LABEL" -o "$ISOFILE" "$ISOROOTNAME" --sort-weight 0 / --sort-weight 1 /boot
+
 
 	if [ ! -f "$ISOFILE" ]; then
 		printf "%s\n" "-> Failed build iso image." "Exiting"
