@@ -4,6 +4,8 @@
 %include .///omdv_drivers.lst
 %include .///omdv_ppp.lst
 %include .///omdv_iso_minimal.lst
+%include .///omdv_iso.lst
+%include .///omdv_task-x11.lst
 
 # more includes lists for common sets that are not task/meta pkgs
 %include .///omdv_fonts.lst
