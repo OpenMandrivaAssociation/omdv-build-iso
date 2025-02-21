@@ -8,7 +8,6 @@ calamares #min-iso
 dosfstools
 eject
 #freetype-tools #iso
-hfsutils #iso
 distro-release-indexhtml
 distro-release-repos-pkgprefs
 distro-release-theme
