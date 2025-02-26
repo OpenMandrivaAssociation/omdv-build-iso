@@ -31,7 +31,7 @@ getargbool 0 UEFI && liveuefi="yes"
 if [ -n "$liveuefi" ]; then
     mount -n -t vfat -o ro $livedev /run/initramfs/omdv
 else
-    mount -n -t iso9660 -o ro $realdev /run/initramfs/omdv
+    mount -n -t iso9660 -o ro,loop $realdev /run/initramfs/omdv
 fi
 
 LOOPDEV=$( losetup -f )
