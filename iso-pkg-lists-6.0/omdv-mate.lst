@@ -22,16 +22,16 @@ openmandriva-mate-config
 
 #  other useful things not in task-mate
 #   caja
-caja-extensions-av
-caja-extensions-image-converter
-caja-extensions-open-terminal
-caja-extensions-sendto
+#caja-extensions-av
+#caja-extensions-image-converter
+#caja-extensions-open-terminal
+#caja-extensions-sendto
 #caja-extensions-sendto-pidgin
 #caja-extensions-sendto-upnp
 #caja-extensions-share
-caja-extensions-wallpaper
-caja-extensions-xattr-tags
-caja-actions
+#caja-extensions-wallpaper
+#caja-extensions-xattr-tags
+#caja-actions
 #   pluma
 pluma-plugins
 
@@ -89,7 +89,8 @@ openssl
 pam_ldap
 poppler-data
 sasl-plug-gssapi
-sddm
+#sddm
+lightdm
 breeze-gtk
 
 openssh-server #server

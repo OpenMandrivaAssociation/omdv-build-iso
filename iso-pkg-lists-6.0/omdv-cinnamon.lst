@@ -98,6 +98,15 @@ breeze-gtk
 
 gdm
 
+# workaround
+gcr
+typelib(GcrUi)
+lib64gcr-gir1
+
+# needed for mounting disc
+gnome-disk-utility
+
+
 #openssh-server #server
 #samba-server #server
 

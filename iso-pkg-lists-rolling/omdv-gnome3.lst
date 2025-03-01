@@ -199,10 +199,11 @@ sasl-plug-gssapi
 #om-feeling-like
 #oma-welcome
 #om-control-center
-om-update-config
-om-repo-picker
+#om-update-config
+#om-repo-picker
 om-user-manager
 om-mirror-selector
+tears-of-mandrake
 
 #packagekit
 packagekit-gstreamer-plugin
