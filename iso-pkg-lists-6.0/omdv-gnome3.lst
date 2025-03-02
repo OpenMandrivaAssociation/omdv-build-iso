@@ -7,7 +7,6 @@
 %include .///omdv_utils.lst
 
 # More includes lists for common sets that are not task/meta pkgs
-%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_libreoffice.lst
@@ -19,6 +18,7 @@
 # Desktop Specifics
 task-gnome
 task-gnome-minimal
+firefox
 accountsservice
 adwaita-icon-theme
 gnome-desktop

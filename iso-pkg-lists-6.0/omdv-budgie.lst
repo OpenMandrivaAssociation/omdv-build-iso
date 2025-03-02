@@ -7,7 +7,6 @@
 %include .///omdv_utils.lst
 
 # More includes lists for common sets that are not task/meta pkgs
-%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_libreoffice.lst
@@ -44,6 +43,7 @@ networkmanager-applet
 yelp
 task-x11
 lib64xfce4windowing
+firefox
 
 # Themes?Styles
 

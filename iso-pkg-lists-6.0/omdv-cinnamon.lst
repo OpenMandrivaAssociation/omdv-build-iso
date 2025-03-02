@@ -7,7 +7,6 @@
 %include .///omdv_utils.lst
 
 # More includes lists for common sets that are not task/meta pkgs
-%include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_libreoffice.lst
@@ -25,6 +24,7 @@ cinnamon-control-center
 cinnamon-screensaver
 cinnamon-translations
 cinnamon-settings-daemon
+firefox
 cjs
 muffin
 nemo
