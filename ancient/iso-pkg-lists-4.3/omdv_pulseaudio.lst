@@ -1,8 +1,0 @@
-alsa-plugins-pulseaudio
-pulseaudio
-pulseaudio-module-bluetooth
-pulseaudio-module-x11
-pulseaudio-module-zeroconf
-pulseaudio-utils
-pipewire-pulse
-#pulseaudio-server

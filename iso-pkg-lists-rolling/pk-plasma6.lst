@@ -27,7 +27,7 @@ plasma6-integration
 plasma6-kate
 plasma6-kde-cli-tools
 plasma6-kdegraphics-thumbnailers
-plasma6-kdepim-runtime
+#plasma6-kdepim-runtime
 plasma6-kdeplasma-addons
 plasma6-kdialog
 plasma6-kinfocenter
@@ -68,7 +68,7 @@ plasma6-vault
 plasma6-workspace
 plasma6-workspace-x11
 plasma6-xdg-desktop-portal-kde
-sound-theme-ocean
+#sound-theme-ocean
 #flatpak
 #kf6-sonnet
 #packagekit
