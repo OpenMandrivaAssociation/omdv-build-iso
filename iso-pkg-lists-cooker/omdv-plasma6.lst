@@ -111,7 +111,7 @@ plasma6-dolphin-plugins
 plasma6-drkonqi
 #elisa
 plasma6-ffmpegthumbs
-grub2-editor
+kcm-grub2
 plasma6-gwenview
 plasma6-kaccounts-integration
 plasma6-kaccounts-providers
