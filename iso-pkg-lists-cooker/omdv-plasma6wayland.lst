@@ -7,4 +7,4 @@ kf6-kidletime-wayland
 kf6-kwindowsystem-backend-wayland
 
 # P5 compat bits
-kwindowsystem-wayland
+#kwindowsystem-wayland
