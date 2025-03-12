@@ -114,3 +114,4 @@ discover-backend-flatpak
 discover-backend-kns
 discover-backend-packagekit
 #discover-notifier
+dnfdrake
