@@ -204,6 +204,7 @@ sasl-plug-gssapi
 om-user-manager
 om-mirror-selector
 tears-of-mandrake
+yumex
 
 #packagekit
 packagekit-gstreamer-plugin
@@ -212,9 +213,10 @@ packagekit-command-not-found
 flatpak
 
 # Feeling stuff
+#drop it because dragora is no longer on iso
 # for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
+#libyui-gtk
+#libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
 libreoffice-gtk3-kde5
