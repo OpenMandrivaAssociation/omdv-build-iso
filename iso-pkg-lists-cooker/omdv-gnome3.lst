@@ -18,8 +18,20 @@
 #%include .///pk-vlc.lst
 
 # Desktop Specifics
-#task-gnome
 task-gnome-minimal
+
+# Task gnome
+file-roller
+gnome-calculator
+gedit
+gdm
+gnome-color-manager
+gnome-disk-utility
+gnome-software
+gnome-terminal
+gnome-tweaks
+gparted
+adobe-source-code-pro-fonts
 accountsservice
 adwaita-icon-theme
 gnome-desktop
@@ -29,18 +41,15 @@ gnome-menus
 gnome-panel
 gnome-power-manager
 gnome-keyring
-gnome-screenshot
 gnome-shell
 gnome-system-monitor
-gnome-terminal
-gnome-tweaks
 #console
 gnome-themes-standard
 nautilus
 networkmanager
 yelp
 task-x11
-adobe-source-code-pro-fonts
+xdg-desktop-portal-gnome
 
 firefox
 #cheese
@@ -48,22 +57,15 @@ eog
 evince
 file-roller
 #gnome-calculator
-gedit
 #gnome-text-editor
-gdm
-gnome-color-manager
-gnome-disk-utility
-gnome-packagekit
 gnome-software
 #gnome-terminal-nautilus
-
-#empathy
 #epiphany
 #gnome-games
 #rhythmbox
 #totem
 clapper
-
+#simple-scan
 #shotwell
 #sushi
 #vino
@@ -73,12 +75,12 @@ clapper
 #gnome-maps
 #gnome-music
 gnome-photos
+gnome-screenshot
 #bijiben
 #gnome-characters
 gnome-clocks
-#gnome-builder
 gnome-dictionary
-#gnome-documents
+#foliate
 #gnome-font-viewer
 #gnome-sound-recorder
 #gnome-usage
@@ -90,6 +92,8 @@ gnome-weather
 #gnome-calendar
 gucharmap
 mousetweaks
+# Builder is needed only for developers.
+#gnome-builder
 
 # biz / office / utils
 #brasero
@@ -97,11 +101,10 @@ mousetweaks
 #caribou-gtk3
 #evolution
 #gnome-contacts
-#gparted
 gthumb
 #gimp
 #inkscape
-#rosa-imagewriter
+om-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -112,6 +115,9 @@ task-pulseaudio
 #system-config-printer-gui
 #simple-scan
 #sane
+#sane-backends
+# Dirty workaround for mess with ROME repos
+#lib64sane1
 
 # keep to check
 #x11-font-cyrillic
@@ -123,7 +129,6 @@ x11-font-misc
 x11-data-cursor-themes
 edidbins
 
-# MD this entire list should be shuffled or justified to be needed for the full ISO
 avahi #service
 #firewall-applet #service
 networkmanager-applet
@@ -147,6 +152,12 @@ pango #gtk dep
 #{_lib}gjs0
 typelib(GjsPrivate)
 gjs
+#lib64webkit2gtk-gir4.1
+#gstreamer1.0-gtk
+#gstreamer1.0-gtk-wayland
+# Make sure that both are on ISO
+python-gobject3
+python-gi
 
 # Support for talking to wrongPhone/wrongPad
 #usbmuxd
@@ -176,14 +187,14 @@ sasl-plug-gssapi
 #python-sip
 #pyxdg
 
-# Special OM featured software
-#oma-welcome
-#om-control-center
-om-repo-picker
-#om-user-manager
-om-mirror-selector
+# OM special featured software
 #gnome-initial-setup
 #gnome-tour
+#om-repo-picker
+#om-user-manager
+om-mirror-selector
+tears-of-mandrake
+yumex
 
 #packagekit
 #packagekit-gstreamer-plugin
