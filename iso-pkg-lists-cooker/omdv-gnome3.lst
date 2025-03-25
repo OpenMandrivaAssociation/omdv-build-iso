@@ -27,10 +27,10 @@ gedit
 gdm
 gnome-color-manager
 gnome-disk-utility
-gnome-software
+#gnome-software
 gnome-terminal
-gnome-tweaks
-gparted
+#gnome-tweaks
+#gparted
 adobe-source-code-pro-fonts
 accountsservice
 adwaita-icon-theme
@@ -55,10 +55,8 @@ firefox
 #cheese
 eog
 evince
-file-roller
 #gnome-calculator
 #gnome-text-editor
-gnome-software
 #gnome-terminal-nautilus
 #epiphany
 #gnome-games
@@ -74,8 +72,8 @@ clapper
 #fractal
 #gnome-maps
 #gnome-music
-gnome-photos
-gnome-screenshot
+#gnome-photos
+#gnome-screenshot
 #bijiben
 #gnome-characters
 gnome-clocks
