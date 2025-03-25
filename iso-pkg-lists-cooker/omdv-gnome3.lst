@@ -14,7 +14,6 @@
 %include .///pk-myspell.lst
 %include .///pk-task-x11.lst
 #%include .///pk-man-pages.lst
-#%include .///pk-libreoffice.lst
 #%include .///pk-vlc.lst
 
 # Desktop Specifics
@@ -100,7 +99,6 @@ mousetweaks
 gthumb
 #gimp
 #inkscape
-om-imagewriter
 
 # Needed Task/Meta Packages
 task-pulseaudio
@@ -129,7 +127,6 @@ avahi #service
 #firewall-applet #service
 networkmanager-applet
 dbus-broker
-
 atk1.0-common #gtk dep
 canberra-gtk #gtk dep
 gamin #gtk dep
@@ -170,7 +167,6 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-#sddm
 #breeze-icons
 #openssh-server #server
 #samba-server #server
@@ -188,10 +184,11 @@ sasl-plug-gssapi
 #gnome-tour
 #om-repo-picker
 #om-user-manager
+om-imagewriter
 om-mirror-selector
 tears-of-mandrake
-yumex
 
+yumex
 #packagekit
 #packagekit-gstreamer-plugin
 #packagekit-command-not-found
