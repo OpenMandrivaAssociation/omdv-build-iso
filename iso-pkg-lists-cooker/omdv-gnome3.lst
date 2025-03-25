@@ -22,7 +22,6 @@ task-gnome-minimal
 
 # Task gnome
 file-roller
-gnome-calculator
 gedit
 gdm
 gnome-color-manager
