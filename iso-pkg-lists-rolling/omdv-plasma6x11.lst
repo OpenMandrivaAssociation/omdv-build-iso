@@ -7,4 +7,4 @@ kf6-kidletime-x11
 kf6-kwindowsystem-backend-x11
 
 # P5 compat bits
-kwindowsystem-x11
+#kwindowsystem-x11

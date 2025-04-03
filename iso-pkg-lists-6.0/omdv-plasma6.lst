@@ -167,5 +167,6 @@ plasma6-yakuake
 plasma6-kio-zeroconf
 plasma6-kio-extras
 plasma6-disks
-krita
+#krita
+plasma6-kolourpaint
 dnfdrake

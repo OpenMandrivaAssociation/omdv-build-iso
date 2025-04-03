@@ -201,7 +201,6 @@ sasl-plug-gssapi
 #om-control-center
 #om-update-config
 #om-repo-picker
-om-user-manager
 om-mirror-selector
 tears-of-mandrake
 yumex
@@ -219,4 +218,4 @@ flatpak
 #libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
-libreoffice-gtk3-kde5
+#libreoffice-gtk3-kde5
