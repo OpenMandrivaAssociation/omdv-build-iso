@@ -187,7 +187,6 @@ sasl-plug-gssapi
 om-update-config
 om-repo-picker
 om-user-manager
-om-mirror-selector
 
 #packagekit
 packagekit-gstreamer-plugin
