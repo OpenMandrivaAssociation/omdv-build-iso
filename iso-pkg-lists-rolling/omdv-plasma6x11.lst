@@ -8,4 +8,4 @@ kf6-kwindowsystem-backend-x11
 mesa
 
 # P5 compat bits
-kwindowsystem-x11
+#kwindowsystem-x11
