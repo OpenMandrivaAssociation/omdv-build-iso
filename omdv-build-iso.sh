@@ -518,7 +518,8 @@ SaveDaTa() {
 		mv "$WORKDIR/data" "$BUILDSAV/data"
 		mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
 		printf "%s\n" "-> Saving rpms for rebuild"
-		mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		[ -d "$CHROOTNAME/var/cache/dnf" ] && mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		[ -d "$CHROOTNAME/var/cache/libdnf5" ] && mv "$CHROOTNAME/var/cache/libdnf5/" "$BUILDSAV/libdnf5"
 		mv "$CHROOTNAME/etc/dnf/" "$BUILDSAV/etc/dnf"
 	fi
 }
@@ -543,8 +544,9 @@ RestoreDaTa() {
 		#Remake needed directories
 		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
 		mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
-		mkdir -p "$CHROOTNAME/var/cache/dnf"
-		mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		mkdir -p "$CHROOTNAME/var/cache"
+		[ -d "$BUILDSAV/dnf" ] && mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		[ -d "$BUILDSAV/libdnf5" ] && mv "$BUILDSAV/libdnf5" "$CHROOTNAME/var/cache/"
 		mv "$BUILDSAV/etc/dnf" "$CHROOTNAME/etc/dnf/"
 	else
 		# Clean out the dnf dir
@@ -980,7 +982,7 @@ createChroot() {
 	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
 	if [ -n "$REBUILD" ]; then
-		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
+		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" "$CHROOTNAME/var/cache/libdnf5/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
 		if [ -z "$ANYRPMS" ]; then
 			printf "%s\n" "-> You must run with --noclean before you use --rebuild"
 			errorCatch
@@ -1996,8 +1998,14 @@ EOF
 # Move the rpm cache out of the way for the iso build
 	#if [[ "$ABF" = 0  || ( "$ABF" = '1' && -n "$DEBUG" ) ]]; then
 	#if [ "$ABF" = 0 ] || [ "$ABF" = '1' ] && [ -n "$DEBUG" ]; then
-	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
-	mkdir -p "$CHROOTNAME"/var/cache/dnf
+	if [ -d "$CHROOTNAME"/var/cache/dnf ]; then
+		mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
+		mkdir -p "$CHROOTNAME"/var/cache/dnf
+	fi
+	if [ -d "$CHROOTNAME"/var/cache/libdnf5 ]; then
+		mv "$CHROOTNAME"/var/cache/libdnf5 "$WORKDIR"/
+		mkdir -p "$CHROOTNAME"/var/cache/libdnf5
+	fi
 	#fi
 
 	# (crazy) NOTE: this be after last think touched /home/live
@@ -2144,8 +2152,9 @@ postBuild() {
 
 	# If not in ABF move rpms back to the cache directories
 	if [ "$ABF" = 0 ] || [ "$ABF" = '1' ] && [ -n "$DEBUG" ]; then
-		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
-		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/ "$CHROOTNAME"/var/cache/libdnf5/
+		[ -d "$WORKDIR"/dnf ] && mv "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+		[ -d "$WORKDIR"/libdnf5 ] && mv "$WORKDIR"/libdnf5 "$CHROOTNAME"/var/cache/
 	fi
 
 	# Clean chroot
