@@ -17,9 +17,8 @@
 #%include .///pk-vlc.lst
 
 # Desktop Specifics
+#task-gnome
 task-gnome-minimal
-
-# Task gnome
 file-roller
 gedit
 gdm
@@ -75,7 +74,6 @@ clapper
 #gnome-characters
 gnome-clocks
 gnome-dictionary
-#foliate
 #gnome-font-viewer
 #gnome-sound-recorder
 #gnome-usage
@@ -171,24 +169,15 @@ sasl-plug-gssapi
 #openssh-server #server
 #samba-server #server
 
-#python deps?
-#python-ldap
-#python-notify
-#python-OpenSSL
-#python-pycrypto
-#python-sip
-#pyxdg
-
 # OM special featured software
-#gnome-initial-setup
-#gnome-tour
-#om-repo-picker
-#om-user-manager
+om-repo-picker
 om-imagewriter
 om-mirror-selector
 tears-of-mandrake
+#gnome-initial-setup
+#gnome-tour
+#yumex
 
-yumex
 #packagekit
 #packagekit-gstreamer-plugin
 #packagekit-command-not-found
