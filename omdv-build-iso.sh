@@ -121,6 +121,9 @@ main() {
 		 --unsupprepo)
 			UNSUPPREPO=unsupprepo
 			;;
+		 --nonfreerepo)
+			NONFREEREPO=non-free
+			;;
 		 --repolist=*)
 			ENABLEREPO=${k#*=}
 			;;
@@ -173,7 +176,7 @@ main() {
 
 	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER \
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF \
-	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
+	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "NONFREEREPO="$NONFREEREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"ENSKPLST="$ENSKPLST " LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
 	"MAKELISTREPO="$MAKELISTREPO "DEFAULTLANG="$DEFAULTLANG "DEFAULTKBD="$DEFAULTKBD"
 
@@ -316,6 +319,7 @@ usage_help() {
 		hlpprtf "\t\t\tSeveral options allow the selection of additional repositories in addition to the default (main). Please note that is the following options are used the selected repositories will be left enabled on the iso. If you just want the default repositories on the iso use the --baserepo switch in addition to the other selectors."
 		optprtf "--testrepo" "Enables the testing repo for the main repository"
 		optprtf "--unsupprepo" "Enables the extra repo"
+		optprtf "--nonfreerepo" "Enables the non-free repo"
 		optprtf "--repolist" "Allows a list of comma separated repoid's to enable.  i.e. --repolist=extra,updates,restricted To obtain a list of repo-ids run 'dnf --quiet repolist --all' in a terminal. There is also a list in the documentation"
 		optprtf "--baserepo" "Resets the above options to the default for the repo group (rock, rolling, cooker)"
 		printf -vl "%${COLUMNS:-`tput cols 2>&-||echo 80`}s\n" && echo ${l// /-}
@@ -514,7 +518,8 @@ SaveDaTa() {
 		mv "$WORKDIR/data" "$BUILDSAV/data"
 		mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
 		printf "%s\n" "-> Saving rpms for rebuild"
-		mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		[ -d "$CHROOTNAME/var/cache/dnf" ] && mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		[ -d "$CHROOTNAME/var/cache/libdnf5" ] && mv "$CHROOTNAME/var/cache/libdnf5/" "$BUILDSAV/libdnf5"
 		mv "$CHROOTNAME/etc/dnf/" "$BUILDSAV/etc/dnf"
 	fi
 }
@@ -539,8 +544,9 @@ RestoreDaTa() {
 		#Remake needed directories
 		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
 		mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
-		mkdir -p "$CHROOTNAME/var/cache/dnf"
-		mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		mkdir -p "$CHROOTNAME/var/cache"
+		[ -d "$BUILDSAV/dnf" ] && mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		[ -d "$BUILDSAV/libdnf5" ] && mv "$BUILDSAV/libdnf5" "$CHROOTNAME/var/cache/"
 		mv "$BUILDSAV/etc/dnf" "$CHROOTNAME/etc/dnf/"
 	else
 		# Clean out the dnf dir
@@ -884,6 +890,12 @@ InstallRepos() {
 			# is no rolling/updates or cooker/updates)
 			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-extra || :
 		fi
+		if [ -n "$NONFREEREPO" ]; then
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-non-free
+			# And the corresponding updates repository (allow this to fail, because there
+			# is no rolling/updates or cooker/updates)
+			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free || :
+		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
 			ENABLEREPO=$(tr "," " " <<< $ENABLEREPO)
@@ -969,7 +981,7 @@ createChroot() {
 	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
 	if [ -n "$REBUILD" ]; then
-		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
+		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" "$CHROOTNAME/var/cache/libdnf5/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
 		if [ -z "$ANYRPMS" ]; then
 			printf "%s\n" "-> You must run with --noclean before you use --rebuild"
 			errorCatch
@@ -1985,8 +1997,14 @@ EOF
 # Move the rpm cache out of the way for the iso build
 	#if [[ "$ABF" = 0  || ( "$ABF" = '1' && -n "$DEBUG" ) ]]; then
 	#if [ "$ABF" = 0 ] || [ "$ABF" = '1' ] && [ -n "$DEBUG" ]; then
-	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
-	mkdir -p "$CHROOTNAME"/var/cache/dnf
+	if [ -d "$CHROOTNAME"/var/cache/dnf ]; then
+		mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
+		mkdir -p "$CHROOTNAME"/var/cache/dnf
+	fi
+	if [ -d "$CHROOTNAME"/var/cache/libdnf5 ]; then
+		mv "$CHROOTNAME"/var/cache/libdnf5 "$WORKDIR"/
+		mkdir -p "$CHROOTNAME"/var/cache/libdnf5
+	fi
 	#fi
 
 	# (crazy) NOTE: this be after last think touched /home/live
@@ -2133,8 +2151,9 @@ postBuild() {
 
 	# If not in ABF move rpms back to the cache directories
 	if [ "$ABF" = 0 ] || [ "$ABF" = '1' ] && [ -n "$DEBUG" ]; then
-		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
-		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/ "$CHROOTNAME"/var/cache/libdnf5/
+		[ -d "$WORKDIR"/dnf ] && mv "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+		[ -d "$WORKDIR"/libdnf5 ] && mv "$WORKDIR"/libdnf5 "$CHROOTNAME"/var/cache/
 	fi
 
 	# Clean chroot
