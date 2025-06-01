@@ -4,17 +4,17 @@
 %include .///omdv_control.lst
 %include .///omdv_drivers.lst
 #include .///omdv_ppp.lst
-#include .///omdv_utils.lst
+%include .///omdv_utils.lst
 
 # More includes lists for common sets that are not task/meta pkgs
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-#include .///omdv_libreoffice.lst
-#include .///omdv_locales.lst
+%include .///omdv_libreoffice.lst
+%include .///omdv_locales.lst
 #include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-#include .///omdv_vlc.lst
+%include .///omdv_vlc.lst
 
 # Desktop Specifics
 task-mate
@@ -24,8 +24,8 @@ openmandriva-mate-config
 #   caja
 #caja-extensions-av
 #caja-extensions-image-converter
-#caja-extensions-open-terminal
-#caja-extensions-sendto
+caja-extensions-open-terminal
+caja-extensions-sendto
 #caja-extensions-sendto-pidgin
 #caja-extensions-sendto-upnp
 #caja-extensions-share
@@ -56,10 +56,14 @@ seahorse-caja
 task-pulseaudio
 
 # printing
-#task-printing
-#task-printing-scanning
+task-printing
+task-printing-scanning
 #hplip-gui #printer
-#system-config-printer-gui #printer
+system-config-printer-gui #printer
+sane
+sane-backends
+# Dirty workaround for mess with ROME repos...
+lib64sane1
 
 # keep to check
 #x11-font-cyrillic
@@ -69,6 +73,7 @@ x11-docs
 x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
+edidbins
 
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
@@ -76,6 +81,12 @@ avahi #service
 firewall-applet #service
 jackit #service
 networkmanager-applet
+
+gvfs
+gvfs-archive #gtk dep
+gvfs-fuse #gtk dep
+gvfs-gphoto2 #gtk dep
+gvfs-smb #gtk dep
 
 # Miscelaneous Packages
 enchant
@@ -93,14 +104,29 @@ sasl-plug-gssapi
 lightdm
 breeze-gtk
 
-openssh-server #server
-samba-server #server
+#openssh-server #server
+#samba-server #server
 
 #python-notify
 python-sip
 pyxdg
 
 # OM special featured software
-om-repo-picker
+#om-feeling-like
+#oma-welcome
 #om-control-center
+#om-update-config
+om-repo-picker
+tears-of-mandrake
+yumex
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
+# make sure that flatpak is installed on iso
+flatpak
+
+# Feeling stuff
+# for LibreOffice
+libreoffice-gnome
 
