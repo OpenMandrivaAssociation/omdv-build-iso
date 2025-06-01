@@ -10,11 +10,11 @@
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-%include .///omdv_libreoffice.lst
-%include .///omdv_locales.lst
+#include .///omdv_libreoffice.lst
+#include .///omdv_locales.lst
 #include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
-%include .///omdv_vlc.lst
+#include .///omdv_vlc.lst
 
 # Desktop Specifics
 task-mate
@@ -56,8 +56,8 @@ seahorse-caja
 task-pulseaudio
 
 # printing
-task-printing
-task-printing-scanning
+#task-printing
+#task-printing-scanning
 #hplip-gui #printer
 system-config-printer-gui #printer
 sane
@@ -81,6 +81,7 @@ avahi #service
 firewall-applet #service
 jackit #service
 networkmanager-applet
+dbus-broker
 
 gvfs
 gvfs-archive #gtk dep
@@ -89,6 +90,7 @@ gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
 
 # Miscelaneous Packages
+dconf-editor
 enchant
 ffmpeg
 jasper
@@ -97,12 +99,11 @@ nss_ldap
 nss_mdns
 nss_wins #this pulls in a ton of samba deps
 openssl
-pam_ldap
+#pam_ldap
 poppler-data
 sasl-plug-gssapi
 #sddm
 lightdm
-breeze-gtk
 
 #openssh-server #server
 #samba-server #server
@@ -116,9 +117,9 @@ pyxdg
 #oma-welcome
 #om-control-center
 #om-update-config
-om-repo-picker
-tears-of-mandrake
-yumex
+#om-repo-picker
+#tears-of-mandrake
+#yumex
 
 #packagekit
 packagekit-gstreamer-plugin
@@ -128,5 +129,6 @@ flatpak
 
 # Feeling stuff
 # for LibreOffice
-libreoffice-gnome
+#libreoffice-gnome
+breeze-gtk
 
