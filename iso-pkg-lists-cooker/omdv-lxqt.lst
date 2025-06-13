@@ -75,7 +75,7 @@ task-pulseaudio
 
 # keep to check
 #x11-font-cyrillic
-x11-server-xorg
+xlibre-xorg
 x11-server-xwayland
 x11-compose-cache
 x11-tools
