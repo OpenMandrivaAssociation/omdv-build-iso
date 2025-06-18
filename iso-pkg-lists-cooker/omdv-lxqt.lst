@@ -126,7 +126,7 @@ samba-server #server
 
 distro-release-desktop-LXQt
 kf6-breeze-icons
-plasma6-kwin-x11
+kwin-x11
 plasma6-breeze
 # Add breeze then for openbox startup
 plasma6-breeze-gtk
