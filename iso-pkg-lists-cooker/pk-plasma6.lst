@@ -43,7 +43,7 @@ plasma6-ksshaskpass
 plasma6-ksystemstats
 plasma6-kwalletmanager
 plasma6-kwallet-pam
-plasma6-kwin-x11
+kwin-x11
 plasma6-kwrite
 plasma6-kwrited
 plasma6-libkscreen-x11
