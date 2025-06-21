@@ -58,7 +58,12 @@ evince
 file-roller
 gnome-calculator
 gedit
-gdm
+#gdm
+
+#experiment
+lightdm
+x11-driver-video-amdgpu
+
 gnome-color-manager
 gnome-disk-utility
 gnome-software
@@ -184,9 +189,9 @@ sasl-plug-gssapi
 #oma-welcome
 #om-control-center
 
-om-update-config
-om-repo-picker
-om-user-manager
+#om-update-config
+#om-repo-picker
+#om-user-manager
 
 #packagekit
 packagekit-gstreamer-plugin
