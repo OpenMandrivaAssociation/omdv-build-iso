@@ -1692,6 +1692,7 @@ setupISOenv() {
 		if [ ! -e "$CHROOTNAME/lib/systemd/system/${DISPLAYMANAGER,,}.service" ]; then
 			printf "%s\n" "-> File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 			errorCatch
+   		else print "Skipping"
 		fi
 
 		ln -sf "/lib/systemd/system/${DISPLAYMANAGER,,}.service" "$CHROOTNAME/etc/systemd/system/display-manager.service" 2> /dev/null || :
