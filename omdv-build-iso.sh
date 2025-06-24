@@ -900,12 +900,12 @@ InstallRepos() {
 		if [ -n "$ENABLEREPO" ]; then
 			ENABLEREPO=$(tr "," " " <<< $ENABLEREPO)
 			#for rpo in ${ENABLEREPO//,/]; do
-			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
+			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} setopt ${ENABLEREPO}.enabled=1
 			#done
 		fi
 
 		if [ -n "$TESTREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH.enabled=1"
 		fi
 	fi
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
