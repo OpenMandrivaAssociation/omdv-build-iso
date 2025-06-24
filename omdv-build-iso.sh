@@ -866,15 +866,15 @@ InstallRepos() {
 
 	if [ -e "$WORKDIR"/.new ]; then
 		# First make sure cooker is disabled
-		dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt cooker-"$EXTARCH".enabled=0
 		# Rock too -- at release time, rock and $DNFCONF_TREE should be
 		# the same anyway
-		dnf --installroot="$CHROOTNAME" config-manager --disable rock-*"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt rock-*"$EXTARCH".enabled=0
 		# Then enable the main repo of the chosen tree
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH".enabled=1
 		# And the corresponding updates repository (allow this to fail, because there
 		# is no rolling/updates or cooker/updates)
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH" || :
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-updates-"$EXTARCH".enabled=1 || :
 	else
 		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
@@ -885,16 +885,16 @@ InstallRepos() {
 		printf "%s\n" "->Enabling the main repo only"
 	else
 		if [ -n "$UNSUPPREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-extra
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-extra.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-extra || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-updates-"$EXTARCH"-extra.enabled=1 || :
 		fi
 		if [ -n "$NONFREEREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-non-free
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-non-free.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free.enabled=1 || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
