@@ -823,7 +823,6 @@ InstallRepos() {
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
-		pwd
 		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  $WORKDIR/*.rpm
 	fi
 
