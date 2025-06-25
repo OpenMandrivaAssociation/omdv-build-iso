@@ -1689,7 +1689,7 @@ setupISOenv() {
 	printf "%s\n" "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# Set up displaymanager
-	if [ ${DISPLAYMANAGER,,} != "none" ]; then
+	if [[ -n "$DISPLAYMANAGER" && "${DISPLAYMANAGER,,}" != "none" ]]; then
 		if [ ! -e "$CHROOTNAME/lib/systemd/system/${DISPLAYMANAGER,,}.service" ]; then
 			printf "%s\n" "-> File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 			errorCatch
