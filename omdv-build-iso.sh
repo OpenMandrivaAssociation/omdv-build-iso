@@ -1558,7 +1558,8 @@ setupGrub2() {
 	fi
 
 	# Add the themes, locales and fonts to the ISO build firectory
-	if [ "${TYPE}" != "minimal" ]; then
+ 	# Change Type != minimal to debug to allow theming (Vuatech)
+	if [ "${TYPE}" != "debug" ]; then
 		mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
 		cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
 		cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
