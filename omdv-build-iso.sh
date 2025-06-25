@@ -823,7 +823,8 @@ InstallRepos() {
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
-		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  *.rpm
+		pwd
+		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  $WORKDIR/*.rpm
 	fi
 
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
@@ -1692,7 +1693,7 @@ setupISOenv() {
 		if [ ! -e "$CHROOTNAME/lib/systemd/system/${DISPLAYMANAGER,,}.service" ]; then
 			printf "%s\n" "-> File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 			errorCatch
-   		else print "Skipping"
+		else printf "No Display Manager Choosen, Skipping"
 		fi
 
 		ln -sf "/lib/systemd/system/${DISPLAYMANAGER,,}.service" "$CHROOTNAME/etc/systemd/system/display-manager.service" 2> /dev/null || :
