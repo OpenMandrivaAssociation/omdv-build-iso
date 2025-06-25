@@ -56,3 +56,6 @@ sudo
 reiserfsprogs
 bash-completion
 gnupg
+
+#Testing
+plasma6-sddm
