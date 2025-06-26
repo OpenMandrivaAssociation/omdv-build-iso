@@ -587,32 +587,29 @@ SetFileList() {
 		errorCatch
 	fi
 
-	# Replicating $TYPE entry above for %DISPLAYMANAGER
-         case "$DISPLAYMANAGER" in
-          sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
-   		NEWDISPLAYMANAGER=error
-     		;;
-       	*)
-			NEWDISPLAYMANAGER="$DISPLAYMANAGER"
-		;;
+	# Check if DISPLAYMANAGER is valid based on case below and assign DISPLAYLISTS accordingly
+	case "$DISPLAYMANAGER" in
+	sddm|lightdm|gdm|cosmic-greeter|ly|i3|xfce|none|"")
+        
+	# Valid display manager
+        if [ "$DISPLAYMANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
+            DISPLAYLISTS=""
+        else
+            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
+        fi
+        ;;
+		*)
+        # Invalid or custom display manager
+        if [ "$ABF" = "1" ]; then
+            echo "Error: You cannot use custom display managers (like '$DISPLAYMANAGER') when ABF=1."
+            echo "Please use one of the standard display managers or override via --isover."
+            errorCatch
+        else
+            # Custom is allowed if not in ABF mode
+            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
+        fi
+        ;;
 	esac
-	if [ "$NEWDISPLAYMANAGER" = "error" ]; then
-		if [ "$DISPLAYMANAGER" = 'sddm' ]; then
-			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-sddm.lst"
-		elif [ "$DISPLAYMANAGER" = 'lightdm' ]; then
-			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-lightdm.lst"
-		elif [ "$DISPLAYMANAGER" = 'gdm' ]; then
-			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-gdm.lst"
-                elif [ -n "$DISPLAYMANAGER" ] && [ "$DISPLAYMANAGER" != "none" ]; then
-			printf "No Display Manager Chosen"
-		else
-			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
-
-		fi
-	elif [ "$NEWDISPLAYMANAGER" != "error" ] && [ $ABF = '1' ]; then
-		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
-		errorCatch
-  	fi
 }
 
 userDSKTPNme() {
