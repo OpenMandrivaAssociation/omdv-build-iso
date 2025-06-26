@@ -598,13 +598,13 @@ SetFileList() {
 	esac
 	if [ "$NEWDISPLAYMANAGER" = "error" ]; then
 		if [ "$DISPLAYMANAGER" = 'sddm' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-sddm.lst"
+			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-sddm.lst"
 		elif [ "$DISPLAYMANAGER" = 'lightdm' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-lightdm.lst"
+			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-lightdm.lst"
 		elif [ "$DISPLAYMANAGER" = 'gdm' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-gdm.lst"
+			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-gdm.lst"
 		else
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
+			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
 
 		fi
 	elif [ "$NEWDISPLAYMANAGER" != "error" ] && [ $ABF = '1' ]; then
@@ -821,8 +821,10 @@ getPkgList() {
 		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
  		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanagers.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
-		if [ ! -e "$FILELISTS" ]; then
-			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
+		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLIST" ]; then
+		printf "%s\n" "-> Required file does not exist:"
+		[ ! -e "$FILELISTS" ] && echo "   Missing: $FILELISTS"
+		[ ! -e "$DISPLAYLIST" ] && echo "   Missing: $DISPLAYLIST"
 			errorCatch
 		fi
 	fi
@@ -1041,6 +1043,7 @@ createChroot() {
 		if [ -n "$REBUILD" ]; then
 			printf  "%s\n" "-> Rebuilding."
 			mkUserSpin "$FILELISTS"
+   			mkUserSpin "$DISPLAYLISTS"
 		elif [ -n "$AUTO_UPDATE" ]; then
 			/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
 		elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ]; then
@@ -1053,7 +1056,7 @@ createChroot() {
 
 	# Did it return 0k
 	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
-		printf "%s\n" "-> Can not install packages from $FILELISTS"
+		printf "%s\n" "-> Can not install packages from $FILELISTS or $DISPLAYLISTS"
 		errorCatch
 	fi
 
@@ -1088,10 +1091,19 @@ createChroot() {
 # to be installed
 mkOmSpin() {
 	getIncFiles "$FILELISTS" ADDRPMINC
-	printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
-	printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" " " "   Which includes"
-	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
-	createPkgList "$ADDRPMINC" INSTALL_LIST
+ 	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+  	# Combine both inclusion lists
+	COMBINED_ADDRPM="${ADDRPMINC}
+${ADDRPMDISPLAY}"
+	# Output the combined list to inclist
+	printf "%s" "$COMBINED_ADDRPM" > "$WORKDIR/inclist"
+
+	printf "%s\n" "-> Creating OpenMandriva spin from:"
+	printf "   %s\n" "$FILELISTS" "$DISPLAYLISTS"
+	printf "%s\n" "   Which includes:"
+	printf "%s\n" "$COMBINED_ADDRPM" | grep -v -e "$FILELISTS" -e "$DISPLAYLISTS"
+
+	createPkgList "$COMBINED_ADDRPM" INSTALL_LIST
 	mkUpdateChroot "$INSTALL_LIST"
 }
 
@@ -1257,16 +1269,20 @@ mkUserSpin() {
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	printf "%s\n" "$FILELISTS"
+ 	printf "%s\n" "$DISPLAYLISTS"
+  
 	getIncFiles "$FILELISTS" ADDRPMINC
+	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+ 
 	# Combine the main and the users files"
-	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
+	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC"$'\n'"$ADDRPMDISPLAY"| sort -u)
 	# Now for the remove list
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 	printf "%s\n" "-> Removing the common include lines for the remove package includes"
 
 	#Give some information
-	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
-	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
+	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS and $DISPLAYLISTS" "  Which includes " "$ALLRPMINC"
+	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTSand $DISPLAYLISTS" "  Which removes " "$RMRPMINC"
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
