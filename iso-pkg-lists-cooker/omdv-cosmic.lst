@@ -110,6 +110,3 @@ libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
 libreoffice-gtk3-kde5
-
-#Testing
-plasma6-sddm
