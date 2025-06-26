@@ -866,6 +866,9 @@ InstallRepos() {
 		/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
 	fi
 
+	# Creates folder needed by DNF5 to enable and disabled repos (Vuatech)
+ 	mkdir -p $CHROOTNAME/etc/dnf/repos.override.d
+
 	if [ -e "$WORKDIR"/.new ]; then
 		# First make sure cooker is disabled
 		dnf --installroot="$CHROOTNAME" config-manager setopt cooker-"$EXTARCH".enabled=0
@@ -876,7 +879,7 @@ InstallRepos() {
 		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH".enabled=1
 		# And the corresponding updates repository (allow this to fail, because there
 		# is no rolling/updates or cooker/updates)
-		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-updates-"$EXTARCH".enabled=1 || :
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH".enabled=1 || :
 	else
 		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
@@ -890,13 +893,13 @@ InstallRepos() {
 			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-extra.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-updates-"$EXTARCH"-extra.enabled=1 || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-extra.enabled=1 || :
 		fi
 		if [ -n "$NONFREEREPO" ]; then
 			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-non-free.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free.enabled=1 || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-non-free.enabled=1 || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
