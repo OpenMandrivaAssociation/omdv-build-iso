@@ -593,7 +593,7 @@ SetFileList() {
    		NEWDISPLAYMANAGER=error
      		;;
        	*)
-			$NEWDISPLAYMANAGER="$DISPLAYMANAGER"
+			NEWDISPLAYMANAGER="$DISPLAYMANAGER"
 		;;
 	esac
 	if [ "$NEWDISPLAYMANAGER" = "error" ]; then
