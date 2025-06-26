@@ -824,15 +824,15 @@ getPkgList() {
 			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
 		if [ ! -e "$FILELISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	echo "   Missing: $FILELISTS"
+        	echo "   Missing: Type $FILELISTS"
         	errorCatch
 		fi
 	    else
 		# DISPLAYLISTS has a valid value → check both
 		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	[ ! -e "$FILELISTS" ] && echo "   Missing: $FILELISTS"
-        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: $DISPLAYLISTS"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: Type $FILELISTS"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: Display Manager $DISPLAYLISTS"
         	errorCatch
 		fi
 	    fi
