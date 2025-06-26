@@ -25,7 +25,6 @@ fonts-ttf-awesome
 task-pulseaudio
 x11-font-cyrillic
 edidbins
-sddm
 
 ## Needed Task/Meta Packages
 #x11-font-cyrillic
