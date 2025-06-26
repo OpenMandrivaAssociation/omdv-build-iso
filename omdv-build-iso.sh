@@ -588,8 +588,8 @@ SetFileList() {
 	fi
 
 	# Replicating $TYPE entry above for %DISPLAYMANAGER
- 	case "$DISPLAYMANAGER" in
-  	sddm|lightdm|gdm|cosmic-greeter|ly)
+         case "$DISPLAYMANAGER" in
+          sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
    		NEWDISPLAYMANAGER=error
      		;;
        	*)
@@ -603,6 +603,8 @@ SetFileList() {
 			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-lightdm.lst"
 		elif [ "$DISPLAYMANAGER" = 'gdm' ]; then
 			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-gdm.lst"
+                elif [ -n "$DISPLAYMANAGER" ] && [ "$DISPLAYMANAGER" != "none" ]; then
+			printf "No Display Manager Chosen"
 		else
 			DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
 
@@ -821,12 +823,22 @@ getPkgList() {
 		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
  		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanagers.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
-		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
-		printf "%s\n" "-> Required file does not exist:"
-		[ ! -e "$FILELISTS" ] && echo "   Missing: $FILELISTS"
-		[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: $DISPLAYLISTS"
-			errorCatch
+		if [ -z "${DISPLAYMANAGER:-}" ] || [ "$DISPLAYMANAGER" = "none" ]; then
+			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
+		if [ ! -e "$FILELISTS" ]; then
+        	printf "%s\n" "-> Required file does not exist:"
+        	echo "   Missing: $FILELISTS"
+        	errorCatch
 		fi
+	    else
+		# DISPLAYLISTS has a valid value → check both
+		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
+        	printf "%s\n" "-> Required file does not exist:"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: $FILELISTS"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: $DISPLAYLISTS"
+        	errorCatch
+		fi
+	    fi
 	fi
 }
 
