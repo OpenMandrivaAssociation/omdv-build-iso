@@ -824,7 +824,7 @@ getPkgList() {
 		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLIST" ]; then
 		printf "%s\n" "-> Required file does not exist:"
 		[ ! -e "$FILELISTS" ] && echo "   Missing: $FILELISTS"
-		[ ! -e "$DISPLAYLIST" ] && echo "   Missing: $DISPLAYLIST"
+		[ ! -e "$DISPLAYLIST" ] && echo "   Missing: $DISPLAYLISTS"
 			errorCatch
 		fi
 	fi
