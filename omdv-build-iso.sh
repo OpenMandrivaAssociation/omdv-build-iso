@@ -586,6 +586,30 @@ SetFileList() {
 		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
 		errorCatch
 	fi
+
+	# Replicating $TYPE entry above for %DISPLAYMANAGER
+ 	case "$DISPLAYMANAGER" in
+  	sddm|lightdm|gdm|cosmic-greeter|ly)
+   		NEWDISPLAYMANAGER=error
+     		;;
+       	*)
+			$NEWDISPLAYMANAGER="$DISPLAYMANAGER"
+		;;
+	esac
+	if [ "$NEWDISPLAYMANAGER" = "error" ]; then
+		if [ "$DISPLAYMANAGER" = 'sddm' ]; then
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-sddm.lst"
+		elif [ "$DISPLAYMANAGER" = 'lightdm' ]; then
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-lightdm.lst"
+		elif [ "$DISPLAYMANAGER" = 'gdm' ]; then
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-gdm.lst"
+		else
+			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
+
+		fi
+	elif [ "$NEWDISPLAYMANAGER" != "error" ] && [ $ABF = '1' ]; then
+		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
+		errorCatch
 }
 
 userDSKTPNme() {
