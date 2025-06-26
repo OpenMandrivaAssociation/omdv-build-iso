@@ -821,10 +821,10 @@ getPkgList() {
 		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
  		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanagers.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
-		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLIST" ]; then
+		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
 		printf "%s\n" "-> Required file does not exist:"
 		[ ! -e "$FILELISTS" ] && echo "   Missing: $FILELISTS"
-		[ ! -e "$DISPLAYLIST" ] && echo "   Missing: $DISPLAYLISTS"
+		[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: $DISPLAYLISTS"
 			errorCatch
 		fi
 	fi
