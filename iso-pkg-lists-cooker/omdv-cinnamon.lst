@@ -96,8 +96,6 @@ poppler-data
 sasl-plug-gssapi
 breeze-gtk
 
-gdm
-
 # workaround
 gcr
 typelib(GcrUi)
