@@ -589,7 +589,7 @@ SetFileList() {
 
 	# Check if DISPLAYMANAGER is valid based on case below and assign DISPLAYLISTS accordingly
 	case "$DISPLAYMANAGER" in
-	sddm|lightdm|gdm|cosmic-greeter|ly|i3|xfce|none|"")
+	sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
         
 	# Valid display manager
         if [ "$DISPLAYMANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
