@@ -6,5 +6,8 @@ plasma6-libkscreen-x11
 kf6-kidletime-x11
 kf6-kwindowsystem-backend-x11
 
+# Needed for alternative display managers
+lib64xcb-cursor0
+
 # P5 compat bits
 #kwindowsystem-x11
