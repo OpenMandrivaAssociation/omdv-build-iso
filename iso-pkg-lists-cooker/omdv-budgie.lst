@@ -58,10 +58,8 @@ evince
 file-roller
 gnome-calculator
 gedit
-#gdm
 
 #experiment
-lightdm
 x11-driver-video-amdgpu
 
 gnome-color-manager
