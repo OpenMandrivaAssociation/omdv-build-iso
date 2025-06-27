@@ -848,7 +848,7 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
