@@ -24,8 +24,8 @@ openmandriva-mate-config
 #   caja
 #caja-extensions-av
 #caja-extensions-image-converter
-caja-extensions-open-terminal
-caja-extensions-sendto
+#caja-extensions-open-terminal
+#caja-extensions-sendto
 #caja-extensions-sendto-pidgin
 #caja-extensions-sendto-upnp
 #caja-extensions-share
