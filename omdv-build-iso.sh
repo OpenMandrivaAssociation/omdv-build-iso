@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Add new types at line 571
+# Add new display managers at line 596
+
+
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
@@ -174,7 +178,7 @@ main() {
 	# and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
 	# to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
-	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER \
+	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="MANAGER \
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF \
 	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "NONFREEREPO="$NONFREEREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"ENSKPLST="$ENSKPLST " LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
@@ -298,7 +302,7 @@ CarryOn() {
 }
 
 usage_help() {
-	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
+	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "MANAGER" ]; then
 		printf "%b\n" ""
 		printf "%b\t" "Please run script with arguments" "usage $0 [options]"
 		printf "%b\n" "" "\t\t\t\t${ulon}${bold}GENERAL OPTIONS${normal}"
@@ -588,11 +592,11 @@ SetFileList() {
 	fi
 
 	# Check if DISPLAYMANAGER is valid based on case below and assign DISPLAYLISTS accordingly
-	case "$DISPLAYMANAGER" in
+	case "MANAGER" in
 	sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
         
 	# Valid display manager
-        if [ "$DISPLAYMANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
+        if [ "MANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
             DISPLAYLISTS=""
         else
             DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
