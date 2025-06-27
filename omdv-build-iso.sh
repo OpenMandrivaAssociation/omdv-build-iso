@@ -568,7 +568,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
+	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu|i3)
 		NEWTYPE=error
 		;;
 	*)
@@ -592,11 +592,11 @@ SetFileList() {
 	fi
 
 	# Check if DISPLAYMANAGER is valid based on case below and assign DISPLAYLISTS accordingly
-	case "MANAGER" in
+	case "$DISPLAYMANAGER" in
 	sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
         
 	# Valid display manager
-        if [ "MANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
+        if [ "$DISPLAYMANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
             DISPLAYLISTS=""
         else
             DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
@@ -822,21 +822,21 @@ getPkgList() {
 		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
                 #Swapped to tar.gz to perserve permission (Vuatech)
 		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
- 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanagers.tar.gz | tar -xz --strip-components=1
+ 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanager.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
 		if [ -z "${DISPLAYMANAGER:-}" ] || [ "$DISPLAYMANAGER" = "none" ]; then
 			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
 		if [ ! -e "$FILELISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	echo "   Missing: Type $FILELISTS"
+        	echo "   Missing: omdv-$TYPE.st file from $TREE folder"
         	errorCatch
 		fi
 	    else
 		# DISPLAYLISTS has a valid value → check both
 		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	[ ! -e "$FILELISTS" ] && echo "   Missing: Type $FILELISTS"
-        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: Display Manager $DISPLAYLISTS"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.st file from $TREE folder"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.st file from $TREE folder"
         	errorCatch
 		fi
 	    fi
