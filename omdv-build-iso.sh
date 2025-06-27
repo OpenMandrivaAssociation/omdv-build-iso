@@ -178,7 +178,7 @@ main() {
 	# and the completed iso along with it's md5 and sha1 checksums are moved to it. These files are eventually uploaded
 	# to abf for linking and display on the build results webpage. If the results are placed anywhere else they are not displayed.
 
-	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="MANAGER \
+	SUDOVAR=""EXTARCH="$EXTARCH "TREE="$TREE "VERSION="$VERSION "RELEASE_ID="$RELEASE_ID "TYPE="$TYPE "DISPLAYMANAGER="$DISPLAYMANAGER \
 	"DEBUG="$DEBUG "NOCLEAN="$NOCLEAN "REBUILD="$REBUILD "WORKDIR="$WORKDIR "OUTPUTDIR="$OUTPUTDIR "ISO_VER="$ISO_VER "ABF="$ABF \
 	"KEEP="$KEEP "TESTREPO="$TESTREPO "UNSUPPREPO="$UNSUPPREPO "NONFREEREPO="$NONFREEREPO "ENABLEREPO="$ENABLEREPO "AUTO_UPDATE="$AUTO_UPDATE \
 	"ENSKPLST="$ENSKPLST " LREPODIR="$LREPODIR "USEMIRRORS="$USEMIRRORS "BASEREPO="$BASEREPO \
@@ -302,7 +302,7 @@ CarryOn() {
 }
 
 usage_help() {
-	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "MANAGER" ]; then
+	if [ -z "$EXTARCH" ] && [ -z "$TREE" ] && [ -z "$VERSION" ] && [ -z "$RELEASE_ID" ] && [ -z "$TYPE" ] && [ -z "$DISPLAYMANAGER" ]; then
 		printf "%b\n" ""
 		printf "%b\t" "Please run script with arguments" "usage $0 [options]"
 		printf "%b\n" "" "\t\t\t\t${ulon}${bold}GENERAL OPTIONS${normal}"
@@ -828,15 +828,15 @@ getPkgList() {
 			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
 		if [ ! -e "$FILELISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	echo "   Missing: omdv-$TYPE.st file from $TREE folder"
+        	echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
         	errorCatch
 		fi
 	    else
 		# DISPLAYLISTS has a valid value → check both
 		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.st file from $TREE folder"
-        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.st file from $TREE folder"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.lst file from $TREE folder"
         	errorCatch
 		fi
 	    fi
