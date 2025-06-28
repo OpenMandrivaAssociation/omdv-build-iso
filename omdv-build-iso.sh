@@ -1,6 +1,5 @@
 #!/bin/bash
-
-# Dynamic list attempt
+# Script populated local omdv-build-iso folder for lst and checks against the downloaded source from github. Please verify locations and github download.
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
@@ -518,31 +517,30 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-	# Assign the config build list
-	# This could work by just checking by checking whether the provided entry exists in the list of TYPES if it does not then this must be a user chosen name.
-	# we would still call the interactive session but the constraint on the naming would be removed.
-	SCRIPTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+      SCRIPTDIR="$HOME/omdv-build-iso"
 
- if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
+    # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
         FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst"
     else
-        echo "Error: List file for TYPE '$TYPE' not found , check both $SCRIPTDIR and $WORKDIR:"
+        echo "Error: List file for TYPE '$TYPE' not found. Check both $SCRIPTDIR"
         errorCatch
     fi
 
-    if [ -n "$DISPLAYMANAGER" ] && [ "$DISPLAYMANAGER" != "none" ]; then
-            DISPLAYLISTS=""
-	else
- 
-        if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst" ]; then
-            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst"
-        else
-            echo "Error: List file for DISPLAYMANAGER '$DISPLAYMANAGER' not found, check both $SCRIPTDIR and $WORKDIR:"
-            errorCatch
-        fi
+    # Skip DISPLAYLISTS setting if DISPLAYMANAGER is empty or "none"
+    if [ -z "$DISPLAYMANAGER" ] || [ "$DISPLAYMANAGER" = "none" ]; then
+        return
     fi
-    }
-    
+
+    # Set DISPLAYLISTS if DISPLAYMANAGER list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst" ]; then
+        DISPLAYLISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst"
+    else
+        echo "Error: List file for DISPLAYMANAGER '$DISPLAYMANAGER' not found. Check both $SCRIPTDIR"
+        errorCatch
+    fi
+}
+
 userDSKTPNme() {
 	# Interactive menu for managing the iso name and the window manager executable
 	# Works along with the two other functions cfrmISONme and cfrmWMNme set and save
