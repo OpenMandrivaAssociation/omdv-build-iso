@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Add new types at line 571
-# Add new display managers at line 596
+# Script populated local omdv-build-iso folder for lst and checks against the downloaded source from github. Please verify locations and github download.
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
@@ -532,57 +531,28 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-	# Assign the config build list
-	# This could work by just checking by checking whether the provided entry exists in the list of TYPES if it does not then this must be a user chosen name.
-	# we would still call the interactive session but the constraint on the naming would be removed.
+    SCRIPTDIR="$HOME/omdv-build-iso"
 
-	case "$TYPE" in
-	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu|i3)
-		NEWTYPE=error
-		;;
-	*)
-		NEWTYPE="$TYPE"
-		;;
-	esac
-	if [ "$NEWTYPE" = "error" ]; then
-		if [ "$TYPE" = 'plasma-wayland' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
-		elif [ "$TYPE" = 'plasma6x11' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6x11.lst"
-		elif [ "$TYPE" = 'plasma6' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6wayland.lst"
-		else
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
+    # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
+        FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst"
+    else
+        echo "Error: List file for TYPE '$TYPE' not found. Check both $SCRIPTDIR"
+        errorCatch
+    fi
 
-		fi
-	elif [ "$NEWTYPE" != "error" ] && [ $ABF = '1' ]; then
-		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
-		errorCatch
-	fi
+    # Skip DISPLAYLISTS setting if DISPLAYMANAGER is empty or "none"
+    if [ -z "$DISPLAYMANAGER" ] || [ "$DISPLAYMANAGER" = "none" ]; then
+        return
+    fi
 
-	# Check if DISPLAYMANAGER is valid based on case below and assign DISPLAYLISTS accordingly
-	case "$DISPLAYMANAGER" in
-	sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
-        
-	# Valid display manager
-        if [ "$DISPLAYMANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
-            DISPLAYLISTS=""
-        else
-            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
-        fi
-        ;;
-		*)
-        # Invalid or custom display manager
-        if [ "$ABF" = "1" ]; then
-            echo "Error: You cannot use custom display managers (like '$DISPLAYMANAGER') when ABF=1."
-            echo "Please use one of the standard display managers or override via --isover."
-            errorCatch
-        else
-            # Custom is allowed if not in ABF mode
-            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
-        fi
-        ;;
-	esac
+    # Set DISPLAYLISTS if DISPLAYMANAGER list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst" ]; then
+        DISPLAYLISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst"
+    else
+        echo "Error: List file for DISPLAYMANAGER '$DISPLAYMANAGER' not found. Check both $SCRIPTDIR"
+        errorCatch
+    fi
 }
 
 userDSKTPNme() {
