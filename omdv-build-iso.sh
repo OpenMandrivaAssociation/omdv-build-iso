@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Add new types at line 571
+# Add new display managers at line 596
+
+
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
@@ -564,7 +568,7 @@ SetFileList() {
 	# we would still call the interactive session but the constraint on the naming would be removed.
 
 	case "$TYPE" in
-	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
+	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu|i3)
 		NEWTYPE=error
 		;;
 	*)
@@ -586,6 +590,30 @@ SetFileList() {
 		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
 		errorCatch
 	fi
+
+	# Check if DISPLAYMANAGER is valid based on case below and assign DISPLAYLISTS accordingly
+	case "$DISPLAYMANAGER" in
+	sddm|lightdm|gdm|cosmic-greeter|ly|none|"")
+        
+	# Valid display manager
+        if [ "$DISPLAYMANAGER" = "none" ] || [ -z "$DISPLAYMANAGER" ]; then
+            DISPLAYLISTS=""
+        else
+            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
+        fi
+        ;;
+		*)
+        # Invalid or custom display manager
+        if [ "$ABF" = "1" ]; then
+            echo "Error: You cannot use custom display managers (like '$DISPLAYMANAGER') when ABF=1."
+            echo "Please use one of the standard display managers or override via --isover."
+            errorCatch
+        else
+            # Custom is allowed if not in ABF mode
+            DISPLAYLISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${DISPLAYMANAGER,,}.lst"
+        fi
+        ;;
+	esac
 }
 
 userDSKTPNme() {
@@ -793,12 +821,25 @@ getPkgList() {
 		EX_PREF=./
 		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
                 #Swapped to tar.gz to perserve permission (Vuatech)
-		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
+		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
+ 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanager.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
+		if [ -z "${DISPLAYMANAGER:-}" ] || [ "$DISPLAYMANAGER" = "none" ]; then
+			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
 		if [ ! -e "$FILELISTS" ]; then
-			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-			errorCatch
+        	printf "%s\n" "-> Required file does not exist:"
+        	echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
+        	errorCatch
 		fi
+	    else
+		# DISPLAYLISTS has a valid value → check both
+		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
+        	printf "%s\n" "-> Required file does not exist:"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.lst file from $TREE folder"
+        	errorCatch
+		fi
+	    fi
 	fi
 }
 
@@ -807,7 +848,7 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
@@ -1015,6 +1056,7 @@ createChroot() {
 		if [ -n "$REBUILD" ]; then
 			printf  "%s\n" "-> Rebuilding."
 			mkUserSpin "$FILELISTS"
+   			mkUserSpin "$DISPLAYLISTS"
 		elif [ -n "$AUTO_UPDATE" ]; then
 			/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
 		elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ]; then
@@ -1027,7 +1069,7 @@ createChroot() {
 
 	# Did it return 0k
 	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
-		printf "%s\n" "-> Can not install packages from $FILELISTS"
+		printf "%s\n" "-> Can not install packages from $FILELISTS or $DISPLAYLISTS"
 		errorCatch
 	fi
 
@@ -1062,10 +1104,19 @@ createChroot() {
 # to be installed
 mkOmSpin() {
 	getIncFiles "$FILELISTS" ADDRPMINC
-	printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
-	printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" " " "   Which includes"
-	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
-	createPkgList "$ADDRPMINC" INSTALL_LIST
+ 	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+  	# Combine both inclusion lists
+	COMBINED_ADDRPM="${ADDRPMINC}
+${ADDRPMDISPLAY}"
+	# Output the combined list to inclist
+	printf "%s" "$COMBINED_ADDRPM" > "$WORKDIR/inclist"
+
+	printf "%s\n" "-> Creating OpenMandriva spin from:"
+	printf "   %s\n" "$FILELISTS" "$DISPLAYLISTS"
+	printf "%s\n" "   Which includes:"
+	printf "%s\n" "$COMBINED_ADDRPM" | grep -v -e "$FILELISTS" -e "$DISPLAYLISTS"
+
+	createPkgList "$COMBINED_ADDRPM" INSTALL_LIST
 	mkUpdateChroot "$INSTALL_LIST"
 }
 
@@ -1231,16 +1282,20 @@ mkUserSpin() {
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	printf "%s\n" "$FILELISTS"
+ 	printf "%s\n" "$DISPLAYLISTS"
+  
 	getIncFiles "$FILELISTS" ADDRPMINC
+	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+ 
 	# Combine the main and the users files"
-	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
+	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC"$'\n'"$ADDRPMDISPLAY"| sort -u)
 	# Now for the remove list
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 	printf "%s\n" "-> Removing the common include lines for the remove package includes"
 
 	#Give some information
-	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
-	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
+	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS and $DISPLAYLISTS" "  Which includes " "$ALLRPMINC"
+	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTSand $DISPLAYLISTS" "  Which removes " "$RMRPMINC"
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
