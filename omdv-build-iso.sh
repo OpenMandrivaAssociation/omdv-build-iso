@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Script populated local omdv-build-iso folder for lst and checks against the downloaded source from github. Please verify locations and github download.
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
@@ -43,19 +42,7 @@ main() {
 			BOOT_KERNEL_TYPE=${k#*=}
 			;;
 		--type=*)
-			declare -l lc
-			lc=${k#*=}
-			case "$lc" in
-			plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
-				TYPE="$lc"
-				;;
-			*)
-				TYPE=$lc
-				printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
-#				printf "%s\n" "$TYPE is not supported."
-#				usage_help
-				;;
-			esac
+			TYPE=${k#*=}
 			;;
 		--displaymanager=*)
 			DISPLAYMANAGER=${k#*=}
@@ -241,7 +228,6 @@ main() {
 # TODO:
 # Test --auto-update switch
 # Add  --auto-upgrade
-# Investigate why we can't mount our isos in plasma
 
 CarryOn() {
 	InstallRepos       # Installs the repo rpms if they are not already installed
@@ -531,7 +517,7 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-    SCRIPTDIR="$HOME/omdv-build-iso"
+      SCRIPTDIR="$HOME/omdv-build-iso"
 
     # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
@@ -761,7 +747,7 @@ getPkgList() {
 		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
                 #Swapped to tar.gz to perserve permission (Vuatech)
 		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
- 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanager.tar.gz | tar -xz --strip-components=1
+ 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/dynamic.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
 		if [ -z "${DISPLAYMANAGER:-}" ] || [ "$DISPLAYMANAGER" = "none" ]; then
 			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
