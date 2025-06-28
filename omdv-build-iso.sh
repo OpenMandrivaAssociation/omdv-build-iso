@@ -518,7 +518,7 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-      SCRIPTDIR="$HOME/omdv-build-iso"
+      SCRIPTDIR="$HOME/omdv-build-iso-master"
 
     # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
