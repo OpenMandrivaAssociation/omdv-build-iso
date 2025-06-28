@@ -229,7 +229,6 @@ main() {
 # TODO:
 # Test --auto-update switch
 # Add  --auto-upgrade
-# Investigate why we can't mount our isos in plasma
 
 CarryOn() {
 	InstallRepos       # Installs the repo rpms if they are not already installed
