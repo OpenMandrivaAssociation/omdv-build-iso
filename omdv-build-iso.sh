@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# Add new types at line 571
-# Add new display managers at line 596
-
 # Dynamic list attempt
-
 
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
@@ -77,19 +73,7 @@ main() {
 			BOOT_KERNEL_TYPE=${k#*=}
 			;;
 		--type=*)
-			declare -l lc
-			lc=${k#*=}
-			case "$lc" in
-			plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
-				TYPE="$lc"
-				;;
-			*)
-				TYPE=$lc
-				printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
-#				printf "%s\n" "$TYPE is not supported."
-#				usage_help
-				;;
-			esac
+			TYPE=${k#*=}
 			;;
 		--displaymanager=*)
 			DISPLAYMANAGER=${k#*=}
