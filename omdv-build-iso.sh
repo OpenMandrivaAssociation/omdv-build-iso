@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Script populated local omdv-build-iso folder for lst and checks against the downloaded source from github. Please verify locations and github download.
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
@@ -523,7 +524,7 @@ SetFileList() {
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
         FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst"
     else
-        echo "Error: List file for TYPE '$TYPE' not found. Check both $SCRIPTDIR"
+        echo "Error: List file for TYPE '$TYPE' not found. Check $SCRIPTDIR"
         errorCatch
     fi
 
@@ -536,7 +537,7 @@ SetFileList() {
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst" ]; then
         DISPLAYLISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst"
     else
-        echo "Error: List file for DISPLAYMANAGER '$DISPLAYMANAGER' not found. Check both $SCRIPTDIR"
+        echo "Error: List file for DISPLAYMANAGER '$DISPLAYMANAGER' not found. Check $SCRIPTDIR"
         errorCatch
     fi
 }
