@@ -3,6 +3,8 @@
 # Add new types at line 571
 # Add new display managers at line 596
 
+# Dynamic list attempt
+
 
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
@@ -822,7 +824,7 @@ getPkgList() {
 		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
                 #Swapped to tar.gz to perserve permission (Vuatech)
 		# wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
- 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/displaymanager.tar.gz | tar -xz --strip-components=1
+ 		wget -qO- https://github.com/vuatech/omdv-build-iso/archive/refs/heads/dynamic.tar.gz | tar -xz --strip-components=1
                 rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
 		if [ -z "${DISPLAYMANAGER:-}" ] || [ "$DISPLAYMANAGER" = "none" ]; then
 			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
