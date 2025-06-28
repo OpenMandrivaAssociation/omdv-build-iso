@@ -2,36 +2,6 @@
 
 # Dynamic list attempt
 
-# OpenMandriva Association 2012
-# Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Colin Close <itchka@compuserve.com>
-# Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
-# Modified on 2016 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
-# Modified on 2016 by: Colin Close <itchka@compuserve.com>
-# Modified on 2017 by: Colin Close <itchka@compuserve.com>
-# Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
-# April 2018 Major Revision to support the use of the
-# dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
-# October 2019 Revise user mode list storage <itchka@compuserve.com>
-
-# This tool is licensed under GPL license
-#	This program is free software; you can redistribute it and/or modify
-#	it under the terms of the GNU General Public License as published by
-#	the Free Software Foundation; either version 2 of the License, or
-#	(at your option) any later version.
-#
-#	This program is distributed in the hope that it will be useful,
-#	but WITHOUT ANY WARRANTY; without even the implied warranty of
-#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#	GNU General Public License for more details.
-#
-#	You should have received a copy of the GNU General Public License
-#	along with this program; if not, write to the Free Software
-#	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
-
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
 main() {
@@ -2270,3 +2240,18 @@ FilterLogs() {
 }
 
 main "$@"
+
+
+# OpenMandriva Association 2012
+# Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
+# Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Colin Close <itchka@compuserve.com>
+# Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
+# Modified on 2016 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2016 by: Colin Close <itchka@compuserve.com>
+# Modified on 2017 by: Colin Close <itchka@compuserve.com>
+# Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
+# April 2018 Major Revision to support the use of the
+# dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
+# October 2019 Revise user mode list storage <itchka@compuserve.com>
