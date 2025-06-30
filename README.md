@@ -8,7 +8,7 @@ Valid Options:
 
 --tree= 6.0, rolling, cooker
 
---version= current version of rock (6.0)
+--version= current version of rock (6.0), rolling (rolling), or cooker (25.90
 
 --release_id= alpha, beta, rc, snapshot
 
