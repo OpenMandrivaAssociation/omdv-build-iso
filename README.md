@@ -4,7 +4,7 @@ https://openmandriva.org
 
 Valid Options:
 --arch= x86_64, aarch64. znver1
---tree= 6.0, rome, cooker
+--tree= 6.0, rolling, cooker
 --version= current version of rock (6.0)
 --release_id= alpha, beta, rc, snapshot
 --type= Any .lst found in iso-pkg-$TREE ie: omdv-plasma6x11.lst = plasma6x11.lst
