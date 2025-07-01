@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The script will populate --type and --displaymanager options from the omdv-build-iso-master folder based on the lst files in the iso-pkg-lists-%TREE folder
+# The script will populate --type and --displaymanager options from the omdv-build-iso-$GIT_BRNCH folder based on the lst files in the iso-pkg-lists-%TREE folder
 # Once verified the script will download and verify the selected options are present in the work directory
 
 # Current revision is point to vuatech/omdv-build-iso github
@@ -521,7 +521,17 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-      SCRIPTDIR="$HOME/omdv-build-iso-master"
+
+    # Set scriptdir varible based on folders being present
+    if [ -d /usr/share/omdv-build-iso]; then
+      SCRIPTDIR="/usr/share/omdv-build-iso"
+    elif [ -d "$HOME/omdv-build-iso-$GIT_BRNCH"]; then
+      SCRIPTDIR="$HOME/omdv-build-iso-$GIT_BRNCH"
+    else 
+    	echo "Error: If building in local environment verify folder is located on root of home drive and is named omdv-build-iso-$GIT_BRNCH."
+     	echo "If this is an ABF environment verify location /usr/share/omdv-build-iso"
+      	errorCatch
+    fi
 
     # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then

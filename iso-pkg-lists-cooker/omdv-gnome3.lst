@@ -47,6 +47,7 @@ gnome-calculator
 gedit
 gnome-text-editor
 #gdm
+
 gnome-color-manager
 gnome-disk-utility
 #gnome-packagekit #broken, and no needed
