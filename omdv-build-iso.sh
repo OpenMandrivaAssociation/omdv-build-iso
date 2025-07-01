@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The script will populate --type and --displaymanager options from the omdv-build-iso-master folder based on the lst files in the iso-pkg-lists-%TREE folder
+# The script will populate --type and --displaymanager options from the omdv-build-iso-$GIT_BRNCH folder based on the lst files in the iso-pkg-lists-%TREE folder
 # Once verified the script will download and verify the selected options are present in the work directory
 
 # Current revision is point to vuatech/omdv-build-iso github
@@ -521,7 +521,7 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-      SCRIPTDIR="$HOME/omdv-build-iso-master"
+      SCRIPTDIR="$HOME/omdv-build-iso-${GIT_BRANCH}"
 
     # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
