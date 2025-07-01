@@ -100,8 +100,6 @@ plasma6-discover
 plasma6-discover-backend-flatpak
 plasma6-discover-backend-packagekit
 
-plasma6-sddm
-
 plasma6-akonadi-calendar-tools
 plasma6-akonadi-search
 plasma6-akregator
@@ -153,8 +151,6 @@ plasma6-okular-epub
 plasma6-partitionmanager
 plasma6-plymouth-kcm
 plasma6-print-manager
-plasma6-sddm-kcm
-plasma6-sddm-theme-breeze
 plasma6-kwalletmanager
 plasma6-signon-kwallet-extension
 plasma6-skanlite
