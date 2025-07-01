@@ -24,8 +24,8 @@ openmandriva-mate-config
 #   caja
 #caja-extensions-av
 #caja-extensions-image-converter
-caja-extensions-open-terminal
-caja-extensions-sendto
+#caja-extensions-open-terminal
+#caja-extensions-sendto
 #caja-extensions-sendto-pidgin
 #caja-extensions-sendto-upnp
 #caja-extensions-share
@@ -67,7 +67,7 @@ lib64sane1
 
 # keep to check
 #x11-font-cyrillic
-x11-server-xorg
+xlibre-xorg
 x11-tools
 x11-docs
 x11-font-type1
@@ -102,8 +102,6 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-#sddm
-lightdm
 
 #openssh-server #server
 #samba-server #server
