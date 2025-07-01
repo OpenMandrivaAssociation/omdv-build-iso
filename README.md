@@ -6,9 +6,9 @@ Valid Options:
 
 --arch= x86_64, aarch64. znver1
 
---tree= 6.0, rolling, cooker
+--tree= 6.0, rolling, cooker (Also controls download source. Cooker is master branch, rolling is rolling branch, and 6.0 is 6.0 branch)
 
---version= current version of rock (6.0), rolling (rolling), or cooker (25.90
+--version= current version of rock (6.0), rolling (rolling), or cooker (25.90)
 
 --release_id= alpha, beta, rc, snapshot
 
