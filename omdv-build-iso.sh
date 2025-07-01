@@ -522,7 +522,6 @@ RestoreDaTa() {
 
 SetFileList() {
 	pwd
- read -p "Script Location"
     # Set scriptdir varible based on folders being present
     if [ -d /usr/share/omdv-build-iso ]; then
       SCRIPTDIR="/usr/share/omdv-build-iso"
