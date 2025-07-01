@@ -26,7 +26,7 @@ gnome-backgrounds
 gnome-control-center
 gnome-menus
 gnome-panel
-gnome-power-manager
+#gnome-power-manager
 gnome-keyring
 gnome-shell
 gnome-system-monitor
@@ -40,7 +40,7 @@ task-x11
 xdg-desktop-portal-gnome
 
 cheese
-eog
+#eog
 evince
 file-roller
 gnome-calculator
@@ -85,20 +85,20 @@ gnome-characters
 gnome-clocks
 # Builder is needed only for developers.
 #gnome-builder
-gnome-dictionary
+#gnome-dictionary
 foliate
 gnome-font-viewer
 gnome-sound-recorder
-gnome-usage
+#gnome-usage
 gnome-weather
 baobab
-gnome-system-log
+#gnome-system-log
 gnome-commander
 gnome-firmware
 gnome-calendar
 
-gucharmap
-mousetweaks
+#gucharmap
+#mousetweaks
 
 # biz / office / utils
 brasero
@@ -218,5 +218,6 @@ flatpak
 #libyui-gtk
 #libyui-mga-gtk
 # for LibreOffice
+# this one crashing? Need invesigate
 libreoffice-gnome
-#libreoffice-gtk3-kde5
+libreoffice-gtk3-kde5
