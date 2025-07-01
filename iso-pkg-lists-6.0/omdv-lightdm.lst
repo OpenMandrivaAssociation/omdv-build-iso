@@ -1,0 +1,4 @@
+# Packages for LightDM
+lightdm
+lightdm-gtk3-greeter
+lightdm-gtk-greeter-common
