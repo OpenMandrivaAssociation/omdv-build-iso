@@ -523,9 +523,9 @@ RestoreDaTa() {
 SetFileList() {
 
     # Set scriptdir varible based on folders being present
-    if [ -d /usr/share/omdv-build-iso]; then
+    if [ -d /usr/share/omdv-build-iso ]; then
       SCRIPTDIR="/usr/share/omdv-build-iso"
-    elif [ -d "$HOME/omdv-build-iso-$GIT_BRNCH"]; then
+    elif [ -d "$HOME/omdv-build-iso-$GIT_BRNCH" ]; then
       SCRIPTDIR="$HOME/omdv-build-iso-$GIT_BRNCH"
     else 
     	echo "Error: If building in local environment verify folder is located on root of home drive and is named omdv-build-iso-$GIT_BRNCH."
