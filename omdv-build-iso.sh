@@ -521,15 +521,17 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-	pwd
     # Set scriptdir varible based on folders being present
     if [ -d /usr/share/omdv-build-iso ]; then
       SCRIPTDIR="/usr/share/omdv-build-iso"
     elif [ -d "$HOME/omdv-build-iso" ]; then
       SCRIPTDIR="$HOME/omdv-build-iso"
+    elif [ -d "$WORKDIR" ]; then
+      SCRIPTDIR="$WORKDIR"
     else 
-    	echo "Error: If building in local environment verify folder is located on root of home drive and is named omdv-build-iso."
-     	echo "If this is an ABF environment verify location /usr/share/omdv-build-iso"
+    	echo "Error: If building on ABF check if $HOME/omdv-build-iso exist"
+     	echo "Error: If building on ABF check if $WORKDIR exist"
+      	echo "Error: If omdv-build-iso package is installed check if /usr/share/omdv-build-iso exist"
       	errorCatch
     fi
 
