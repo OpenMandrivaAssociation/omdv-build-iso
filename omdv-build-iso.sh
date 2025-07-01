@@ -521,7 +521,7 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-      SCRIPTDIR="$HOME/omdv-build-iso-${GIT_BRANCH}"
+      SCRIPTDIR="$HOME/omdv-build-iso-${GIT_BRNCH}"
 
     # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
     if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
