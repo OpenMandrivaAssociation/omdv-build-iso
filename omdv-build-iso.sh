@@ -525,8 +525,8 @@ SetFileList() {
     # Set scriptdir varible based on folders being present
     if [ -d /usr/share/omdv-build-iso ]; then
       SCRIPTDIR="/usr/share/omdv-build-iso"
-    elif [ -d "$HOME/omdv-build-iso-$GIT_BRNCH" ]; then
-      SCRIPTDIR="$HOME/omdv-build-iso-$GIT_BRNCH"
+    elif [ -d "$HOME/omdv-build-iso-${GIT_BRNCH}" ]; then
+      SCRIPTDIR="$HOME/omdv-build-iso-${GIT_BRNCH}"
     else 
     	echo "Error: If building in local environment verify folder is located on root of home drive and is named omdv-build-iso-$GIT_BRNCH."
      	echo "If this is an ABF environment verify location /usr/share/omdv-build-iso"
