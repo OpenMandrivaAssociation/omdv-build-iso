@@ -1,34 +1,9 @@
 #!/bin/bash
 
-# OpenMandriva Association 2012
-# Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
-# Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
-# Modified on 2015 by: Colin Close <itchka@compuserve.com>
-# Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
-# Modified on 2016 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
-# Modified on 2016 by: Colin Close <itchka@compuserve.com>
-# Modified on 2017 by: Colin Close <itchka@compuserve.com>
-# Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
-# April 2018 Major Revision to support the use of the
-# dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
-# October 2019 Revise user mode list storage <itchka@compuserve.com>
+# The script will populate --type and --displaymanager options from the omdv-build-iso-master folder based on the lst files in the iso-pkg-lists-%TREE folder
+# Once verified the script will download and verify the selected options are present in the work directory
 
-# This tool is licensed under GPL license
-#	This program is free software; you can redistribute it and/or modify
-#	it under the terms of the GNU General Public License as published by
-#	the Free Software Foundation; either version 2 of the License, or
-#	(at your option) any later version.
-#
-#	This program is distributed in the hope that it will be useful,
-#	but WITHOUT ANY WARRANTY; without even the implied warranty of
-#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#	GNU General Public License for more details.
-#
-#	You should have received a copy of the GNU General Public License
-#	along with this program; if not, write to the Free Software
-#	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
+# Current revision is point to vuatech/omdv-build-iso github
 
 # This tool is specified to build OpenMandriva Lx distribution ISO
 
@@ -71,19 +46,7 @@ main() {
 			BOOT_KERNEL_TYPE=${k#*=}
 			;;
 		--type=*)
-			declare -l lc
-			lc=${k#*=}
-			case "$lc" in
-			plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
-				TYPE="$lc"
-				;;
-			*)
-				TYPE=$lc
-				printf "%s\n" "Creating iso named $TYPE" "You will need to provide the name of you window manager and the name of the executable to run it."
-#				printf "%s\n" "$TYPE is not supported."
-#				usage_help
-				;;
-			esac
+			TYPE=${k#*=}
 			;;
 		--displaymanager=*)
 			DISPLAYMANAGER=${k#*=}
@@ -269,7 +232,6 @@ main() {
 # TODO:
 # Test --auto-update switch
 # Add  --auto-upgrade
-# Investigate why we can't mount our isos in plasma
 
 CarryOn() {
 	InstallRepos       # Installs the repo rpms if they are not already installed
@@ -559,33 +521,28 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-	# Assign the config build list
-	# This could work by just checking by checking whether the provided entry exists in the list of TYPES if it does not then this must be a user chosen name.
-	# we would still call the interactive session but the constraint on the naming would be removed.
+      SCRIPTDIR="$HOME/omdv-build-iso-master"
 
-	case "$TYPE" in
-	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
-		NEWTYPE=error
-		;;
-	*)
-		NEWTYPE="$TYPE"
-		;;
-	esac
-	if [ "$NEWTYPE" = "error" ]; then
-		if [ "$TYPE" = 'plasma-wayland' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma.lst"
-		elif [ "$TYPE" = 'plasma6x11' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6x11.lst"
-		elif [ "$TYPE" = 'plasma6' ]; then
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-plasma6wayland.lst"
-		else
-			FILELISTS="$WORKDIR/iso-pkg-lists-${TREE,,}/${DIST,,}-${TYPE,,}.lst"
+    # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
+        FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst"
+    else
+        echo "Error: List file for TYPE '$TYPE' not found. Check $SCRIPTDIR"
+        errorCatch
+    fi
 
-		fi
-	elif [ "$NEWTYPE" != "error" ] && [ $ABF = '1' ]; then
-		printf "%s\n" "You cannot create your own isos within ABF." "Please enter a legal value" "You may use the --isover=<branch name> i.e. A branch in the git repository of omdv-build-iso to pull in revised compilations of the standard lists."
-		errorCatch
-	fi
+    # Skip DISPLAYLISTS setting if DISPLAYMANAGER is empty or "none"
+    if [ -z "$DISPLAYMANAGER" ] || [ "$DISPLAYMANAGER" = "none" ]; then
+        return
+    fi
+
+    # Set DISPLAYLISTS if DISPLAYMANAGER list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst" ]; then
+        DISPLAYLISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${DISPLAYMANAGER}.lst"
+    else
+        echo "Error: List file for DISPLAYMANAGER '$DISPLAYMANAGER' not found. Check $SCRIPTDIR"
+        errorCatch
+    fi
 }
 
 userDSKTPNme() {
@@ -791,12 +748,26 @@ getPkgList() {
 		fi
 		cd "$WORKDIR" || exit
 		EX_PREF=./
-		EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
-		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/"${GIT_BRNCH}".zip | bsdtar -xvf- ${EXCLUDE_LIST} --strip-components 1
+		# EXCLUDE_LIST="--exclude ${EX_PREF}.abf.yml --exclude ${EX_PREF}ChangeLog --exclude ${EX_PREF}Developer_Info --exclude ${EX_PREF}Makefile --exclude ${EX_PREF}README --exclude ${EX_PREF}TODO --exclude ${EX_PREF}omdv-build-iso.sh --exclude ${EX_PREF}omdv-build-iso.spec --exclude ${EX_PREF}docs/*  --exclude ${EX_PREF}tools/* --exclude ${EX_PREF}ancient/*"
+                #Swapped to tar.gz to perserve permission (Vuatech)
+		wget -qO- https://github.com/OpenMandrivaAssociation/omdv-build-iso/archive/${GIT_BRNCH}.tar.gz | tar -xz --strip-components=1
+                rm -rf .abf.yml ChangeLog Developer_Info Makefile README TODO omdv-build-iso.sh omdv-build-iso.spec doc/* tools/* ancient/*
+		if [ -z "${DISPLAYMANAGER:-}" ] || [ "$DISPLAYMANAGER" = "none" ]; then
+			# DISPLAYMANAGER is empty or set to "none" → only check FILELISTS
 		if [ ! -e "$FILELISTS" ]; then
-			printf "%s\n" "-> $FILELISTS does not exist. Exiting"
-			errorCatch
+        	printf "%s\n" "-> Required file does not exist:"
+        	echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
+        	errorCatch
 		fi
+	    else
+		# DISPLAYLISTS has a valid value → check both
+		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
+        	printf "%s\n" "-> Required file does not exist:"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.lst file from $TREE folder"
+        	errorCatch
+		fi
+	    fi
 	fi
 }
 
@@ -805,7 +776,7 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
@@ -823,7 +794,7 @@ InstallRepos() {
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
-		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  *.rpm
+		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  $WORKDIR/*.rpm
 	fi
 
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
@@ -864,17 +835,20 @@ InstallRepos() {
 		/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
 	fi
 
+	# Creates folder needed by DNF5 to enable and disabled repos (Vuatech)
+ 	mkdir -p $CHROOTNAME/etc/dnf/repos.override.d
+
 	if [ -e "$WORKDIR"/.new ]; then
 		# First make sure cooker is disabled
-		dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt cooker-"$EXTARCH".enabled=0
 		# Rock too -- at release time, rock and $DNFCONF_TREE should be
 		# the same anyway
-		dnf --installroot="$CHROOTNAME" config-manager --disable rock-*"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt rock-*"$EXTARCH".enabled=0
 		# Then enable the main repo of the chosen tree
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH".enabled=1
 		# And the corresponding updates repository (allow this to fail, because there
 		# is no rolling/updates or cooker/updates)
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH" || :
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH".enabled=1 || :
 	else
 		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
@@ -885,27 +859,27 @@ InstallRepos() {
 		printf "%s\n" "->Enabling the main repo only"
 	else
 		if [ -n "$UNSUPPREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-extra
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-extra.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-extra || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-extra.enabled=1 || :
 		fi
 		if [ -n "$NONFREEREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-non-free
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-non-free.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-non-free.enabled=1 || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
 			ENABLEREPO=$(tr "," " " <<< $ENABLEREPO)
 			#for rpo in ${ENABLEREPO//,/]; do
-			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
+			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} setopt ${ENABLEREPO}.enabled=1
 			#done
 		fi
 
 		if [ -n "$TESTREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH.enabled=1"
 		fi
 	fi
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
@@ -1010,6 +984,7 @@ createChroot() {
 		if [ -n "$REBUILD" ]; then
 			printf  "%s\n" "-> Rebuilding."
 			mkUserSpin "$FILELISTS"
+   			mkUserSpin "$DISPLAYLISTS"
 		elif [ -n "$AUTO_UPDATE" ]; then
 			/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
 		elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ]; then
@@ -1022,7 +997,7 @@ createChroot() {
 
 	# Did it return 0k
 	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
-		printf "%s\n" "-> Can not install packages from $FILELISTS"
+		printf "%s\n" "-> Can not install packages from $FILELISTS or $DISPLAYLISTS"
 		errorCatch
 	fi
 
@@ -1057,10 +1032,19 @@ createChroot() {
 # to be installed
 mkOmSpin() {
 	getIncFiles "$FILELISTS" ADDRPMINC
-	printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
-	printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" " " "   Which includes"
-	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
-	createPkgList "$ADDRPMINC" INSTALL_LIST
+ 	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+  	# Combine both inclusion lists
+	COMBINED_ADDRPM="${ADDRPMINC}
+${ADDRPMDISPLAY}"
+	# Output the combined list to inclist
+	printf "%s" "$COMBINED_ADDRPM" > "$WORKDIR/inclist"
+
+	printf "%s\n" "-> Creating OpenMandriva spin from:"
+	printf "   %s\n" "$FILELISTS" "$DISPLAYLISTS"
+	printf "%s\n" "   Which includes:"
+	printf "%s\n" "$COMBINED_ADDRPM" | grep -v -e "$FILELISTS" -e "$DISPLAYLISTS"
+
+	createPkgList "$COMBINED_ADDRPM" INSTALL_LIST
 	mkUpdateChroot "$INSTALL_LIST"
 }
 
@@ -1226,16 +1210,20 @@ mkUserSpin() {
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	printf "%s\n" "$FILELISTS"
+ 	printf "%s\n" "$DISPLAYLISTS"
+  
 	getIncFiles "$FILELISTS" ADDRPMINC
+	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+ 
 	# Combine the main and the users files"
-	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
+	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC"$'\n'"$ADDRPMDISPLAY"| sort -u)
 	# Now for the remove list
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 	printf "%s\n" "-> Removing the common include lines for the remove package includes"
 
 	#Give some information
-	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
-	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
+	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS and $DISPLAYLISTS" "  Which includes " "$ALLRPMINC"
+	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTSand $DISPLAYLISTS" "  Which removes " "$RMRPMINC"
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
@@ -1556,7 +1544,8 @@ setupGrub2() {
 	fi
 
 	# Add the themes, locales and fonts to the ISO build firectory
-	if [ "${TYPE}" != "minimal" ]; then
+ 	# Change Type != minimal to debug to allow theming (Vuatech)
+	if [ "${TYPE}" != "debug" ]; then
 		mkdir -p "$ISOROOTNAME"/boot/grub "$ISOROOTNAME"/boot/grub/themes "$ISOROOTNAME"/boot/grub/locale "$ISOROOTNAME"/boot/grub/fonts
 		cp -a -f "$CHROOTNAME"/boot/grub2/themes "$ISOROOTNAME"/boot/grub/
 		cp -a -f "$CHROOTNAME"/usr/share/grub/*.pf2 "$ISOROOTNAME"/boot/grub/fonts/
@@ -1688,10 +1677,11 @@ setupISOenv() {
 	printf "%s\n" "imagesize = $(du -a -x -b -P "$CHROOTNAME" | tail -1 | awk '{print $1}')" >> "$CHROOTNAME"/etc/minsysreqs
 
 	# Set up displaymanager
-	if [ ${TYPE,,} != "minimal" ] && [ ! -z ${DISPLAYMANAGER,,} ]; then
+	if [[ -n "$DISPLAYMANAGER" && "${DISPLAYMANAGER,,}" != "none" ]]; then
 		if [ ! -e "$CHROOTNAME/lib/systemd/system/${DISPLAYMANAGER,,}.service" ]; then
 			printf "%s\n" "-> File ${DISPLAYMANAGER,,}.service does not exist. Exiting."
 			errorCatch
+		else printf "No Display Manager Choosen, Skipping"
 		fi
 
 		ln -sf "/lib/systemd/system/${DISPLAYMANAGER,,}.service" "$CHROOTNAME/etc/systemd/system/display-manager.service" 2> /dev/null || :
@@ -2222,3 +2212,18 @@ FilterLogs() {
 }
 
 main "$@"
+
+
+# OpenMandriva Association 2012
+# Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
+# Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2015 by: Colin Close <itchka@compuserve.com>
+# Modified on 2015 by: Crispin Boylan <cris@beebgames.com>
+# Modified on 2016 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
+# Modified on 2016 by: Colin Close <itchka@compuserve.com>
+# Modified on 2017 by: Colin Close <itchka@compuserve.com>
+# Mofified 0n 2018 by: Colin Close <itchka@compuserve.com>
+# April 2018 Major Revision to support the use of the
+# dnf which replaces urpmi: Colin Close <itchka@compuserve.com>
+# October 2019 Revise user mode list storage <itchka@compuserve.com>

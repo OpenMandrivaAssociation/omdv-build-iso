@@ -24,8 +24,8 @@ openmandriva-mate-config
 #   caja
 #caja-extensions-av
 #caja-extensions-image-converter
-caja-extensions-open-terminal
-caja-extensions-sendto
+#caja-extensions-open-terminal
+#caja-extensions-sendto
 #caja-extensions-sendto-pidgin
 #caja-extensions-sendto-upnp
 #caja-extensions-share
@@ -102,10 +102,6 @@ openssl
 #pam_ldap
 poppler-data
 sasl-plug-gssapi
-#sddm
-lightdm
-lightdm-gtk3-greeter
-lightdm-gtk-greeter-common
 
 #openssh-server #server
 #samba-server #server
