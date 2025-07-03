@@ -1943,6 +1943,9 @@ EOF
 		elif [ "${TYPE,,}" = 'lxqt' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "lxqt-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "lxqt"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+   		elif [ "${TYPE,,}" = 'lxqt-wayland' ]; then
+			sed -i -e "s/.*executable:.*/    executable: "startlxqtwayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
+			sed -i -e "s/.*desktopFile:.*/    desktopFile: "lxqt-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'cutefish' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "cutefish-session"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "cutefish"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
