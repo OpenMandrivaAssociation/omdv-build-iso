@@ -26,15 +26,48 @@ hyprlock
 
 
 # Desktop Specifics
-task-lxqt
+# Disable task-lxqt because it pulling problematic distro-release-desktop-LXQt!
+# wayland version require own.
+#task-lxqt
+
+lxqt-about
+lxqt-admin
+lxqt-archiver
+lxqt-config
+lxqt-globalkeys
+lxqt-notificationd
+lxqt-openssh-askpass
+lxqt-panel
+lxqt-policykit
+lxqt-powermanagement
+lxqt-qtplugin
+lxqt-runner
+lxqt-session
+lxqt-sudo
+lxqt-themes
+lxqt-wayland-session
+xdg-desktop-portal-lxqt
+pcmanfm-qt
+lib64dbusmenu-lxqt
+qtxdg-tools
+
+xdg-user-dirs
+distro-release-desktop
+
+distro-release-theme
+lxmenu-data
+menu-cache
+notepadqq
+lximage-qt
+qterminal
+pavucontrol-qt
+screengrab
+qps
+
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
-pavucontrol-qt
-lxqt-archiver
-lximage-qt
 networkmanager-applet
 featherpad
-qterminal
 nheko
 om-imagewriter
 
