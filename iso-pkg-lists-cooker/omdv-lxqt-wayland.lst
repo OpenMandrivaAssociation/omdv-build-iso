@@ -20,7 +20,6 @@
 # possible: labwc, Hyprland, Niri, River, ̶S̶W̶A̶Y̶, Wayfire and maybe few others.
 labwc
 lxqt-wayland-session
-wayland
 qt6-qtwayland
 # please don't use anythings from sway, hypr* is acceptable
 hyprlock
