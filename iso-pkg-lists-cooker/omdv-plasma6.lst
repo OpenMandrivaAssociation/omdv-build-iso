@@ -27,7 +27,6 @@ libreoffice-kde6
 plasma6-kpat
 
 # Desktop specifics
-
 x11-font-cyrillic
 x11-tools
 x11-docs
@@ -37,9 +36,7 @@ x11-data-cursor-themes
 edidbins
 
 # MD this entire list should be shuffled or justified to be needed for the full ISO
-
 avahi #service
-
 distro-release-desktop-Plasma6
 
 # Miscelaneous Packages
@@ -60,7 +57,6 @@ plasma6-kdeplasma-addons
 plasma6-browser-integration
 plasma6-vault
 plasma6-xdg-desktop-portal-kde
-plasma6-flatpak-kcm
 #plasma6-firewall
 plasma6-systemmonitor
 plasma6-konsole
@@ -96,6 +92,7 @@ om-welcome
 om-repo-picker
 om-imagewriter
 om-update-config
+om-mirror-selector
 
 #packagekit
 plasma6-discover
@@ -118,9 +115,9 @@ plasma6-kaccounts-providers
 plasma6-kaddressbook
 plasma6-kalarm
 plasma6-kamera
-plasma6-kate
+#plasma6-kate
 plasma6-kbackup
-plasma6-kcalc
+#plasma6-kcalc
 plasma6-kdeconnect
 plasma6-kdegraphics-thumbnailers
 plasma6-kdenetwork-filesharing
@@ -146,9 +143,9 @@ plasma6-krfb
 plasma6-ksystemlog
 plasma6-ktorrent
 plasma6-kwallet-pam
-plasma6-kwrite
+#plasma6-kwrite
 myspell-dictionary
-plasma6-okular
+#plasma6-okular
 plasma6-okular-epub
 plasma6-partitionmanager
 plasma6-plymouth-kcm
