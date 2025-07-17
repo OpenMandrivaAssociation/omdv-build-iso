@@ -65,7 +65,8 @@ plasma6-flatpak-kcm
 plasma6-systemmonitor
 plasma6-konsole
 plasma6-dolphin
-plasma6-gwenview
+#plasma6-gwenview
+gwenview
 plasma6-kate
 plasma6-kwrite
 plasma6-ark
@@ -111,7 +112,7 @@ plasma6-drkonqi
 #elisa
 plasma6-ffmpegthumbs
 kcm-grub2
-plasma6-gwenview
+#plasma6-gwenview
 plasma6-kaccounts-integration
 plasma6-kaccounts-providers
 plasma6-kaddressbook
