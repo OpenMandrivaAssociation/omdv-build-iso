@@ -17,7 +17,7 @@
 %include .///omdv_pulseaudio.lst
 
 # Add wayland for testing
-%include .///omdv-plasma6wayland.lst
+#%include .///omdv-plasma6wayland.lst
 
 qmplay2
 # qmplay2 pulls in yt-dlp which requires (mplayer or mpv). Make sure it picks mpv
