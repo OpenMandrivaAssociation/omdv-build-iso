@@ -1750,7 +1750,7 @@ EOF
 
 	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
-	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma6" ] || [ "${TYPE,,}" = "plasma6x11" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
+	if echo $TYPE |grep -qE '^(plasma|edu)'; then
 		# disable baloo in live session
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
 		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
@@ -1782,7 +1782,7 @@ EOF
 	edu)
 		SESSION="plasmax11"
 		;;
-	plasma6)
+	plasma6|plasma6wayland)
 		SESSION="plasma"
 		;;
 	plasma6x11)
@@ -1922,7 +1922,7 @@ EOF
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = 'plasma6' ]; then
+		if [ "${TYPE,,}" = 'plasma6' -o "${TYPE,,}" = 'plasma6wayland' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'plasma6x11' ]; then
