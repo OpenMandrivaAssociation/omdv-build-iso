@@ -53,7 +53,7 @@ qtxdg-tools
 
 xdg-user-dirs
 distro-release-desktop
-
+distro-release-desktop-LXQt-Wayland
 distro-release-theme
 lxmenu-data
 menu-cache
