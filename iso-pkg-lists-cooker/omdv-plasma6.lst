@@ -14,7 +14,7 @@
 %include .///pk-myspell.lst
 %include .///pk-pulseaudio.lst
 #%include .///pk-libreoffice.lst
-#%include .///pk-smplayer.lst
+#%include .///pk-player.lst
 #%include .///pk-vlc.lst
 
 # FIX replace task-plasma6 with pk-plasma6.lst
