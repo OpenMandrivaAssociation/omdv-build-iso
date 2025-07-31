@@ -860,7 +860,7 @@ InstallRepos() {
 		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH".enabled=1
 		# And the corresponding updates repository (allow this to fail, because there
 		# is no rolling/updates or cooker/updates)
-		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH".enabled=1 || :
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH".enabled=0 || :
 	else
 		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
