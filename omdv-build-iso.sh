@@ -875,13 +875,13 @@ InstallRepos() {
 			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-extra.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-extra.enabled=1 || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-extra.enabled=0 || :
 		fi
 		if [ -n "$NONFREEREPO" ]; then
 			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-non-free.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-non-free.enabled=1 || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-non-free.enabled=0 || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
