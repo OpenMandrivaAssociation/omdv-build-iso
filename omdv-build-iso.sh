@@ -269,7 +269,6 @@ main() {
 # TODO:
 # Test --auto-update switch
 # Add  --auto-upgrade
-# Investigate why we can't mount our isos in plasma
 
 CarryOn() {
 	InstallRepos       # Installs the repo rpms if they are not already installed
@@ -518,7 +517,8 @@ SaveDaTa() {
 		mv "$WORKDIR/data" "$BUILDSAV/data"
 		mv "$WORKDIR/extraconfig" "$BUILDSAV/extraconfig"
 		printf "%s\n" "-> Saving rpms for rebuild"
-		mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		[ -d "$CHROOTNAME/var/cache/dnf" ] && mv "$CHROOTNAME/var/cache/dnf/" "$BUILDSAV/dnf"
+		[ -d "$CHROOTNAME/var/cache/libdnf5" ] && mv "$CHROOTNAME/var/cache/libdnf5/" "$BUILDSAV/libdnf5"
 		mv "$CHROOTNAME/etc/dnf/" "$BUILDSAV/etc/dnf"
 	fi
 }
@@ -543,8 +543,9 @@ RestoreDaTa() {
 		#Remake needed directories
 		mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev/pts"
 		mkdir -p "$CHROOTNAME/var/lib/rpm" #For the rpmdb
-		mkdir -p "$CHROOTNAME/var/cache/dnf"
-		mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		mkdir -p "$CHROOTNAME/var/cache"
+		[ -d "$BUILDSAV/dnf" ] && mv "$BUILDSAV/dnf" "$CHROOTNAME/var/cache/"
+		[ -d "$BUILDSAV/libdnf5" ] && mv "$BUILDSAV/libdnf5" "$CHROOTNAME/var/cache/"
 		mv "$BUILDSAV/etc/dnf" "$CHROOTNAME/etc/dnf/"
 	else
 		# Clean out the dnf dir
@@ -557,9 +558,27 @@ RestoreDaTa() {
 }
 
 SetFileList() {
-	# Assign the config build list
-	# This could work by just checking by checking whether the provided entry exists in the list of TYPES if it does not then this must be a user chosen name.
-	# we would still call the interactive session but the constraint on the naming would be removed.
+    # Set scriptdir varible based on folders being present
+    if [ -d /usr/share/omdv-build-iso ]; then
+      SCRIPTDIR="/usr/share/omdv-build-iso"
+    elif [ -d "$HOME/omdv-build-iso" ]; then
+      SCRIPTDIR="$HOME/omdv-build-iso"
+    elif [ -d "$WORKDIR" ]; then
+      SCRIPTDIR="$WORKDIR"
+    else 
+    	echo "Error: If building on ABF check if $HOME/omdv-build-iso exist"
+     	echo "Error: If building on ABF check if $WORKDIR exist"
+      	echo "Error: If omdv-build-iso package is installed check if /usr/share/omdv-build-iso exist"
+      	errorCatch
+    fi
+
+    # Set FILELISTS if TYPE list file exists in $SCRIPTDIR
+    if [ -f "$SCRIPTDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst" ]; then
+        FILELISTS="$WORKDIR/iso-pkg-lists-$TREE/${DIST}-${TYPE}.lst"
+    else
+        echo "Error: List file for TYPE '$TYPE' not found. Check $SCRIPTDIR"
+        errorCatch
+    fi
 
 	case "$TYPE" in
 	plasma|plasma6|plasma6x11|plasma-wayland|mate|cinnamon|lxqt|cutefish|cosmic|icewm|xfce|weston|gnome3|minimal|sway|budgie|edu)
@@ -803,7 +822,7 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
+		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
@@ -821,7 +840,7 @@ InstallRepos() {
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
-		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  *.rpm
+		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  $WORKDIR/*.rpm
 	fi
 
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
@@ -862,17 +881,20 @@ InstallRepos() {
 		/bin/rm -rf $CHROOTNAME/etc/yum.repos.d/*.rpmnew
 	fi
 
+	# Creates folder needed by DNF5 to enable and disabled repos (Vuatech)
+	mkdir -p $CHROOTNAME/etc/dnf/repos.override.d
+
 	if [ -e "$WORKDIR"/.new ]; then
 		# First make sure cooker is disabled
-		dnf --installroot="$CHROOTNAME" config-manager --disable cooker-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt cooker-"$EXTARCH".enabled=0
 		# Rock too -- at release time, rock and $DNFCONF_TREE should be
 		# the same anyway
-		dnf --installroot="$CHROOTNAME" config-manager --disable rock-*"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt rock-*"$EXTARCH".enabled=0
 		# Then enable the main repo of the chosen tree
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH".enabled=1
 		# And the corresponding updates repository (allow this to fail, because there
 		# is no rolling/updates or cooker/updates)
-		dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH" || :
+		dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH".enabled=0 || :
 	else
 		# Clean up
 		/bin/rm -rf "$WORKDIR"/*.rpm
@@ -883,27 +905,27 @@ InstallRepos() {
 		printf "%s\n" "->Enabling the main repo only"
 	else
 		if [ -n "$UNSUPPREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-extra
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-extra.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-extra || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-extra.enabled=0 || :
 		fi
 		if [ -n "$NONFREEREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-"$EXTARCH"-non-free
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-"$EXTARCH"-non-free.enabled=1
 			# And the corresponding updates repository (allow this to fail, because there
 			# is no rolling/updates or cooker/updates)
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-updates-"$EXTARCH"-non-free || :
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH"-non-free.enabled=0 || :
 		fi
 		# Some pre-processing required here because of the structure of repoid's
 		if [ -n "$ENABLEREPO" ]; then
 			ENABLEREPO=$(tr "," " " <<< $ENABLEREPO)
 			#for rpo in ${ENABLEREPO//,/]; do
-			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} --enable ${ENABLEREPO}
+			dnf --installroot="$CHROOTNAME" config-manager --releasever=${TREE} setopt ${ENABLEREPO}.enabled=1
 			#done
 		fi
 
 		if [ -n "$TESTREPO" ]; then
-			dnf --installroot="$CHROOTNAME" config-manager --enable "$DNFCONF_TREE"-testing-"$EXTARCH"
+			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH.enabled=1"
 		fi
 	fi
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
@@ -942,7 +964,6 @@ updateSystem() {
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
 		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
-  
 		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
@@ -980,7 +1001,7 @@ createChroot() {
 	mkdir -p "$CHROOTNAME/proc" "$CHROOTNAME/sys" "$CHROOTNAME/dev" "$CHROOTNAME/dev/pts"
 
 	if [ -n "$REBUILD" ]; then
-		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
+		ANYRPMS=$(find "$CHROOTNAME/var/cache/dnf/" "$CHROOTNAME/var/cache/libdnf5/" -name "basesystem-minimal*.rpm"  -type f  -printf %f)
 		if [ -z "$ANYRPMS" ]; then
 			printf "%s\n" "-> You must run with --noclean before you use --rebuild"
 			errorCatch
@@ -1008,6 +1029,7 @@ createChroot() {
 		if [ -n "$REBUILD" ]; then
 			printf  "%s\n" "-> Rebuilding."
 			mkUserSpin "$FILELISTS"
+   			mkUserSpin "$DISPLAYLISTS"
 		elif [ -n "$AUTO_UPDATE" ]; then
 			/usr/bin/dnf --refresh distro-sync --installroot "$CHROOTNAME"
 		elif [ -n "$NOCLEAN" ] && [ -f "$CHROOTNAME"/.noclean ]; then
@@ -1020,7 +1042,7 @@ createChroot() {
 
 	# Did it return 0k
 	if [ $? != 0 ] && [ ${TREE,,} != "cooker" ]; then
-		printf "%s\n" "-> Can not install packages from $FILELISTS"
+		printf "%s\n" "-> Can not install packages from $FILELISTS or $DISPLAYLISTS"
 		errorCatch
 	fi
 
@@ -1055,10 +1077,19 @@ createChroot() {
 # to be installed
 mkOmSpin() {
 	getIncFiles "$FILELISTS" ADDRPMINC
-	printf "%s" "$ADDRPMINC" > "$WORKDIR/inclist"
-	printf "%s\n" "-> Creating OpenMandriva spin from" "$FILELISTS" " " "   Which includes"
-	printf "%s" "$ADDRPMINC" | grep -v "$FILELISTS"
-	createPkgList "$ADDRPMINC" INSTALL_LIST
+ 	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+  	# Combine both inclusion lists
+	COMBINED_ADDRPM="${ADDRPMINC}
+${ADDRPMDISPLAY}"
+	# Output the combined list to inclist
+	printf "%s" "$COMBINED_ADDRPM" > "$WORKDIR/inclist"
+
+	printf "%s\n" "-> Creating OpenMandriva spin from:"
+	printf "   %s\n" "$FILELISTS" "$DISPLAYLISTS"
+	printf "%s\n" "   Which includes:"
+	printf "%s\n" "$COMBINED_ADDRPM" | grep -v -e "$FILELISTS" -e "$DISPLAYLISTS"
+
+	createPkgList "$COMBINED_ADDRPM" INSTALL_LIST
 	mkUpdateChroot "$INSTALL_LIST"
 }
 
@@ -1224,16 +1255,20 @@ mkUserSpin() {
 	printf "%s\n" "-> Making a user spin"
 	printf "%s\n" "Change Flag = $CHGFLAG"
 	printf "%s\n" "$FILELISTS"
+ 	printf "%s\n" "$DISPLAYLISTS"
+  
 	getIncFiles "$FILELISTS" ADDRPMINC
+	getIncFiles "$DISPLAYLISTS" ADDRPMDISPLAY
+ 
 	# Combine the main and the users files"
-	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC" | sort -u)
+	ALLRPMINC=$(echo "$ADDRPMINC"$'\n'"$UADDRPMINC"$'\n'"$ADDRPMDISPLAY"| sort -u)
 	# Now for the remove list
 	getIncFiles "$WORKDIR/iso-pkg-lists-$TREE/my.rmv" RMRPMINC
 	printf "%s\n" "-> Removing the common include lines for the remove package includes"
 
 	#Give some information
-	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS" "  Which includes " "$ALLRPMINC"
-	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTS" "  Which removes " "$RMRPMINC"
+	printf "%s\n" "-> Creating $WHO's OpenMandriva spin from $FILELISTS and $DISPLAYLISTS" "  Which includes " "$ALLRPMINC"
+	printf "%s\n" "-> Removing from $WHO's OpenMandriva spin from $FILELISTSand $DISPLAYLISTS" "  Which removes " "$RMRPMINC"
 	# Create the package lists
 	createPkgList "$ALLRPMINC" INSTALL_LIST
 	createPkgList "$RMRPMINC" REMOVE_LIST
@@ -1746,7 +1781,7 @@ EOF
 
 	rm -rf "$CHROOTNAME"/home/${live_user}/.kde4
 
-	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma6" ] || [ "${TYPE,,}" = "plasma6x11" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
+	if [ "${TYPE,,}" = "plasma" ] || [ "${TYPE,,}" = "plasma6wayland" ] || [ "${TYPE,,}" = "plasma6x11" ] || [ "${TYPE,,}" = "plasma-wayland" ] || [ "${TYPE}" = "edu" ]; then
 		# disable baloo in live session
 		mkdir -p "$CHROOTNAME"/home/${live_user}/.config
 		cat >"$CHROOTNAME"/home/${live_user}/.config/baloofilerc << EOF
@@ -1778,7 +1813,7 @@ EOF
 	edu)
 		SESSION="plasmax11"
 		;;
-	plasma6)
+	plasma6|plasma6wayland)
 		SESSION="plasma"
 		;;
 	plasma6x11)
@@ -1918,7 +1953,7 @@ EOF
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		fi
 
-		if [ "${TYPE,,}" = 'plasma6' ]; then
+		if [ "${TYPE,,}" = 'plasma6' -o "${TYPE,,}" = 'plasma6wayland' ]; then
 			sed -i -e "s/.*executable:.*/    executable: "startplasma-wayland"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 			sed -i -e "s/.*desktopFile:.*/    desktopFile: "plasma"/g" "$CHROOTNAME/etc/calamares/modules/displaymanager.conf"
 		elif [ "${TYPE,,}" = 'plasma6x11' ]; then
@@ -1996,8 +2031,14 @@ EOF
 # Move the rpm cache out of the way for the iso build
 	#if [[ "$ABF" = 0  || ( "$ABF" = '1' && -n "$DEBUG" ) ]]; then
 	#if [ "$ABF" = 0 ] || [ "$ABF" = '1' ] && [ -n "$DEBUG" ]; then
-	mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
-	mkdir -p "$CHROOTNAME"/var/cache/dnf
+	if [ -d "$CHROOTNAME"/var/cache/dnf ]; then
+		mv "$CHROOTNAME"/var/cache/dnf "$WORKDIR"/dnf
+		mkdir -p "$CHROOTNAME"/var/cache/dnf
+	fi
+	if [ -d "$CHROOTNAME"/var/cache/libdnf5 ]; then
+		mv "$CHROOTNAME"/var/cache/libdnf5 "$WORKDIR"/
+		mkdir -p "$CHROOTNAME"/var/cache/libdnf5
+	fi
 	#fi
 
 	# (crazy) NOTE: this be after last think touched /home/live
@@ -2144,8 +2185,9 @@ postBuild() {
 
 	# If not in ABF move rpms back to the cache directories
 	if [ "$ABF" = 0 ] || [ "$ABF" = '1' ] && [ -n "$DEBUG" ]; then
-		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/
-		mv -f "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+		/bin/rm -rf "$CHROOTNAME"/var/cache/dnf/ "$CHROOTNAME"/var/cache/libdnf5/
+		[ -d "$WORKDIR"/dnf ] && mv "$WORKDIR"/dnf "$CHROOTNAME"/var/cache/
+		[ -d "$WORKDIR"/libdnf5 ] && mv "$WORKDIR"/libdnf5 "$CHROOTNAME"/var/cache/
 	fi
 
 	# Clean chroot
