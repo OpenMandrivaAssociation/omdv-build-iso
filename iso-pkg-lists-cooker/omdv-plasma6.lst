@@ -25,14 +25,13 @@ task-plasma6-minimal
 qmplay2
 # qmplay2 pulls in yt-dlp which requires (mplayer or mpv). Make sure it picks mpv
 mpv
-#libreoffice-kde6
+task-plasma6
 
 # Install for Live only
 # and remove with calamares cleaner
 plasma6-kpat
 
 # Desktop specifics
-
 x11-font-cyrillic
 x11-tools
 x11-docs
@@ -40,11 +39,6 @@ x11-font-type1
 x11-font-misc
 x11-data-cursor-themes
 edidbins
-
-task-x11
-kwin-x11
-plasma-workspace-x11
-kf6-kwindowsystem-backend-x11
 
 distro-release-desktop-Plasma6
 
@@ -92,6 +86,7 @@ openssl
 pam_ldap
 poppler-data
 #telegram-desktop
+wacomtablet
 sasl-plug-gssapi
 kf6-oxygen-icons
 
@@ -172,3 +167,4 @@ plasma6-kio-zeroconf
 plasma6-kio-extras
 plasma-disks
 #krita
+dnfdrake
