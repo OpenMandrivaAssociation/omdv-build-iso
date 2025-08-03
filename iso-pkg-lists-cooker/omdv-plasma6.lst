@@ -10,7 +10,7 @@
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
 %include .///omdv_locales.lst
-%include .///omdv_man-pages.lst
+#%include .///omdv_man-pages.lst
 %include .///omdv_myspell.lst
 %include .///omdv_pulseaudio.lst
 #%include .///omdv_libreoffice.lst
