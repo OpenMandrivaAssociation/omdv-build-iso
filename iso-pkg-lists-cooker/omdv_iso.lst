@@ -1,4 +1,5 @@
 %include .///omdv_iso_minimal.lst
+%include .///omdv_isogames.lst
 
 alsa-plugins
 alsa-plugins-pulseaudio
@@ -33,13 +34,8 @@ fastfetch
 os-prober
 plymouth-system-theme
 
-proton-experimental
-proton-experimental-direct3d
-protonplus
-bottles
-flatdrake
-lutris
-steam
+#proton-experimental
+#proton-experimental-direct3d
 
 python-curl
 #quota #iso
