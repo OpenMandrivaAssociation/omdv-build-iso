@@ -10,7 +10,7 @@
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-%include .///omdv_libreoffice.lst
+#%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -117,6 +117,6 @@ gnome-disk-utility
 #pyxdg
 
 # OM special featured software
-#oma-welcome
-#om-control-center
+#om-welcome
 om-repo-picker
+om-mirror-selector
