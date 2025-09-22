@@ -96,6 +96,7 @@ sasl-plug-gssapi
 om-update-config
 om-repo-picker
 om-user-manager
+yumex
 
 #packagekit
 packagekit-gstreamer-plugin
@@ -105,8 +106,7 @@ flatpak
 
 # Feeling stuff
 # for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
+#libyui-gtk
+#libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
-libreoffice-gtk3-kde5
