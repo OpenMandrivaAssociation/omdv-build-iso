@@ -221,6 +221,3 @@ flatpak
 # this one crashing? Need invesigate
 #libreoffice-gnome
 #libreoffice-gtk3-kde5
-
-# test
-kernel-rc-desktop
