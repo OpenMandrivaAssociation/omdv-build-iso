@@ -73,7 +73,7 @@ transmission-gtk
 simple-scan
 shotwell
 gthumb
-sushi
+#sushi
 polari
 fractal
 
@@ -199,8 +199,8 @@ flatpak
 
 # Feeling stuff
 # for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
+#libyui-gtk
+#libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
-libreoffice-gtk3-kde5
+#libreoffice-gtk3-kde5
