@@ -20,7 +20,7 @@ task-lxqt
 qt-avif-image-plugin
 qt-jpegxl-image-plugin
 pavucontrol-qt
-plasma6-ark
+ark
 #cantata
 lximage-qt
 #meteo-qt
@@ -28,7 +28,7 @@ networkmanager-applet
 featherpad
 qterminal
 #quassel
-plasma6-neochat
+neochat
 falkon
 #isoimagewriter
 om-imagewriter
@@ -125,9 +125,9 @@ samba-server #server
 distro-release-desktop-LXQt
 kf6-breeze-icons
 kwin-x11
-plasma6-breeze
+breeze
 # Add breeze then for openbox startup
-plasma6-breeze-gtk
+breeze-gtk
 
 # OM special featured software
 #oma-welcome
