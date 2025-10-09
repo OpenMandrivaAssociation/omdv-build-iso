@@ -3,7 +3,7 @@
 plasma-workspace-wayland
 plasma6-kwin-wayland
 #kwin
-plasma6-libkscreen-wayland
+libkscreen-wayland
 kf6-kidletime-wayland
 kf6-kwindowsystem-backend-wayland
 
