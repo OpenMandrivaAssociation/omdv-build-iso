@@ -792,7 +792,7 @@ InstallRepos() {
 		echo "Getting package list from $PKGS"
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
+		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs"
 		for i in $PACKAGES; do
 			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 			if [ "$?" != '0' ]; then
