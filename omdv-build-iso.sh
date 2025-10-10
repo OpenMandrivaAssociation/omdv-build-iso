@@ -801,7 +801,7 @@ InstallRepos() {
 				exit 1
 			fi
 			echo "Downloading package $PKGS/$P"
-			wget $PKGS/$P
+			curl --retry 20 -s -S -o $P $PKGS/$P
 		done
 	fi
 
