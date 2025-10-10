@@ -788,7 +788,8 @@ InstallRepos() {
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
 	if [ -e "$WORKDIR"/.new ]; then
-		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release
+		PKGS=https://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release
+		echo "Getting package list from $PKGS"
 		cd "$WORKDIR" || exit
 		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
 		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
@@ -798,11 +799,13 @@ InstallRepos() {
 				printf "%s\n" "Can't find $TREE version of $i, please report"
 				exit 1
 			fi
+			echo "Downloading package $PKGS/$P"
 			wget $PKGS/$P
 		done
 	fi
 
 	if [ -e "$WORKDIR"/.new ]; then
+		echo "Installing packages: $(ls *.rpm)"
 		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
