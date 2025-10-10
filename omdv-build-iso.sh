@@ -784,6 +784,7 @@ getPkgList() {
 }
 
 InstallRepos() {
+	set -x
 	# There are now different rpms available for cooker and release so these can be used to directly install the the repo files. The original function is kept just
 	# in case we need to revert to git again for the repo files.
 	#Get the repo files
@@ -897,6 +898,7 @@ InstallRepos() {
 			dnf --installroot="$CHROOTNAME" config-manager setopt "$DNFCONF_TREE"-testing-"$EXTARCH.enabled=1"
 		fi
 	fi
+	set +x
 	# DO NOT EVER enable non-free repos for firmware again , but move that firmware over if *needed*
 }
 
