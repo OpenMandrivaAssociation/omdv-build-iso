@@ -931,9 +931,10 @@ updateSystem() {
 			printf "%s\n" "-> Your build lists have been retained" # Files already copied
 		fi
 	else
+		set -x
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+		dnf dsync --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
 		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
@@ -943,6 +944,7 @@ updateSystem() {
 		else
 			printf "%s\n" "-> Your build lists have been retained" # Files already copied
 		fi
+		set +x
 	fi
 }
 
