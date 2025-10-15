@@ -23,8 +23,10 @@
 
 # Miscelaneous Packages
 avahi #service
-chromium
-chromium-qt6
+#chromium
+#chromium-qt6
+helium
+helium-qt6
 edidbins
 enchant
 ffmpeg
