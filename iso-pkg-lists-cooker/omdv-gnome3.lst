@@ -10,7 +10,7 @@
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-#include .///omdv_libreoffice.lst
+include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
@@ -30,12 +30,13 @@ gnome-panel
 gnome-keyring
 gnome-shell
 gnome-system-monitor
-gnome-terminal
+#gnome-terminal
 #console
+ptyxis
 gnome-themes-standard
 nautilus
 networkmanager
-yelp
+#yelp
 task-x11
 xdg-desktop-portal-gnome
 
@@ -44,7 +45,7 @@ cheese
 evince
 file-roller
 gnome-calculator
-gedit
+#gedit
 gnome-text-editor
 #gdm
 
@@ -52,7 +53,7 @@ gnome-color-manager
 gnome-disk-utility
 #gnome-packagekit #broken, and no needed
 gnome-software
-gnome-terminal-nautilus
+#gnome-terminal-nautilus
 
 #epiphany # disable to save space on ISO
 #gnome-games
@@ -67,7 +68,8 @@ clapper
 transmission-gtk
 simple-scan
 shotwell
-gthumb
+# disable gthumb until is not ported to gtk4. Keep alpha gtk4 shotwell
+#gthumb
 #sushi
 #vino
 #vinagre
@@ -107,7 +109,6 @@ caribou-gtk3
 evolution
 gnome-contacts
 gparted
-gthumb
 gimp
 inkscape
 loupe
@@ -219,5 +220,5 @@ flatpak
 #libyui-mga-gtk
 # for LibreOffice
 # this one crashing? Need invesigate
-#libreoffice-gnome
+libreoffice-gnome
 #libreoffice-gtk3-kde5
