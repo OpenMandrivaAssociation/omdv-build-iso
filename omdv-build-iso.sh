@@ -807,15 +807,15 @@ InstallRepos() {
 	if [ -e "$WORKDIR"/.new ]; then
 		PKGS=http://abf-downloads.openmandriva.org/"$TREE"/repository/$EXTARCH/main/release/
 		cd "$WORKDIR" || exit
-		curl -s -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
-		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs dnf-data"
+		curl --retry 20 -s -S -L $PKGS |grep '^<a' |cut -d'"' -f2 >PACKAGES
+		PACKAGES="distro-release-repos distro-release-repos-keys distro-release-repos-pkgprefs"
 		for i in $PACKAGES; do
 			P=$(grep "^$i-[0-9].*" PACKAGES |tail -n1)
 			if [ "$?" != '0' ]; then
 				printf "%s\n" "Can't find $TREE version of $i, please report"
 				exit 1
 			fi
-			wget $PKGS/$P
+			curl --retry 20 -s -S -o $P $PKGS/$P
 		done
 	fi
 
@@ -934,7 +934,7 @@ updateSystem() {
 	esac
 
 	# List of packages that needs to be installed inside lxc-container and local machines
-	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static dnf-plugins-core unix2dos"
+	RPM_LIST="xorriso squashfs-tools bc imagemagick kpartx gdisk gptfdisk git dosfstools qemu-x86_64-static unix2dos"
 	if [ $(rpm -qa $RPM_LIST | wc -l) = "$(wc -w <<< ${RPM_LIST})" ]; then
 		printf "%s\n" "->All the correct system files are installed "
 		if [ ! -d "$WORKDIR/dracut" ]; then
@@ -946,7 +946,7 @@ updateSystem() {
 	else
 		printf "%s\n" "-> Installing rpm files inside system environment"
 		dnf install -y --setopt=install_weak_deps=False --releasever=${TREE} --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" ${RPM_LIST}
-		dnf upgrade --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
+		dnf dsync --refresh --assumeyes --forcearch="${ARCH}" "${HOST_ARCHEXCLUDE}" --releasever=${TREE}
 		printf "%s\n" '-> Updating rpms files inside system environment'
 		printf "%s\n" '-> Updating dnf.conf to cache packages for rebuild'
 		printf "%s\n" 'keepcache=True' >> /etc/dnf/dnf.conf
