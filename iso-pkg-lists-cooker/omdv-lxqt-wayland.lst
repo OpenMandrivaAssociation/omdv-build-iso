@@ -21,7 +21,7 @@
 labwc
 lxqt-wayland-session
 qt6-qtwayland
-# please don't use anythings from sway, hypr* is acceptable
+# please don't use anythings from sway. Hypr* is acceptable
 hyprlock
 
 
@@ -53,7 +53,7 @@ qtxdg-tools
 
 xdg-user-dirs
 distro-release-desktop
-distro-release-desktop-LXQt-Wayland
+labwc-desktop-config-LXQt-Wayland
 distro-release-theme
 lxmenu-data
 menu-cache
