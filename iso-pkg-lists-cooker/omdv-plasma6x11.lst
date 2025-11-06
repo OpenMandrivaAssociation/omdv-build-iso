@@ -1,4 +1,5 @@
 %include .///omdv-plasma6.lst
+%include .///pk-plasma6.lst
 
 plasma-workspace-x11
 kwin-x11

@@ -17,10 +17,6 @@
 #%include .///pk-player.lst
 #%include .///pk-vlc.lst
 
-# FIX replace task-plasma6 with pk-plasma6.lst
-#task-plasma6
-%include .///pk-plasma6.lst
-
 # Miscelaneous Packages
 avahi #service
 #chromium

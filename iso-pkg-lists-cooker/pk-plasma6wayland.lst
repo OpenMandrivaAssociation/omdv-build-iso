@@ -5,12 +5,10 @@ kf6-frameworkintegration
 kf6-kdeclarative
 kf6-kded
 kf6-kidletime
-kf6-kidletime-x11
 kf6-kirigami
 kf6-kirigami-addons
 kf6-kservice
 kf6-kwindowsystem
-kf6-kwindowsystem-backend-x11
 kf6-oxygen-icons
 kf6-solid
 ark
@@ -39,10 +37,8 @@ ksshaskpass
 ksystemstats
 kwallet-pam
 kwalletmanager
-kwin-x11
 kwrite
 kwrited
-libkscreen-x11
 milou
 okular
 oxygen-sounds
@@ -55,7 +51,6 @@ plasma-pa
 plasma-systemmonitor
 plasma-vault
 plasma-workspace
-plasma-workspace-x11
 plymouth-kcm
 polkit-kde-agent-1
 powerdevil
@@ -79,5 +74,12 @@ xdg-desktop-portal-kde
 #discover-backend-packagekit
 #plasma-firewall
 #flatpak-kcm
-#plasma6-kwin
 #oxygen
+
+kf6-kidletime-wayland
+kf6-kwindowsystem-backend-wayland
+libkscreen-wayland
+plasma-workspace-wayland
+plasma6-kwin-wayland
+kwayland-integration
+kwin
