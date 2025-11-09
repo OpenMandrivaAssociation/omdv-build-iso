@@ -1,0 +1,11 @@
+%include .///omdv-plasma6.lst
+
+plasma6-workspace-x11
+plasma6-kwin-x11
+plasma6-libkscreen-x11
+kf6-kidletime-x11
+kf6-kwindowsystem-backend-x11
+mesa
+
+# P5 compat bits
+#kwindowsystem-x11

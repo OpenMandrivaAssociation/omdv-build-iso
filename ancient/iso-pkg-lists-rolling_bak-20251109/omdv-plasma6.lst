@@ -14,15 +14,17 @@
 %include .///pk-myspell.lst
 %include .///pk-pulseaudio.lst
 #%include .///pk-libreoffice.lst
-#%include .///pk-player.lst
+#%include .///pk-smplayer.lst
 #%include .///pk-vlc.lst
+
+# FIX replace task-plasma6 with pk-plasma6.lst
+#task-plasma6
+%include .///pk-plasma6.lst
 
 # Miscelaneous Packages
 avahi #service
-#chromium
-#chromium-qt6
-helium
-helium-qt6
+chromium
+chromium-qt6
 edidbins
 enchant
 ffmpeg

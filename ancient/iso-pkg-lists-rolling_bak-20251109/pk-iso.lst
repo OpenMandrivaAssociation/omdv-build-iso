@@ -39,7 +39,7 @@ rtkit #iso
 sound-theme-freedesktop #iso
 sudo
 systemd-bash-completion
-#task-x11
+task-x11
 testdisk
 tmpwatch #iso
 upower #iso
@@ -53,6 +53,7 @@ aria2
 virtualbox-guest-additions #Shared clipboard and files
 spice-vdagent #Same for qemu
 x11-data-bitmaps
+x11-driver-video
 xdg-compliance #iso
 xdg-user-dirs #iso
 xdg-utils #iso
