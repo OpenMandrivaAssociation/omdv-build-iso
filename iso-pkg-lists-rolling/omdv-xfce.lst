@@ -106,7 +106,7 @@ sane
 
 # keep to check
 #x11-font-cyrillic
-x11-server-xorg
+xlibre-xorg
 x11-tools
 #x11-docs
 x11-font-type1
@@ -165,6 +165,7 @@ samba-server #server
 #pyxdg
 
 # OM special featured software
+tears-of-mandrake
 #oma-welcome
 om-repo-picker
 #om-control-center

@@ -6,12 +6,11 @@ iceauth
 rgb
 setxkbmap
 x11-data-cursor-themes
-x11-driver-input
-x11-driver-video
+x11-driver-input-libinput
 x11-font-alias
 x11-font-cursor-misc
 x11-font-misc-misc
-x11-server-xorg
+xlibre-xorg
 x11-server-xwayland
 xauth
 xhost

@@ -26,31 +26,34 @@ gnome-backgrounds
 gnome-control-center
 gnome-menus
 gnome-panel
-gnome-power-manager
+#gnome-power-manager
 gnome-keyring
 gnome-shell
 gnome-system-monitor
-gnome-terminal
+#gnome-terminal
 #console
+ptyxis
 gnome-themes-standard
 nautilus
 networkmanager
-yelp
+#yelp
 task-x11
 xdg-desktop-portal-gnome
 
 cheese
-eog
+#eog
 evince
 file-roller
 gnome-calculator
-gedit
+#gedit
 gnome-text-editor
+#gdm
+
 gnome-color-manager
 gnome-disk-utility
 #gnome-packagekit #broken, and no needed
 gnome-software
-gnome-terminal-nautilus
+#gnome-terminal-nautilus
 
 #epiphany # disable to save space on ISO
 #gnome-games
@@ -65,8 +68,9 @@ clapper
 transmission-gtk
 simple-scan
 shotwell
-gthumb
-sushi
+# disable gthumb until is not ported to gtk4. Keep alpha gtk4 shotwell
+#gthumb
+#sushi
 #vino
 #vinagre
 polari
@@ -83,20 +87,20 @@ gnome-characters
 gnome-clocks
 # Builder is needed only for developers.
 #gnome-builder
-gnome-dictionary
+#gnome-dictionary
 foliate
 gnome-font-viewer
 gnome-sound-recorder
-gnome-usage
+#gnome-usage
 gnome-weather
 baobab
-gnome-system-log
+#gnome-system-log
 gnome-commander
 gnome-firmware
 gnome-calendar
 
-gucharmap
-mousetweaks
+#gucharmap
+#mousetweaks
 
 # biz / office / utils
 brasero
@@ -105,7 +109,6 @@ caribou-gtk3
 evolution
 gnome-contacts
 gparted
-gthumb
 gimp
 inkscape
 loupe
@@ -125,7 +128,7 @@ lib64sane1
 
 # keep to check
 #x11-font-cyrillic
-x11-server-xorg
+xlibre-xorg
 x11-tools
 #x11-docs
 x11-font-type1
@@ -216,5 +219,6 @@ flatpak
 #libyui-gtk
 #libyui-mga-gtk
 # for LibreOffice
+# this one crashing? Need invesigate
 libreoffice-gnome
 #libreoffice-gtk3-kde5

@@ -1,8 +1,9 @@
 %include .///omdv-plasma6.lst
 
-plasma6-workspace-wayland
+plasma-workspace-wayland
 plasma6-kwin-wayland
-plasma6-libkscreen-wayland
+#kwin
+libkscreen-wayland
 kf6-kidletime-wayland
 kf6-kwindowsystem-backend-wayland
 

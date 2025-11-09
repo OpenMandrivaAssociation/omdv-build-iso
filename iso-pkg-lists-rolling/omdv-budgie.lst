@@ -58,35 +58,39 @@ evince
 file-roller
 gnome-calculator
 gedit
+
+#experiment
+x11-driver-video-amdgpu
+
 gnome-color-manager
 gnome-disk-utility
-gnome-software
+#gnome-software
 gnome-terminal-nautilus
 
-gnome-games
+#gnome-games
 clapper
 transmission-gtk
 simple-scan
 shotwell
 gthumb
-sushi
-polari
+#sushi
+#polari
 fractal
 
 gnome-maps
-gnome-music
+#gnome-music
 shortwave
 
-bijiben
-gnome-characters
+#bijiben
+#gnome-characters
 gnome-clocks
 gnome-dictionary
 foliate
-gnome-font-viewer
+#gnome-font-viewer
 gnome-sound-recorder
 gnome-weather
 baobab
-gnome-system-log
+#gnome-system-log
 gnome-commander
 gnome-calendar
 
@@ -116,7 +120,7 @@ sane
 
 # keep to check
 #x11-font-cyrillic
-x11-server-xorg
+xlibre-xorg
 x11-tools
 #x11-docs
 x11-font-type1
@@ -182,10 +186,12 @@ sasl-plug-gssapi
 #om-feeling-like
 #oma-welcome
 #om-control-center
+tears-of-mandrake
+yumex
 
-om-update-config
-om-repo-picker
-om-user-manager
+#om-update-config
+#om-repo-picker
+#om-user-manager
 
 #packagekit
 packagekit-gstreamer-plugin
@@ -195,8 +201,8 @@ flatpak
 
 # Feeling stuff
 # for dnfdragora to use correct backend
-libyui-gtk
-libyui-mga-gtk
+#libyui-gtk
+#libyui-mga-gtk
 # for LibreOffice
 libreoffice-gnome
-libreoffice-gtk3-kde5
+#libreoffice-gtk3-kde5

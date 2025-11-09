@@ -1,0 +1,116 @@
+# Basic includes file lists
+%include .///omdv_core.lst
+%include .///omdv_iso.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_utils.lst
+
+# More includes lists for common sets that are not task/meta pkgs
+#%include .///omdv_firefox.lst
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_libreoffice.lst
+%include .///omdv_locales.lst
+%include .///omdv_man-pages.lst
+%include .///omdv_myspell.lst
+#%include .///omdv_vlc.lst
+%include .///omdv_pulseaudio.lst
+%include .///omdv_task-plasma.lst
+
+qmplay2
+
+libreoffice-kde5
+
+# Install for Live only
+# and remove with calamares cleaner
+kpat
+
+# Desktop Specifics
+qt-avif-image-plugin
+qt-jpegxl-image-plugin
+mpv
+phonon4qt5-mpv
+phonon4qt6-mpv
+kio-admin
+#quick-usb-formatter
+# digikam and kipi-plugins
+kipi-plugins-advancedslideshow
+kipi-plugins-calendar
+kipi-plugins-dropbox
+# kipi-plugins-expoblending  disable it as it needs wxgtk3.0
+kipi-plugins-facebook
+kipi-plugins-flashexport
+kipi-plugins-flickr
+kipi-plugins-googleservices
+kipi-plugins-imageshack
+kipi-plugins-imageviewer
+kipi-plugins-imgurexport
+kipi-plugins-kmlexport
+# kipi-plugins-panorama disable it as it needs wxgtk3.0
+kipi-plugins-piwigoexport
+kipi-plugins-printimages
+kipi-plugins-rajceexport
+kipi-plugins-remotestorage
+kipi-plugins-sendimages
+kipi-plugins-smug
+kipi-plugins-yandexfotki
+showfoto
+krita
+
+# printing
+task-printing
+task-printing-scanning
+
+## (crazy) hmm .. this need move away from here
+x11-font-cyrillic
+x11-tools
+x11-docs
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+
+# MD this entire list should be shuffled or justified to be needed for the full ISO
+
+avahi #service
+
+# Miscelaneous Packages
+chromium
+chromium-qt5
+enchant
+ffmpeg
+filelight
+flatpak
+flatpak-kcm
+jasper
+nss
+nss_ldap
+nss_mdns
+#nss_wins #this pulls in a ton of samba deps
+openssl
+pam_ldap
+poppler-data
+om-imagewriter
+telegram-desktop
+sasl-plug-gssapi
+#plasma-firewall
+
+# OM special featured software
+oma-welcome
+om-feeling-like
+om-update-config
+om-repo-picker
+om-control-center
+om-user-manager
+oxygen-icons
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
+discover
+discover-backend-flatpak
+discover-backend-kns
+discover-backend-packagekit
+#discover-notifier
+dnfdrake

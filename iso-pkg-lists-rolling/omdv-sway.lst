@@ -26,12 +26,11 @@ fonts-ttf-awesome
 task-pulseaudio
 x11-font-cyrillic
 edidbins
-sddm
 
 ## Needed Task/Meta Packages
 #x11-font-cyrillic
 ## keep to check
-#x11-server-xorg
+#xlibre-xorg
 #x11-server-xwayland
 #x11-compose-cache
 #x11-tools

@@ -1,0 +1,112 @@
+# Basic includes file lists
+%include .///omdv_core.lst
+%include .///omdv_iso.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_utils.lst
+
+# More includes lists for common sets that are not task/meta pkgs
+%include .///omdv_firefox.lst
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_libreoffice.lst
+%include .///omdv_locales.lst
+#%include .///omdv_man-pages.lst
+%include .///omdv_pulseaudio.lst
+#%include .///omdv_vlc.lst
+
+# Desktop Specifics
+task-cosmic
+task-cosmic-minimal
+accountsservice
+adwaita-icon-theme
+gnome-keyring
+networkmanager
+task-x11
+xdg-desktop-portal-cosmic
+
+# Optional but wanted
+firefox
+file-roller
+clapper
+loupe
+glycin-loaders
+
+# Needed Task/Meta Packages
+task-pulseaudio
+
+# Printing
+task-printing
+task-printing-scanning
+system-config-printer-gui #printer
+sane
+sane-backends
+# Dirty workaround for mess with ROME repos...
+lib64sane1
+
+# keep to check
+#x11-font-cyrillic
+x11-server-xorg
+x11-tools
+#x11-docs
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+
+# MD this entire list should be shuffled or justified to be needed for the full ISO
+
+avahi #service
+#firewall-applet #service
+networkmanager-applet
+dbus-broker
+
+atk1.0-common #gtk dep
+canberra-gtk #gtk dep
+gamin #gtk dep
+GConf2 #gtk dep
+gtk2-modules #gtk dep
+#gtk-xfce-engine
+gvfs
+gvfs-archive #gtk dep
+gvfs-fuse #gtk dep
+gvfs-gphoto2 #gtk dep
+gvfs-smb #gtk dep
+#ia_ora-gnome #gtk dep
+pango #gtk dep
+
+# Support for talking to wrongPhone/wrongPad
+#usbmuxd
+
+# Miscelaneous Packages
+enchant
+ffmpeg
+jasper
+nss
+nss_ldap
+nss_mdns
+nss_wins #this pulls in a ton of samba deps
+openssl
+#pam_ldap
+poppler-data
+sasl-plug-gssapi
+
+# OM special featured software
+om-update-config
+om-repo-picker
+om-user-manager
+
+#packagekit
+packagekit-gstreamer-plugin
+packagekit-command-not-found
+# make sure that flatpak is installed on iso
+flatpak
+
+# Feeling stuff
+# for dnfdragora to use correct backend
+libyui-gtk
+libyui-mga-gtk
+# for LibreOffice
+libreoffice-gnome
+libreoffice-gtk3-kde5

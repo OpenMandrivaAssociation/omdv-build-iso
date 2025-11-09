@@ -67,7 +67,7 @@ lib64sane1
 
 # keep to check
 #x11-font-cyrillic
-x11-server-xorg
+xlibre-xorg
 x11-tools
 x11-docs
 x11-font-type1

@@ -59,12 +59,9 @@ myspell-dictionary
 okular
 okular-epub
 # Using the plasma6 version even for Plasma 5 because of kpmcore clashes with calamares
-plasma6-partitionmanager
+partitionmanager
 plymouth-kcm
 print-manager
-sddm
-sddm-kcm
-sddm-theme-breeze
 signon-kwallet-extension
 skanlite
 sonnet-hunspell

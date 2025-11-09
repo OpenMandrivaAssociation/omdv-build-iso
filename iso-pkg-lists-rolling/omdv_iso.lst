@@ -57,7 +57,6 @@ aria2
 virtualbox-guest-additions #Shared clipboard and files
 spice-vdagent #Same for qemu
 x11-data-bitmaps
-x11-driver-video
 xdg-compliance #iso
 xdg-user-dirs #iso
 xdg-utils #iso

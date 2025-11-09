@@ -1,0 +1,168 @@
+# Basic includes file lists
+%include .///omdv_core.lst
+%include .///omdv_iso.lst
+%include .///omdv_control.lst
+%include .///omdv_drivers.lst
+%include .///omdv_ppp.lst
+%include .///omdv_utils.lst
+
+# More includes lists for common sets that are not task/meta pkgs
+%include .///omdv_fonts.lst
+%include .///omdv_gstreamer.lst
+%include .///omdv_libreoffice.lst
+%include .///omdv_locales.lst
+%include .///omdv_man-pages.lst
+%include .///omdv_myspell.lst
+#%include .///omdv_smplayer.lst
+%include .///omdv_pulseaudio.lst
+
+qmplay2
+# qmplay2 pulls in yt-dlp which requires (mplayer or mpv). Make sure it picks mpv
+mpv
+task-plasma6
+libreoffice-kde6
+
+# Install for Live only
+# and remove with calamares cleaner
+plasma6-kpat
+
+# Desktop specifics
+
+x11-font-cyrillic
+x11-tools
+x11-docs
+x11-font-type1
+x11-font-misc
+x11-data-cursor-themes
+edidbins
+
+# MD this entire list should be shuffled or justified to be needed for the full ISO
+
+avahi #service
+
+distro-release-desktop-Plasma6
+
+# Miscelaneous Packages
+chromium
+chromium-qt6
+enchant
+ffmpeg
+plasma6-filelight
+flatpak
+plasma6-flatpak-kcm
+plasma6-systemsettings
+plasma6-kinfocenter
+plasma6-ksystemstats
+plasma6-oxygen
+plasma6-oxygen-sounds
+plasma6-nm
+plasma6-kdeplasma-addons
+plasma6-browser-integration
+plasma6-vault
+plasma6-xdg-desktop-portal-kde
+plasma6-flatpak-kcm
+#plasma6-firewall
+plasma6-systemmonitor
+plasma6-konsole
+plasma6-dolphin
+plasma6-gwenview
+plasma6-kate
+plasma6-kwrite
+plasma6-ark
+plasma6-kcalc
+plasma6-okular
+plasma6-kio-admin
+# FIXME need to figure out what exactly requires
+# the next 2 so we can add a dependency there
+# rather than listing them here
+kirigami-addons
+plasma6-qqc2-breeze-style
+jasper
+nss
+nss_ldap
+nss_mdns
+#nss_wins #this pulls in a ton of samba deps
+openssl
+pam_ldap
+poppler-data
+telegram-desktop
+sasl-plug-gssapi
+kf6-oxygen-icons
+
+# OM special featured software
+om-welcome
+om-repo-picker
+om-imagewriter
+om-update-config
+
+#packagekit
+plasma6-discover
+plasma6-discover-backend-flatpak
+plasma6-discover-backend-packagekit
+
+plasma6-akonadi-calendar-tools
+plasma6-akonadi-search
+plasma6-akregator
+plasma6-audiocd-kio
+plasma6-bluedevil
+plasma6-dolphin-plugins
+plasma6-drkonqi
+#elisa
+plasma6-ffmpegthumbs
+kcm-grub2
+plasma6-gwenview
+plasma6-kaccounts-integration
+plasma6-kaccounts-providers
+plasma6-kaddressbook
+plasma6-kalarm
+plasma6-kamera
+plasma6-kate
+plasma6-kbackup
+plasma6-kcalc
+plasma6-kdeconnect
+plasma6-kdegraphics-thumbnailers
+plasma6-kdenetwork-filesharing
+plasma6-kdenlive
+plasma6-kdepim-runtime
+plasma6-kdf
+plasma6-kdialog
+plasma6-kfind
+plasma6-kgamma
+plasma6-kget
+plasma6-khelpcenter
+plasma6-kidentitymanagement
+plasma6-kio-gdrive
+plasma6-kleopatra
+plasma6-kmail
+plasma6-kmail-account-wizard
+plasma6-kontact
+#plasma6-konversation
+plasma6-neochat
+plasma6-korganizer
+plasma6-krdc
+plasma6-krfb
+plasma6-ksystemlog
+plasma6-ktorrent
+plasma6-kwallet-pam
+plasma6-kwrite
+myspell-dictionary
+plasma6-okular
+plasma6-okular-epub
+plasma6-partitionmanager
+plasma6-plymouth-kcm
+plasma6-print-manager
+plasma6-kwalletmanager
+plasma6-signon-kwallet-extension
+plasma6-skanlite
+kf6-sonnet
+plasma6-spectacle
+speech-dispatcher
+#ssr
+vokoscreenNG
+plasma6-yakuake
+plasma6-kio-zeroconf
+plasma6-kio-extras
+plasma6-disks
+#krita
+plasma6-kolourpaint
+dnfdrake
