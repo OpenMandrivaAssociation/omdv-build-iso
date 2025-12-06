@@ -807,10 +807,10 @@ InstallRepos() {
 
 	if [ -e "$WORKDIR"/.new ]; then
 		echo "Installing packages: $(ls *.rpm)"
-		rpm -Uvh --root "$CHROOTNAME" --force --oldpackage --nodeps --ignorearch *.rpm
+		rpm -Uvh --root "$CHROOTNAME" --nosignature --force --oldpackage --nodeps --ignorearch *.rpm
 	else
 		/bin/rm -rf "$CHROOTNAME"/etc/yum.repos.d/*.repo "$CHROOTNAME"/etc/dnf/dnf.conf
-		rpm --reinstall -vh --root "$CHROOTNAME" --replacefiles --nodeps --ignorearch  $WORKDIR/*.rpm
+		rpm --reinstall -vh --root "$CHROOTNAME" --nosignature --replacefiles --nodeps --ignorearch  $WORKDIR/*.rpm
 	fi
 
 	if [ -e "$CHROOTNAME/etc/yum.repos.d" ]; then ## we may hit ! -e that .new thing
