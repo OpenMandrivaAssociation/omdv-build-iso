@@ -32,6 +32,7 @@ mtools #iso
 fastfetch
 os-prober
 plymouth-system-theme
+x11-driver-video-amdgpu
 
 #proton-experimental
 #proton-experimental-direct3d
