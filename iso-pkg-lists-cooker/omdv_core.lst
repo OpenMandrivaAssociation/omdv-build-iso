@@ -7,6 +7,4 @@ locales
 locales-en
 ncurses
 dnf
-dnf-plugins-core
-dnf-plugins-extras-rpmconf
 libnss_resolve
