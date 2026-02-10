@@ -85,6 +85,10 @@ x11-data-cursor-themes
 #xscreensaver-base
 edidbins
 
+# fixes build failure for missing efi stuff for cooker iso
+grub2-efi
+grub2-extra
+
 # MD this entire list should be shuffled or justified to be needed for the full ISO
 
 avahi #service
