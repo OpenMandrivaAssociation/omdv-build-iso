@@ -1612,7 +1612,7 @@ setupGrub2() {
 		errorCatch
 	fi
 
-	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
+	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset 16 -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
 
 	# Copy SuperGrub iso
 	# disable for now
