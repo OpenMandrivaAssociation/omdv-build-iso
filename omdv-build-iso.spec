@@ -29,6 +29,7 @@ Requires:	kpartx
 Requires:	grub2
 Requires:	diffutils
 Requires:	parallel
+BuildRequires:	make
 BuildArch:	noarch
 
 %description
