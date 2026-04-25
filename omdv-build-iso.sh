@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 20251105
+# 20260425
 # OpenMandriva Association 2012
 # Original author: Bernhard Rosenkraenzer <bero@lindev.ch>
 # Modified on 2014 by: Tomasz Paweł Gajc <tpgxyz@gmail.com>
@@ -1616,7 +1616,7 @@ setupGrub2() {
 		errorCatch
 	fi
 
-	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset 16 -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
+	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label"
 
 	# Copy SuperGrub iso
 	# disable for now
