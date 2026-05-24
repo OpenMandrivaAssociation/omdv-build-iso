@@ -1606,7 +1606,14 @@ setupGrub2() {
 	mv -f "$ISOROOTNAME" "$CHROOTNAME"
 	# Job done just remember to move it back again
 	# Make the image
-	chroot "$CHROOTNAME" /usr/bin/grub2-mkimage -d "$GRUB_LIB" -O i386-pc -o "$GRUB_IMG" -p /boot/grub -c /ISO/boot/grub/start_cfg  iso9660 biosdisk test
+	chroot "$CHROOTNAME" /usr/bin/grub2-mkimage \
+		-d "$GRUB_LIB" \
+		-O i386-pc \
+		-o "$GRUB_IMG" \
+		-p "/boot/grub" \
+		-c /ISO/boot/grub/start_cfg \
+		iso9660 biosdisk fat part_msdos part_gpt search search_fs_uuid \
+		normal configfile all_video gfxterm font minicmd echo
 	# Move the ISO director back to the working directory
 	mv -f "$CHROOTNAME/ISO/" "$WORKDIR"
 	# Create bootable hard disk image
@@ -1622,7 +1629,7 @@ setupGrub2() {
 		errorCatch
 	fi
 
-	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset 16 -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
+	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 8 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset 16 -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
 
 	# Copy SuperGrub iso
 	# disable for now

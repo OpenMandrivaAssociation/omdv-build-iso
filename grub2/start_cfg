@@ -1,11 +1,20 @@
-insmod part_apple
-insmod part_bsd
-insmod part_gpt
+insmod all_video
+insmod gfxterm
+insmod font
+set pager=1
+
+echo "OpenMandriva Live - GRUB legacy BIOS booting..."
+
 insmod part_msdos
+insmod part_gpt
 insmod search
-insmod normal
-insmod configfile
-insmod minicmd
-search.fs_uuid '%GRUB_UUID%' root
-set prefix=($root)/boot/grub
-configfile ($root)/boot/grub/grub.cfg
+insmod search_fs_uuid
+
+search.fs_uuid '%GRUB_UUID%' root --set
+if [ -n "${root}" ]; then
+	set prefix=($root)/boot/grub
+	configfile ($root)/boot/grub/grub.cfg
+else
+	echo "Error: Could not find root partition with UUID %GRUB_UUID%"
+	sleep 10
+fi
