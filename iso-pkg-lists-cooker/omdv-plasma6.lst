@@ -121,7 +121,7 @@ yakuake
 #packagekit
 discover
 discover-backend-flatpak
-discover-backend-packagekit
+discover-backend-dnf
 
 # Miscelaneous Packages
 avahi
