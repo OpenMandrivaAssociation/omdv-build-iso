@@ -93,7 +93,7 @@ kwallet-pam
 kwalletmanager
 kwrite
 myspell-dictionary
-neochat
+# neochat
 okular
 okular-epub
 oxygen
