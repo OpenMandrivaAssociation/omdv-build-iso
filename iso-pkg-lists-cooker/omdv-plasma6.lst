@@ -33,7 +33,7 @@ x11-font-misc
 x11-data-cursor-themes
 
 # Plasma packages
-task-plasma6
+task-plasma
 akonadi-calendar-tools
 akonadi-search
 akregator
