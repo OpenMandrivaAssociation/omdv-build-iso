@@ -755,7 +755,8 @@ getPkgList() {
 		elif [ ${TREE,,} == "cooker" ]; then
 			export GIT_BRNCH=master
 		else
-			export GIT_BRNCH=${TREE,,}
+				# --tree is downloading source from old sources. Building rolling images on a cooker machines works.
+			export GIT_BRNCH=master #${TREE,,}
 			# ISO_VER defaults to user build entry
 		fi
 		cd "$WORKDIR" || exit
@@ -775,8 +776,8 @@ getPkgList() {
 		# DISPLAYLISTS has a valid value → check both
 		if [ ! -e "$FILELISTS" ] || [ ! -e "$DISPLAYLISTS" ]; then
         	printf "%s\n" "-> Required file does not exist:"
-        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.lst file from $TREE folder"
-        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.lst file from $TREE folder"
+        	[ ! -e "$FILELISTS" ] && echo "   Missing: omdv-$TYPE.lst file from iso-pkg-lists-$TREE folder"
+        	[ ! -e "$DISPLAYLISTS" ] && echo "   Missing: omdv-$DISPLAYMANAGER.lst file from iso-pkg-lists-$TREE folder"
         	errorCatch
 		fi
 	    fi
