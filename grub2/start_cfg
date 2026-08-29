@@ -1,8 +1,4 @@
-insmod all_video
-insmod gfxterm
-insmod font
 set pager=1
-
 echo "OpenMandriva Live - GRUB legacy BIOS booting..."
 
 insmod part_msdos

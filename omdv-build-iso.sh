@@ -1607,6 +1607,11 @@ setupGrub2() {
 	mv -f "$ISOROOTNAME" "$CHROOTNAME"
 	# Job done just remember to move it back again
 	# Make the image
+	# Keep the embed small: all_video/gfxterm/font/normal live on the
+	# ISO under /boot/grub/i386-pc and are loaded after search.
+	# A 2.16 core.img with those modules is ~150KiB; the historic
+	# -partition_offset 16 only leaves a 32KiB system area, so USB/HDD
+	# hybrid boot would read a truncated image and freeze after "GRUB ".
 	chroot "$CHROOTNAME" /usr/bin/grub2-mkimage \
 		-d "$GRUB_LIB" \
 		-O i386-pc \
@@ -1614,7 +1619,7 @@ setupGrub2() {
 		-p "/boot/grub" \
 		-c /ISO/boot/grub/start_cfg \
 		iso9660 biosdisk fat part_msdos part_gpt search search_fs_uuid \
-		normal configfile all_video gfxterm font minicmd echo
+		configfile echo
 	# Move the ISO director back to the working directory
 	mv -f "$CHROOTNAME/ISO/" "$WORKDIR"
 	# Create bootable hard disk image
@@ -1630,7 +1635,16 @@ setupGrub2() {
 		errorCatch
 	fi
 
-	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 8 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset 16 -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
+	# System area is partition_offset * 2048 bytes. --embedded-boot
+	# occupies it from LBA 0; boot.img expects core.img at LBA 1.
+	# Grow the gap so the full embed fits (16 = historic 32KiB).
+	embed_bytes=$(stat -c%s "$ISOROOTNAME/boot/grub/grub2-embed_img")
+	embed_blocks=$(( (embed_bytes + 2047) / 2048 ))
+	[ "$embed_blocks" -lt 16 ] && embed_blocks=16
+	embed_blocks=$((embed_blocks + 1))
+	printf "%s\n" "-> BIOS embed ${embed_bytes} bytes; -partition_offset ${embed_blocks} ($((embed_blocks * 2)) KiB gap)"
+
+	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 8 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset ${embed_blocks} -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
 
 	# Copy SuperGrub iso
 	# disable for now
