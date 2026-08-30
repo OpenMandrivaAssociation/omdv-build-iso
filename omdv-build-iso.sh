@@ -1622,29 +1622,25 @@ setupGrub2() {
 		configfile echo
 	# Move the ISO director back to the working directory
 	mv -f "$CHROOTNAME/ISO/" "$WORKDIR"
-	# Create bootable hard disk image
-	cat "$CHROOTNAME/$GRUB_LIB/boot.img" "$CHROOTNAME/$GRUB_IMG" > "$ISOROOTNAME/boot/grub/grub2-embed_img"
-	if [ $? != 0 ]; then
-		printf "%s\n" "-> Failed to create Grub2 El-Torito image." "Exiting."
-		errorCatch
-	fi
-	# Create bootable cdimage
+	# El Torito image: cdboot stub + full core.img. USB/HDD hybrid
+	# must NOT use --embedded-boot/-G: that copies at most 32768 bytes.
+	# 2.16 core.img is ~120-150KiB, so the old boot.img+core embed was
+	# truncated; BIOS printed "GRUB " and the decompressor hung with a
+	# blinking cursor. grub-mkrescue uses --grub2-mbr boot_hybrid.img
+	# and --grub2-boot-info so the MBR finds the full El Torito image.
 	cat "$CHROOTNAME/$GRUB_LIB/cdboot.img" "$CHROOTNAME/$GRUB_IMG" > "$ISOROOTNAME/boot/grub/grub2-eltorito.img"
 	if [ $? != 0 ]; then
 		printf  "%s\n" "-> Failed to create Grub2 El-Torito image." "Exiting."
 		errorCatch
 	fi
+	if [ ! -f "$CHROOTNAME/$GRUB_LIB/boot_hybrid.img" ]; then
+		printf "%s\n" "-> Missing $GRUB_LIB/boot_hybrid.img (need grub2 >= 2.00)."
+		errorCatch
+	fi
+	core_bytes=$(stat -c%s "$CHROOTNAME/$GRUB_IMG")
+	printf "%s\n" "-> BIOS core.img ${core_bytes} bytes; using GRUB2 hybrid MBR (not a 32KiB -G embed)"
 
-	# System area is partition_offset * 2048 bytes. --embedded-boot
-	# occupies it from LBA 0; boot.img expects core.img at LBA 1.
-	# Grow the gap so the full embed fits (16 = historic 32KiB).
-	embed_bytes=$(stat -c%s "$ISOROOTNAME/boot/grub/grub2-embed_img")
-	embed_blocks=$(( (embed_bytes + 2047) / 2048 ))
-	[ "$embed_blocks" -lt 16 ] && embed_blocks=16
-	embed_blocks=$((embed_blocks + 1))
-	printf "%s\n" "-> BIOS embed ${embed_bytes} bytes; -partition_offset ${embed_blocks} ($((embed_blocks * 2)) KiB gap)"
-
-	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 8 -boot-info-table --embedded-boot $ISOROOTNAME/boot/grub/grub2-embed_img --protective-msdos-label -partition_offset ${embed_blocks} -isohybrid-mbr $CHROOTNAME/$GRUB_LIB/boot.img"
+	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 4 -boot-info-table --grub2-boot-info --grub2-mbr $CHROOTNAME/$GRUB_LIB/boot_hybrid.img --protective-msdos-label"
 
 	# Copy SuperGrub iso
 	# disable for now
