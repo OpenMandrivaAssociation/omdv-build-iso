@@ -1,5 +1,4 @@
 set pager=1
-echo "OpenMandriva Live - GRUB legacy BIOS booting..."
 
 insmod part_msdos
 insmod part_gpt
