@@ -1640,12 +1640,14 @@ setupGrub2() {
 	core_bytes=$(stat -c%s "$CHROOTNAME/$GRUB_IMG")
 	printf "%s\n" "-> BIOS core.img ${core_bytes} bytes; using GRUB2 hybrid MBR (not a 32KiB -G embed)"
 
-	# Fake-CD / USB-as-CD still uses El Torito (-b, -no-emul-boot,
-	# -boot-info-table, load-size 8 as before). --grub2-mbr only
-	# affects the MBR used when firmware treats the stick as a disk.
-	# Do not pass --grub2-boot-info: that patches 8 bytes at offset
-	# 2548 of the -b image, which is inside our cat'd core.img.
-	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 8 -boot-info-table --grub2-mbr $CHROOTNAME/$GRUB_LIB/boot_hybrid.img --protective-msdos-label"
+	# Fake-CD still uses El Torito (-b, load-size 8, -boot-info-table);
+	# cdboot loads the whole file and jumps past diskboot, so it does
+	# not use the blocklist. USB-as-HDD: --grub2-mbr points boot.S at
+	# diskboot; --grub2-boot-info writes the continuation LBA into
+	# diskboot's blocklist at offset 2548 of the -b image (cdboot 2KiB
+	# + firstlist at 0x1f4). Without that, diskboot reads from LBA 1
+	# of the stick, prints "loading..", then jumps into garbage.
+	XORRISO_OPTIONS1=" -b boot/grub/grub2-eltorito.img -no-emul-boot -boot-load-size 8 -boot-info-table --grub2-boot-info --grub2-mbr $CHROOTNAME/$GRUB_LIB/boot_hybrid.img --protective-msdos-label"
 
 	# Copy SuperGrub iso
 	# disable for now
