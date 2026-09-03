@@ -30,9 +30,9 @@ gnome-panel
 gnome-keyring
 gnome-shell
 gnome-system-monitor
-#gnome-terminal
+gnome-terminal
 #console
-ptyxis
+#ptyxis
 gnome-themes-standard
 nautilus
 networkmanager
