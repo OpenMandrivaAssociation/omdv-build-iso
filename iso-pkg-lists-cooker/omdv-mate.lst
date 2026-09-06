@@ -82,6 +82,7 @@ firewall-applet #service
 jackit #service
 networkmanager-applet
 dbus-broker
+gnome-disk-utility
 
 gvfs
 gvfs-archive #gtk dep
@@ -116,8 +117,8 @@ pyxdg
 #om-control-center
 #om-update-config
 #om-repo-picker
-#tears-of-mandrake
-#yumex
+tears-of-mandrake
+yumex
 
 #packagekit
 packagekit-gstreamer-plugin
