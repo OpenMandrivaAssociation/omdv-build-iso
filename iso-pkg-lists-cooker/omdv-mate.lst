@@ -46,7 +46,8 @@ mate-recorder
 #   mate panel
 mate-dock-applet
 mate-menu
-mate-applet-softupd
+# temp disable until maintainer return
+#mate-applet-softupd
 #   caja
 #mate-eicel
 caja-rename
