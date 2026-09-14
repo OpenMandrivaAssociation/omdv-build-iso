@@ -166,3 +166,6 @@ samba-server #server
 
 # OM special featured software
 tears-of-mandrake
+#oma-welcome
+om-repo-picker
+#om-control-center

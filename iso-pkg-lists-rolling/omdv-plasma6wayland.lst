@@ -2,10 +2,8 @@
 
 plasma-workspace-wayland
 plasma6-kwin-wayland
-#kwin
+kwin
+kwin-aurorae
 libkscreen-wayland
 kf6-kidletime-wayland
 kf6-kwindowsystem-backend-wayland
-
-# P5 compat bits
-#kwindowsystem-wayland

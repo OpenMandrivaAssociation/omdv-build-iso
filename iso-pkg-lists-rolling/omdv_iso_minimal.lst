@@ -14,8 +14,27 @@ iproute2
 grub2
 efibootmgr
 kernel-desktop
+kernel-desktop-modules-at76c50x-usb
+kernel-desktop-modules-ath10k_pci
+kernel-desktop-modules-bcm203x
+kernel-desktop-modules-dvb-core
+kernel-desktop-modules-dvb-frontends
+kernel-desktop-modules-dvb-usb
+kernel-desktop-modules-firewire
+kernel-desktop-modules-gspca
+# Not typically needed for a desktop, but cifs requires rdma
+# and rdma is implemented in infiniband
+kernel-desktop-modules-infiniband
+kernel-desktop-modules-nouveau
+kernel-desktop-modules-snd-usb-6fire
+kernel-desktop-modules-staging
+kernel-desktop-modules-tuners
 kernel-firmware
+kernel-firmware-ath10k
+kernel-firmware-dvb
 kernel-firmware-extra
+nvidia-firmware
+radeon-firmware
 lvm2
 mdadm
 #nscd

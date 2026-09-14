@@ -33,7 +33,7 @@ x11-font-misc
 x11-data-cursor-themes
 
 # Plasma packages
-task-plasma6
+task-plasma
 akonadi-calendar-tools
 akonadi-search
 akregator
@@ -47,6 +47,7 @@ ffmpegthumbs
 filelight
 flatpak-kcm
 gwenview
+#nomacs
 kaccounts-integration
 kaccounts-providers
 kaddressbook
@@ -115,13 +116,13 @@ systemsettings
 xdg-desktop-portal-kde
 yakuake
 #elisa
-#krita
+krita
 #plasma-firewall
 
 #packagekit
 discover
 discover-backend-flatpak
-discover-backend-packagekit
+discover-backend-dnf
 
 # Miscelaneous Packages
 avahi
@@ -132,7 +133,7 @@ enchant
 ffmpeg
 flatpak
 jasper
-libreoffice-kde6
+#libreoffice-kde6
 qmplay2
 # qmplay2 pulls in yt-dlp which requires (mplayer or mpv). Make sure it picks mpv
 mpv
