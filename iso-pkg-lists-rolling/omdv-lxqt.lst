@@ -61,6 +61,7 @@ om-imagewriter
 #silicon-plugin-udisks
 #trojita
 #plasma-firewall
+kf6-kglobalaccel
 
 # Needed Task/Meta Packages
 task-pulseaudio
