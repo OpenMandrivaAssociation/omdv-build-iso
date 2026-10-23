@@ -104,8 +104,8 @@ gnome-calendar
 
 # biz / office / utils
 brasero
-caribou
-caribou-gtk3
+#caribou
+#caribou-gtk3
 evolution
 gnome-contacts
 gparted
@@ -150,7 +150,7 @@ GConf2 #gtk dep
 gtk2-modules #gtk dep
 #gtk-xfce-engine
 gvfs
-gvfs-archive #gtk dep
+# gvfs-archive #gtk dep (dropped)
 gvfs-fuse #gtk dep
 gvfs-gphoto2 #gtk dep
 gvfs-smb #gtk dep
