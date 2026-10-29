@@ -10,24 +10,36 @@
 %include .///omdv_firefox.lst
 %include .///omdv_fonts.lst
 %include .///omdv_gstreamer.lst
-#%include .///omdv_libreoffice.lst
+%include .///omdv_libreoffice.lst
 %include .///omdv_locales.lst
 #%include .///omdv_man-pages.lst
 %include .///omdv_pulseaudio.lst
 #%include .///omdv_vlc.lst
 
 # Desktop Specifics
-cinnamon
+xapp
+python-xapp
 cinnamon-desktop
-cinnamon-menus
+muffin
+cjs
+cinnamon-settings-daemon
+cinnamon-translations
 cinnamon-session
+cinnamon-menus
 cinnamon-control-center
 cinnamon-screensaver
-cinnamon-translations
-cinnamon-settings-daemon
-cjs
-muffin
 nemo
+xapp-symbolic-icons
+cinnamon
+mint-x-icons
+mint-y-icons
+mint-themes
+cinnamon-themes
+lib64cjs-gir1.0
+xed
+xreader
+pix
+xviewer
 json-glib
 gnome-terminal
 gsettings-desktop-schemas
@@ -118,5 +130,8 @@ gnome-disk-utility
 
 # OM special featured software
 #om-welcome
-om-repo-picker
-om-mirror-selector
+#om-repo-picker
+#om-mirror-selector
+tears-of-mandrake
+updragora
+yumex
