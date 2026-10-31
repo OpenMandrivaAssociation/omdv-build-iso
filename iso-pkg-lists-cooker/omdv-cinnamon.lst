@@ -37,6 +37,8 @@ mint-themes
 cinnamon-themes
 lib64cjs-gir1.0
 openmandriva-cinnamon-config
+lib64gcr-gir1
+blueberry
 xed
 xreader
 pix
@@ -112,7 +114,6 @@ breeze-gtk
 # workaround
 gcr
 typelib(GcrUi)
-lib64gcr-gir1
 
 # needed for mounting disc
 gnome-disk-utility
