@@ -44,6 +44,7 @@ xreader
 pix
 xviewer
 superlight
+unfold
 json-glib
 gnome-terminal
 gsettings-desktop-schemas
