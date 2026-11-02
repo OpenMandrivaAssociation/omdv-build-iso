@@ -43,6 +43,7 @@ xed
 xreader
 pix
 xviewer
+superlight
 json-glib
 gnome-terminal
 gsettings-desktop-schemas
